@@ -29,6 +29,27 @@
 
     <div id="blocker">
       <div id="container">
+        <div id="initialModal" class="initial-modal">
+          <div class="tRow" style="height:100%;">
+            <div class="tHeader">&gt;CONFIGURE ENVIRONMENT</div>
+            <div class="modal-content">
+            <div id="settingsEnvironmentContainer"  style="margin-bottom: 5px;">
+              <span>Environment:</span>
+              <label class="formCheckContainer">
+                <input type="radio" checked="checked" name="settingsEnvironment" value="night">
+                <span class="checkmark">[Night]</span>
+              </label>
+              <label class="formCheckContainer">
+                <input type="radio" name="settingsEnvironment" value="day">
+                <span class="checkmark">[Day]</span>
+              </label>
+            </div>
+            <div style="margin-top: 35px;">
+              <button class="secondary-button" id="continueButton">&gt;&gt;Continue&lt;&lt;</button>
+            </div>
+          </div>
+          </div>
+        </div>
         <div class="tCol leftCol">
           <div class="tRow" style="height:100%;">
             <div class="tHeader">&gt;Terminal</div>
@@ -112,7 +133,7 @@
             <!-- Fusce gravida egestas neque, id sodales arcu ultricies hendrerit. Maecenas quis justo gravida, semper nulla volutpat, pharetra mi. Sed ac ultricies dolor, dapibus euismod erat. Quisque in orci dolor. Suspendisse id laoreet eros, id volutpat purus. Nam hendrerit massa mauris, malesuada aliquam ipsum aliquam ut. Fusce turpis mauris, mollis ac purus vel, euismod luctus sem. Cras vitae dolor leo. Donec volutpat a arcu at consectetur. -->
           </div>
           <div class="tRow" style="height:32px;">
-            <button id="enterBtn">&gt;&gt;Launch&lt;&lt;</button>
+            <button class="primary-button" id="enterBtn">&gt;&gt;Launch&lt;&lt;</button>
           </div>
         </div>
       </div>
@@ -123,7 +144,7 @@
     <script src="js/ui-v2.js"></script>
     <script src="js/alea.js"></script>
 		<script src="js/proc-noise.js"></script>
-    <script src="dist/main.5930e2c202e764ba4741.js" async></script>
+    <!-- <script src="dist/main.f3f495254f008489920c.js" async></script> -->
 
   </body>
 </html>

@@ -24,6 +24,7 @@ class AssetManager {
     this.path = "";
 
     this.textureAnisotropy = 8;
+    console.log("window.game: ", window.game);
     this.buildingWindowsEmissiveIntensity = window.game.environment.windowLights
       ? 1.5
       : 0;

@@ -123,6 +123,7 @@ class GeneratorItem_CityBlock {
             );
             topper = topperNoise > 0.998;
             // spotlight
+            console.log("window.game: ", window.game);
             if (window.game.environment.spotLights) {
               if (Math.random() < 0.1 && subtypeNoise > 0.8 && !topper)
                 this.updateables.push(

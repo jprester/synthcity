@@ -42,7 +42,12 @@ class Game {
   constructor() {
     this.initialized = false;
 
-    this.environment = this.getEnvironment("day");
+    console.log(
+      "window.userSettings.environment: ",
+      window.userSettings.environment
+    );
+
+    this.environment = this.getEnvironment(window.userSettings.environment);
 
     // query params
 
@@ -119,8 +124,8 @@ class Game {
       );
     if (window.userSettings.hasOwnProperty("windshieldShader"))
       this.settings.windshieldShader = window.userSettings.windshieldShader;
-
-    console.log("Game: World seed: " + this.settings.worldSeed);
+    if (window.userSettings.hasOwnProperty("environment"))
+      this.environment = this.getEnvironment(window.userSettings.environment);
 
     /*----- setup -----*/
 
@@ -480,6 +485,10 @@ class Game {
 
     this.composer.render();
     // this.renderer.render(this.scene, this.player.camera);
+  }
+
+  setEnvironment(id) {
+    this.environment = this.getEnvironment(id);
   }
 
   getEnvironment(id) {
