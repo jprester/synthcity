@@ -84,26 +84,28 @@ window.setColor = function (c) {
   colorClass = c;
 };
 
-window.write = function (s, speed, delay, callback) {
+window.write = async (text, speed, delay, callback) => {
   let i = 0;
-  let interval = setInterval(function () {
+  let interval = setInterval(() => {
     const newNode = document.createElement("span");
     newNode.className = colorClass;
     let textNode = null;
-    if (s.charAt(i) == " ") {
+    if (text.charAt(i) == " ") {
       textNode = document.createTextNode("\u00A0");
     } else {
-      textNode = document.createTextNode(s.charAt(i));
+      textNode = document.createTextNode(text.charAt(i));
     }
     newNode.appendChild(textNode);
     terminal.insertBefore(newNode, cursor);
 
     i++;
-    if (i == s.length) {
+    if (i == text.length) {
       clearInterval(interval);
       setTimeout(callback, delay);
     }
   }, speed);
+
+  await new Promise((resolve) => setTimeout(resolve, delay));
 };
 
 window.newLine = function (el = terminal) {
@@ -321,7 +323,6 @@ function beginLoad() {
   });
   $("#settingsWorldSeedValue").on("input", function () {
     window.userSettings.worldSeed = $("#settingsWorldSeedValue").val();
-    console.log(window.userSettings.worldSeed);
   });
 
   $("input[name=settingsRenderScaling]").change(function () {
@@ -335,7 +336,6 @@ function beginLoad() {
   });
 
   // terminal
-
   setTimeout(function () {
     window.setColor("c1");
     window.write("synthcity --run", 80, 500, function () {
@@ -398,80 +398,87 @@ function beginLoad() {
                                   function () {
                                     window.newLine();
                                     window.newLine();
-                                    // window.write('*********************************************************', 0, 800, function() {
                                     window.write(
-                                      "▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚",
+                                      "*********************************************************",
                                       0,
                                       800,
                                       function () {
-                                        window.newLine();
-                                        window.newLine();
-                                        window.setColor("c3");
                                         window.write(
-                                          ">> initiating boot sequence...",
+                                          "▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚",
                                           0,
-                                          500,
+                                          800,
                                           function () {
-                                            // show settings
-                                            settings.style.display = "block";
-
-                                            // write controls
-                                            window.updateControls(
-                                              controlsText.drive
-                                            );
-
                                             window.newLine();
                                             window.newLine();
-                                            window.setColor("c4");
+                                            window.setColor("c3");
                                             window.write(
-                                              "build version: " + version,
+                                              ">> initiating boot sequence...",
                                               0,
-                                              50,
+                                              500,
                                               function () {
+                                                // show settings
+                                                settings.style.display =
+                                                  "block";
+
+                                                // write controls
+                                                window.updateControls(
+                                                  controlsText.drive
+                                                );
+
                                                 window.newLine();
+                                                window.newLine();
+                                                window.setColor("c4");
                                                 window.write(
-                                                  "system manufacturer: jeff beene [www.jeff-beene.com]",
+                                                  "build version: " + version,
                                                   0,
                                                   50,
                                                   function () {
                                                     window.newLine();
                                                     window.write(
-                                                      "system boot time: " +
-                                                        bootDate,
+                                                      "system manufacturer: jeff beene [www.jeff-beene.com]",
                                                       0,
                                                       50,
                                                       function () {
                                                         window.newLine();
                                                         window.write(
-                                                          "os name: three.js",
+                                                          "system boot time: " +
+                                                            bootDate,
                                                           0,
                                                           50,
                                                           function () {
                                                             window.newLine();
                                                             window.write(
-                                                              "os version: " +
-                                                                threeVersion,
+                                                              "os name: three.js",
                                                               0,
                                                               50,
                                                               function () {
                                                                 window.newLine();
                                                                 window.write(
-                                                                  "audio driver: uppbeat.io",
+                                                                  "os version: " +
+                                                                    threeVersion,
                                                                   0,
                                                                   50,
                                                                   function () {
                                                                     window.newLine();
-                                                                    window.newLine();
-                                                                    window.setColor(
-                                                                      "c3"
-                                                                    );
                                                                     window.write(
-                                                                      ">> loading resources...",
+                                                                      "audio driver: uppbeat.io",
                                                                       0,
                                                                       50,
                                                                       function () {
-                                                                        // load
-                                                                        window.game.load();
+                                                                        window.newLine();
+                                                                        window.newLine();
+                                                                        window.setColor(
+                                                                          "c3"
+                                                                        );
+                                                                        window.write(
+                                                                          ">> loading resources...",
+                                                                          0,
+                                                                          50,
+                                                                          function () {
+                                                                            // load
+                                                                            window.game.load();
+                                                                          }
+                                                                        );
                                                                       }
                                                                     );
                                                                   }
