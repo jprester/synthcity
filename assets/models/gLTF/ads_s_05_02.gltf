@@ -1,0 +1,167 @@
+{
+  "accessors": [
+    {
+      "name": "Plane.010_Plane.011-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 36,
+      "min": [
+        40.24187088012695,
+        208.54135131835938,
+        -58.514251708984375
+      ],
+      "max": [
+        40.241878509521484,
+        406.1446228027344,
+        60.481075286865234
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 0
+    },
+    {
+      "name": "Plane.010_Plane.011-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 36,
+      "min": [
+        1,
+        0,
+        0
+      ],
+      "max": [
+        1,
+        0,
+        0
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 0
+    },
+    {
+      "name": "Plane.010_Plane.011-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 36,
+      "min": [
+        0.5056560039520264,
+        0.012802000157535076
+      ],
+      "max": [
+        0.9943439960479736,
+        0.987197995185852
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 0
+    },
+    {
+      "name": "Plane.010_Plane.011-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 54,
+      "min": [
+        0
+      ],
+      "max": [
+        35
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 0
+    }
+  ],
+  "asset": {
+    "generator": "obj2gltf",
+    "version": "2.0"
+  },
+  "buffers": [
+    {
+      "name": "ads_s_05_02",
+      "byteLength": 1260,
+      "uri": "data:application/octet-stream;base64,rfcgQvzsxUOMQrhBrfcgQnXHwEPYzmVBrfcgQvzsxUMvMbZArfcgQoMSy0PYzmVBr/cgQjcUeEO3vSpCr/cgQpaKUEP+JhZBr/cgQjgUeEN4VL/BrvcgQuzOj0PuJhZBrvcgQjVjk0PQ1hfAr/cgQjK5gkMEjPPBr/cgQjZjk0OYDmrCrvcgQjkNpEMEjPPBr/cgQscepUOCKtpBr/cgQp7Xl0OH7JxAr/cgQscepUM/tIvBrvcgQvBlskOF7JxArvcgQioplUMSb1FCrvcgQkJtikOUGwlCrvcgQioplUMskIFBrvcgQhLln0OUGwlCrvcgQkqfq0Of7HFCr/cgQiLdokPo6DZCrvcgQkqfq0NfyvdBrvcgQnFhtEPo6DZCr/cgQnqIsUPYRkPBr/cgQlPGqEPYqtfBr/cgQnqIsUMj2SbCrvcgQqFKukPaqtfBrvcgQuF3vEM6vdVArvcgQi8YtkMw1oHArvcgQuF3vEPOtGzBrvcgQpPXwkMw1oHArvcgQlnatkNGPApCrvcgQqd6sEOwk75BrvcgQlnatkOtXVFBrvcgQgs6vUOyk75BAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAptEoP7Iqgj3+7jE//B3qPVYMOz+yKoI9/u4xP3u/UTxOKBQ/6s9KP/EqNz8CuXw/lS1aP+rPSj/xKjc/4uYYPziHQz+H3Q8/RgphP/rvOT9UjX4/h90PP0YKYT8Hlss+/1wkP8swxj7f4Ds/RZ4EP79kUz/LMMY+3+A7Pwslgz7S/Ak/XmMLP1T/HD8TfSY/1gEwP15jCz9U/xw/dZPgPqxyAT/uW6U+f/UQP4mV0T5TeCA/7lulPn/1ED/pRHI+f91NPziDhz5SYF0/07yzPibjbD84g4c+UmBdPzqTNj77Ajo/yJcgPqlMRT/k9WA+aJZQP8iXID6pTEU/0nLAPXCzHD8OTVk+Hv0nP7fVjD7cRjM/Dk1ZPh79Jz/y7hg+AgADAAAAAAABAAIABgAHAAQABAAFAAYACgALAAgACAAJAAoADgAPAAwADAANAA4AEgATABAAEAARABIAFgAXABQAFAAVABYAGgAbABgAGAAZABoAHgAfABwAHAAdAB4AIgAjACAAIAAhACIA"
+    }
+  ],
+  "bufferViews": [
+    {
+      "name": "bufferView_0",
+      "buffer": 0,
+      "byteLength": 432,
+      "byteOffset": 0,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_1",
+      "buffer": 0,
+      "byteLength": 432,
+      "byteOffset": 432,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_2",
+      "buffer": 0,
+      "byteLength": 288,
+      "byteOffset": 864,
+      "byteStride": 8,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_3",
+      "buffer": 0,
+      "byteLength": 108,
+      "byteOffset": 1152,
+      "target": 34963
+    }
+  ],
+  "materials": [
+    {
+      "name": "default",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.5,
+          0.5,
+          0.5,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 1
+      },
+      "emissiveFactor": [
+        0,
+        0,
+        0
+      ],
+      "alphaMode": "OPAQUE",
+      "doubleSided": false
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Plane.010_Plane.011-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0,
+            "NORMAL": 1,
+            "TEXCOORD_0": 2
+          },
+          "indices": 3,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "name": "Plane.010_Plane.011",
+      "mesh": 0
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}

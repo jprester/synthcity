@@ -1,0 +1,167 @@
+{
+  "accessors": [
+    {
+      "name": "Plane.001-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 8,
+      "min": [
+        -61.796302795410156,
+        14.29937744140625,
+        -41.580074310302734
+      ],
+      "max": [
+        61.324462890625,
+        364.9449157714844,
+        40.205928802490234
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 0
+    },
+    {
+      "name": "Plane.001-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 8,
+      "min": [
+        -1,
+        0,
+        0
+      ],
+      "max": [
+        1,
+        0,
+        0
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 0
+    },
+    {
+      "name": "Plane.001-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 8,
+      "min": [
+        0.003435000078752637,
+        0.007441000081598759
+      ],
+      "max": [
+        0.9958800077438354,
+        0.9955750107765198
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 0
+    },
+    {
+      "name": "Plane.001-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 12,
+      "min": [
+        0
+      ],
+      "max": [
+        7
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 0
+    }
+  ],
+  "asset": {
+    "generator": "obj2gltf",
+    "version": "2.0"
+  },
+  "buffers": [
+    {
+      "name": "ads_s_05_03",
+      "byteLength": 280,
+      "uri": "data:application/octet-stream;base64,Zi93wvN4tkPkR+nBai93woiQfkPkR+nBai93woiQfkOnSd5BZi93wvN4tkOpSd5BPUx1QunTLEPf0iBCQEx1QkDKZEHf0iBCQEx1QkDKZEH/USbCPUx1QunTLEP/USbCAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAXBwBP6FMIzxcHAE/ZTh+P/7xfj9lOH4//vF+P6FMIzy9HWE7otPzO70dYTsB3n4/ilr6PgHefj+KWvo+otPzOwEAAwAAAAMAAQACAAYABwAEAAQABQAGAA=="
+    }
+  ],
+  "bufferViews": [
+    {
+      "name": "bufferView_0",
+      "buffer": 0,
+      "byteLength": 96,
+      "byteOffset": 0,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_1",
+      "buffer": 0,
+      "byteLength": 96,
+      "byteOffset": 96,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_2",
+      "buffer": 0,
+      "byteLength": 64,
+      "byteOffset": 192,
+      "byteStride": 8,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_3",
+      "buffer": 0,
+      "byteLength": 24,
+      "byteOffset": 256,
+      "target": 34963
+    }
+  ],
+  "materials": [
+    {
+      "name": "default",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.5,
+          0.5,
+          0.5,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 1
+      },
+      "emissiveFactor": [
+        0,
+        0,
+        0
+      ],
+      "alphaMode": "OPAQUE",
+      "doubleSided": false
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Plane.001-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0,
+            "NORMAL": 1,
+            "TEXCOORD_0": 2
+          },
+          "indices": 3,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "name": "Plane.001",
+      "mesh": 0
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}

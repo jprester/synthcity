@@ -1,0 +1,167 @@
+{
+  "accessors": [
+    {
+      "name": "Cube.006-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 22,
+      "min": [
+        -19.630067825317383,
+        11.327735900878906,
+        -30.90911102294922
+      ],
+      "max": [
+        30.90911102294922,
+        106.07920837402344,
+        30.90911102294922
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 0
+    },
+    {
+      "name": "Cube.006-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 22,
+      "min": [
+        0,
+        0,
+        -1
+      ],
+      "max": [
+        1,
+        0,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 0
+    },
+    {
+      "name": "Cube.006-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 22,
+      "min": [
+        0.002635000040754676,
+        0.004604000132530928
+      ],
+      "max": [
+        0.9937719702720642,
+        0.9957410097122192
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 0
+    },
+    {
+      "name": "Cube.006-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 36,
+      "min": [
+        0
+      ],
+      "max": [
+        21
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 0
+    }
+  ],
+  "asset": {
+    "generator": "obj2gltf",
+    "version": "2.0"
+  },
+  "buffers": [
+    {
+      "name": "ads_s_02_02",
+      "byteLength": 776,
+      "uri": "data:application/octet-stream;base64,vh/ZQHt94EHcRfdBvh/ZQI7mWELcRfdBYQqdwY7mWELcRfdBYQqdwXt94EHcRfdB3EX3QbDym0LdRXdB3EX3QZhG0ELdRXdB3EX3QZhG0ELcRfdB3EX3QbDym0LcRfdB9k2IwT9olkLcRffB9k2IwY4o1ELcRffBSQV1QY4o1ELcRffBSQV1QT9olkLcRffB3EX3QfrG1UFnf6fB3EX3QWB3KEJnf6fB3EX3QWB3KELlca/A3EX3QfrG1UHlca/A3EX3QWg+NUFnf6fB3EX3QWg+NUHlca/A3EX3QbDym0LcRfdB3EX3QZhG0ELcRfdB3UV3QZhG0ELcRfdB3UV3QbDym0LcRfdBAAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/ysB9P2hbKT/KwH0/4dSvPtNPLD/h1K8+008sP2hbKT8Iy3w/LgClPgjLfD+q8yg87NxUP6rzKDzs3FQ/LgClPtdnfj/i6H4/12d+Pyfdljv3ryw7J92WO/evLDvi6H4/SDInP2ZmKj9IMic/w9a0Pqhurj7D1rQ+qG6uPmZmKj9IMic/a2F6P6hurj5rYXo/7NxUPy4ApT7s3FQ/qvMoPNDuLD+q8yg80O4sPy4ApT4CAAMAAAAAAAEAAgAGAAcABAAEAAUABgAJAAsACAALAAkACgAOAA8ADAAMAA0ADgAPABEAEAAQAAwADwAUABUAEgASABMAFAA="
+    }
+  ],
+  "bufferViews": [
+    {
+      "name": "bufferView_0",
+      "buffer": 0,
+      "byteLength": 264,
+      "byteOffset": 0,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_1",
+      "buffer": 0,
+      "byteLength": 264,
+      "byteOffset": 264,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_2",
+      "buffer": 0,
+      "byteLength": 176,
+      "byteOffset": 528,
+      "byteStride": 8,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_3",
+      "buffer": 0,
+      "byteLength": 72,
+      "byteOffset": 704,
+      "target": 34963
+    }
+  ],
+  "materials": [
+    {
+      "name": "default",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.5,
+          0.5,
+          0.5,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 1
+      },
+      "emissiveFactor": [
+        0,
+        0,
+        0
+      ],
+      "alphaMode": "OPAQUE",
+      "doubleSided": false
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Cube.006-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0,
+            "NORMAL": 1,
+            "TEXCOORD_0": 2
+          },
+          "indices": 3,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "name": "Cube.006",
+      "mesh": 0
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}

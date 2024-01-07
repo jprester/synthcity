@@ -1,0 +1,167 @@
+{
+  "accessors": [
+    {
+      "name": "Cube.008-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 59,
+      "min": [
+        -30.428403854370117,
+        30.967205047607422,
+        -30.428403854370117
+      ],
+      "max": [
+        30.428403854370117,
+        156.60594177246094,
+        30.428407669067383
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 0
+    },
+    {
+      "name": "Cube.008-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 59,
+      "min": [
+        -1,
+        0,
+        -1
+      ],
+      "max": [
+        1,
+        0,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 0
+    },
+    {
+      "name": "Cube.008-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 59,
+      "min": [
+        0.0015950000379234552,
+        0.008170999586582184
+      ],
+      "max": [
+        0.9956499934196472,
+        1.0013049840927124
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 0
+    },
+    {
+      "name": "Cube.008-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 120,
+      "min": [
+        0
+      ],
+      "max": [
+        58
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 0
+    }
+  ],
+  "asset": {
+    "generator": "obj2gltf",
+    "version": "2.0"
+  },
+  "buffers": [
+    {
+      "name": "ads_s_03_01",
+      "byteLength": 2128,
+      "uri": "data:application/octet-stream;base64,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"
+    }
+  ],
+  "bufferViews": [
+    {
+      "name": "bufferView_0",
+      "buffer": 0,
+      "byteLength": 708,
+      "byteOffset": 0,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_1",
+      "buffer": 0,
+      "byteLength": 708,
+      "byteOffset": 708,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_2",
+      "buffer": 0,
+      "byteLength": 472,
+      "byteOffset": 1416,
+      "byteStride": 8,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_3",
+      "buffer": 0,
+      "byteLength": 240,
+      "byteOffset": 1888,
+      "target": 34963
+    }
+  ],
+  "materials": [
+    {
+      "name": "default",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.5,
+          0.5,
+          0.5,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 1
+      },
+      "emissiveFactor": [
+        0,
+        0,
+        0
+      ],
+      "alphaMode": "OPAQUE",
+      "doubleSided": false
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Cube.008-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0,
+            "NORMAL": 1,
+            "TEXCOORD_0": 2
+          },
+          "indices": 3,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "name": "Cube.008",
+      "mesh": 0
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}

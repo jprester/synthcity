@@ -1,0 +1,167 @@
+{
+  "accessors": [
+    {
+      "name": "Torus-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 72,
+      "min": [
+        -14.696292877197266,
+        10.528863906860352,
+        -2.545473098754883
+      ],
+      "max": [
+        14.696292877197266,
+        35.98359680175781,
+        2.545473098754883
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 0
+    },
+    {
+      "name": "Torus-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 72,
+      "min": [
+        -0.866019070148468,
+        -1,
+        -0.8320709466934204
+      ],
+      "max": [
+        0.866019070148468,
+        1,
+        0.8320657014846802
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 0
+    },
+    {
+      "name": "Torus-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 72,
+      "min": [
+        0,
+        0
+      ],
+      "max": [
+        0.5,
+        1
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 0
+    },
+    {
+      "name": "Torus-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 108,
+      "min": [
+        0
+      ],
+      "max": [
+        71
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 0
+    }
+  ],
+  "asset": {
+    "generator": "obj2gltf",
+    "version": "2.0"
+  },
+  "buffers": [
+    {
+      "name": "topper_09",
+      "byteLength": 2520,
+      "uri": "data:application/octet-stream;base64,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"
+    }
+  ],
+  "bufferViews": [
+    {
+      "name": "bufferView_0",
+      "buffer": 0,
+      "byteLength": 864,
+      "byteOffset": 0,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_1",
+      "buffer": 0,
+      "byteLength": 864,
+      "byteOffset": 864,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_2",
+      "buffer": 0,
+      "byteLength": 576,
+      "byteOffset": 1728,
+      "byteStride": 8,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_3",
+      "buffer": 0,
+      "byteLength": 216,
+      "byteOffset": 2304,
+      "target": 34963
+    }
+  ],
+  "materials": [
+    {
+      "name": "ads_large",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.5,
+          0.5,
+          0.5,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 1
+      },
+      "emissiveFactor": [
+        0,
+        0,
+        0
+      ],
+      "alphaMode": "OPAQUE",
+      "doubleSided": false
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Torus-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0,
+            "NORMAL": 1,
+            "TEXCOORD_0": 2
+          },
+          "indices": 3,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "name": "Torus",
+      "mesh": 0
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}

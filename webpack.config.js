@@ -26,4 +26,9 @@ module.exports = {
       template: "./index.html", // path to your index.html file
     }),
   ],
+  optimization: {
+    splitChunks: {
+      chunks: "all",
+    },
+  },
 };

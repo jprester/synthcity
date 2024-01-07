@@ -1,0 +1,167 @@
+{
+  "accessors": [
+    {
+      "name": "Cube.004-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        -31.28078842163086,
+        14.250083923339844,
+        -31.28078842163086
+      ],
+      "max": [
+        31.265064239501953,
+        66.53279876708984,
+        31.28079605102539
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 0
+    },
+    {
+      "name": "Cube.004-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        -1,
+        0,
+        -1
+      ],
+      "max": [
+        1,
+        0,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 0
+    },
+    {
+      "name": "Cube.004-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0.005822999868541956,
+        0.007203999906778336
+      ],
+      "max": [
+        0.9898329973220825,
+        0.9882500171661377
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 0
+    },
+    {
+      "name": "Cube.004-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 42,
+      "min": [
+        0
+      ],
+      "max": [
+        23
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 0
+    }
+  ],
+  "asset": {
+    "generator": "obj2gltf",
+    "version": "2.0"
+  },
+  "buffers": [
+    {
+      "name": "ads_s_01_02",
+      "byteLength": 852,
+      "uri": "data:application/octet-stream;base64,GCu5QYBZmkESP/pBGCu5QYS8C0ISP/pBPC7wQIS8C0ISP/pBPC7wQIBZmkESP/pBDj/6wWflaUIOP3rBDj/6wcsQhUIOP3rBDj/6wcsQhUIOP/rBDj/6wWflaUIOP/rBDj/6wWflaUIOP/rBDj/6wcsQhUIOP/rBDj96wcsQhUIOP/rBDj96wWflaUIOP/rB2h76QcIkJUJcGKDB2h76Qd4ObkJcGKDB2h76Qd4ObkLBrJC/2h76QcIkJULBrJC/2h76Qd4ObkLDAo5B2h76QcIkJULDAo5BRaU1QVgAZEEOP/rBRaU1QdJtuEEOP/rBPryhQdJtuEEOP/rBPryhQVgAZEEOP/rBRaU1QXbb/kEOP/rBPryhQXbb/kEOP/rBAAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/7458P3O9pT7vjnw/+7BePOkqLT/7sF486SotP3O9pT7OjqQ+KuBqP86OpD4+e0I/K4onPj57Qj8riic+KuBqPyuKJz4q4Go/K4onPj57Qj/dzr47PntCP93Ovjsq4Go/bF0mP4CZpz5sXSY/7BfsO7fRqD6ID+w7t9GoPoCZpz6ZDh08iA/sO5kOHTyAmac+smV9P/T9fD+yZX0/WYcrPyjvKz9Zhys/KO8rP/T9fD+yZX0/nyG0PijvKz+fIbQ+AgADAAAAAAABAAIABQAHAAQABwAFAAYACQALAAgACwAJAAoADgAPAAwADAANAA4AEAARAA8ADwAOABAAEwAVABIAFQATABQAFgAUABMAFAAWABcA"
+    }
+  ],
+  "bufferViews": [
+    {
+      "name": "bufferView_0",
+      "buffer": 0,
+      "byteLength": 288,
+      "byteOffset": 0,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_1",
+      "buffer": 0,
+      "byteLength": 288,
+      "byteOffset": 288,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_2",
+      "buffer": 0,
+      "byteLength": 192,
+      "byteOffset": 576,
+      "byteStride": 8,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_3",
+      "buffer": 0,
+      "byteLength": 84,
+      "byteOffset": 768,
+      "target": 34963
+    }
+  ],
+  "materials": [
+    {
+      "name": "default",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.5,
+          0.5,
+          0.5,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 1
+      },
+      "emissiveFactor": [
+        0,
+        0,
+        0
+      ],
+      "alphaMode": "OPAQUE",
+      "doubleSided": false
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Cube.004-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0,
+            "NORMAL": 1,
+            "TEXCOORD_0": 2
+          },
+          "indices": 3,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "name": "Cube.004",
+      "mesh": 0
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}

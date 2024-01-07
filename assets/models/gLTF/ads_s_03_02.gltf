@@ -1,0 +1,167 @@
+{
+  "accessors": [
+    {
+      "name": "Cube.008-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 39,
+      "min": [
+        -30.428403854370117,
+        17.016586303710938,
+        -30.428403854370117
+      ],
+      "max": [
+        30.428403854370117,
+        152.45751953125,
+        30.428403854370117
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 0
+    },
+    {
+      "name": "Cube.008-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 39,
+      "min": [
+        -1,
+        0,
+        -1
+      ],
+      "max": [
+        1,
+        0,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 0
+    },
+    {
+      "name": "Cube.008-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 39,
+      "min": [
+        0.0004440000047907233,
+        0.002601000014692545
+      ],
+      "max": [
+        0.9956499934196472,
+        1.000264048576355
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 0
+    },
+    {
+      "name": "Cube.008-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 72,
+      "min": [
+        0
+      ],
+      "max": [
+        38
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 0
+    }
+  ],
+  "asset": {
+    "generator": "obj2gltf",
+    "version": "2.0"
+  },
+  "buffers": [
+    {
+      "name": "ads_s_03_02",
+      "byteLength": 1392,
+      "uri": "data:application/octet-stream;base64,X21zwS6xCUNfbfNBX21zwSB1GENfbfNBX23zwSB1GENfbfNBX23zwS6xCUNfbfNBVNCSQcDCcEJebfNBVNCSQaywnkJebfNB861fvqywnkJebfNB861fvsDCcEJebfNBX23zwcM7JULTFZvBX23zwVracULTFZvBX23zwVracUJfbfPBX23zwcM7JUJfbfPBX23zwcM7JUJfbfPBX23zwVracUJfbfPB9QyWwVracUJfbfPB9QyWwcM7JUJfbfPBX23zQaTc2UIxxYPBX23zQbR0+UIxxYPBX23zQbR0+UIZ6KC/X23zQaTc2UIZ6KC/VNCSQSgkJEJebfNB861fvigkJEJebfNBDE+WwcDCcEJebfNBDE+WwSgkJEJebfNBDE+WwaywnkJebfNBX23zwfghiEFfbfPBX23zwZSvEEJfbfPB9QyWwZSvEEJfbfPB9QyWwfghiEFfbfPBX23zwS6xCUNfbfNBX23zwSB1GENfbfNBX23zwSB1GENfbXNBX23zwS6xCUNfbXNBX23zwfghiEHTFZvBX23zwZSvEELTFZvBX23zwZSvEEJfbfPBX23zwfghiEFfbfPBX23zQbR0+UJbUF9BX23zQaTc2UJbUF9BAAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAVKp8P3SWqT5Uqnw/H2eaO6hVLD8fZ5o7qFUsP3SWqT4dzKY+RIssPh3Mpj7DZCo8IgAoPsNkKjwiACg+RIssPs7Fpz6nCIA/zsWnPrPuKz8iACg+s+4rPyIAKD6nCIA/IgAoPqcIgD8iACg+s+4rP6zI6Dmz7is/rMjoOacIgD/11ig/ycwpP/XWKD/cu64+e7+pPty7rj57v6k+ycwpPx3Mpj4dOKc+IgAoPh04pz51Aho7RIssPnUCGjsdOKc+dQIaO8NkKjz8/1Q/ezMqP/z/VD/iIaw+HR0rP+IhrD4dHSs/ezMqPwiUKT8mq6o+CJQpP4p1Kjvx16w+inUqO/HXrD4mq6o+6+J+P3szKj/r4n4/4iGsPvz/VD/iIaw+/P9UP3szKj9Xlmg73LuuPleWaDvJzCk/AgADAAAAAAABAAIABgAHAAQABAAFAAYACQALAAgACwAJAAoADQAPAAwADwANAA4AEgATABAAEAARABIABwAVABQAFAAEAAcAFgAXABUAFQAHABYAGAAWAAcABwAGABgAGgAcABkAHAAaABsAHgAgAB0AIAAeAB8AIgAkACEAJAAiACMAJQAmABMAEwASACUA"
+    }
+  ],
+  "bufferViews": [
+    {
+      "name": "bufferView_0",
+      "buffer": 0,
+      "byteLength": 468,
+      "byteOffset": 0,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_1",
+      "buffer": 0,
+      "byteLength": 468,
+      "byteOffset": 468,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_2",
+      "buffer": 0,
+      "byteLength": 312,
+      "byteOffset": 936,
+      "byteStride": 8,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_3",
+      "buffer": 0,
+      "byteLength": 144,
+      "byteOffset": 1248,
+      "target": 34963
+    }
+  ],
+  "materials": [
+    {
+      "name": "default",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.5,
+          0.5,
+          0.5,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 1
+      },
+      "emissiveFactor": [
+        0,
+        0,
+        0
+      ],
+      "alphaMode": "OPAQUE",
+      "doubleSided": false
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Cube.008-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0,
+            "NORMAL": 1,
+            "TEXCOORD_0": 2
+          },
+          "indices": 3,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "name": "Cube.008",
+      "mesh": 0
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}

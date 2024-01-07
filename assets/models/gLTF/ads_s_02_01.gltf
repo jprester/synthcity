@@ -1,0 +1,167 @@
+{
+  "accessors": [
+    {
+      "name": "Cube.006-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 36,
+      "min": [
+        -30.90911102294922,
+        16.883346557617188,
+        -30.90911102294922
+      ],
+      "max": [
+        30.90911102294922,
+        107.96873474121094,
+        30.90911102294922
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 0
+    },
+    {
+      "name": "Cube.006-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 36,
+      "min": [
+        -1,
+        0,
+        -1
+      ],
+      "max": [
+        1,
+        0,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 0
+    },
+    {
+      "name": "Cube.006-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 36,
+      "min": [
+        0.002635000040754676,
+        0.004604000132530928
+      ],
+      "max": [
+        0.9937719702720642,
+        0.9957410097122192
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 0
+    },
+    {
+      "name": "Cube.006-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 60,
+      "min": [
+        0
+      ],
+      "max": [
+        35
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 0
+    }
+  ],
+  "asset": {
+    "generator": "obj2gltf",
+    "version": "2.0"
+  },
+  "buffers": [
+    {
+      "name": "ads_s_02_01",
+      "byteLength": 1272,
+      "uri": "data:application/octet-stream;base64,3UV3wRgRh0HcRfdB3UV3wVwwLELcRfdB3EX3wVwwLELcRfdB3EX3wRgRh0HcRfdBvh/ZQBaco0LcRfdBvh/ZQP7v10LcRfdBYQqdwf7v10LcRfdBYQqdwRaco0LcRfdB3EX3QRbR60HdRXdB3EX3QVuQXkLdRXdB3EX3QVuQXkLcRfdB3EX3QRbR60HcRfdBMOXDwJKUt0LcRffBMOXDwERo1kLcRffBRVMVQURo1kLcRffBRVMVQZKUt0LcRffB3EX3wRgRh0HcRfdB3EX3wVwwLELcRfdB3EX3wVwwLELdRXdB3EX3wRgRh0HdRXdBOpyswZKUt0LcRffBOpyswURo1kLcRffBKskOvxbR60HcRffBKskOv1uQXkLcRffBSVluQVuQXkLcRffBSVluQRbR60HcRffB3EX3Qf9gikJnf6fB3EX3QfAqqUJnf6fB3EX3QfAqqULlca/A3EX3Qf9gikLlca/A3EX3QRsuV0Jnf6fB3EX3QRsuV0Llca/A3EX3QRbR60HcRfdB3EX3QVuQXkLcRfdB3UV3QVuQXkLcRfdB3UV3QRbR60HcRfdBAAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/1SUrP5nTpT7VJSs/sdzSO9ODAj+x3NI704MCP5nTpT4VN6Y+HHumPhU3pj4jS+Y7c0nVOyNL5jtzSdU7HHumPmeAoz5MOCg/Z4CjPii4sD4bSCc+KLiwPhtIJz5MOCg/NBKpPsnmfj80Eqk+/n8sP4aPCDz+fyw/ho8IPMnmfj/NyVM/mdOlPs3JUz+x3NI7zCcrP7Hc0jvMJys/mdOlPuXvJj/J5n4/5e8mP/5/LD/XZ34/4uh+P9dnfj8n3ZY7968sOyfdljv3ryw74uh+PyJQfT/7yyo/IlB9P+yhtT4dVS0/7KG1Ph1VLT/7yyo/IlB9PwDHej8dVS0/AMd6PxtIJz5MOCg/G0gnPii4sD579fE7KLiwPnv18TtMOCg/AgADAAAAAAABAAIABgAHAAQABAAFAAYACgALAAgACAAJAAoADQAPAAwADwANAA4AEQATABAAEwARABIAFQAMABQADAAVAA0AFwAZABYAGQAXABgAHAAdABoAGgAbABwAHQAfAB4AHgAaAB0AIgAjACAAIAAhACIA"
+    }
+  ],
+  "bufferViews": [
+    {
+      "name": "bufferView_0",
+      "buffer": 0,
+      "byteLength": 432,
+      "byteOffset": 0,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_1",
+      "buffer": 0,
+      "byteLength": 432,
+      "byteOffset": 432,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_2",
+      "buffer": 0,
+      "byteLength": 288,
+      "byteOffset": 864,
+      "byteStride": 8,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_3",
+      "buffer": 0,
+      "byteLength": 120,
+      "byteOffset": 1152,
+      "target": 34963
+    }
+  ],
+  "materials": [
+    {
+      "name": "default",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.5,
+          0.5,
+          0.5,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 1
+      },
+      "emissiveFactor": [
+        0,
+        0,
+        0
+      ],
+      "alphaMode": "OPAQUE",
+      "doubleSided": false
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Cube.006-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0,
+            "NORMAL": 1,
+            "TEXCOORD_0": 2
+          },
+          "indices": 3,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "name": "Cube.006",
+      "mesh": 0
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}
