@@ -1,6 +1,6 @@
 // settings
 
-const version = '1.0.6';
+const version = "1.0.2 - Fork by JPrester";
 const threeVersion = '0.159.0';
 
 const curatedWorldSeeds = [
@@ -57,214 +57,69 @@ var colorClass = 'c1';
 
 // onload
 
-window.onload = function() {
+window.onload = function () {
+  // initial modal
 
-  // enter button
-  const enterBtn = document.getElementById( 'enterBtn' );
-  enterBtn.addEventListener( 'click', function(){
-    $('#settings').addClass('locked');
-    $('#settingsLockMessage').show();
-  }, false ); 
+  $("input[name=settingsEnvironment]").change(() => {
+    let val = $("input[name=settingsEnvironment]:checked").val();
+    window.userSettings.environment = val;
 
-  // settings form
-
-  $('input[name=settingsMode]').change(function(){
-    let val = $( 'input[name=settingsMode]:checked' ).val();
-    window.userSettings.mode = val;
-    // update controls
-    if (val=='drive') {
-      window.updateControls(controlsText.drive);
-      $('#settingsWindshieldShaderContainer').show();
-    }
-    else if (val=='freeroam') {
-      window.updateControls(controlsText.freeroam);
-      $('#settingsWindshieldShaderContainer').hide();
+    if (window.game) {
+      window.game.setEnvironment(val);
     }
   });
 
-  $('input[name=settingsWorldSeed]').change(function(){
-    let val = $( 'input[name=settingsWorldSeed]:checked' ).val();
-    if (val=='curated') {
-      $('#settingsWorldSeedValueContainer').hide();
-      window.userSettings.worldSeed = curatedWorldSeeds[Math.floor(Math.random()*curatedWorldSeeds.length)];
-    }
-    else if (val=='random') {
-      $('#settingsWorldSeedValueContainer').hide();
-      window.userSettings.worldSeed = Math.round(Math.random()*999999);
-    }
-    else if (val=='custom') {
-      $('#settingsWorldSeedValue').val(window.userSettings.worldSeed);
-      $('#settingsWorldSeedValueContainer').show();
-      window.userSettings.worldSeed = $('#settingsWorldSeedValue').val();
-    }
-  });
-  $('#settingsWorldSeedValue').on('input', function() {
-    window.userSettings.worldSeed = $('#settingsWorldSeedValue').val();
-    console.log(window.userSettings.worldSeed);
-  });
+  const continueBtn = document.getElementById("continueButton");
+  continueBtn.addEventListener(
+    "click",
+    () => {
+      $("#initialModal").hide();
+      beginLoad();
+    },
+    false
+  );
+};
 
-  $('input[name=settingsRenderScaling]').change(function(){
-    let val = $( 'input[name=settingsRenderScaling]:checked' ).val();
-    window.userSettings.renderScaling = val;
-  });
+window.showCredits = function () {
+  const credits = [
+    "synthcity --credits",
+    "<3d graphics library> three.js [threejs.org]",
+    "<bladerunner car> quaz30 [sketchfab.com/quaz30]",
+    "<sound fx> freesound [freesound.org]",
+    "# Music from #Uppbeat (free for Creators!)",
+    "<prigida> [uppbeat.io/browse/artist/prigida]",
+    "<pecan-pie> [uppbeat.io/browse/artist/pecan-pie]",
+    "<mountaineer> [uppbeat.io/browse/artist/mountaineer]",
+    "<d0d> [uppbeat.io/browse/artist/d0d]",
+    "<fass> [uppbeat.io/browse/artist/fass]",
+    "<tatami> [uppbeat.io/browse/artist/tatami]",
+    "<kaleidoscope> [uppbeat.io/browse/artist/kaleidoscope]",
+    "<noise-cake> [uppbeat.io/browse/artist/noise-cake]",
+    "<mood-maze> [uppbeat.io/browse/artist/mood-maze]",
+    "<bosnow> [uppbeat.io/browse/artist/bosnow]",
+    "<tecnosine> [uppbeat.io/browse/artist/tecnosine]",
+  ];
 
-  $('input[name=settingsWindshieldShader]').change(function(){
-    let val = $( 'input[name=settingsWindshieldShader]:checked' ).val();
-    window.userSettings.windshieldShader = val;
-  });
-
-  // terminal
-
-  setTimeout(function(){
-
-    window.setColor('c1');
-    window.write('synthcity --run', 80, 500, function() {
+  const writeLine = function (index) {
+    if (index >= credits.length) {
       window.newLine();
-      // platform check
-      if (isMobile()) {
-        window.newLine();
-        window.setColor('g1');
-        window.write('>> Error: Mobile devices not supported', 0, 0, null);
-      }
-      else {
-        // logo
-        window.setColor('g1');
-        window.write('                      __  .__           .__  __        ', 0, 0, function() {
-          window.newLine();
-          window.setColor('g1');
-          window.write('  _________.__. _____/  |_|  |__   ____ |__|/  |_ ___.__.', 0, 0, function() {
-            window.newLine();
-            window.setColor('g2');
-            window.write(' /  ___<   |  |/    \\   __\\  |  \\_/ ___\\|  \\   __<   |  |', 0, 0, function() {
-              window.newLine();
-              window.setColor('g3');
-              window.write(' \\___ \\ \\___  |   |  \\  | |   Y  \\  \\___|  ||  |  \\___  |', 0, 0, function() {
-                window.newLine();
-                window.setColor('g4');
-                window.write('/____  >/ ____|___|  /__| |___|  /\\___  >__||__|  / ____|', 0, 0, function() {
-                  window.newLine();
-                  window.setColor('g5');
-                  window.write('     \\/ \\/         \\/          \\/     \\/          \\/     ', 0, 0, function() {
-                    window.newLine();
-                    window.newLine();
-                    window.setColor('g1');
-                    window.write('   an interactive audiovisual experience by jeff beene', 0, 0, function() {
-                      window.newLine();
-                      window.newLine();
-                      // window.write('*********************************************************', 0, 800, function() {
-                      window.write('▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚', 0, 800, function() {
-                        window.newLine();
-                        window.newLine();
-                        window.setColor('c3');
-                        window.write('>> initiating boot sequence...', 0, 500, function() {
+      return;
+    }
 
-                          // show settings
-                          settings.style.display = 'block';
-
-                          // write controls
-                          window.updateControls(controlsText.drive);
-
-                          window.newLine();
-                          window.newLine();
-                          window.setColor('c4');
-                          window.write('build version: '+version, 0, 50, function() {
-                            window.newLine();
-                            window.write('system manufacturer: jeff beene [www.jeff-beene.com]', 0, 50, function() {
-                              window.newLine();
-                              window.write('system boot time: '+bootDate, 0, 50, function() {
-                                window.newLine();
-                                window.write('os name: three.js', 0, 50, function() {
-                                  window.newLine();
-                                  window.write('os version: '+threeVersion, 0, 50, function() {
-                                    window.newLine();
-                                    window.write('audio driver: uppbeat.io', 0, 50, function() {
-                                      window.newLine();
-                                      window.newLine();
-                                      window.setColor('c3');
-                                      window.write('>> loading resources...', 0, 50, function() {
-                                        // load
-                                        window.game.load();
-                                      });
-                                    });
-                                  });
-                                });
-                              });
-                            });
-                          });
-                        });
-                      });
-                    });
-                  });
-                });
-              });
-            });
-          });
-        });
-      }
+    const credit = credits[index];
+    window.write(credit, 0, 50, function () {
+      window.newLine();
+      writeLine(index + 1);
     });
-  }, 800);
+  };
 
-}
-
-window.showCredits = function() {
-  setTimeout(function(){
+  setTimeout(function () {
     window.newLine();
     window.newLine();
-    window.setColor('c1');
-    window.write('synthcity --credits', 80, 800, function() {
-      window.newLine();
-      window.newLine();
-      window.setColor('c4');
-      window.write('<3d graphics library> three.js [threejs.org]', 0, 50, function() {
-        window.newLine();
-        window.write('<bladerunner car> quaz30 [sketchfab.com/quaz30]', 0, 50, function() {
-          window.newLine();
-          window.write('<sound fx> freesound [freesound.org]', 0, 50, function() {
-            window.newLine();
-            window.newLine();
-            window.write('# Music from #Uppbeat (free for Creators!)', 0, 50, function() {
-              window.newLine();
-              window.newLine();
-              window.write('<prigida> [uppbeat.io/browse/artist/prigida]', 0, 50, function() {
-                window.newLine();
-                window.write('<pecan-pie> [uppbeat.io/browse/artist/pecan-pie]', 0, 50, function() {
-                  window.newLine();
-                  window.write('<mountaineer> [uppbeat.io/browse/artist/mountaineer]', 0, 50, function() {
-                    window.newLine();
-                    window.write('<d0d> [uppbeat.io/browse/artist/d0d]', 0, 50, function() {
-                      window.newLine();
-                      window.write('<fass> [uppbeat.io/browse/artist/fass]', 0, 50, function() {
-                        window.newLine();
-                        window.write('<tatami> [uppbeat.io/browse/artist/tatami]', 0, 50, function() {
-                          window.newLine();
-                          window.write('<kaleidoscope> [uppbeat.io/browse/artist/kaleidoscope]', 0, 50, function() {
-                            window.newLine();
-                            window.write('<noise-cake> [uppbeat.io/browse/artist/noise-cake]', 0, 50, function() {
-                              window.newLine();
-                              window.write('<mood-maze> [uppbeat.io/browse/artist/mood-maze]', 0, 50, function() {
-                                window.newLine();
-                                window.write('<bosnow> [uppbeat.io/browse/artist/bosnow]', 0, 50, function() {
-                                  window.newLine();
-                                  window.write('<tecnosine> [uppbeat.io/browse/artist/tecnosine]', 0, 50, function() {
-                                    window.newLine();
-                                  });
-                                });
-                              });
-                            });
-                          });
-                        });
-                      });
-                    });
-                  });
-                });
-              });
-            });
-          });
-        });
-      });
-    });
+    window.setColor("c1");
+    writeLine(0);
   }, 2500);
-}
+};
 
 // functions
 
@@ -386,6 +241,243 @@ window.setInterval(function() {
     cursorVisible = true;
   }
 }, 400);
+
+function beginLoad() {
+  // enter button
+  const enterBtn = document.getElementById("enterBtn");
+  enterBtn.addEventListener(
+    "click",
+    function () {
+      $("#settings").addClass("locked");
+      $("#settingsLockMessage").show();
+    },
+    false
+  );
+
+  // settings form
+
+  $("input[name=settingsMode]").change(function () {
+    let val = $("input[name=settingsMode]:checked").val();
+    window.userSettings.mode = val;
+    // update controls
+    if (val == "drive") {
+      window.updateControls(controlsText.drive);
+      $("#settingsWindshieldShaderContainer").show();
+    } else if (val == "freeroam") {
+      window.updateControls(controlsText.freeroam);
+      $("#settingsWindshieldShaderContainer").hide();
+    }
+  });
+
+  $("input[name=settingsWorldSeed]").change(function () {
+    let val = $("input[name=settingsWorldSeed]:checked").val();
+    if (val == "curated") {
+      $("#settingsWorldSeedValueContainer").hide();
+      window.userSettings.worldSeed =
+        curatedWorldSeeds[Math.floor(Math.random() * curatedWorldSeeds.length)];
+    } else if (val == "random") {
+      $("#settingsWorldSeedValueContainer").hide();
+      window.userSettings.worldSeed = Math.round(Math.random() * 999999);
+    } else if (val == "custom") {
+      $("#settingsWorldSeedValue").val(window.userSettings.worldSeed);
+      $("#settingsWorldSeedValueContainer").show();
+      window.userSettings.worldSeed = $("#settingsWorldSeedValue").val();
+    }
+  });
+  $("#settingsWorldSeedValue").on("input", function () {
+    window.userSettings.worldSeed = $("#settingsWorldSeedValue").val();
+  });
+
+  $("input[name=settingsRenderScaling]").change(function () {
+    let val = $("input[name=settingsRenderScaling]:checked").val();
+    window.userSettings.renderScaling = val;
+  });
+
+  $("input[name=settingsWindshieldShader]").change(function () {
+    let val = $("input[name=settingsWindshieldShader]:checked").val();
+    window.userSettings.windshieldShader = val;
+  });
+
+  // terminal
+  setTimeout(function () {
+    window.setColor("c1");
+    window.write("synthcity --run", 80, 500, function () {
+      window.newLine();
+      // platform check
+      if (isMobile()) {
+        window.newLine();
+        window.setColor("g1");
+        window.write(">> Error: Mobile devices not supported", 0, 0, null);
+      } else {
+        // logo
+        window.setColor("g1");
+        window.write(
+          "                      __  .__           .__  __        ",
+          0,
+          0,
+          function () {
+            window.newLine();
+            window.setColor("g1");
+            window.write(
+              "  _________.__. _____/  |_|  |__   ____ |__|/  |_ ___.__.",
+              0,
+              0,
+              function () {
+                window.newLine();
+                window.setColor("g2");
+                window.write(
+                  " /  ___<   |  |/    \\   __\\  |  \\_/ ___\\|  \\   __<   |  |",
+                  0,
+                  0,
+                  function () {
+                    window.newLine();
+                    window.setColor("g3");
+                    window.write(
+                      " \\___ \\ \\___  |   |  \\  | |   Y  \\  \\___|  ||  |  \\___  |",
+                      0,
+                      0,
+                      function () {
+                        window.newLine();
+                        window.setColor("g4");
+                        window.write(
+                          "/____  >/ ____|___|  /__| |___|  /\\___  >__||__|  / ____|",
+                          0,
+                          0,
+                          function () {
+                            window.newLine();
+                            window.setColor("g5");
+                            window.write(
+                              "     \\/ \\/         \\/          \\/     \\/          \\/     ",
+                              0,
+                              0,
+                              function () {
+                                window.newLine();
+                                window.newLine();
+                                window.setColor("g1");
+                                window.write(
+                                  "   an interactive audiovisual experience by jeff beene",
+                                  0,
+                                  0,
+                                  function () {
+                                    window.newLine();
+                                    window.newLine();
+                                    window.write(
+                                      "*********************************************************",
+                                      0,
+                                      800,
+                                      function () {
+                                        window.write(
+                                          "▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚",
+                                          0,
+                                          800,
+                                          function () {
+                                            window.newLine();
+                                            window.newLine();
+                                            window.setColor("c3");
+                                            window.write(
+                                              ">> initiating boot sequence...",
+                                              0,
+                                              500,
+                                              function () {
+                                                // show settings
+                                                settings.style.display =
+                                                  "block";
+
+                                                // write controls
+                                                window.updateControls(
+                                                  controlsText.drive
+                                                );
+
+                                                window.newLine();
+                                                window.newLine();
+                                                window.setColor("c4");
+                                                window.write(
+                                                  "build version: " + version,
+                                                  0,
+                                                  50,
+                                                  function () {
+                                                    window.newLine();
+                                                    window.write(
+                                                      "system manufacturer: jeff beene [www.jeff-beene.com]",
+                                                      0,
+                                                      50,
+                                                      function () {
+                                                        window.newLine();
+                                                        window.write(
+                                                          "system boot time: " +
+                                                            bootDate,
+                                                          0,
+                                                          50,
+                                                          function () {
+                                                            window.newLine();
+                                                            window.write(
+                                                              "os name: three.js",
+                                                              0,
+                                                              50,
+                                                              function () {
+                                                                window.newLine();
+                                                                window.write(
+                                                                  "os version: " +
+                                                                    threeVersion,
+                                                                  0,
+                                                                  50,
+                                                                  function () {
+                                                                    window.newLine();
+                                                                    window.write(
+                                                                      "audio driver: uppbeat.io",
+                                                                      0,
+                                                                      50,
+                                                                      function () {
+                                                                        window.newLine();
+                                                                        window.newLine();
+                                                                        window.setColor(
+                                                                          "c3"
+                                                                        );
+                                                                        window.write(
+                                                                          ">> loading resources...",
+                                                                          0,
+                                                                          50,
+                                                                          function () {
+                                                                            // load
+                                                                            window.game.load();
+                                                                          }
+                                                                        );
+                                                                      }
+                                                                    );
+                                                                  }
+                                                                );
+                                                              }
+                                                            );
+                                                          }
+                                                        );
+                                                      }
+                                                    );
+                                                  }
+                                                );
+                                              }
+                                            );
+                                          }
+                                        );
+                                      }
+                                    );
+                                  }
+                                );
+                              }
+                            );
+                          }
+                        );
+                      }
+                    );
+                  }
+                );
+              }
+            );
+          }
+        );
+      }
+    });
+  }, 800);
+}
 
 // ismobile
 function isMobile() {

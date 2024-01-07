@@ -183,6 +183,77 @@ body {
   }
 }
 
+.initial-modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 85vh;
+  opacity: 0.9;
+  z-index: 2;
+  background-color: var(--terminalbg);
+  box-sizing: border-box;
+}
+
+.initial-modal.hide {
+  display: none;
+}
+
+.initial-modal .modal-content {
+  padding: 50px 50px;
+  text-align: center;
+  box-sizing: border-box;
+  font-size: 1.2em;
+}
+
+.primary-button {
+  pointer-events: none;
+  opacity: 0;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  width: 100%;
+  border: none;
+  background: var(--terminalsecondary);
+  padding: 0.8rem;
+  color: #780a8f;
+  box-shadow: 0 0 15px 0px var(--terminalsecondary);
+  border-radius: 2px;
+  transition: opacity 1s, box-shadow 0.2s;
+  border-radius: 20px 0 20px 0;
+}
+
+.primary-button:hover {
+  box-shadow: 0 0 30px 0px var(--terminalsecondary);
+}
+
+.primary-button.show {
+  opacity: 1;
+  pointer-events: all;
+  cursor: pointer;
+}
+
+.secondary-button {
+  cursor: pointer;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  width: 50%;
+  border: none;
+  background: var(--terminalprimary);
+  padding: 0.8rem;
+  box-shadow: 0 0 15px 0px var(--terminalsecondary);
+  border-radius: 2px;
+  transition: opacity 1s, box-shadow 0.2s;
+  border-radius: 20px 0 20px 0;
+}
+
+.secondary-button:hover {
+  box-shadow: 0 0 30px 0px var(--terminalsecondary);
+}
+
 #enterBtn {
   cursor: pointer;
   font-family: 'Share Tech Mono', monospace;
