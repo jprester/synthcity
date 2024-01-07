@@ -29,6 +29,27 @@
 
     <div id="blocker">
       <div id="container">
+        <div id="initialModal" class="initial-modal">
+          <div class="tRow" style="height:100%;">
+            <div class="tHeader">&gt;CONFIGURE ENVIRONMENT</div>
+            <div class="modal-content">
+            <div id="settingsEnvironmentContainer" style="margin-bottom: 5px;">
+              <span>Environment:</span>
+              <label class="formCheckContainer">
+                <input type="radio" checked="checked" name="settingsEnvironment" value="night">
+                <span class="checkmark">[Night]</span>
+              </label>
+              <label class="formCheckContainer">
+                <input type="radio" name="settingsEnvironment" value="day">
+                <span class="checkmark">[Day]</span>
+              </label>
+            </div>
+            <div style="margin-top: 35px;">
+              <button class="secondary-button" id="continueButton">&gt;&gt;Continue&lt;&lt;</button>
+            </div>
+          </div>
+          </div>
+        </div>
         <div class="tCol leftCol">
           <div class="tRow" style="height:100%;">
             <div class="tHeader">&gt;Terminal</div>
@@ -128,7 +149,7 @@
 		<script src="js/proc-noise.js"></script>
 
     <!-- Comment the line below when running the local dev environment -->
-     <script src="dist/main.4840b40f143ef03913fc.js" async></script>
+     <!-- <script src="dist/main.4840b40f143ef03913fc.js" async></script> -->
 
   </body>
 </html>

@@ -135,6 +135,7 @@ class Game {
     if (window.userSettings.hasOwnProperty('soundFx')) this.settings.soundFx = window.userSettings.soundFx;
     if (window.userSettings.hasOwnProperty('renderScaling')) this.settings.renderScaling = parseFloat(window.userSettings.renderScaling);
     if (window.userSettings.hasOwnProperty('windshieldShader')) this.settings.windshieldShader = window.userSettings.windshieldShader;
+    if (window.userSettings.hasOwnProperty("environment")) this.environment = this.getEnvironment(window.userSettings.environment);
 
     console.log('Game: World seed: '+this.settings.worldSeed);
 
@@ -458,6 +459,10 @@ class Game {
     // start collision checking
     if (!this.collider.enabled) this.collider.enabled = true;
 
+  }
+
+  setEnvironment(id) {
+    this.environment = this.getEnvironment(id);
   }
 
   getEnvironment(id) {

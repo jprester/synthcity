@@ -1,6 +1,6 @@
 // settings
 
-const version = '1.0.6';
+const version = "1.0.2 - Fork by JPrester";
 const threeVersion = '0.159.0';
 
 const curatedWorldSeeds = [
@@ -65,6 +65,7 @@ window.onload = function() {
     $('#settings').addClass('locked');
     $('#settingsLockMessage').show();
   }, false ); 
+  
 
   // settings form
 
@@ -206,65 +207,46 @@ window.onload = function() {
 
 }
 
-window.showCredits = function() {
-  setTimeout(function(){
-    window.newLine();
-    window.newLine();
-    window.setColor('c1');
-    window.write('synthcity --credits', 80, 800, function() {
+window.showCredits = function () {
+  const credits = [
+    "synthcity --credits",
+    "<3d graphics library> three.js [threejs.org]",
+    "<bladerunner car> quaz30 [sketchfab.com/quaz30]",
+    "<sound fx> freesound [freesound.org]",
+    "# Music from #Uppbeat (free for Creators!)",
+    "<prigida> [uppbeat.io/browse/artist/prigida]",
+    "<pecan-pie> [uppbeat.io/browse/artist/pecan-pie]",
+    "<mountaineer> [uppbeat.io/browse/artist/mountaineer]",
+    "<d0d> [uppbeat.io/browse/artist/d0d]",
+    "<fass> [uppbeat.io/browse/artist/fass]",
+    "<tatami> [uppbeat.io/browse/artist/tatami]",
+    "<kaleidoscope> [uppbeat.io/browse/artist/kaleidoscope]",
+    "<noise-cake> [uppbeat.io/browse/artist/noise-cake]",
+    "<mood-maze> [uppbeat.io/browse/artist/mood-maze]",
+    "<bosnow> [uppbeat.io/browse/artist/bosnow]",
+    "<tecnosine> [uppbeat.io/browse/artist/tecnosine]",
+  ];
+
+  const writeLine = function (index) {
+    if (index >= credits.length) {
       window.newLine();
+      return;
+    }
+
+    const credit = credits[index];
+    window.write(credit, 0, 50, function () {
       window.newLine();
-      window.setColor('c4');
-      window.write('<3d graphics library> three.js [threejs.org]', 0, 50, function() {
-        window.newLine();
-        window.write('<bladerunner car> quaz30 [sketchfab.com/quaz30]', 0, 50, function() {
-          window.newLine();
-          window.write('<sound fx> freesound [freesound.org]', 0, 50, function() {
-            window.newLine();
-            window.newLine();
-            window.write('# Music from #Uppbeat (free for Creators!)', 0, 50, function() {
-              window.newLine();
-              window.newLine();
-              window.write('<prigida> [uppbeat.io/browse/artist/prigida]', 0, 50, function() {
-                window.newLine();
-                window.write('<pecan-pie> [uppbeat.io/browse/artist/pecan-pie]', 0, 50, function() {
-                  window.newLine();
-                  window.write('<mountaineer> [uppbeat.io/browse/artist/mountaineer]', 0, 50, function() {
-                    window.newLine();
-                    window.write('<d0d> [uppbeat.io/browse/artist/d0d]', 0, 50, function() {
-                      window.newLine();
-                      window.write('<fass> [uppbeat.io/browse/artist/fass]', 0, 50, function() {
-                        window.newLine();
-                        window.write('<tatami> [uppbeat.io/browse/artist/tatami]', 0, 50, function() {
-                          window.newLine();
-                          window.write('<kaleidoscope> [uppbeat.io/browse/artist/kaleidoscope]', 0, 50, function() {
-                            window.newLine();
-                            window.write('<noise-cake> [uppbeat.io/browse/artist/noise-cake]', 0, 50, function() {
-                              window.newLine();
-                              window.write('<mood-maze> [uppbeat.io/browse/artist/mood-maze]', 0, 50, function() {
-                                window.newLine();
-                                window.write('<bosnow> [uppbeat.io/browse/artist/bosnow]', 0, 50, function() {
-                                  window.newLine();
-                                  window.write('<tecnosine> [uppbeat.io/browse/artist/tecnosine]', 0, 50, function() {
-                                    window.newLine();
-                                  });
-                                });
-                              });
-                            });
-                          });
-                        });
-                      });
-                    });
-                  });
-                });
-              });
-            });
-          });
-        });
-      });
+      writeLine(index + 1);
     });
+  };
+
+  setTimeout(function () {
+    window.newLine();
+    window.newLine();
+    window.setColor("c1");
+    writeLine(0);
   }, 2500);
-}
+};
 
 // functions
 
