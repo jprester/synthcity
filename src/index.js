@@ -99,11 +99,7 @@ class Game {
   onLoad() {
 
     // terminal
-    window.setColor('c2');
-    window.newLine();
-    window.newLine();
     window.write('>> boot sequence complete', 0, 0, null);
-    window.showCredits();
 
     // show launch button
     document.getElementById('enterBtn').style.display = 'block';

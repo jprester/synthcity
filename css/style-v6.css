@@ -104,11 +104,10 @@ body {
   max-height: 640px;
   border: 1px solid var(--terminalprimary);
   border-radius: 2px;
-  display: flex;
-  -webkit-animation: flicker 0.1s infinite, startup 0.3s;
-  animation: flicker 0.1s infinite, startup 0.3s;
+  /* -webkit-animation: flicker 0.1s infinite, startup 0.3s; */
+  /* animation: flicker 0.1s infinite, startup 0.3s;
   -webkit-animation-timing-function: steps(5, end);
-  animation-timing-function: steps(5, end);
+  animation-timing-function: steps(5, end); */
 }
 
 #crashMessage {

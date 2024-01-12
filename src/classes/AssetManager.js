@@ -47,10 +47,11 @@ class AssetManager {
 
     this.loadingManager = new LoadingManager();
     this.loadingManager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
-      window.writeAsset(url, itemsLoaded, itemsTotal);
+      // window.writeAsset(url, itemsLoaded, itemsTotal);
+      console.log( 'AssetManager: Loading ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.')
     };
     this.loadingManager.onLoad = function () {
-      console.log( 'AssetManager: Assets loaded' );
+      // console.log( 'AssetManager: Assets loaded' );
       window.game.onLoad();
     };
     this.loadingManager.onError = function ( url ) {
