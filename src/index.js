@@ -17,28 +17,29 @@ import {
   AudioListener
 } from 'three';
 
-import { PointerLockControls }  from 'three/examples/jsm/controls/PointerLockControls.js';
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
+// three.js extensions
+import { PointerLockControls }  from 'three/examples/jsm/controls/PointerLockControls.js';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 
+
+// classes
 import { AssetManager } from './classes/AssetManager.js';
 import { Shaders } from './classes/Shaders.js';
-
 import { Player } from './classes/Player.js';
 import { PlayerCar } from './classes/PlayerCar.js';
 import { PlayerController } from './classes/PlayerController.js';
-
-import { Radio } from './classes/Radio.js';
-
+// import { Radio } from './classes/Radio.js';
 import { Generator } from './classes/Generator.js';
 import { GeneratorItem_CityBlock } from './classes/GeneratorItem_CityBlock.js';
 import { GeneratorItem_CityLight } from './classes/GeneratorItem_CityLight.js';
 import { GeneratorItem_Traffic } from './classes/GeneratorItem_Traffic.js';
-
 import { computeBoundsTree, disposeBoundsTree, acceleratedRaycast } from 'three-mesh-bvh';
 import { Collider } from './classes/Collider.js';
 
@@ -117,7 +118,7 @@ class Game {
 
     // defaults
     this.settings = {
-      mode: 'drive',
+      // mode: 'drive',
       worldSeed: 9746,
       music: true,
       soundFx: true,
@@ -163,6 +164,14 @@ class Game {
 
     // controls
 
+          // Add coordinate helper overlays
+  const gridHelper = new THREE.GridHelper(100, 50);
+  this.scene.add(gridHelper);
+
+  const axisHelper = new THREE.AxesHelper(100);
+  this.scene.add(axisHelper);
+
+
     this.controls = new PointerLockControls( this.camera, document.body );
     this.playerController = new PlayerController();
 
@@ -183,13 +192,14 @@ class Game {
         renderer: this.renderer,
         controller: this.playerController,
         x: 0,
-        z: 0
+        z: 0,
+        y: 0
       });
     }
 
     // radio
 
-    this.radio = null;
+    // this.radio = null;
 
     /*----- post processing -----*/
 
@@ -242,49 +252,46 @@ class Game {
     const light_ambient = new AmbientLight( this.environment.ambient.color, this.environment.ambient.intensity );
     this.scene.add( light_ambient );
 
-    /*----- generators -----*/
 
-    this.cityBlockNoise = new Perlin(this.settings.worldSeed);
-    this.cityBlockNoise.noiseDetail(8, 0.5);
-    this.cityBlockNoiseFactor = 0.0017;//0.0017;
+    /*----- models -----*/
 
-    this.generatorCityBlock = new Generator({
-      camera: this.player.camera,
-      cell_size: this.cityBlockSize+this.roadWidth,
-      cell_count: 40,
-      spawn_obj: GeneratorItem_CityBlock
-    });
+    const storefronts = new Mesh( window.game.assets.getModel('storefronts'), window.game.assets.getMaterial("storefronts") );
+    storefronts.position.set(40, 0, -40);
+    storefronts.scale.set(0.08, 0.08, 0.08);
 
-    this.cityLights = [];
-    this.generatorCityLights = null;
-    if (this.environment.cityLights) {
-      // create lights
-      for (let i=0; i<10; i++) {
-        let light = new PointLight( 0x000000, 100, 2000 );
-        light.decay = 1;
-        let l = {
-          light: light,
-          free: true
-        }
-        this.scene.add(l.light);
-        this.cityLights.push(l);
-      }
-      // create generator
-      this.generatorCityLights = new Generator({
-        camera: this.player.camera,
-        cell_size: (this.cityBlockSize+this.roadWidth)*4,
-        cell_count: 8,
-        spawn_obj: GeneratorItem_CityLight
-      });
-    }
+    this.scene.add(storefronts);
 
-    this.generatorTraffic = new Generator({
-      camera: this.player.camera,
-      cell_size: this.cityBlockSize+this.roadWidth,
-      cell_count: 12,
-      debug: false,
-      spawn_obj: GeneratorItem_Traffic
-    });
+
+   const building1 = new Mesh( window.game.assets.getModel("s_01_01"), window.game.assets.getMaterial("building_01"));
+    building1.position.set(40, 0, -20);
+    building1.scale.set(0.1, 0.1, 0.1);
+    this.scene.add(building1);
+
+  
+    const building2 = new Mesh( window.game.assets.getModel("s_01_02"), window.game.assets.getMaterial("building_02"));
+    building2.position.set(40, 0, -10);
+    building2.scale.set(0.1, 0.1, 0.1);
+    this.scene.add(building2);
+
+    const building3 = new Mesh( window.game.assets.getModel("s_01_03"), window.game.assets.getMaterial("building_03"));
+    building3.position.set(40, 0, 0);
+    building3.scale.set(0.1, 0.1, 0.1);
+    this.scene.add(building3);
+
+    const building4 = new Mesh( window.game.assets.getModel("s_02_01"), window.game.assets.getMaterial("building_04"));
+    building4.position.set(40, 0, 10);
+    building4.scale.set(0.1, 0.1, 0.1);
+    this.scene.add(building4);
+
+    const building5 = new Mesh( window.game.assets.getModel("s_02_01"), window.game.assets.getMaterial("building_05"));
+    building5.position.set(40, 0, 20);
+    building5.scale.set(0.1, 0.1, 0.1);
+    this.scene.add(building5);
+
+    const building6 = new Mesh( window.game.assets.getModel("s_02_01"), window.game.assets.getMaterial("building_06"));
+    building6.position.set(40, 0, 30);
+    building6.scale.set(0.1, 0.1, 0.1);
+    this.scene.add(building6);
 
     /*----- animate -----*/
 
@@ -315,13 +322,13 @@ class Game {
       this.audioListener = new AudioListener();
       this.player.camera.add( this.audioListener );
 
-      // music
-      if ( this.settings.music == 1 ) {
-        this.radio = new Radio({
-          audioListener: this.audioListener,
-          controller: this.playerController
-        });
-      }
+      // // music
+      // if ( this.settings.music == 1 ) {
+      //   this.radio = new Radio({
+      //     audioListener: this.audioListener,
+      //     controller: this.playerController
+      //   });
+      // }
       // sound effects
       if ( this.settings.soundFx == 1 ) {
         // traffic ambient
@@ -437,20 +444,18 @@ class Game {
       this.audioListener.setMasterVolume(this.masterVolume * this.userMasterVolume);
     }
 
+    console.log("global scope: ", window);
+
     // update
 
     this.player.update();
-    if (this.radio) this.radio.update();
     this.playerController.update();
 
-    this.generatorCityBlock.update();
-    if (this.generatorCityLights!==null) this.generatorCityLights.update();
-    this.generatorTraffic.update();
 
     // render
 
     this.composer.render();
-    // this.renderer.render(this.scene, this.player.camera);
+    this.renderer.render(this.scene, this.player.camera);
 
     // start collision checking
     if (!this.collider.enabled) this.collider.enabled = true;
@@ -534,7 +539,7 @@ class Game {
 
   onEnterClick() {
     this.init();
-    this.initAudio();
+    // this.initAudio();
     this.blocker.style.backgroundColor = '#25004bb9';
     this.blocker.classList.add('hide');
     this.controls.lock();

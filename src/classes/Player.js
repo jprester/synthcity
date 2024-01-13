@@ -47,9 +47,9 @@ class Player {
 		this.camera_target.rotation.y = Math.PI;
 
 		this.body = new Object3D();
-		this.body.position.x = params.x;
-		this.body.position.z = params.z;
-		this.body.position.y = this.player_height;
+		this.body.position.x = 0
+		this.body.position.z = 0;
+		this.body.position.y = 0;
 
     this.noise_shake = new Perlin();
     this.noise_shake.noiseDetail(8, 0.5);
