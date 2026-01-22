@@ -15,9 +15,10 @@ class GeneratorItem_CityBlock {
     this.noise = this.game.cityBlockNoise;
     this.noiseFactor = this.game.cityBlockNoiseFactor;
 
-    this.meshes = []; // no collision
+    this.meshes = []; // unused visuals (kept for legacy compatibility)
     this.meshesCollid = [];
     this.updateables = [];
+    this.visuals = [];
 
     // buildings
 
@@ -54,14 +55,23 @@ class GeneratorItem_CityBlock {
           else if (subtypeNoise < 0.8) type = "mega_05";
           else type = "mega_06";
 
-          let mesh = new Mesh(
+          const material = this.game.assets.getMaterial("mega_building_01");
+          const colliderMesh = new Mesh(
             this.game.assets.getModel(type),
-            this.game.assets.getMaterial("mega_building_01"),
+            material,
           );
-          mesh.position.set(this.x + xOff, 0, this.z + zOff);
-          mesh.scale.set(1, scale, 1);
-          mesh.rotateY((rotate * Math.PI) / 180);
-          this.meshesCollid.push(mesh);
+          colliderMesh.position.set(this.x + xOff, 0, this.z + zOff);
+          colliderMesh.scale.set(1, scale, 1);
+          colliderMesh.rotateY((rotate * Math.PI) / 180);
+          colliderMesh.updateMatrixWorld(true);
+          this.meshesCollid.push(colliderMesh);
+          this.visuals.push({
+            modelKey: type,
+            material: material,
+            position: { x: this.x + xOff, y: 0, z: this.z + zOff },
+            scale: { x: 1, y: scale, z: 1 },
+            rotationY: (rotate * Math.PI) / 180,
+          });
         }
       }
     }
@@ -158,11 +168,19 @@ class GeneratorItem_CityBlock {
               new Smoke(this.x + xOff, 190 * scale, this.z + zOff, this.game),
             );
 
-          let mesh = new Mesh(this.game.assets.getModel(type), mat);
-          mesh.position.set(this.x + xOff, 0, this.z + zOff);
-          mesh.scale.set(1, scale, 1);
-          mesh.rotateY((rotate * Math.PI) / 180);
-          this.meshesCollid.push(mesh);
+          const colliderMesh = new Mesh(this.game.assets.getModel(type), mat);
+          colliderMesh.position.set(this.x + xOff, 0, this.z + zOff);
+          colliderMesh.scale.set(1, scale, 1);
+          colliderMesh.rotateY((rotate * Math.PI) / 180);
+          colliderMesh.updateMatrixWorld(true);
+          this.meshesCollid.push(colliderMesh);
+          this.visuals.push({
+            modelKey: type,
+            material: mat,
+            position: { x: this.x + xOff, y: 0, z: this.z + zOff },
+            scale: { x: 1, y: scale, z: 1 },
+            rotationY: (rotate * Math.PI) / 180,
+          });
 
           if (adsType != null) {
             let ad = new Advert(
@@ -237,11 +255,19 @@ class GeneratorItem_CityBlock {
 
       let scale = 1 + rotateNoise * 0.5;
 
-      let mesh = new Mesh(this.game.assets.getModel(type), mat);
-      mesh.position.set(this.x + xOff, 0, this.z + zOff);
-      mesh.scale.set(1, scale, 1);
-      mesh.rotateY((rotate * Math.PI) / 180);
-      this.meshesCollid.push(mesh);
+      const colliderMesh = new Mesh(this.game.assets.getModel(type), mat);
+      colliderMesh.position.set(this.x + xOff, 0, this.z + zOff);
+      colliderMesh.scale.set(1, scale, 1);
+      colliderMesh.rotateY((rotate * Math.PI) / 180);
+      colliderMesh.updateMatrixWorld(true);
+      this.meshesCollid.push(colliderMesh);
+      this.visuals.push({
+        modelKey: type,
+        material: mat,
+        position: { x: this.x + xOff, y: 0, z: this.z + zOff },
+        scale: { x: 1, y: scale, z: 1 },
+        rotationY: (rotate * Math.PI) / 180,
+      });
 
       if (adsType != null) {
         let ad = new Advert(
@@ -259,17 +285,16 @@ class GeneratorItem_CityBlock {
     }
 
     // ground plane
-    let groundMesh = new Mesh(
-      this.game.assets.getModel("ground"),
-      this.game.assets.getMaterial("ground"),
-    );
-    groundMesh.rotateX(-Math.PI / 2);
-    groundMesh.position.set(
-      this.x + this.cityBlockSize / 2,
-      0,
-      this.z + this.cityBlockSize / 2,
-    );
-    this.meshes.push(groundMesh);
+    this.visuals.push({
+      modelKey: "ground",
+      material: this.game.assets.getMaterial("ground"),
+      position: {
+        x: this.x + this.cityBlockSize / 2,
+        y: 0,
+        z: this.z + this.cityBlockSize / 2,
+      },
+      rotationX: -Math.PI / 2,
+    });
 
     // storefronts and tramways
     if (
@@ -279,16 +304,27 @@ class GeneratorItem_CityBlock {
       let mats = ["storefronts", "building_02", "building_03", "building_07"];
       let mat = mats[Math.floor(subtypeNoise * mats.length)];
       if (!mat) mat = "storefronts";
-      var mesh = new Mesh(
+      const storefrontMaterial = this.game.assets.getMaterial(mat);
+      const colliderMesh = new Mesh(
         this.game.assets.getModel("storefronts"),
-        this.game.assets.getMaterial(mat),
+        storefrontMaterial,
       );
-      mesh.position.set(
+      colliderMesh.position.set(
         this.x + this.cityBlockSize + this.roadWidth / 2,
         0,
         this.z + this.cityBlockSize + this.roadWidth / 2,
       );
-      this.meshesCollid.push(mesh);
+      colliderMesh.updateMatrixWorld(true);
+      this.meshesCollid.push(colliderMesh);
+      this.visuals.push({
+        modelKey: "storefronts",
+        material: storefrontMaterial,
+        position: {
+          x: this.x + this.cityBlockSize + this.roadWidth / 2,
+          y: 0,
+          z: this.z + this.cityBlockSize + this.roadWidth / 2,
+        },
+      });
     }
 
     // register collision meshes
