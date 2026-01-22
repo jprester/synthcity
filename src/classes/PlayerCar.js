@@ -1,4 +1,4 @@
-import { Mesh, PointLight, PerspectiveCamera, Object3D, Vector3 } from "three";
+import { PerspectiveCamera, Object3D, Vector3 } from "three";
 
 class PlayerCar {
   constructor(params) {
@@ -21,8 +21,7 @@ class PlayerCar {
     this.walk_speed = 0.8;
     this.run_speed = 2.2;
 
-    this.light = new PointLight(0x00d2ed, 0.25, 3);
-    this.light.decay = 1;
+    this.carPose = new Object3D();
 
     // audio
 
@@ -36,20 +35,6 @@ class PlayerCar {
 
     this.crashed = false;
 
-    this.car = null;
-    this.car_windows = null;
-    this.car = new Mesh(this.game.assets.getModel("spinner"), [
-      this.game.assets.getMaterial("spinner_interior"),
-      this.game.assets.getMaterial("spinner_exterior"),
-    ]);
-    const windowsMat =
-      this.game.settings.windshieldShader == "advanced"
-        ? this.game.assets.getMaterial("spinner_windows_advanced")
-        : this.game.assets.getMaterial("spinner_windows_simple");
-    this.car_windows = new Mesh(
-      this.game.assets.getModel("spinner_windows"),
-      windowsMat,
-    );
 
     this.camera_fov = 50;
     this.camera_fov_to = this.camera_fov;
@@ -189,13 +174,14 @@ class PlayerCar {
       this.car_pitch += this.car_pitch_v;
     }
 
-    this.car.rotation.set(0, this.car_dir, 0);
+    this.carPose.rotation.set(0, this.car_dir, 0);
     var forward = new Vector3(0, 0, 1);
     var left = new Vector3(-1, 0, 0);
-    if (!this.crashed) this.car.rotateOnAxis(forward, this.car_dir_v * -20);
-    this.car.rotateOnAxis(left, this.car_pitch);
+    if (!this.crashed)
+      this.carPose.rotateOnAxis(forward, this.car_dir_v * -20);
+    this.carPose.rotateOnAxis(left, this.car_pitch);
 
-    this.car.position.set(
+    this.carPose.position.set(
       this.camera.position.x,
       this.camera.position.y,
       this.camera.position.z,
@@ -233,33 +219,18 @@ class PlayerCar {
       0,
       1,
     );
-    this.car.position.x =
-      this.car.position.x + noise * 0.15 + speed_noise * speed_factor * 0.1;
-    this.car.position.z =
-      this.car.position.z + noise * 0.15 + speed_noise2 * speed_factor * 0.1;
-    this.car.position.y =
-      this.car.position.y + noise * 0.25 + speed_noise * speed_factor * 0.1;
-
-    // windows
-    if (this.car_windows)
-      this.car_windows.position.set(
-        this.car.position.x,
-        this.car.position.y,
-        this.car.position.z,
-      );
-    if (this.car_windows)
-      this.car_windows.rotation.set(
-        this.car.rotation.x,
-        this.car.rotation.y,
-        this.car.rotation.z,
-      );
-
-    // light
-    this.light.position.set(
-      this.car.position.x,
-      this.car.position.y,
-      this.car.position.z,
-    );
+    this.carPose.position.x =
+      this.carPose.position.x +
+      noise * 0.15 +
+      speed_noise * speed_factor * 0.1;
+    this.carPose.position.z =
+      this.carPose.position.z +
+      noise * 0.15 +
+      speed_noise2 * speed_factor * 0.1;
+    this.carPose.position.y =
+      this.carPose.position.y +
+      noise * 0.25 +
+      speed_noise * speed_factor * 0.1;
 
     /*--- UPDATE CAR POSITION ---*/
 

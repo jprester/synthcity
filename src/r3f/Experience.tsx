@@ -11,6 +11,7 @@ import {
   NoToneMapping,
   SRGBColorSpace,
   PointLight,
+  Mesh,
   Audio,
   AudioListener,
   AudioLoader,
@@ -42,6 +43,75 @@ type PlayerVisuals = {
   windows: Object3D | null;
   light: PointLight | null;
 };
+
+function PlayerCarVisuals({
+  player,
+  game,
+  windshieldShader,
+}: {
+  player: any;
+  game: any;
+  windshieldShader: string;
+}) {
+  const [objects, setObjects] = useState<PlayerVisuals>({
+    car: null,
+    windows: null,
+    light: null,
+  });
+
+  useEffect(() => {
+    if (!game || !game.assets || !player) {
+      return;
+    }
+
+    const carPrimitive = new Mesh(game.assets.getModel("spinner"), [
+      game.assets.getMaterial("spinner_interior"),
+      game.assets.getMaterial("spinner_exterior"),
+    ]);
+    const windowsMaterial =
+      windshieldShader == "advanced"
+        ? game.assets.getMaterial("spinner_windows_advanced")
+        : game.assets.getMaterial("spinner_windows_simple");
+    const windowsObject = new Mesh(
+      game.assets.getModel("spinner_windows"),
+      windowsMaterial,
+    );
+    const lightObject = new PointLight(0x00d2ed, 0.25, 3);
+    lightObject.decay = 1;
+
+    setObjects({
+      car: carPrimitive,
+      windows: windowsObject,
+      light: lightObject,
+    });
+  }, [game, player, windshieldShader]);
+
+  useFrame(() => {
+    if (!player || !player.carPose) {
+      return;
+    }
+    const pose = player.carPose;
+    if (objects.car) {
+      objects.car.position.copy(pose.position);
+      objects.car.rotation.copy(pose.rotation);
+    }
+    if (objects.windows) {
+      objects.windows.position.copy(pose.position);
+      objects.windows.rotation.copy(pose.rotation);
+    }
+    if (objects.light) {
+      objects.light.position.copy(pose.position);
+    }
+  }, 1);
+
+  return (
+    <group>
+      {objects.car ? <primitive object={objects.car} /> : null}
+      {objects.windows ? <primitive object={objects.windows} /> : null}
+      {objects.light ? <primitive object={objects.light} /> : null}
+    </group>
+  );
+}
 
 function GameBridge() {
   const { gl, scene, camera, set, size } = useThree();
@@ -450,14 +520,9 @@ function GeneratorSystem() {
 }
 
 function PlayerSystem() {
-  const { gameRef } = useGameStore();
-  const [playerVisuals, setPlayerVisuals] = useState<PlayerVisuals>({
-    car: null,
-    windows: null,
-    light: null,
-  });
-  const visualsReadyRef = useRef<boolean>(false);
+  const { gameRef, settings } = useGameStore();
   const playerRef = useRef<any>(null);
+  const [player, setPlayer] = useState<any>(null);
 
   useFrame((state, delta) => {
     const game = gameRef.current;
@@ -466,18 +531,8 @@ function PlayerSystem() {
     }
 
     if (game.player && game.player !== playerRef.current) {
-      visualsReadyRef.current = false;
       playerRef.current = game.player;
-    }
-
-    if (!visualsReadyRef.current && game.player) {
-      const nextVisuals = {
-        car: game.player.car || null,
-        windows: game.player.car_windows || null,
-        light: game.player.light || null,
-      };
-      setPlayerVisuals(nextVisuals);
-      visualsReadyRef.current = true;
+      setPlayer(game.player);
     }
 
     game.updatePlayer(delta);
@@ -487,15 +542,16 @@ function PlayerSystem() {
     }
   }, 1);
 
-  return (
-    <group>
-      {playerVisuals.car ? <primitive object={playerVisuals.car} /> : null}
-      {playerVisuals.windows ? (
-        <primitive object={playerVisuals.windows} />
-      ) : null}
-      {playerVisuals.light ? <primitive object={playerVisuals.light} /> : null}
-    </group>
-  );
+  const game = gameRef.current;
+  const shouldRenderCar = Boolean(player?.carPose && game?.assets);
+
+  return shouldRenderCar ? (
+    <PlayerCarVisuals
+      player={player}
+      game={game}
+      windshieldShader={settings.windshieldShader}
+    />
+  ) : null;
 }
 
 function AudioSystem() {
