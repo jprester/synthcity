@@ -1,6 +1,6 @@
 import { BufferGeometry, Mesh } from "three";
 
-import { AssetManager } from "./classes/AssetManager.js";
+import { LegacyAssetManager as AssetManager } from "./assets";
 import { Player } from "./classes/Player.js";
 import { PlayerCar } from "./classes/PlayerCar.js";
 
