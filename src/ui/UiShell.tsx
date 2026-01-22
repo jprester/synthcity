@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { useGameStore } from '../context/GameContext';
 import { initTerminal } from './initTerminal';
+import { PRESET_NAMES } from '../scene/effects';
 
 const curatedWorldSeeds = [9746, 6362, 4217, 5794];
 
@@ -55,6 +56,7 @@ export default function UiShell() {
   const [worldSeedValue, setWorldSeedValue] = useState(settings.worldSeed ?? randomCuratedSeed());
   const [renderScaling, setRenderScaling] = useState(String(settings.renderScaling ?? 1));
   const [windshieldShader, setWindshieldShader] = useState(settings.windshieldShader ?? 'simple');
+  const [visualPreset, setVisualPreset] = useState(settings.visualPreset ?? 'Default');
 
   useEffect(() => {
     const { api, cleanup } = initTerminal({
@@ -102,6 +104,10 @@ export default function UiShell() {
     setSettings((prev) => ({ ...prev, windshieldShader }));
   }, [windshieldShader]);
 
+  useEffect(() => {
+    setSettings((prev) => ({ ...prev, visualPreset }));
+  }, [visualPreset]);
+
   function handleModeChange(event: ChangeEvent<HTMLInputElement>) {
     setMode(event.target.value);
   }
@@ -127,6 +133,10 @@ export default function UiShell() {
 
   function handleWindshieldShaderChange(event: ChangeEvent<HTMLInputElement>) {
     setWindshieldShader(event.target.value);
+  }
+
+  function handleVisualPresetChange(event: ChangeEvent<HTMLInputElement>) {
+    setVisualPreset(event.target.value);
   }
 
   function handleEnterClick() {
@@ -307,6 +317,21 @@ export default function UiShell() {
                     />
                     <span className="checkmark">[Advanced]</span>
                   </label>
+                </div>
+                <div style={{ marginBottom: '5px' }}>
+                  <span>Visual FX:</span>
+                  {PRESET_NAMES.map((presetName) => (
+                    <label key={presetName} className="formCheckContainer">
+                      <input
+                        type="radio"
+                        name="settingsVisualPreset"
+                        value={presetName}
+                        checked={visualPreset === presetName}
+                        onChange={handleVisualPresetChange}
+                      />
+                      <span className="checkmark">[{presetName}]</span>
+                    </label>
+                  ))}
                 </div>
               </div>
             </div>

@@ -1,5 +1,5 @@
-import { createContext, useContext, useMemo, useRef, useState } from 'react';
-import type { Dispatch, SetStateAction, MutableRefObject } from 'react';
+import { createContext, useContext, useMemo, useRef, useState } from "react";
+import type { Dispatch, SetStateAction, MutableRefObject } from "react";
 
 export type GameSettings = {
   mode: string;
@@ -8,6 +8,7 @@ export type GameSettings = {
   soundFx: boolean;
   windshieldShader: string;
   renderScaling: number;
+  visualPreset: string;
 };
 
 type GameStore = {
@@ -26,12 +27,13 @@ type GameStore = {
 const GameContext = createContext<GameStore | null>(null);
 
 const defaultSettings: GameSettings = {
-  mode: 'drive',
+  mode: "drive",
   worldSeed: 9746,
   music: true,
   soundFx: true,
-  windshieldShader: 'simple',
-  renderScaling: 1.0
+  windshieldShader: "simple",
+  renderScaling: 1.0,
+  visualPreset: "Default",
 };
 
 export function GameProvider({ children }) {
@@ -53,9 +55,9 @@ export function GameProvider({ children }) {
       showCrash,
       setShowCrash,
       gameRef,
-      terminalRef
+      terminalRef,
     }),
-    [settings, launchReady, showBlocker, showCrash]
+    [settings, launchReady, showBlocker, showCrash],
   );
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
@@ -64,7 +66,7 @@ export function GameProvider({ children }) {
 export function useGameStore() {
   const context = useContext(GameContext);
   if (!context) {
-    throw new Error('useGameStore must be used within GameProvider');
+    throw new Error("useGameStore must be used within GameProvider");
   }
   return context;
 }

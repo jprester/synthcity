@@ -104,7 +104,7 @@ export function createMaterialFactories(): MaterialFactoryMap {
       shininess: 0,
     });
 
-  // Mega building
+  // Mega building - boosted emissive for enhanced glow
   factories["mega_building_01"] = (getTexture, ctx) =>
     new MeshPhongMaterial({
       map: getTexture("mega_building_01"),
@@ -112,12 +112,13 @@ export function createMaterialFactories(): MaterialFactoryMap {
       shininess: 1,
       emissive: 0xffffff,
       emissiveMap: getTexture("mega_building_01_em"),
-      emissiveIntensity: ctx.windowLightsEnabled ? 1.5 : 0,
+      emissiveIntensity: ctx.windowLightsEnabled ? 2.0 : 0,
       bumpMap: getTexture("mega_building_01"),
       bumpScale: 10,
     });
 
   // Building materials (10 variants with random emissive colors)
+  // Boosted emissive intensity for enhanced neon glow
   for (let i = 1; i <= 10; i++) {
     const id = i.toString().padStart(2, "0");
     const key = `building_${id}`;
@@ -129,34 +130,34 @@ export function createMaterialFactories(): MaterialFactoryMap {
         envMap: getTexture("env_night"),
         emissive: new Color(`hsl(${Math.random() * 360}, 100%, 95%)`),
         emissiveMap: getTexture(`${key}_em`),
-        emissiveIntensity: ctx.windowLightsEnabled ? 1.5 : 0,
+        emissiveIntensity: ctx.windowLightsEnabled ? 2.0 : 0,
         bumpMap: getTexture(key),
         bumpScale: 5,
       });
   }
 
-  // Small ads (5 variants)
+  // Small ads (5 variants) - boosted emissive for neon glow
   for (let i = 1; i <= 5; i++) {
     const id = i.toString().padStart(2, "0");
     factories[`ads_${id}`] = (getTexture) =>
       new MeshPhongMaterial({
         emissive: 0xffffff,
         emissiveMap: getTexture(`ads_${id}`),
-        emissiveIntensity: 0.1,
+        emissiveIntensity: 0.25,
         blending: AdditiveBlending,
         fog: false,
         side: DoubleSide,
       });
   }
 
-  // Large ads (5 variants)
+  // Large ads (5 variants) - boosted emissive for neon glow
   for (let i = 1; i <= 5; i++) {
     const id = i.toString().padStart(2, "0");
     factories[`ads_large_${id}`] = (getTexture) =>
       new MeshPhongMaterial({
         emissive: 0xffffff,
         emissiveMap: getTexture(`ads_large_${id}`),
-        emissiveIntensity: 0.1,
+        emissiveIntensity: 0.25,
         blending: AdditiveBlending,
         fog: false,
         side: DoubleSide,

@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { EffectComposer, Bloom, FXAA, ToneMapping } from "@react-three/postprocessing";
-import { ToneMappingMode } from "postprocessing";
 import { Fog, NoToneMapping, SRGBColorSpace } from "three";
 import { Game } from "../../index.js";
 import { useGameStore } from "../../context/GameContext";
 import { usePlayerController } from "../../controllers/usePlayerController";
+import { EnhancedEffects, getPreset } from "../effects";
 
 export function GameBridge() {
   const { gl, scene, camera, set, size } = useThree();
@@ -102,15 +101,11 @@ export function GameBridge() {
           />
         </>
       )}
-      <EffectComposer>
-        <FXAA />
-        <Bloom
-          intensity={environment?.name === "day" ? 0.35 : 7.0}
-          luminanceThreshold={0.0}
-          luminanceSmoothing={0.0}
-        />
-        <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
-      </EffectComposer>
+      <EnhancedEffects
+        preset={getPreset(settings.visualPreset)}
+        isDay={environment?.name === "day"}
+        enabled={true}
+      />
     </>
   );
 }
