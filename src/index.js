@@ -482,6 +482,7 @@ class Game {
 
     this.cityLights = [];
     this.generatorCityLights = null;
+    this.cityLightMeshes = [];
     if (this.environment.cityLights) {
       for (let i = 0; i < 10; i++) {
         let light = new PointLight(0x000000, 100, 2000);
@@ -490,8 +491,8 @@ class Game {
           light: light,
           free: true
         };
-        this.addGeneratorObject(l.light);
         this.cityLights.push(l);
+        this.cityLightMeshes.push(light);
       }
       this.generatorCityLights = new Generator({
         camera: this.player.camera,
