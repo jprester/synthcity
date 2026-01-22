@@ -118,13 +118,18 @@ function GeneratorSystem() {
   const [cityBlockItems, setCityBlockItems] = useState([]);
   const [trafficItems, setTrafficItems] = useState([]);
   const [cityLights, setCityLights] = useState([]);
-  const cityBlockVersionRef = useRef(-1);
+  const cityBlockVersionRef = useRef(0);
   const trafficVersionRef = useRef(-1);
   const cityLightVersionRef = useRef(-1);
   const generatorsRef = useRef({
     cityBlock: null,
     cityLights: null,
     traffic: null
+  });
+  const cityBlockStateRef = useRef({
+    gridX: 0,
+    gridZ: 0,
+    items: new Map()
   });
 
   useFrame(() => {
@@ -144,18 +149,11 @@ function GeneratorSystem() {
       return;
     }
 
-    const { cityBlock, cityLights, traffic } = generatorsRef.current;
-    if (cityBlock) cityBlock.update();
+    const { cityLights, traffic } = generatorsRef.current;
     if (cityLights) cityLights.update();
     if (traffic) traffic.update();
 
-    if (cityBlock) {
-      const version = cityBlock.version ?? 0;
-      if (version !== cityBlockVersionRef.current) {
-        cityBlockVersionRef.current = version;
-        setCityBlockItems(cityBlock.getItems());
-      }
-    }
+    updateCityBlocks(game);
 
     if (traffic) {
       const version = traffic.version ?? 0;
@@ -177,14 +175,6 @@ function GeneratorSystem() {
     game.cityBlockNoise = new Perlin(game.settings.worldSeed);
     game.cityBlockNoise.noiseDetail(8, 0.5);
     game.cityBlockNoiseFactor = 0.0017;
-
-    const cityBlock = new Generator({
-      camera: game.player.camera,
-      cell_size: game.cityBlockSize + game.roadWidth,
-      cell_count: 40,
-      spawn_obj: GeneratorItem_CityBlock,
-      spawn_context: game
-    });
 
     let cityLights = null;
     game.cityLights = [];
@@ -216,17 +206,69 @@ function GeneratorSystem() {
     });
 
     generatorsRef.current = {
-      cityBlock,
       cityLights,
       traffic
     };
 
-    game.generatorCityBlock = cityBlock;
     game.generatorCityLights = cityLights;
     game.generatorTraffic = traffic;
     game.generatorsInitialized = true;
 
     setCityLights([...game.cityLightMeshes]);
+  }
+
+  function updateCityBlocks(game) {
+    const cellSize = game.cityBlockSize + game.roadWidth;
+    const cellCount = 40;
+    const rad = Math.ceil(cellCount / 2);
+    const camera = game.player.camera;
+    const gridX = Math.floor(camera.position.x / cellSize);
+    const gridZ = Math.floor(camera.position.z / cellSize);
+    const state = cityBlockStateRef.current;
+
+    if (state.gridX !== gridX || state.gridZ !== gridZ || state.items.size === 0) {
+      state.gridX = gridX;
+      state.gridZ = gridZ;
+
+      const nextKeys = new Set();
+      const half = Math.floor((cellCount * cellSize) / 2);
+      for (let i = 0; i < cellCount; i++) {
+        for (let j = 0; j < cellCount; j++) {
+          const dx = j - rad;
+          const dz = i - rad;
+          if (Math.sqrt(dx * dx + dz * dz) > rad) {
+            continue;
+          }
+          const worldX = gridX * cellSize + j * cellSize - half;
+          const worldZ = gridZ * cellSize + i * cellSize - half;
+          const key = `${worldX}:${worldZ}`;
+          nextKeys.add(key);
+          if (!state.items.has(key)) {
+            const item = new GeneratorItem_CityBlock(worldX, worldZ, game);
+            item.__genId = `${key}`;
+            state.items.set(key, item);
+          }
+        }
+      }
+
+      for (const [key, item] of state.items.entries()) {
+        if (!nextKeys.has(key)) {
+          if (typeof item.remove === 'function') {
+            item.remove();
+          }
+          state.items.delete(key);
+        }
+      }
+
+      cityBlockVersionRef.current += 1;
+      setCityBlockItems(Array.from(state.items.values()));
+    }
+
+    for (const item of state.items.values()) {
+      if (typeof item.update === 'function') {
+        item.update();
+      }
+    }
   }
 
   return (
