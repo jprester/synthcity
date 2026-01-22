@@ -175,7 +175,7 @@ export function initTerminal({
     }, 2500);
   }
 
-  const cursorBlinkIntervalId = window.setInterval(function () {
+  const cursorBlinkIntervalId = setInterval(function () {
     if (cursorVisible === true) {
       cursorEl.style.visibility = 'hidden';
       cursorVisible = false;
@@ -199,7 +199,7 @@ export function initTerminal({
   runBootSequence(api, { onShowSettings, onStartLoad });
 
   const cleanup = () => {
-    window.clearInterval(cursorBlinkIntervalId);
+    clearInterval(cursorBlinkIntervalId);
   };
 
   return { api, cleanup };

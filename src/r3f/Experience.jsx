@@ -51,15 +51,15 @@ function GameBridge() {
     const game = gameRef.current;
     scene.fog = new Fog(environment.fog.color, environment.fog.start, environment.fog.end);
 
-    const intervalId = window.setInterval(() => {
+    const intervalId = setInterval(() => {
       if (game.assets) {
         scene.background = game.assets.getTexture(environment.sky);
-        window.clearInterval(intervalId);
+        clearInterval(intervalId);
       }
     }, 100);
 
     return () => {
-      window.clearInterval(intervalId);
+      clearInterval(intervalId);
     };
   }, [environment, scene]);
 
