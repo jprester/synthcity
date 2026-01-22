@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Mesh } from "three";
 import type { Object3D } from "three";
@@ -10,6 +10,7 @@ type TrafficCarVisualsProps = {
 
 export function TrafficCarVisuals({ car, game }: TrafficCarVisualsProps) {
   const [mesh, setMesh] = useState<Object3D | null>(null);
+  const meshRef = useRef<Object3D | null>(null);
 
   useEffect(() => {
     if (!car || !game?.assets) {
@@ -19,7 +20,14 @@ export function TrafficCarVisuals({ car, game }: TrafficCarVisualsProps) {
       game.assets.getModel(car.modelKey),
       game.assets.getMaterial("cars"),
     );
+    meshRef.current = carMesh;
     setMesh(carMesh);
+
+    // Cleanup: Clear mesh reference to allow garbage collection
+    // Note: We don't dispose geometry/material as they're shared via AssetManager
+    return () => {
+      meshRef.current = null;
+    };
   }, [car, game]);
 
   useFrame(() => {

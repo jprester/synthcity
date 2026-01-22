@@ -12,6 +12,7 @@ export function CityBlockUpdateableVisuals({
   game,
 }: UpdateableVisualProps) {
   const [mesh, setMesh] = useState<Mesh | null>(null);
+  const meshRef = useRef<Mesh | null>(null);
   const materialKeyRef = useRef<string | null>(null);
   const { camera } = useThree();
 
@@ -47,7 +48,15 @@ export function CityBlockUpdateableVisuals({
     }
 
     materialKeyRef.current = materialKey || null;
+    meshRef.current = object;
     setMesh(object);
+
+    // Cleanup: Clear mesh reference to allow garbage collection
+    // Note: We don't dispose geometry/material as they're shared via AssetManager
+    return () => {
+      meshRef.current = null;
+      materialKeyRef.current = null;
+    };
   }, [updateable, game]);
 
   useFrame(() => {

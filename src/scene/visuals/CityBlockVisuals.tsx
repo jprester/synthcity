@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Mesh } from "three";
 import type { Object3D, Material } from "three";
 
@@ -19,6 +19,7 @@ type CityBlockVisualsProps = {
 
 export function CityBlockVisuals({ item, game }: CityBlockVisualsProps) {
   const [meshes, setMeshes] = useState<Object3D[]>([]);
+  const meshesRef = useRef<Object3D[]>([]);
 
   useEffect(() => {
     if (!item?.visuals || !game?.assets) {
@@ -43,7 +44,14 @@ export function CityBlockVisuals({ item, game }: CityBlockVisualsProps) {
       return mesh;
     });
 
+    meshesRef.current = nextMeshes;
     setMeshes(nextMeshes);
+
+    // Cleanup: Clear mesh references to allow garbage collection
+    // Note: We don't dispose geometry/material as they're shared via AssetManager
+    return () => {
+      meshesRef.current = [];
+    };
   }, [item, game]);
 
   return (

@@ -7,7 +7,7 @@ import { GeneratorItem_CityLight } from "../../classes/GeneratorItem_CityLight.j
 import { GeneratorItem_Traffic } from "../../classes/GeneratorItem_Traffic.js";
 import { CityBlockVisuals } from "../visuals/CityBlockVisuals";
 import { CityBlockUpdateableVisuals } from "../visuals/CityBlockUpdateableVisuals";
-import { TrafficCarVisuals } from "../visuals/TrafficCarVisuals";
+import { PooledTrafficVisuals } from "../visuals/PooledTrafficVisuals";
 
 declare const Perlin: new (seed?: number) => {
   noiseDetail: (lod: number, falloff: number) => void;
@@ -299,19 +299,10 @@ export function GeneratorSystem() {
           </group>
         ))}
       </group>
-      <group>
-        {trafficItems.map((item) => (
-          <group key={item.__genId}>
-            {(item.cars || []).map((car, index) => (
-              <TrafficCarVisuals
-                key={`t-${index}`}
-                car={car}
-                game={gameRef.current}
-              />
-            ))}
-          </group>
-        ))}
-      </group>
+      <PooledTrafficVisuals
+        trafficItems={trafficItems}
+        game={gameRef.current}
+      />
       <group>
         {cityLights.map((light, index) =>
           light.free ? null : (
