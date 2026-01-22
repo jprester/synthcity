@@ -1,10 +1,5 @@
-import { useEffect } from 'react';
-import { startGame } from './index.js';
+import UiShell from './ui/UiShell.jsx';
 
 export default function App() {
-  useEffect(() => {
-    startGame();
-  }, []);
-
-  return null;
+  return <UiShell />;
 }
