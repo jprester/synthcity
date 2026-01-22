@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { useGameStore } from '../game/GameContext';
 import { initTerminal } from './initTerminal';
 
@@ -42,10 +43,10 @@ export default function UiShell() {
     setShowBlocker,
     showCrash
   } = useGameStore();
-  const terminalRefLocal = useRef(null);
-  const resourcesRef = useRef(null);
-  const controlsRef = useRef(null);
-  const cursorRef = useRef(null);
+  const terminalRefLocal = useRef<HTMLDivElement | null>(null);
+  const resourcesRef = useRef<HTMLDivElement | null>(null);
+  const controlsRef = useRef<HTMLDivElement | null>(null);
+  const cursorRef = useRef<HTMLSpanElement | null>(null);
 
   const [showSettings, setShowSettings] = useState(false);
   const [settingsLocked, setSettingsLocked] = useState(false);
@@ -101,11 +102,11 @@ export default function UiShell() {
     setSettings((prev) => ({ ...prev, windshieldShader }));
   }, [windshieldShader]);
 
-  function handleModeChange(event) {
+  function handleModeChange(event: ChangeEvent<HTMLInputElement>) {
     setMode(event.target.value);
   }
 
-  function handleWorldSeedModeChange(event) {
+  function handleWorldSeedModeChange(event: ChangeEvent<HTMLInputElement>) {
     const value = event.target.value;
     setWorldSeedMode(value);
 
@@ -116,15 +117,15 @@ export default function UiShell() {
     }
   }
 
-  function handleWorldSeedValueChange(event) {
+  function handleWorldSeedValueChange(event: ChangeEvent<HTMLInputElement>) {
     setWorldSeedValue(Number(event.target.value));
   }
 
-  function handleRenderScalingChange(event) {
+  function handleRenderScalingChange(event: ChangeEvent<HTMLInputElement>) {
     setRenderScaling(event.target.value);
   }
 
-  function handleWindshieldShaderChange(event) {
+  function handleWindshieldShaderChange(event: ChangeEvent<HTMLInputElement>) {
     setWindshieldShader(event.target.value);
   }
 

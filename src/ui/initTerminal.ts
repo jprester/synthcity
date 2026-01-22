@@ -1,6 +1,26 @@
 const version = '1.0.6';
 const threeVersion = '0.159.0';
 
+export type TerminalApi = {
+  setColor: (c: string) => void;
+  write: (s: string, speed: number, delay: number, callback?: (() => void) | null) => void;
+  newLine: () => void;
+  updateControls: (arr: string[]) => void;
+  writeControls: (s: string, callback?: (() => void) | null) => void;
+  writeAsset: (url: string, itemsLoaded: number, itemsTotal: number) => void;
+  strToBin: (str: string) => string;
+  showCredits: () => void;
+};
+
+type InitTerminalOptions = {
+  terminalEl: HTMLElement | null;
+  resourcesEl: HTMLElement | null;
+  controlsEl: HTMLElement | null;
+  cursorEl: HTMLElement | null;
+  onShowSettings?: () => void;
+  onStartLoad?: () => void;
+};
+
 export function initTerminal({
   terminalEl,
   resourcesEl,
@@ -8,22 +28,22 @@ export function initTerminal({
   cursorEl,
   onShowSettings,
   onStartLoad
-}) {
+}: InitTerminalOptions): { api: TerminalApi | null; cleanup: () => void } {
   if (!terminalEl || !resourcesEl || !controlsEl || !cursorEl) {
     return { api: null, cleanup: () => {} };
   }
 
   let colorClass = 'c1';
-  let controlsInterval = null;
+  let controlsInterval: ReturnType<typeof setInterval> | null = null;
   let cursorVisible = true;
 
   function setColor(c) {
     colorClass = c;
   }
 
-  function write(s, speed, delay, callback) {
+  function write(s: string, speed: number, delay: number, callback?: (() => void) | null) {
     let i = 0;
-    let interval = setInterval(function () {
+    const interval = setInterval(function () {
       const newNode = document.createElement('span');
       newNode.className = colorClass;
       let textNode = null;
@@ -51,7 +71,7 @@ export function initTerminal({
     terminalEl.scrollTop = terminalEl.scrollHeight;
   }
 
-  function writeControls(s, callback) {
+  function writeControls(s: string, callback?: (() => void) | null) {
     let i = 0;
     const linebreak = document.createElement('br');
     controlsEl.insertBefore(linebreak, controlsEl.lastChild);
@@ -69,9 +89,11 @@ export function initTerminal({
     }, 0);
   }
 
-  function updateControls(arr) {
+  function updateControls(arr: string[]) {
     controlsEl.innerHTML = '';
-    clearInterval(controlsInterval);
+    if (controlsInterval) {
+      clearInterval(controlsInterval);
+    }
     writeControls(arr[0], function () {
       writeControls(arr[1], function () {
         writeControls(arr[2], function () {
@@ -85,7 +107,7 @@ export function initTerminal({
     });
   }
 
-  function writeAsset(url, itemsLoaded, itemsTotal) {
+  function writeAsset(url: string, itemsLoaded: number, itemsTotal: number) {
     const exts = ['.cfg', '.dll', '.bio', '.tek', '.bin', '.syn', '.dna', '.xlc'];
     const coolName = makeId() + exts[Math.floor(Math.random() * exts.length)];
     const percent = ((itemsLoaded / itemsTotal) * 100).toFixed(2);
@@ -99,7 +121,7 @@ export function initTerminal({
     resourcesEl.insertBefore(newNode, resourcesEl.firstChild);
   }
 
-  function strToBin(str) {
+  function strToBin(str: string) {
     let res = '';
     res = str
       .split('')
@@ -185,7 +207,7 @@ export function initTerminal({
     }
   }, 400);
 
-  const api = {
+  const api: TerminalApi = {
     setColor,
     write,
     newLine,
@@ -200,12 +222,18 @@ export function initTerminal({
 
   const cleanup = () => {
     clearInterval(cursorBlinkIntervalId);
+    if (controlsInterval) {
+      clearInterval(controlsInterval);
+    }
   };
 
   return { api, cleanup };
 }
 
-function runBootSequence(api, { onShowSettings, onStartLoad }) {
+function runBootSequence(
+  api: TerminalApi,
+  { onShowSettings, onStartLoad }: { onShowSettings?: () => void; onStartLoad?: () => void },
+) {
   setTimeout(function () {
     api.setColor('c1');
     api.write('synthcity --run', 80, 500, function () {
@@ -304,7 +332,11 @@ function isMobile() {
     ) {
       check = true;
     }
-  })(navigator.userAgent || navigator.vendor || window.opera);
+  })(
+    navigator.userAgent ||
+      navigator.vendor ||
+      (window as Window & { opera?: string }).opera,
+  );
   return check;
 }
 

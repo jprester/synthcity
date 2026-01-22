@@ -1,42 +1,42 @@
 class GeneratorUtils {
-
   constructor(game) {
     this.game = game;
   }
 
   getBuildingMat(noise) {
     let mats = [
-      'building_01',
-      'building_02',
-      'building_03',
-      'building_04',
-      'building_05',
-      'building_07'
+      "building_01",
+      "building_02",
+      "building_03",
+      "building_04",
+      "building_05",
+      "building_07",
     ];
-    return this.game.assets.getMaterial(mats[Math.floor(noise*mats.length)]);
+    return this.game.assets.getMaterial(mats[Math.floor(noise * mats.length)]);
   }
 
   getBigBuildingMat(noise, rare) {
     let mats = [
-      'building_01',
-      'building_02',
-      'building_03',
-      'building_04',
-      'building_05'
+      "building_01",
+      "building_02",
+      "building_03",
+      "building_04",
+      "building_05",
     ];
-    let matsRare = [
-      'building_06',
-      'building_08',
-      'building_09',
-      'building_10'
-    ];
-    if (!rare) return this.game.assets.getMaterial(mats[Math.floor(noise*mats.length)]);
-    else return this.game.assets.getMaterial(matsRare[Math.floor(noise*matsRare.length)]);
+    let matsRare = ["building_06", "building_08", "building_09", "building_10"];
+    if (!rare)
+      return this.game.assets.getMaterial(
+        mats[Math.floor(noise * mats.length)],
+      );
+    else
+      return this.game.assets.getMaterial(
+        matsRare[Math.floor(noise * matsRare.length)],
+      );
   }
 
   getBuildingRotation(noise) {
-    let angles = [0,90,180,270];
-    return angles[Math.floor(noise*angles.length)];
+    let angles = [0, 90, 180, 270];
+    return angles[Math.floor(noise * angles.length)];
   }
 
   // greatly improves proc-noise distribution
@@ -45,12 +45,11 @@ class GeneratorUtils {
     let inMax = 0.75;
     let outMin = 0;
     let outMax = 0.9999;
-    let n = (noise - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
-    if (n<outMin) n = outMin;
-    if (n>outMax) n = outMax;
+    let n = ((noise - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+    if (n < outMin) n = outMin;
+    if (n > outMax) n = outMax;
     return n;
   }
-
 }
 
-export { GeneratorUtils }
+export { GeneratorUtils };

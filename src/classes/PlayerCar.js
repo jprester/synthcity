@@ -1,35 +1,27 @@
-import {
-  Mesh,
-  PointLight,
-  PerspectiveCamera,
-  Object3D,
-  Vector3
-} from 'three';
+import { Mesh, PointLight, PerspectiveCamera, Object3D, Vector3 } from "three";
 
 class PlayerCar {
+  constructor(params) {
+    // params
 
-	constructor(params) {
-
-		// params
-
-		this.controller = params.controller;
+    this.controller = params.controller;
     this.game = params.game;
 
-		// settings
+    // settings
 
-		this.player_height = 250;
-		this.mouse_sensitivity = 0.001;
-		this.look_smooth = 0.1;
-		this.look_roll_factor = -0.065;
-		this.max_look_speed = 200;
+    this.player_height = 250;
+    this.mouse_sensitivity = 0.001;
+    this.look_smooth = 0.1;
+    this.look_roll_factor = -0.065;
+    this.max_look_speed = 200;
 
-		this.move_accel = 0.02;
+    this.move_accel = 0.02;
 
     this.brake_speed = 0.4;
-		this.walk_speed = 0.8;
-		this.run_speed = 2.2;
+    this.walk_speed = 0.8;
+    this.run_speed = 2.2;
 
-    this.light = new PointLight( 0x00d2ed, 0.25, 3 );
+    this.light = new PointLight(0x00d2ed, 0.25, 3);
     this.light.decay = 1;
 
     // audio
@@ -40,43 +32,53 @@ class PlayerCar {
     this.soundChimeDown = null;
     this.soundCrash = null;
 
-		// init
+    // init
 
     this.crashed = false;
 
     this.car = null;
     this.car_windows = null;
-    this.car = new Mesh(this.game.assets.getModel('spinner'), [
-      this.game.assets.getMaterial('spinner_interior'),
-      this.game.assets.getMaterial('spinner_exterior')
+    this.car = new Mesh(this.game.assets.getModel("spinner"), [
+      this.game.assets.getMaterial("spinner_interior"),
+      this.game.assets.getMaterial("spinner_exterior"),
     ]);
     const windowsMat =
-      this.game.settings.windshieldShader == 'advanced'
-        ? this.game.assets.getMaterial('spinner_windows_advanced')
-        : this.game.assets.getMaterial('spinner_windows_simple');
-    this.car_windows = new Mesh(this.game.assets.getModel('spinner_windows'), windowsMat);
+      this.game.settings.windshieldShader == "advanced"
+        ? this.game.assets.getMaterial("spinner_windows_advanced")
+        : this.game.assets.getMaterial("spinner_windows_simple");
+    this.car_windows = new Mesh(
+      this.game.assets.getModel("spinner_windows"),
+      windowsMat,
+    );
 
     this.camera_fov = 50;
     this.camera_fov_to = this.camera_fov;
 
-		this.camera = params.camera || new PerspectiveCamera(this.camera_fov, window.innerWidth / window.innerHeight, 0.15, 2800);
-		this.camera.rotation.order = 'YXZ';
-		this.camera.rotation.y = Math.PI;
-		this.camera.position.y = this.player_height;
-		this.camera.fov = this.camera_fov;
-		this.camera.near = 0.15;
-		this.camera.far = 2800;
-		this.camera.aspect = window.innerWidth / window.innerHeight;
-		this.camera.updateProjectionMatrix();
-		
-		this.camera_target = new Object3D(); // used to get camera rotation set by PointerLockControls
-		this.camera_target.rotation.order = 'YXZ';
-		this.camera_target.rotation.y = Math.PI;
+    this.camera =
+      params.camera ||
+      new PerspectiveCamera(
+        this.camera_fov,
+        window.innerWidth / window.innerHeight,
+        0.15,
+        2800,
+      );
+    this.camera.rotation.order = "YXZ";
+    this.camera.rotation.y = Math.PI;
+    this.camera.position.y = this.player_height;
+    this.camera.fov = this.camera_fov;
+    this.camera.near = 0.15;
+    this.camera.far = 2800;
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
 
-		this.body = new Object3D();
-		this.body.position.x = params.x;
-		this.body.position.z = params.z;
-		this.body.position.y = this.player_height;
+    this.camera_target = new Object3D(); // used to get camera rotation set by PointerLockControls
+    this.camera_target.rotation.order = "YXZ";
+    this.camera_target.rotation.y = Math.PI;
+
+    this.body = new Object3D();
+    this.body.position.x = params.x;
+    this.body.position.z = params.z;
+    this.body.position.y = this.player_height;
 
     this.noise_shake = new Perlin();
     this.noise_shake.noiseDetail(8, 0.5);
@@ -88,53 +90,58 @@ class PlayerCar {
     this.car_pitch_v = 0;
     this.car_pitch_to = 0;
 
-		this.velocity = new Vector3();
-		this.move_max_speed = 0;
-		this.move_max_speed_current = 0;
+    this.velocity = new Vector3();
+    this.move_max_speed = 0;
+    this.move_max_speed_current = 0;
     this.autopilot = true;
     this.autoaltitude = true;
 
     this.height_step = Math.PI;
-    
   }
 
-	update() {
+  update() {
+    /*--- UPDATE CAMERA ---*/
 
-		/*--- UPDATE CAMERA ---*/
-
-		var movementX = this.controller.mouse_move_x;
-		var movementY = this.controller.mouse_move_y;
-		// limit movement
-		if (movementX>this.max_look_speed) movementX = this.max_look_speed;
-		if (movementX<-this.max_look_speed) movementX = -this.max_look_speed;
-		if (movementY>this.max_look_speed) movementY = this.max_look_speed;
-		if (movementY<-this.max_look_speed) movementY = -this.max_look_speed;
-		// pitch
-		this.camera_target.rotation.x -= movementY*this.mouse_sensitivity;
-		if (this.camera_target.rotation.x < -Math.PI/2+0.1) this.camera_target.rotation.x = -Math.PI/2+0.1;
-		if (this.camera_target.rotation.x > Math.PI/2-0.1) this.camera_target.rotation.x = Math.PI/2-0.1;
-		// yaw
-		this.camera_target.rotation.y -= movementX*this.mouse_sensitivity;
+    var movementX = this.controller.mouse_move_x;
+    var movementY = this.controller.mouse_move_y;
+    // limit movement
+    if (movementX > this.max_look_speed) movementX = this.max_look_speed;
+    if (movementX < -this.max_look_speed) movementX = -this.max_look_speed;
+    if (movementY > this.max_look_speed) movementY = this.max_look_speed;
+    if (movementY < -this.max_look_speed) movementY = -this.max_look_speed;
+    // pitch
+    this.camera_target.rotation.x -= movementY * this.mouse_sensitivity;
+    if (this.camera_target.rotation.x < -Math.PI / 2 + 0.1)
+      this.camera_target.rotation.x = -Math.PI / 2 + 0.1;
+    if (this.camera_target.rotation.x > Math.PI / 2 - 0.1)
+      this.camera_target.rotation.x = Math.PI / 2 - 0.1;
+    // yaw
+    this.camera_target.rotation.y -= movementX * this.mouse_sensitivity;
 
     // zoom
     let mouse_wheel_delta = this.controller.get_mouse_wheel();
-    if (mouse_wheel_delta!==0) {
+    if (mouse_wheel_delta !== 0) {
       this.camera_fov_to += mouse_wheel_delta * 0.05;
-      this.camera_fov_to = Math.max( Math.min( this.camera_fov_to, 70 ), 30 );
+      this.camera_fov_to = Math.max(Math.min(this.camera_fov_to, 70), 30);
     }
-    this.camera.fov += (this.camera_fov_to-this.camera.fov)*0.1;
+    this.camera.fov += (this.camera_fov_to - this.camera.fov) * 0.1;
     this.camera.updateProjectionMatrix();
 
-		// set camera postion to body position
-		this.camera.position.z = this.body.position.z;
-		this.camera.position.x = this.body.position.x;
-		this.camera.position.y = this.body.position.y;
+    // set camera postion to body position
+    this.camera.position.z = this.body.position.z;
+    this.camera.position.x = this.body.position.x;
+    this.camera.position.y = this.body.position.y;
 
-		// roll
-    this.camera_target.rotation.z = -this.angle_dist(this.camera_target.rotation.y, this.camera.rotation.y)*this.look_roll_factor;
+    // roll
+    this.camera_target.rotation.z =
+      -this.angle_dist(this.camera_target.rotation.y, this.camera.rotation.y) *
+      this.look_roll_factor;
 
-		// smooth look
-		this.camera.quaternion.slerp(this.camera_target.quaternion, this.look_smooth);
+    // smooth look
+    this.camera.quaternion.slerp(
+      this.camera_target.quaternion,
+      this.look_smooth,
+    );
 
     /*--- UPDATE CAR ---*/
 
@@ -161,17 +168,18 @@ class PlayerCar {
     }
 
     if (this.autoaltitude) {
-      this.height_step+=0.001;
-      this.body.position.y = (( (Math.cos(this.height_step) )+1)*150)+115;
+      this.height_step += 0.001;
+      this.body.position.y = (Math.cos(this.height_step) + 1) * 150 + 115;
     }
     if (!this.autopilot) {
-      this.car_dir_to = this.camera.rotation.y+Math.PI;
+      this.car_dir_to = this.camera.rotation.y + Math.PI;
       this.car_pitch_to = this.camera.rotation.x;
     }
 
     // steering
-    this.car_dir_v += this.angle_dist(this.car_dir, this.car_dir_to)*0.001;
-    this.car_pitch_v += this.angle_dist(this.car_pitch, this.car_pitch_to)*0.004;
+    this.car_dir_v += this.angle_dist(this.car_dir, this.car_dir_to) * 0.001;
+    this.car_pitch_v +=
+      this.angle_dist(this.car_pitch, this.car_pitch_to) * 0.004;
     // damping
     this.car_dir_v *= 0.965;
     this.car_pitch_v *= 0.965;
@@ -187,46 +195,94 @@ class PlayerCar {
     if (!this.crashed) this.car.rotateOnAxis(forward, this.car_dir_v * -20);
     this.car.rotateOnAxis(left, this.car_pitch);
 
-    this.car.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z);
+    this.car.position.set(
+      this.camera.position.x,
+      this.camera.position.y,
+      this.camera.position.z,
+    );
 
     // shake car direction (affects direction)
     if (!this.autopilot) {
-      let n = (this.noise_shake.noise(this.body.position.x*0.01, this.body.position.z*0.01) - 0.5);
-      this.car_dir += n*0.0015;
-      this.car_pitch += n*0.003;
+      let n =
+        this.noise_shake.noise(
+          this.body.position.x * 0.01,
+          this.body.position.z * 0.01,
+        ) - 0.5;
+      this.car_dir += n * 0.0015;
+      this.car_pitch += n * 0.003;
     }
 
     // shake car position
-    var noise = (this.noise_shake.noise(this.body.position.x*0.0005, this.body.position.z*0.0005) - 0.5);
-    var speed_noise = (this.noise_shake.noise(this.body.position.x*0.005, this.body.position.z*0.005) - 0.5);
-    var speed_noise2 = (this.noise_shake.noise(-this.body.position.x*0.005, -this.body.position.z*0.005) - 0.5);
-    var speed_factor = this.clamp( this.velocity.length() - this.walk_speed, 0, 1 );
-    this.car.position.x = this.car.position.x + noise*0.15 + speed_noise*speed_factor*0.1;
-    this.car.position.z = this.car.position.z + noise*0.15 + speed_noise2*speed_factor*0.1;
-    this.car.position.y = this.car.position.y + noise*0.25 + speed_noise*speed_factor*0.1;
+    var noise =
+      this.noise_shake.noise(
+        this.body.position.x * 0.0005,
+        this.body.position.z * 0.0005,
+      ) - 0.5;
+    var speed_noise =
+      this.noise_shake.noise(
+        this.body.position.x * 0.005,
+        this.body.position.z * 0.005,
+      ) - 0.5;
+    var speed_noise2 =
+      this.noise_shake.noise(
+        -this.body.position.x * 0.005,
+        -this.body.position.z * 0.005,
+      ) - 0.5;
+    var speed_factor = this.clamp(
+      this.velocity.length() - this.walk_speed,
+      0,
+      1,
+    );
+    this.car.position.x =
+      this.car.position.x + noise * 0.15 + speed_noise * speed_factor * 0.1;
+    this.car.position.z =
+      this.car.position.z + noise * 0.15 + speed_noise2 * speed_factor * 0.1;
+    this.car.position.y =
+      this.car.position.y + noise * 0.25 + speed_noise * speed_factor * 0.1;
 
     // windows
-    if (this.car_windows) this.car_windows.position.set(this.car.position.x, this.car.position.y, this.car.position.z);
-    if (this.car_windows) this.car_windows.rotation.set(this.car.rotation.x, this.car.rotation.y, this.car.rotation.z);
+    if (this.car_windows)
+      this.car_windows.position.set(
+        this.car.position.x,
+        this.car.position.y,
+        this.car.position.z,
+      );
+    if (this.car_windows)
+      this.car_windows.rotation.set(
+        this.car.rotation.x,
+        this.car.rotation.y,
+        this.car.rotation.z,
+      );
 
     // light
-    this.light.position.set(this.car.position.x, this.car.position.y, this.car.position.z);
+    this.light.position.set(
+      this.car.position.x,
+      this.car.position.y,
+      this.car.position.z,
+    );
 
     /*--- UPDATE CAR POSITION ---*/
 
-    let accel = this.controller.key_shift ? this.move_accel*2 : this.move_accel;
+    let accel = this.controller.key_shift
+      ? this.move_accel * 2
+      : this.move_accel;
 
-    this.velocity.z -= Math.cos(-this.car_dir+Math.PI) * Math.cos(this.car_pitch) * accel;
-    this.velocity.x += Math.sin(-this.car_dir+Math.PI) * Math.cos(this.car_pitch) * accel;
+    this.velocity.z -=
+      Math.cos(-this.car_dir + Math.PI) * Math.cos(this.car_pitch) * accel;
+    this.velocity.x +=
+      Math.sin(-this.car_dir + Math.PI) * Math.cos(this.car_pitch) * accel;
     this.velocity.y += Math.sin(this.car_pitch) * accel;
 
     // max speed
     this.move_max_speed = this.walk_speed;
-    if (this.controller.key_up || this.controller.key_shift) this.move_max_speed = this.run_speed;
+    if (this.controller.key_up || this.controller.key_shift)
+      this.move_max_speed = this.run_speed;
     else if (this.controller.key_down) this.move_max_speed = this.brake_speed;
-    this.move_max_speed *= ( 1 + (-this.car_pitch / Math.PI ) * 2 );
-		if (this.move_max_speed_current < this.move_max_speed) this.move_max_speed_current = this.move_max_speed;
-		if (this.move_max_speed_current >= this.move_max_speed) this.move_max_speed_current -= this.move_accel*2;
+    this.move_max_speed *= 1 + (-this.car_pitch / Math.PI) * 2;
+    if (this.move_max_speed_current < this.move_max_speed)
+      this.move_max_speed_current = this.move_max_speed;
+    if (this.move_max_speed_current >= this.move_max_speed)
+      this.move_max_speed_current -= this.move_accel * 2;
 
     // enforce max speed
     this.velocity.clampLength(0, this.move_max_speed_current);
@@ -240,10 +296,10 @@ class PlayerCar {
 
     // min max altitude
 
-    if (this.body.position.y<15) {
+    if (this.body.position.y < 15) {
       this.body.position.y = 15;
     }
-    if (this.body.position.y>800) {
+    if (this.body.position.y > 800) {
       this.body.position.y = 800;
     }
 
@@ -251,18 +307,16 @@ class PlayerCar {
 
     if (!this.crashed) {
       if (this.game.collider.intersectsSphere(this.body.position, 1)) {
-
         this.crashed = true;
-        if (this.game && typeof this.game.onCrashChange === 'function') {
+        if (this.game && typeof this.game.onCrashChange === "function") {
           this.game.onCrashChange(true);
         }
 
         if (this.soundCrash) this.soundCrash.play();
 
-        setTimeout( () => {
-
+        setTimeout(() => {
           this.crashed = false;
-          if (this.game && typeof this.game.onCrashChange === 'function') {
+          if (this.game && typeof this.game.onCrashChange === "function") {
             this.game.onCrashChange(false);
           }
 
@@ -283,59 +337,63 @@ class PlayerCar {
           // this.body.position.x = ( Math.round(this.body.position.x / this.game.cityBlockSize) * this.game.cityBlockSize ) - this.game.roadWidth/2;
           this.body.position.x = -this.game.roadWidth / 2;
           this.body.position.z = 0;
-          if (this.body.position.y<150) this.body.position.y = 150;
-
+          if (this.body.position.y < 150) this.body.position.y = 150;
         }, 2000);
       }
     }
 
     /*--- UPDATE AUDIO ---*/
 
-    if (this.soundWind) this.soundWind.setVolume( this.clamp( this.velocity.length() - this.walk_speed, 0, 1 ) );
+    if (this.soundWind)
+      this.soundWind.setVolume(
+        this.clamp(this.velocity.length() - this.walk_speed, 0, 1),
+      );
     if (this.soundStress) {
-      this.soundStress.setVolume( this.clamp( Math.max(Math.abs(this.car_dir_v), Math.abs(this.car_pitch_v)) * 40, 0, 1 ) );
+      this.soundStress.setVolume(
+        this.clamp(
+          Math.max(Math.abs(this.car_dir_v), Math.abs(this.car_pitch_v)) * 40,
+          0,
+          1,
+        ),
+      );
     }
+  }
 
-	}
+  // window resize callback
+  onWindowResize() {
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
+  }
 
-	// window resize callback
-	onWindowResize() {
-		this.camera.aspect = window.innerWidth / window.innerHeight;
-		this.camera.updateProjectionMatrix();
-	}
+  /*----- UTILS -----*/
 
-	/*----- UTILS -----*/
-
-	// shortest signed distance between two angles (radians)
-	angle_dist(a, b) {
-		var posDist, negDist;
-		a = this.fix_angle(a);
-		b = this.fix_angle(b);
-		if (b > a) {
-		  posDist = b - a;
-		  negDist = a + ((Math.PI*2)-b);
-		}
-		else {
-		  posDist = b + ((Math.PI*2)-a);
-		  negDist = a - b;
-		}
-		if (posDist < negDist) {
-		  return posDist;
-		}
-		else {
-		  return -negDist;
-		}
+  // shortest signed distance between two angles (radians)
+  angle_dist(a, b) {
+    var posDist, negDist;
+    a = this.fix_angle(a);
+    b = this.fix_angle(b);
+    if (b > a) {
+      posDist = b - a;
+      negDist = a + (Math.PI * 2 - b);
+    } else {
+      posDist = b + (Math.PI * 2 - a);
+      negDist = a - b;
+    }
+    if (posDist < negDist) {
+      return posDist;
+    } else {
+      return -negDist;
+    }
   }
 
   // ensures angle is between 0 and 360 (radians)
   fix_angle(a) {
-  	return a - (Math.PI*2)*Math.floor(a/(Math.PI*2));
+    return a - Math.PI * 2 * Math.floor(a / (Math.PI * 2));
   }
 
   clamp(num, min, max) {
     return Math.min(Math.max(num, min), max);
   }
-
 }
 
 export { PlayerCar };

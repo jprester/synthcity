@@ -15,6 +15,7 @@ import {
   AudioListener,
   AudioLoader,
 } from "three";
+import type { Object3D } from "three";
 import { useEffect, useState, useRef } from "react";
 import { Game } from '../index.js';
 import { useGameStore } from '../game/GameContext';
@@ -24,12 +25,30 @@ import { GeneratorItem_Traffic } from '../classes/GeneratorItem_Traffic.js';
 import { Radio } from '../classes/Radio.js';
 import { usePlayerController } from './usePlayerController';
 
+declare const Perlin: new (seed?: number) => {
+  noiseDetail: (lod: number, falloff: number) => void;
+};
+
+type GridState<T> = {
+  gridX: number;
+  gridZ: number;
+  items: Map<string, T>;
+};
+
+type WithGenId<T> = T & { __genId?: string };
+
+type PlayerVisuals = {
+  car: Object3D | null;
+  windows: Object3D | null;
+  light: PointLight | null;
+};
+
 function GameBridge() {
   const { gl, scene, camera, set, size } = useThree();
   const { settings, gameRef, terminalRef, setLaunchReady, setShowCrash } =
     useGameStore();
   const controller = usePlayerController();
-  const [environment, setEnvironment] = useState(null);
+  const [environment, setEnvironment] = useState<any | null>(null);
 
   useEffect(() => {
     if (gameRef.current) {
@@ -134,22 +153,30 @@ function GameBridge() {
 
 function GeneratorSystem() {
   const { gameRef } = useGameStore();
-  const [cityBlockItems, setCityBlockItems] = useState([]);
-  const [trafficItems, setTrafficItems] = useState([]);
-  const [cityLights, setCityLights] = useState([]);
-  const cityBlockVersionRef = useRef(0);
-  const trafficVersionRef = useRef(0);
-  const trafficStateRef = useRef({
+  const [cityBlockItems, setCityBlockItems] = useState<
+    WithGenId<GeneratorItem_CityBlock>[]
+  >([]);
+  const [trafficItems, setTrafficItems] = useState<
+    WithGenId<GeneratorItem_Traffic>[]
+  >([]);
+  const [cityLights, setCityLights] = useState<PointLight[]>([]);
+  const cityBlockVersionRef = useRef<number>(0);
+  const trafficVersionRef = useRef<number>(0);
+  const trafficStateRef = useRef<GridState<WithGenId<GeneratorItem_Traffic>>>({
     gridX: 0,
     gridZ: 0,
     items: new Map(),
   });
-  const cityLightStateRef = useRef({
+  const cityLightStateRef = useRef<
+    GridState<WithGenId<GeneratorItem_CityLight>>
+  >({
     gridX: 0,
     gridZ: 0,
     items: new Map(),
   });
-  const cityBlockStateRef = useRef({
+  const cityBlockStateRef = useRef<
+    GridState<WithGenId<GeneratorItem_CityBlock>>
+  >({
     gridX: 0,
     gridZ: 0,
     items: new Map(),
@@ -228,7 +255,11 @@ function GeneratorSystem() {
           const key = `${worldX}:${worldZ}`;
           nextKeys.add(key);
           if (!state.items.has(key)) {
-            const item = new GeneratorItem_CityBlock(worldX, worldZ, game);
+            const item = new GeneratorItem_CityBlock(
+              worldX,
+              worldZ,
+              game,
+            ) as WithGenId<GeneratorItem_CityBlock>;
             item.__genId = `${key}`;
             state.items.set(key, item);
           }
@@ -286,7 +317,11 @@ function GeneratorSystem() {
           const key = `${worldX}:${worldZ}`;
           nextKeys.add(key);
           if (!state.items.has(key)) {
-            const item = new GeneratorItem_Traffic(worldX, worldZ, game);
+            const item = new GeneratorItem_Traffic(
+              worldX,
+              worldZ,
+              game,
+            ) as WithGenId<GeneratorItem_Traffic>;
             item.__genId = `${key}`;
             state.items.set(key, item);
           }
@@ -344,7 +379,11 @@ function GeneratorSystem() {
           const key = `${worldX}:${worldZ}`;
           nextKeys.add(key);
           if (!state.items.has(key)) {
-            const item = new GeneratorItem_CityLight(worldX, worldZ, game);
+            const item = new GeneratorItem_CityLight(
+              worldX,
+              worldZ,
+              game,
+            ) as WithGenId<GeneratorItem_CityLight>;
             item.__genId = `${key}`;
             state.items.set(key, item);
           }
@@ -371,8 +410,8 @@ function GeneratorSystem() {
   return (
     <>
       <group>
-        {cityBlockItems.map((item) => (
-          <group key={item.__genId}>
+      {cityBlockItems.map((item) => (
+        <group key={item.__genId}>
             {(item.meshes || []).map((mesh, index) => (
               <primitive key={`m-${index}`} object={mesh} />
             ))}
@@ -412,13 +451,13 @@ function GeneratorSystem() {
 
 function PlayerSystem() {
   const { gameRef } = useGameStore();
-  const [playerVisuals, setPlayerVisuals] = useState({
+  const [playerVisuals, setPlayerVisuals] = useState<PlayerVisuals>({
     car: null,
     windows: null,
     light: null,
   });
-  const visualsReadyRef = useRef(false);
-  const playerRef = useRef(null);
+  const visualsReadyRef = useRef<boolean>(false);
+  const playerRef = useRef<any>(null);
 
   useFrame((state, delta) => {
     const game = gameRef.current;

@@ -1,7 +1,44 @@
 import { useEffect, useMemo } from 'react';
 
-export function usePlayerController() {
-  const controller = useMemo(
+export type PlayerController = {
+  enabled: boolean;
+  mouse_move_x: number;
+  mouse_move_y: number;
+  mouse_scroll: number;
+  key_right: boolean;
+  key_down: boolean;
+  key_left: boolean;
+  key_up: boolean;
+  key_shift: boolean;
+  key_plus: boolean;
+  key_minus: boolean;
+  key_f: boolean;
+  key_r: boolean;
+  key_pressed_f: boolean;
+  key_pressed_r: boolean;
+  key_pressed_right_bracket: boolean;
+  key_pressed_left_bracket: boolean;
+  key_pressed_p: boolean;
+  key_pressed_space: boolean;
+  key_pressed_1: boolean;
+  key_pressed_2: boolean;
+  key_pressed_3: boolean;
+  mb_right: boolean;
+  mb_middle: boolean;
+  mb_left: boolean;
+  mb_left_released: boolean;
+  update: () => void;
+  on_mouse_wheel: (event: WheelEvent) => void;
+  get_mouse_wheel: () => number;
+  on_mouse_move: (event: MouseEvent) => void;
+  on_key_down: (event: KeyboardEvent) => void;
+  on_key_up: (event: KeyboardEvent) => void;
+  on_mouse_down: (event: MouseEvent) => void;
+  on_mouse_up: (event: MouseEvent) => void;
+};
+
+export function usePlayerController(): PlayerController {
+  const controller = useMemo<PlayerController>(
     () => ({
       enabled: false,
       mouse_move_x: 0,
@@ -43,7 +80,7 @@ export function usePlayerController() {
         this.key_pressed_3 = false;
         this.mb_left_released = false;
       },
-      on_mouse_wheel(event) {
+      on_mouse_wheel(event: WheelEvent) {
         this.mouse_scroll = event.deltaY;
       },
       get_mouse_wheel() {
@@ -51,15 +88,27 @@ export function usePlayerController() {
         this.mouse_scroll = 0;
         return v;
       },
-      on_mouse_move(event) {
+      on_mouse_move(event: MouseEvent) {
         if (this.enabled) {
+          const eventAny = event as MouseEvent & {
+            mozMovementX?: number;
+            mozMovementY?: number;
+            webkitMovementX?: number;
+            webkitMovementY?: number;
+          };
           this.mouse_move_x =
-            event.movementX || event.mozMovementX || event.webkitMovementX || 0;
+            event.movementX ||
+            eventAny.mozMovementX ||
+            eventAny.webkitMovementX ||
+            0;
           this.mouse_move_y =
-            event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+            event.movementY ||
+            eventAny.mozMovementY ||
+            eventAny.webkitMovementY ||
+            0;
         }
       },
-      on_key_down(event) {
+      on_key_down(event: KeyboardEvent) {
         if (this.enabled) {
           switch (event.code) {
             case 'Digit1':
@@ -117,7 +166,7 @@ export function usePlayerController() {
           }
         }
       },
-      on_key_up(event) {
+      on_key_up(event: KeyboardEvent) {
         if (this.enabled) {
           switch (event.code) {
             case 'KeyD':
@@ -152,7 +201,7 @@ export function usePlayerController() {
           }
         }
       },
-      on_mouse_down(event) {
+      on_mouse_down(event: MouseEvent) {
         if (this.enabled) {
           switch (event.which) {
             case 1:
@@ -169,7 +218,7 @@ export function usePlayerController() {
           }
         }
       },
-      on_mouse_up(event) {
+      on_mouse_up(event: MouseEvent) {
         if (this.enabled) {
           switch (event.which) {
             case 1:
@@ -192,12 +241,12 @@ export function usePlayerController() {
   );
 
   useEffect(() => {
-    const onMouseMove = (event) => controller.on_mouse_move(event);
-    const onMouseDown = (event) => controller.on_mouse_down(event);
-    const onMouseUp = (event) => controller.on_mouse_up(event);
-    const onKeyDown = (event) => controller.on_key_down(event);
-    const onKeyUp = (event) => controller.on_key_up(event);
-    const onMouseWheel = (event) => controller.on_mouse_wheel(event);
+    const onMouseMove = (event: MouseEvent) => controller.on_mouse_move(event);
+    const onMouseDown = (event: MouseEvent) => controller.on_mouse_down(event);
+    const onMouseUp = (event: MouseEvent) => controller.on_mouse_up(event);
+    const onKeyDown = (event: KeyboardEvent) => controller.on_key_down(event);
+    const onKeyUp = (event: KeyboardEvent) => controller.on_key_up(event);
+    const onMouseWheel = (event: WheelEvent) => controller.on_mouse_wheel(event);
 
     document.addEventListener('mousemove', onMouseMove, false);
     document.addEventListener('mousedown', onMouseDown, false);
