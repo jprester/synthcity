@@ -16,13 +16,13 @@ import {
   AudioLoader,
 } from "three";
 import { useEffect, useState, useRef } from "react";
-import { Game } from "../index.js";
-import { useGameStore } from "../game/GameContext.jsx";
-import { GeneratorItem_CityBlock } from "../classes/GeneratorItem_CityBlock.js";
-import { GeneratorItem_CityLight } from "../classes/GeneratorItem_CityLight.js";
-import { GeneratorItem_Traffic } from "../classes/GeneratorItem_Traffic.js";
-import { Radio } from "../classes/Radio.js";
-import { usePlayerController } from "./usePlayerController.js";
+import { Game } from '../index.js';
+import { useGameStore } from '../game/GameContext';
+import { GeneratorItem_CityBlock } from '../classes/GeneratorItem_CityBlock.js';
+import { GeneratorItem_CityLight } from '../classes/GeneratorItem_CityLight.js';
+import { GeneratorItem_Traffic } from '../classes/GeneratorItem_Traffic.js';
+import { Radio } from '../classes/Radio.js';
+import { usePlayerController } from './usePlayerController';
 
 function GameBridge() {
   const { gl, scene, camera, set, size } = useThree();

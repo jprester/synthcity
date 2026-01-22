@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { useGameStore } from '../game/GameContext.jsx';
-import { initTerminal } from './initTerminal.js';
+import { useGameStore } from '../game/GameContext';
+import { initTerminal } from './initTerminal';
 
 const curatedWorldSeeds = [9746, 6362, 4217, 5794];
 
