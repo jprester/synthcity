@@ -6,7 +6,6 @@ import {
   SRGBColorSpace,
   BufferGeometry,
   Mesh,
-  Vector2,
   Fog,
   DirectionalLight,
   AmbientLight,
@@ -15,12 +14,6 @@ import {
   AudioLoader,
   AudioListener
 } from 'three';
-
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
-import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 
 import { AssetManager } from './classes/AssetManager.js';
 import { Shaders } from './classes/Shaders.js';
@@ -42,11 +35,7 @@ class Game {
     this.initialized = false;
     this.options = options;
     this.externalRenderer = Boolean(options.renderer);
-    this.manageRendererSize = options.manageRendererSize ?? !this.externalRenderer;
-    this.useComposer = options.useComposer ?? true;
-    this.externalRender = options.externalRender ?? false;
     this.setupEnvironment = options.setupEnvironment ?? true;
-    this.externalGenerators = options.externalGenerators ?? false;
     this.settingsOverrides = options.settings ? { ...options.settings } : {};
     this.terminal = options.terminal || null;
 
@@ -153,25 +142,20 @@ class Game {
 
     // renderer
 
-    if (!this.renderer) {
-      this.renderer = this.options.renderer || null;
-    }
-
-    if (!this.renderer) {
+    this.renderer = this.options.renderer || null;
+    if (this.renderer) {
+      this.renderer.setPixelRatio(window.devicePixelRatio * this.settings.renderScaling);
+      this.renderer.toneMapping = ACESFilmicToneMapping;
+      this.renderer.toneMappingExposure = 1.0;
+      this.renderer.outputColorSpace = SRGBColorSpace;
+    } else {
       this.renderer = new WebGLRenderer({ canvas: this.canvas || undefined });
       this.renderer.setPixelRatio(window.devicePixelRatio * this.settings.renderScaling);
-      if (this.manageRendererSize) {
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-      }
+      this.renderer.setSize(window.innerWidth, window.innerHeight);
       this.renderer.toneMapping = ACESFilmicToneMapping;
       this.renderer.toneMappingExposure = 1.0;
       this.renderer.outputColorSpace = SRGBColorSpace;
       document.body.appendChild(this.renderer.domElement);
-    } else {
-      this.renderer.setPixelRatio(window.devicePixelRatio * this.settings.renderScaling);
-      this.renderer.toneMapping = ACESFilmicToneMapping;
-      this.renderer.toneMappingExposure = 1.0;
-      this.renderer.outputColorSpace = SRGBColorSpace;
     }
 
     if (!this.canvas) {
@@ -217,34 +201,7 @@ class Game {
 
     /*----- post processing -----*/
 
-    if (this.useComposer) {
-      this.composer = new EffectComposer(this.renderer);
-
-      // render pass
-      this.composer.addPass(new RenderPass(this.scene, this.player.camera));
-
-      // anti aliasing
-      const fxaa = new ShaderPass(FXAAShader);
-      const pixelRatio = this.renderer.getPixelRatio();
-      fxaa.material.uniforms['resolution'].value.x = 1 / (window.innerWidth * pixelRatio);
-      fxaa.material.uniforms['resolution'].value.y = 1 / (window.innerHeight * pixelRatio);
-      this.composer.addPass(fxaa);
-
-      // bloom
-      const bloomPass = new UnrealBloomPass(new Vector2(window.innerWidth, window.innerHeight), 0, 0, 0);
-      if (this.environment.name == 'night') {
-        bloomPass.threshold = 0.0;
-        bloomPass.strength = 7.0;
-        bloomPass.radius = 1.0;
-      } else if (this.environment.name == 'day') {
-        bloomPass.threshold = 0;
-        bloomPass.strength = 0.35;
-        bloomPass.radius = 1;
-      }
-      this.composer.addPass(bloomPass);
-    } else {
-      this.composer = null;
-    }
+    this.composer = null;
 
     /*----- environment -----*/
 
@@ -271,11 +228,7 @@ class Game {
       this.scene.add(light_ambient);
     }
 
-    /*----- generators -----*/
-
-    this.generatorsInitialized = false;
-    // generators are managed by the R3F system when enabled
-
+    // generators are managed by the R3F system
     /*----- animate -----*/
 
     // time
@@ -393,8 +346,7 @@ class Game {
 
   }
 
-  update(deltaOverride) {
-
+  updatePlayer(deltaOverride) {
     const delta = typeof deltaOverride === 'number' ? deltaOverride : this.clock.getDelta();
     this.clockDelta += delta;
 
@@ -402,19 +354,19 @@ class Game {
 
     if (this.canvasOpacity < 1 && this.canvas) {
       // canvas
-      this.canvasOpacity += this.clockDelta*0.005;
+      this.canvasOpacity += this.clockDelta * 0.005;
       this.canvas.style.opacity = this.canvasOpacity;
       // audio
-      this.masterVolume += this.clockDelta*0.005;
+      this.masterVolume += this.clockDelta * 0.005;
     }
 
     // master volume
 
     if (this.playerController.key_plus) {
-      this.userMasterVolume = Math.min( this.userMasterVolume+0.02, 1 );
+      this.userMasterVolume = Math.min(this.userMasterVolume + 0.02, 1);
     }
     if (this.playerController.key_minus) {
-      this.userMasterVolume = Math.max( this.userMasterVolume-0.02, 0 );
+      this.userMasterVolume = Math.max(this.userMasterVolume - 0.02, 0);
     }
 
     if (this.audioListener) {
@@ -426,21 +378,6 @@ class Game {
     this.player.update();
     if (this.radio) this.radio.update();
     this.playerController.update();
-
-    // render
-
-    if (!this.externalRender) {
-      if (this.composer) {
-        this.composer.render();
-      } else {
-        this.renderer.render(this.scene, this.player.camera);
-      }
-    }
-    // this.renderer.render(this.scene, this.player.camera);
-
-    // start collision checking
-    if (!this.collider.enabled) this.collider.enabled = true;
-
   }
 
   setSettings(nextSettings = {}) {
@@ -521,12 +458,7 @@ class Game {
     const width = window.innerWidth;
     const height = window.innerHeight;
   
-    if (this.manageRendererSize) {
-      this.renderer.setSize(width, height);
-    }
-    if (this.composer) {
-      this.composer.setSize(width, height);
-    }
+    this.renderer.setSize(width, height);
 
     this.player.onWindowResize();
   

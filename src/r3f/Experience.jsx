@@ -24,11 +24,7 @@ function GameBridge() {
       scene,
       camera,
       canvas: gl.domElement,
-      manageRendererSize: false,
-      useComposer: false,
-      externalRender: true,
       setupEnvironment: false,
-      externalGenerators: true,
       settings,
       terminal: terminalRef.current
     });
@@ -66,23 +62,14 @@ function GameBridge() {
     };
   }, [environment, scene]);
 
-  useFrame((state, delta) => {
-    const game = gameRef.current;
-    if (!game || !game.isRunning) {
-      return;
-    }
-
-    game.update(delta);
-
-    if (game.player?.camera && state.camera !== game.player.camera) {
-      set({ camera: game.player.camera });
-    }
-  }, 1);
-
   useFrame(() => {
     const game = gameRef.current;
     if (!game || !game.isRunning) {
       return;
+    }
+
+    if (game.player?.camera && camera !== game.player.camera) {
+      set({ camera: game.player.camera });
     }
   }, 1);
 
@@ -374,11 +361,31 @@ function GeneratorSystem() {
   );
 }
 
+function PlayerSystem() {
+  const { gameRef } = useGameStore();
+
+  useFrame((state, delta) => {
+    const game = gameRef.current;
+    if (!game || !game.isRunning) {
+      return;
+    }
+
+    game.updatePlayer(delta);
+
+    if (!game.collider.enabled) {
+      game.collider.enabled = true;
+    }
+  }, 1);
+
+  return null;
+}
+
 export default function R3FExperience() {
   return (
     <Canvas style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
       <GameBridge />
       <GeneratorSystem />
+      <PlayerSystem />
     </Canvas>
   );
 }
