@@ -15,9 +15,14 @@ type VisualDescriptor = {
 type CityBlockVisualsProps = {
   item: any;
   game: any;
+  skipMegaBuildings?: boolean;
 };
 
-export function CityBlockVisuals({ item, game }: CityBlockVisualsProps) {
+export function CityBlockVisuals({
+  item,
+  game,
+  skipMegaBuildings = false,
+}: CityBlockVisualsProps) {
   const [meshes, setMeshes] = useState<Object3D[]>([]);
   const meshesRef = useRef<Object3D[]>([]);
 
@@ -26,7 +31,14 @@ export function CityBlockVisuals({ item, game }: CityBlockVisualsProps) {
       return;
     }
 
-    const nextMeshes = (item.visuals as VisualDescriptor[]).map((visual) => {
+    // Filter out mega buildings if they're rendered via InstancedMesh
+    const visualsToRender = skipMegaBuildings
+      ? (item.visuals as VisualDescriptor[]).filter(
+          (v) => !v.modelKey?.startsWith("mega_"),
+        )
+      : (item.visuals as VisualDescriptor[]);
+
+    const nextMeshes = visualsToRender.map((visual) => {
       const mesh = new Mesh(game.assets.getModel(visual.modelKey), visual.material);
       mesh.position.set(visual.position.x, visual.position.y, visual.position.z);
       if (visual.scale) {
@@ -52,7 +64,7 @@ export function CityBlockVisuals({ item, game }: CityBlockVisualsProps) {
     return () => {
       meshesRef.current = [];
     };
-  }, [item, game]);
+  }, [item, game, skipMegaBuildings]);
 
   return (
     <group>

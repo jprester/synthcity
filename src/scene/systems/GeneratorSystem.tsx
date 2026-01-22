@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import type { PointLight } from "three";
 import { useGameStore } from "../../context/GameContext";
@@ -8,6 +8,10 @@ import { GeneratorItem_Traffic } from "../../classes/GeneratorItem_Traffic.js";
 import { CityBlockVisuals } from "../visuals/CityBlockVisuals";
 import { CityBlockUpdateableVisuals } from "../visuals/CityBlockUpdateableVisuals";
 import { PooledTrafficVisuals } from "../visuals/PooledTrafficVisuals";
+import {
+  InstancedMegaBuildings,
+  type MegaBuildingDescriptor,
+} from "../visuals/InstancedMegaBuildings";
 
 declare const Perlin: new (seed?: number) => {
   noiseDetail: (lod: number, falloff: number) => void;
@@ -220,6 +224,26 @@ export function GeneratorSystem() {
     }
   }
 
+  // Collect all mega buildings from city blocks for instanced rendering
+  const megaBuildings = useMemo((): MegaBuildingDescriptor[] => {
+    const result: MegaBuildingDescriptor[] = [];
+    for (const item of cityBlockItems) {
+      if (!item.visuals) continue;
+      for (const visual of item.visuals) {
+        if (visual.modelKey?.startsWith("mega_")) {
+          result.push({
+            modelKey: visual.modelKey,
+            position: visual.position,
+            scale: visual.scale || { x: 1, y: 1, z: 1 },
+            rotationY: visual.rotationY || 0,
+            blockKey: item.__genId || "",
+          });
+        }
+      }
+    }
+    return result;
+  }, [cityBlockItems]);
+
   function updateCityLights(game: any) {
     const cellSize = (game.cityBlockSize + game.roadWidth) * 4;
     const cellCount = 8;
@@ -286,7 +310,11 @@ export function GeneratorSystem() {
       <group>
         {cityBlockItems.map((item) => (
           <group key={item.__genId}>
-            <CityBlockVisuals item={item} game={gameRef.current} />
+            <CityBlockVisuals
+              item={item}
+              game={gameRef.current}
+              skipMegaBuildings
+            />
             {(item.updateables || [])
               .filter((updateable) => updateable?.isVisual)
               .map((updateable, index) => (
@@ -299,6 +327,10 @@ export function GeneratorSystem() {
           </group>
         ))}
       </group>
+      <InstancedMegaBuildings
+        megaBuildings={megaBuildings}
+        game={gameRef.current}
+      />
       <PooledTrafficVisuals
         trafficItems={trafficItems}
         game={gameRef.current}
