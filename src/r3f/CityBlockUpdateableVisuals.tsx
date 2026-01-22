@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Mesh } from "three";
-import type { Object3D } from "three";
 
 type UpdateableVisualProps = {
   updateable: any;
@@ -12,7 +11,7 @@ export function CityBlockUpdateableVisuals({
   updateable,
   game,
 }: UpdateableVisualProps) {
-  const [mesh, setMesh] = useState<Object3D | null>(null);
+  const [mesh, setMesh] = useState<Mesh | null>(null);
   const materialKeyRef = useRef<string | null>(null);
   const { camera } = useThree();
 

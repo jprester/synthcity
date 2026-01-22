@@ -15,7 +15,6 @@ class GeneratorItem_CityBlock {
     this.noise = this.game.cityBlockNoise;
     this.noiseFactor = this.game.cityBlockNoiseFactor;
 
-    this.meshes = []; // unused visuals (kept for legacy compatibility)
     this.meshesCollid = [];
     this.updateables = [];
     this.visuals = [];

@@ -26,8 +26,8 @@ class GeneratorItem_CityLight {
             this.noise.noise(this.x * 4, this.z * 4),
           );
           let hue = 0.5 + colorNoise / 2;
-          this.cityLights[i].light.position.set(this.x, 100, this.z);
-          this.cityLights[i].light.color.setHSL(hue, 1, 0.5);
+          this.cityLights[i].position = { x: this.x, y: 100, z: this.z };
+          this.cityLights[i].color = { h: hue, s: 1, l: 0.5 };
           this.cityLights[i].free = false;
           this.lightIndex = i;
           // break

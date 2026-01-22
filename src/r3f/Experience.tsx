@@ -40,6 +40,12 @@ type GridState<T> = {
 
 type WithGenId<T> = T & { __genId?: string };
 
+type CityLightDescriptor = {
+  free: boolean;
+  position: { x: number; y: number; z: number };
+  color: { h: number; s: number; l: number };
+};
+
  
 
 function GameBridge() {
@@ -158,9 +164,7 @@ function GeneratorSystem() {
   const [trafficItems, setTrafficItems] = useState<
     WithGenId<GeneratorItem_Traffic>[]
   >([]);
-  const [cityLights, setCityLights] = useState<PointLight[]>([]);
-  const cityBlockVersionRef = useRef<number>(0);
-  const trafficVersionRef = useRef<number>(0);
+  const [cityLights, setCityLights] = useState<CityLightDescriptor[]>([]);
   const trafficStateRef = useRef<GridState<WithGenId<GeneratorItem_Traffic>>>({
     gridX: 0,
     gridZ: 0,
@@ -209,18 +213,18 @@ function GeneratorSystem() {
     game.cityBlockNoiseFactor = 0.0017;
 
     game.cityLights = [];
-    game.cityLightMeshes = [];
     if (game.environment.cityLights) {
       for (let i = 0; i < 10; i++) {
-        const light = new PointLight(0x000000, 100, 2000);
-        light.decay = 1;
-        game.cityLights.push({ light, free: true });
-        game.cityLightMeshes.push(light);
+        game.cityLights.push({
+          free: true,
+          position: { x: 0, y: 0, z: 0 },
+          color: { h: 0, s: 1, l: 0.5 },
+        });
       }
     }
     game.generatorsInitialized = true;
 
-    setCityLights([...game.cityLightMeshes]);
+    setCityLights([...game.cityLights]);
   }
 
   function updateCityBlocks(game) {
@@ -274,7 +278,6 @@ function GeneratorSystem() {
         }
       }
 
-      cityBlockVersionRef.current += 1;
       setCityBlockItems(Array.from(state.items.values()));
     }
 
@@ -336,7 +339,6 @@ function GeneratorSystem() {
         }
       }
 
-      trafficVersionRef.current += 1;
       setTrafficItems(Array.from(state.items.values()));
     }
 
@@ -397,6 +399,8 @@ function GeneratorSystem() {
           state.items.delete(key);
         }
       }
+
+      setCityLights([...game.cityLights]);
     }
 
     for (const item of state.items.values()) {
@@ -438,9 +442,18 @@ function GeneratorSystem() {
         ))}
       </group>
       <group>
-        {cityLights.map((light) => (
-          <primitive key={light.uuid} object={light} />
-        ))}
+        {cityLights.map((light, index) =>
+          light.free ? null : (
+            <pointLight
+              key={`cl-${index}`}
+              intensity={100}
+              distance={2000}
+              decay={1}
+              color={`hsl(${light.color.h * 360}, ${light.color.s * 100}%, ${light.color.l * 100}%)`}
+              position={[light.position.x, light.position.y, light.position.z]}
+            />
+          ),
+        )}
       </group>
     </>
   );
