@@ -1,11 +1,11 @@
 import UiShell from './ui/UiShell';
-import R3FExperience from './r3f/Experience';
-import { GameProvider } from './game/GameContext';
+import SynthCityScene from './scene/systems/SynthCityScene';
+import { GameProvider } from './context/GameContext';
 
 export default function App() {
   return (
     <GameProvider>
-      <R3FExperience />
+      <SynthCityScene />
       <UiShell />
     </GameProvider>
   );

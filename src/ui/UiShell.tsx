@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent } from 'react';
-import { useGameStore } from '../game/GameContext';
+import { useGameStore } from '../context/GameContext';
 import { initTerminal } from './initTerminal';
 
 const curatedWorldSeeds = [9746, 6362, 4217, 5794];
