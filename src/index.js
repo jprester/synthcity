@@ -44,9 +44,12 @@ import { Collider } from './classes/Collider.js';
 
 class Game {
 
-  constructor() {
+  constructor(options = {}) {
 
     this.initialized = false;
+    this.options = options;
+    this.externalRenderer = Boolean(options.renderer);
+    this.manageRendererSize = options.manageRendererSize ?? !this.externalRenderer;
 
     this.environment = this.getEnvironment('night');
 
@@ -59,9 +62,9 @@ class Game {
 
     // elements
 
-    this.blocker = document.getElementById( 'blocker' );
-    this.enterBtn = document.getElementById( 'enterBtn' );
-    this.canvas = document.getElementById('canvas');
+    this.blocker = document.getElementById('blocker');
+    this.enterBtn = document.getElementById('enterBtn');
+    this.canvas = options.canvas || document.getElementById('canvas');
 
     // fade in / volume
 
@@ -148,17 +151,34 @@ class Game {
 
     // renderer
 
-    this.renderer = new WebGLRenderer({canvas: this.canvas});
-    this.renderer.setPixelRatio( window.devicePixelRatio*this.settings.renderScaling );
-    this.renderer.setSize( window.innerWidth, window.innerHeight );
-    this.renderer.toneMapping = ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.0;
-    this.renderer.outputColorSpace = SRGBColorSpace;
-    document.body.appendChild( this.renderer.domElement );
+    if (!this.renderer) {
+      this.renderer = this.options.renderer || null;
+    }
+
+    if (!this.renderer) {
+      this.renderer = new WebGLRenderer({ canvas: this.canvas || undefined });
+      this.renderer.setPixelRatio(window.devicePixelRatio * this.settings.renderScaling);
+      if (this.manageRendererSize) {
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+      this.renderer.toneMapping = ACESFilmicToneMapping;
+      this.renderer.toneMappingExposure = 1.0;
+      this.renderer.outputColorSpace = SRGBColorSpace;
+      document.body.appendChild(this.renderer.domElement);
+    } else {
+      this.renderer.setPixelRatio(window.devicePixelRatio * this.settings.renderScaling);
+      this.renderer.toneMapping = ACESFilmicToneMapping;
+      this.renderer.toneMappingExposure = 1.0;
+      this.renderer.outputColorSpace = SRGBColorSpace;
+    }
+
+    if (!this.canvas) {
+      this.canvas = this.renderer.domElement;
+    }
 
     // scene
 
-    this.scene = new Scene();
+    this.scene = this.options.scene || new Scene();
 
     // camera (for pointer lock controls, player creates own camera)
 
@@ -295,10 +315,7 @@ class Game {
 
     this.clock = new Clock();
     this.clockDelta = 0;
-
-    // animate
-
-    this.animate();
+    this.isRunning = true;
 
     /*----- event listeners -----*/
 
@@ -409,17 +426,14 @@ class Game {
 
   }
 
-  animate(now) {
+  update(deltaOverride) {
 
-    // animate
-
-    requestAnimationFrame(() => this.animate());
-    let delta = this.clock.getDelta(); // seconds
+    const delta = typeof deltaOverride === 'number' ? deltaOverride : this.clock.getDelta();
     this.clockDelta += delta;
 
     // fade in
 
-    if (this.canvasOpacity<1) {
+    if (this.canvasOpacity < 1 && this.canvas) {
       // canvas
       this.canvasOpacity += this.clockDelta*0.005;
       this.canvas.style.opacity = this.canvasOpacity;
@@ -452,7 +466,11 @@ class Game {
 
     // render
 
-    this.composer.render();
+    if (this.composer) {
+      this.composer.render();
+    } else {
+      this.renderer.render(this.scene, this.player.camera);
+    }
     // this.renderer.render(this.scene, this.player.camera);
 
     // start collision checking
@@ -524,8 +542,12 @@ class Game {
     const width = window.innerWidth;
     const height = window.innerHeight;
   
-    this.renderer.setSize( width, height );
-    this.composer.setSize( width, height );
+    if (this.manageRendererSize) {
+      this.renderer.setSize(width, height);
+    }
+    if (this.composer) {
+      this.composer.setSize(width, height);
+    }
 
     this.player.onWindowResize();
   
@@ -550,9 +572,9 @@ class Game {
 
 }
 
-export function startGame() {
+export function startGame(options = {}) {
   if (!window.game) {
-    window.game = new Game();
+    window.game = new Game(options);
   }
 
   return window.game;

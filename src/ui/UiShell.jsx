@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { startGame } from '../index.js';
 import { initTerminal } from './initTerminal.js';
 
 const curatedWorldSeeds = [9746, 6362, 4217, 5794];
@@ -51,8 +50,6 @@ export default function UiShell() {
     window.userSettings.mode = mode;
     window.userSettings.renderScaling = parseFloat(renderScaling);
     window.userSettings.windshieldShader = windshieldShader;
-
-    const game = startGame();
     const cleanup = initTerminal({
       terminalEl: terminalRef.current,
       resourcesEl: resourcesRef.current,
@@ -65,8 +62,8 @@ export default function UiShell() {
         }
       },
       onStartLoad: () => {
-        if (game && game.load) {
-          game.load();
+        if (window.game && window.game.load) {
+          window.game.load();
         }
       }
     });
@@ -312,7 +309,6 @@ export default function UiShell() {
         <div className="g1">[ You crashed ]</div>
       </div>
 
-      <canvas id="canvas" style={{ opacity: 0 }}></canvas>
     </>
   );
 }
