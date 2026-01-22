@@ -31,10 +31,6 @@ import { PlayerController } from './classes/PlayerController.js';
 
 import { Radio } from './classes/Radio.js';
 
-import { Generator } from './classes/Generator.js';
-import { GeneratorItem_CityBlock } from './classes/GeneratorItem_CityBlock.js';
-import { GeneratorItem_CityLight } from './classes/GeneratorItem_CityLight.js';
-import { GeneratorItem_Traffic } from './classes/GeneratorItem_Traffic.js';
 
 import { computeBoundsTree, disposeBoundsTree, acceleratedRaycast } from 'three-mesh-bvh';
 import { Collider } from './classes/Collider.js';
@@ -53,7 +49,6 @@ class Game {
     this.externalGenerators = options.externalGenerators ?? false;
     this.settingsOverrides = options.settings ? { ...options.settings } : {};
     this.terminal = options.terminal || null;
-    this.generatorRoot = options.generatorRoot || null;
 
     this.environment = this.getEnvironment('night');
 
@@ -279,9 +274,7 @@ class Game {
     /*----- generators -----*/
 
     this.generatorsInitialized = false;
-    if (!this.externalGenerators) {
-      this.createGenerators();
-    }
+    // generators are managed by the R3F system when enabled
 
     /*----- animate -----*/
 
@@ -434,10 +427,6 @@ class Game {
     if (this.radio) this.radio.update();
     this.playerController.update();
 
-    if (!this.externalGenerators) {
-      this.updateGenerators();
-    }
-
     // render
 
     if (!this.externalRender) {
@@ -452,81 +441,6 @@ class Game {
     // start collision checking
     if (!this.collider.enabled) this.collider.enabled = true;
 
-  }
-
-  updateGenerators() {
-    if (!this.generatorsInitialized) {
-      return;
-    }
-    this.generatorCityBlock.update();
-    if (this.generatorCityLights !== null) this.generatorCityLights.update();
-    this.generatorTraffic.update();
-  }
-
-  createGenerators() {
-    if (this.generatorsInitialized) {
-      return;
-    }
-
-    this.cityBlockNoise = new Perlin(this.settings.worldSeed);
-    this.cityBlockNoise.noiseDetail(8, 0.5);
-    this.cityBlockNoiseFactor = 0.0017;
-
-    this.generatorCityBlock = new Generator({
-      camera: this.player.camera,
-      cell_size: this.cityBlockSize + this.roadWidth,
-      cell_count: 40,
-      spawn_obj: GeneratorItem_CityBlock,
-      spawn_context: this
-    });
-
-    this.cityLights = [];
-    this.generatorCityLights = null;
-    this.cityLightMeshes = [];
-    if (this.environment.cityLights) {
-      for (let i = 0; i < 10; i++) {
-        let light = new PointLight(0x000000, 100, 2000);
-        light.decay = 1;
-        let l = {
-          light: light,
-          free: true
-        };
-        this.cityLights.push(l);
-        this.cityLightMeshes.push(light);
-      }
-      this.generatorCityLights = new Generator({
-        camera: this.player.camera,
-        cell_size: (this.cityBlockSize + this.roadWidth) * 4,
-        cell_count: 8,
-        spawn_obj: GeneratorItem_CityLight,
-        spawn_context: this
-      });
-    }
-
-    this.generatorTraffic = new Generator({
-      camera: this.player.camera,
-      cell_size: this.cityBlockSize + this.roadWidth,
-      cell_count: 12,
-      debug: false,
-      spawn_obj: GeneratorItem_Traffic,
-      spawn_context: this
-    });
-
-    this.generatorsInitialized = true;
-  }
-
-  setGeneratorRoot(root) {
-    this.generatorRoot = root || null;
-  }
-
-  addGeneratorObject(object) {
-    const target = this.generatorRoot || this.scene;
-    target.add(object);
-  }
-
-  removeGeneratorObject(object) {
-    const target = this.generatorRoot || this.scene;
-    target.remove(object);
   }
 
   setSettings(nextSettings = {}) {
