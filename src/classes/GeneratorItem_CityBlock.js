@@ -237,6 +237,7 @@ class GeneratorItem_CityBlock {
 class Advert {
   constructor(x, y, z, geo, is_tower, game) {
     this.game = game;
+    this.isVisual = true;
 
     if (is_tower) {
       this.adsMats = ['ads_large_01','ads_large_02','ads_large_03','ads_large_04','ads_large_05'];
@@ -248,7 +249,6 @@ class Advert {
 
     this.mesh = new Mesh( geo, mat );
     this.mesh.position.set(x,y,z);
-    this.game.addGeneratorObject( this.mesh );
     
     this.interval = 200+Math.random()*800;
     this.counter = Math.random()*this.interval;
@@ -256,7 +256,6 @@ class Advert {
 
   }
   remove() {
-    this.game.removeGeneratorObject(this.mesh);
   }
   update(){
     if (this.switches) {
@@ -272,6 +271,7 @@ class Advert {
 class Topper {
   constructor(x, y, z, game) {
     this.game = game;
+    this.isVisual = true;
 
     let topperGeos = [
       'topper_01',
@@ -297,13 +297,11 @@ class Topper {
     this.mesh.position.set(x,y,z);
     let s = 0.8+Math.random();
     this.mesh.scale.set(s,s,s);          
-    this.game.addGeneratorObject( this.mesh );
 
     this.rdir = Math.random()<=0.5 ? Math.random()*0.01 : -Math.random()*0.01;
 
   }
   remove() {
-    this.game.removeGeneratorObject(this.mesh);
   }
   update(){
     this.mesh.rotation.y = this.mesh.rotation.y+this.rdir;
@@ -313,6 +311,7 @@ class Topper {
 class Smoke {
   constructor(x, y, z, game) {
     this.game = game;
+    this.isVisual = true;
     let mats = ['smoke_01','smoke_02','smoke_03'];
     let mat = this.game.assets.getMaterial(mats[Math.floor(Math.random()*mats.length)]);
     this.mesh = new Mesh( this.game.assets.getModel('smoke'), mat );
@@ -320,11 +319,9 @@ class Smoke {
     var s = 1+Math.random()*8;
     var sy = s * (1+Math.random()*0.5);
     this.mesh.scale.set(s,sy,s);          
-    this.game.addGeneratorObject( this.mesh );
     this.rstep = Math.random()*7;
   }
   remove() {
-    this.game.removeGeneratorObject(this.mesh);
   }
   update(){
     this.rstep+=0.0025;
@@ -336,17 +333,16 @@ class Smoke {
 class Spotlight {
   constructor(x, y, z, game) {
     this.game = game;
+    this.isVisual = true;
     let mats = ['spotlight_01','spotlight_02','spotlight_03','spotlight_04'];
     let mat = this.game.assets.getMaterial(mats[Math.floor(Math.random()*mats.length)]);
     this.mesh = new Mesh( this.game.assets.getModel('spotlight'), mat );
     this.mesh.position.set(x,y,z);
     var s = 10+Math.random()*10;
     this.mesh.scale.set(s,s,s);          
-    this.game.addGeneratorObject( this.mesh );
     this.rstep = Math.random()*7;
   }
   remove() {
-    this.game.removeGeneratorObject(this.mesh);
   }
   update(){
     this.rstep+=0.01;

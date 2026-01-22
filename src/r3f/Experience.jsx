@@ -164,6 +164,11 @@ function GeneratorSystem() {
             {(item.meshesCollid || []).map((mesh, index) => (
               <primitive key={`c-${index}`} object={mesh} />
             ))}
+            {(item.updateables || [])
+              .filter((updateable) => updateable?.isVisual && updateable.mesh)
+              .map((updateable) => (
+                <primitive key={`u-${updateable.mesh.uuid}`} object={updateable.mesh} />
+              ))}
           </group>
         ))}
       </group>
