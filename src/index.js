@@ -206,7 +206,6 @@ class Game {
     window.addEventListener('resize', () => this.onWindowResize(), false);
 
     this.pointerLockElement = this.canvas || document.body;
-    this.bindPointerLock();
 
   }
 
@@ -314,27 +313,6 @@ class Game {
       this.pointerLockElement.requestPointerLock();
     }
   }
-  onControlsLock() {
-    this.playerController.enabled = true;
-  }
-  onControlsUnlock() {
-    this.playerController.enabled = false;
-    if (this.uiOnUnfocus) {
-      this.blocker.classList.remove('hide');
-    }
-  }
-
-  bindPointerLock() {
-    this.pointerLockElement = this.pointerLockElement || this.canvas || document.body;
-    document.addEventListener('pointerlockchange', () => {
-      if (document.pointerLockElement === this.pointerLockElement) {
-        this.onControlsLock();
-      } else {
-        this.onControlsUnlock();
-      }
-    });
-  }
-
 }
 
 export { Game };

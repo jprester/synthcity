@@ -30,9 +30,8 @@ class PlayerCar {
 		this.walk_speed = 0.8;
 		this.run_speed = 2.2;
 
-		this.light = new PointLight( 0x00d2ed, 0.25, 3 );
+    this.light = new PointLight( 0x00d2ed, 0.25, 3 );
     this.light.decay = 1;
-    this.scene.add( this.light );
 
     // audio
 
@@ -57,8 +56,6 @@ class PlayerCar {
         ? this.game.assets.getMaterial('spinner_windows_advanced')
         : this.game.assets.getMaterial('spinner_windows_simple');
     this.car_windows = new Mesh(this.game.assets.getModel('spinner_windows'), windowsMat);
-    if (this.car) this.scene.add(this.car);
-    if (this.car_windows) this.scene.add(this.car_windows);
 
     this.camera_fov = 50;
     this.camera_fov_to = this.camera_fov;

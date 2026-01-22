@@ -23,7 +23,6 @@ function GameBridge() {
     }
 
     const game = new Game({
-      renderer: gl,
       scene,
       camera,
       canvas: gl.domElement,
@@ -367,11 +366,27 @@ function GeneratorSystem() {
 
 function PlayerSystem() {
   const { gameRef } = useGameStore();
+  const [playerVisuals, setPlayerVisuals] = useState({
+    car: null,
+    windows: null,
+    light: null
+  });
+  const visualsReadyRef = useRef(false);
 
   useFrame((state, delta) => {
     const game = gameRef.current;
     if (!game || !game.isRunning) {
       return;
+    }
+
+    if (!visualsReadyRef.current && game.player) {
+      const nextVisuals = {
+        car: game.player.car || null,
+        windows: game.player.car_windows || null,
+        light: game.player.light || null
+      };
+      setPlayerVisuals(nextVisuals);
+      visualsReadyRef.current = true;
     }
 
     game.updatePlayer(delta);
@@ -381,7 +396,13 @@ function PlayerSystem() {
     }
   }, 1);
 
-  return null;
+  return (
+    <group>
+      {playerVisuals.car ? <primitive object={playerVisuals.car} /> : null}
+      {playerVisuals.windows ? <primitive object={playerVisuals.windows} /> : null}
+      {playerVisuals.light ? <primitive object={playerVisuals.light} /> : null}
+    </group>
+  );
 }
 
 function AudioSystem() {
@@ -518,6 +539,36 @@ function initializeAudio(game) {
   }
 }
 
+function PointerLockSystem() {
+  const { gameRef } = useGameStore();
+
+  useEffect(() => {
+    function handlePointerLockChange() {
+      const game = gameRef.current;
+      if (!game || !game.playerController) {
+        return;
+      }
+
+      const target = game.pointerLockElement || game.canvas || document.body;
+      if (document.pointerLockElement === target) {
+        game.playerController.enabled = true;
+      } else {
+        game.playerController.enabled = false;
+        if (game.uiOnUnfocus && game.blocker) {
+          game.blocker.classList.remove('hide');
+        }
+      }
+    }
+
+    document.addEventListener('pointerlockchange', handlePointerLockChange);
+    return () => {
+      document.removeEventListener('pointerlockchange', handlePointerLockChange);
+    };
+  }, [gameRef]);
+
+  return null;
+}
+
 export default function R3FExperience() {
   return (
     <Canvas style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
@@ -525,6 +576,7 @@ export default function R3FExperience() {
       <GeneratorSystem />
       <PlayerSystem />
       <AudioSystem />
+      <PointerLockSystem />
     </Canvas>
   );
 }
