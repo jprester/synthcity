@@ -81,9 +81,7 @@ function GameBridge() {
     if (!game || !game.isRunning) {
       return;
     }
-
-    game.updateGenerators();
-  }, 2);
+  }, 1);
 
   return (
     <>
@@ -111,10 +109,26 @@ function GameBridge() {
   );
 }
 
+function GeneratorSystem() {
+  const { gameRef } = useGameStore();
+
+  useFrame(() => {
+    const game = gameRef.current;
+    if (!game || !game.isRunning) {
+      return;
+    }
+
+    game.updateGenerators();
+  }, 2);
+
+  return null;
+}
+
 export default function R3FExperience() {
   return (
     <Canvas style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
       <GameBridge />
+      <GeneratorSystem />
     </Canvas>
   );
 }
