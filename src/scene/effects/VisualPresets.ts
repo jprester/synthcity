@@ -37,14 +37,14 @@ export type VisualPreset = {
 };
 
 /**
- * Default/Original preset - matches current settings
+ * Default/Original preset - clean look with bloom only on bright areas
  */
 export const PRESET_DEFAULT: VisualPreset = {
   name: "Default",
   bloom: {
-    intensity: 7.0,
-    luminanceThreshold: 0.0,
-    luminanceSmoothing: 0.0,
+    intensity: 5.0,
+    luminanceThreshold: 0.4,
+    luminanceSmoothing: 0.3,
   },
   chromaticAberration: {
     enabled: false,

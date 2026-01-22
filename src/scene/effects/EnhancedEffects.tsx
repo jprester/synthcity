@@ -8,6 +8,7 @@ import {
   ToneMapping,
   BrightnessContrast,
   HueSaturation,
+  SMAA,
 } from "@react-three/postprocessing";
 import { ToneMappingMode, BlendFunction } from "postprocessing";
 import { Vector2 } from "three";
@@ -49,6 +50,9 @@ export function EnhancedEffects({
 
   return (
     <EffectComposer multisampling={0}>
+      {/* SMAA - antialiasing (better quality than FXAA) */}
+      <SMAA />
+
       {/* Bloom - glow effect on bright areas */}
       <Bloom
         intensity={bloomIntensity}
