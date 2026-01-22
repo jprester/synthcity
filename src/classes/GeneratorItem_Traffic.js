@@ -57,7 +57,6 @@ class Car {
 
     this.mesh = new Mesh( geo, mat );
     this.mesh.position.set(this.spawn_x, this.alt, this.spawn_z);
-    this.game.addGeneratorObject(this.mesh);
 
     // east
     if (this.dir==0) {
@@ -98,7 +97,6 @@ class Car {
 
   }
   remove() {
-    this.game.removeGeneratorObject(this.mesh);
   }
   update(){
 

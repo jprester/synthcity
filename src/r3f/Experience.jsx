@@ -113,7 +113,9 @@ function GeneratorSystem() {
   const { gameRef } = useGameStore();
   const groupRef = useRef(null);
   const [cityBlockItems, setCityBlockItems] = useState([]);
+  const [trafficItems, setTrafficItems] = useState([]);
   const cityBlockVersionRef = useRef(-1);
+  const trafficVersionRef = useRef(-1);
 
   useEffect(() => {
     if (gameRef.current && groupRef.current) {
@@ -140,6 +142,14 @@ function GeneratorSystem() {
         setCityBlockItems(game.generatorCityBlock.getItems());
       }
     }
+
+    if (game.generatorTraffic) {
+      const version = game.generatorTraffic.version ?? 0;
+      if (version !== trafficVersionRef.current) {
+        trafficVersionRef.current = version;
+        setTrafficItems(game.generatorTraffic.getItems());
+      }
+    }
   }, 2);
 
   return (
@@ -154,6 +164,15 @@ function GeneratorSystem() {
             {(item.meshesCollid || []).map((mesh, index) => (
               <primitive key={`c-${index}`} object={mesh} />
             ))}
+          </group>
+        ))}
+      </group>
+      <group>
+        {trafficItems.map((item) => (
+          <group key={item.__genId}>
+            {(item.cars || []).map((car, index) =>
+              car.mesh ? <primitive key={`t-${index}`} object={car.mesh} /> : null
+            )}
           </group>
         ))}
       </group>
