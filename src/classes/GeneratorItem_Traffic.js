@@ -1,4 +1,4 @@
-import { Vector2, Mesh } from "three";
+import { Vector2, Object3D } from "three";
 
 class GeneratorItem_Traffic {
   constructor(x, z, game) {
@@ -49,6 +49,7 @@ class Car {
     this.speed = 1.2;
     this.speed_factor = 1;
     this.v = new Vector2();
+    this.pose = new Object3D();
 
     // create mesh
 
@@ -62,39 +63,36 @@ class Car {
       "car_07",
       "car_08",
     ];
-    let geo = this.game.assets.getModel(carGeos[Math.floor(Math.random() * 8)]);
-    let mat = this.game.assets.getMaterial("cars");
-
-    this.mesh = new Mesh(geo, mat);
-    this.mesh.position.set(this.spawn_x, this.alt, this.spawn_z);
+    this.modelKey = carGeos[Math.floor(Math.random() * 8)];
+    this.pose.position.set(this.spawn_x, this.alt, this.spawn_z);
 
     // east
     if (this.dir == 0) {
       this.v.set(this.speed, 0);
       this.alt = 20;
-      this.mesh.rotateY(Math.PI / 2);
+      this.pose.rotateY(Math.PI / 2);
       this.x -= Math.floor(Math.random() * 20) * 4;
     }
     // west
     if (this.dir == 1) {
       this.v.set(-this.speed, 0);
       this.alt = 60;
-      this.mesh.rotateY(-Math.PI / 2);
+      this.pose.rotateY(-Math.PI / 2);
       this.x -= Math.floor(Math.random() * 20) * 4;
     }
     // north
     if (this.dir == 2) {
       this.v.set(0, -this.speed);
       this.alt = 40;
-      this.mesh.rotateY(Math.PI);
-      this.mesh.position.z = this.mesh.position.z - Math.random() * 2;
+      this.pose.rotateY(Math.PI);
+      this.pose.position.z = this.pose.position.z - Math.random() * 2;
       this.z -= Math.floor(Math.random() * 20) * 4;
     }
     // south
     if (this.dir == 3) {
       this.v.set(0, this.speed);
       this.alt = 80;
-      this.mesh.position.z = this.mesh.position.z - Math.random() * 2;
+      this.pose.position.z = this.pose.position.z - Math.random() * 2;
       this.z -= Math.floor(Math.random() * 20) * 4;
     }
 
@@ -107,25 +105,18 @@ class Car {
   }
   remove() {}
   update() {
-    if (this.mesh != null) {
-      this.x += this.v.x * this.speed_factor;
-      this.z += this.v.y * this.speed_factor;
+    this.x += this.v.x * this.speed_factor;
+    this.z += this.v.y * this.speed_factor;
 
-      this.mesh.position.set(this.x, this.alt + this.alt_offset, this.z);
+    this.pose.position.set(this.x, this.alt + this.alt_offset, this.z);
 
-      // destroy
-      if (
-        this.mesh.position.distanceTo(this.game.player.body.position) >
-        1000 + Math.random() * 500
-      ) {
-        // remove
-        // if (this.mesh) {
-        //   this.game.removeGeneratorObject(this.mesh);
-        //   this.mesh = null;
-        // }
-        // reverse
-        this.v.multiplyScalar(-1);
-      }
+    // destroy
+    if (
+      this.pose.position.distanceTo(this.game.player.body.position) >
+      1000 + Math.random() * 500
+    ) {
+      // reverse
+      this.v.multiplyScalar(-1);
     }
   }
 }

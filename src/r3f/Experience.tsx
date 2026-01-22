@@ -24,6 +24,7 @@ import { GeneratorItem_Traffic } from '../classes/GeneratorItem_Traffic.js';
 import { Radio } from '../classes/Radio.js';
 import { usePlayerController } from './usePlayerController';
 import { PlayerCarVisuals } from "./PlayerCarVisuals";
+import { TrafficCarVisuals } from "./TrafficCarVisuals";
 
 declare const Perlin: new (seed?: number) => {
   noiseDetail: (lod: number, falloff: number) => void;
@@ -428,11 +429,13 @@ function GeneratorSystem() {
       <group>
         {trafficItems.map((item) => (
           <group key={item.__genId}>
-            {(item.cars || []).map((car, index) =>
-              car.mesh ? (
-                <primitive key={`t-${index}`} object={car.mesh} />
-              ) : null,
-            )}
+            {(item.cars || []).map((car, index) => (
+              <TrafficCarVisuals
+                key={`t-${index}`}
+                car={car}
+                game={gameRef.current}
+              />
+            ))}
           </group>
         ))}
       </group>
