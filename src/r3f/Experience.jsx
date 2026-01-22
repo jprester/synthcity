@@ -9,10 +9,12 @@ import { GeneratorItem_CityBlock } from '../classes/GeneratorItem_CityBlock.js';
 import { GeneratorItem_CityLight } from '../classes/GeneratorItem_CityLight.js';
 import { GeneratorItem_Traffic } from '../classes/GeneratorItem_Traffic.js';
 import { Radio } from '../classes/Radio.js';
+import { usePlayerController } from './usePlayerController.js';
 
 function GameBridge() {
   const { gl, scene, camera, set } = useThree();
   const { settings, gameRef, terminalRef } = useGameStore();
+  const controller = usePlayerController();
   const [environment, setEnvironment] = useState(null);
 
   useEffect(() => {
@@ -27,7 +29,8 @@ function GameBridge() {
       canvas: gl.domElement,
       setupEnvironment: false,
       settings,
-      terminal: terminalRef.current
+      terminal: terminalRef.current,
+      controller
     });
     gameRef.current = game;
     setEnvironment(game.environment);

@@ -14,7 +14,6 @@ import { Shaders } from './classes/Shaders.js';
 
 import { Player } from './classes/Player.js';
 import { PlayerCar } from './classes/PlayerCar.js';
-import { PlayerController } from './classes/PlayerController.js';
 
 import { Radio } from './classes/Radio.js';
 
@@ -133,9 +132,13 @@ class Game {
 
     // controls
 
-    this.playerController = new PlayerController();
+    this.playerController = this.options.controller || null;
 
     // create player
+
+    if (!this.playerController) {
+      throw new Error('Game requires a controller instance');
+    }
 
     if (this.settings.mode=='drive') {
       this.player = new PlayerCar({
