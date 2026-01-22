@@ -51,6 +51,8 @@ class Game {
     this.externalRender = options.externalRender ?? false;
     this.setupEnvironment = options.setupEnvironment ?? true;
     this.externalGenerators = options.externalGenerators ?? false;
+    this.settingsOverrides = options.settings ? { ...options.settings } : {};
+    this.terminal = options.terminal || null;
 
     this.environment = this.getEnvironment('night');
 
@@ -94,7 +96,7 @@ class Game {
 
   load() {
 
-    this.assets = new AssetManager();
+    this.assets = new AssetManager(this, this.terminal);
     this.assets.setPath('assets/');
     this.assets.load();
 
@@ -103,11 +105,13 @@ class Game {
   onLoad() {
 
     // terminal
-    window.setColor('c2');
-    window.newLine();
-    window.newLine();
-    window.write('>> boot sequence complete', 0, 0, null);
-    window.showCredits();
+    if (this.terminal) {
+      this.terminal.setColor('c2');
+      this.terminal.newLine();
+      this.terminal.newLine();
+      this.terminal.write('>> boot sequence complete', 0, 0, null);
+      this.terminal.showCredits();
+    }
 
     // show launch button
     document.getElementById('enterBtn').style.display = 'block';
@@ -133,12 +137,13 @@ class Game {
       renderScaling: 1.0
     };
 
-    if (window.userSettings.hasOwnProperty('mode')) this.settings.mode = window.userSettings.mode;
-    if (window.userSettings.hasOwnProperty('worldSeed')) this.settings.worldSeed = window.userSettings.worldSeed;
-    if (window.userSettings.hasOwnProperty('music')) this.settings.music = window.userSettings.music;
-    if (window.userSettings.hasOwnProperty('soundFx')) this.settings.soundFx = window.userSettings.soundFx;
-    if (window.userSettings.hasOwnProperty('renderScaling')) this.settings.renderScaling = parseFloat(window.userSettings.renderScaling);
-    if (window.userSettings.hasOwnProperty('windshieldShader')) this.settings.windshieldShader = window.userSettings.windshieldShader;
+    const overrides = this.settingsOverrides || {};
+    if (Object.prototype.hasOwnProperty.call(overrides, 'mode')) this.settings.mode = overrides.mode;
+    if (Object.prototype.hasOwnProperty.call(overrides, 'worldSeed')) this.settings.worldSeed = overrides.worldSeed;
+    if (Object.prototype.hasOwnProperty.call(overrides, 'music')) this.settings.music = overrides.music;
+    if (Object.prototype.hasOwnProperty.call(overrides, 'soundFx')) this.settings.soundFx = overrides.soundFx;
+    if (Object.prototype.hasOwnProperty.call(overrides, 'renderScaling')) this.settings.renderScaling = parseFloat(overrides.renderScaling);
+    if (Object.prototype.hasOwnProperty.call(overrides, 'windshieldShader')) this.settings.windshieldShader = overrides.windshieldShader;
 
     console.log('Game: World seed: '+this.settings.worldSeed);
 
@@ -192,6 +197,7 @@ class Game {
         scene: this.scene,
         renderer: this.renderer,
         controller: this.playerController,
+        game: this,
         camera: this.options.camera,
         x: -this.roadWidth/2,
         z: 0
@@ -202,6 +208,7 @@ class Game {
         scene: this.scene,
         renderer: this.renderer,
         controller: this.playerController,
+        game: this,
         camera: this.options.camera,
         x: 0,
         z: 0
@@ -278,7 +285,8 @@ class Game {
       camera: this.player.camera,
       cell_size: this.cityBlockSize+this.roadWidth,
       cell_count: 40,
-      spawn_obj: GeneratorItem_CityBlock
+      spawn_obj: GeneratorItem_CityBlock,
+      spawn_context: this
     });
 
     this.cityLights = [];
@@ -300,7 +308,8 @@ class Game {
         camera: this.player.camera,
         cell_size: (this.cityBlockSize+this.roadWidth)*4,
         cell_count: 8,
-        spawn_obj: GeneratorItem_CityLight
+        spawn_obj: GeneratorItem_CityLight,
+        spawn_context: this
       });
     }
 
@@ -309,7 +318,8 @@ class Game {
       cell_size: this.cityBlockSize+this.roadWidth,
       cell_count: 12,
       debug: false,
-      spawn_obj: GeneratorItem_Traffic
+      spawn_obj: GeneratorItem_Traffic,
+      spawn_context: this
     });
 
     /*----- animate -----*/
@@ -489,6 +499,20 @@ class Game {
     this.generatorTraffic.update();
   }
 
+  setSettings(nextSettings = {}) {
+    this.settingsOverrides = { ...this.settingsOverrides, ...nextSettings };
+    if (this.initialized) {
+      this.settings = { ...this.settings, ...nextSettings };
+    }
+  }
+
+  setTerminal(terminal) {
+    this.terminal = terminal;
+    if (this.assets && typeof this.assets.setTerminal === 'function') {
+      this.assets.setTerminal(terminal);
+    }
+  }
+
   getEnvironment(id) {
 
     const environments = {
@@ -600,10 +624,4 @@ class Game {
 
 }
 
-export function startGame(options = {}) {
-  if (!window.game) {
-    window.game = new Game(options);
-  }
-
-  return window.game;
-}
+export { Game };

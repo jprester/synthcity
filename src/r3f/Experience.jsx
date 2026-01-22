@@ -2,16 +2,21 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { EffectComposer, Bloom, FXAA, ToneMapping } from '@react-three/postprocessing';
 import { ToneMappingMode } from 'postprocessing';
 import { Fog, NoToneMapping, SRGBColorSpace } from 'three';
-import { useEffect, useRef, useState } from 'react';
-import { startGame } from '../index.js';
+import { useEffect, useState } from 'react';
+import { Game } from '../index.js';
+import { useGameStore } from '../game/GameContext.jsx';
 
 function GameBridge() {
   const { gl, scene, camera, set } = useThree();
-  const gameRef = useRef(null);
+  const { settings, gameRef, terminalRef } = useGameStore();
   const [environment, setEnvironment] = useState(null);
 
   useEffect(() => {
-    const game = startGame({
+    if (gameRef.current) {
+      return;
+    }
+
+    const game = new Game({
       renderer: gl,
       scene,
       camera,
@@ -20,7 +25,9 @@ function GameBridge() {
       useComposer: false,
       externalRender: true,
       setupEnvironment: false,
-      externalGenerators: true
+      externalGenerators: true,
+      settings,
+      terminal: terminalRef.current
     });
     gameRef.current = game;
     setEnvironment(game.environment);
@@ -28,7 +35,13 @@ function GameBridge() {
     gl.toneMapping = NoToneMapping;
     gl.toneMappingExposure = 1.0;
     gl.outputColorSpace = SRGBColorSpace;
-  }, [gl, scene, camera]);
+  }, [gl, scene, camera, settings, gameRef, terminalRef]);
+
+  useEffect(() => {
+    if (gameRef.current) {
+      gameRef.current.setSettings(settings);
+    }
+  }, [settings, gameRef]);
 
   useEffect(() => {
     if (!environment || !gameRef.current) {

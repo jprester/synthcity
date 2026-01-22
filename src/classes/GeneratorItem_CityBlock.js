@@ -5,17 +5,18 @@ import {
 import { GeneratorUtils } from './GeneratorUtils.js';
 
 class GeneratorItem_CityBlock {
-  constructor(x,z) {
+  constructor(x, z, game) {
 
     this.x = x;
     this.z = z;
+    this.game = game;
 
-    this.utils = new GeneratorUtils();
+    this.utils = new GeneratorUtils(this.game);
 
-    this.cityBlockSize = window.game.cityBlockSize;
-    this.roadWidth = window.game.roadWidth;
-    this.noise = window.game.cityBlockNoise;
-    this.noiseFactor = window.game.cityBlockNoiseFactor;
+    this.cityBlockSize = this.game.cityBlockSize;
+    this.roadWidth = this.game.roadWidth;
+    this.noise = this.game.cityBlockNoise;
+    this.noiseFactor = this.game.cityBlockNoiseFactor;
 
     this.meshes = []; // no collision
     this.meshesCollid = [];
@@ -49,7 +50,7 @@ class GeneratorItem_CityBlock {
           else if (subtypeNoise<0.8) type = 'mega_05';
           else type = 'mega_06';
 
-          let mesh = new Mesh( window.game.assets.getModel(type), window.game.assets.getMaterial('mega_building_01') );
+          let mesh = new Mesh( this.game.assets.getModel(type), this.game.assets.getMaterial('mega_building_01') );
           mesh.position.set( this.x+xOff, 0, this.z+zOff );
           mesh.scale.set(1, scale, 1);
           mesh.rotateY(rotate*Math.PI/180);
@@ -102,8 +103,8 @@ class GeneratorItem_CityBlock {
             let topperNoise = this.utils.fixNoise(this.noise.noise((this.x+xOff)*6, (this.z+zOff)*6));
             topper = (topperNoise>0.998);
             // spotlight
-            if (window.game.environment.spotLights) {
-              if (Math.random()<0.1 && subtypeNoise>0.8 && !topper) this.updateables.push(new Spotlight(this.x+xOff, 160*scale, this.z+zOff));
+            if (this.game.environment.spotLights) {
+              if (Math.random()<0.1 && subtypeNoise>0.8 && !topper) this.updateables.push(new Spotlight(this.x+xOff, 160*scale, this.z+zOff, this.game));
             }
           }
 
@@ -114,19 +115,19 @@ class GeneratorItem_CityBlock {
           let mat = this.utils.getBuildingMat(matNoise);
 
           // topper
-          if (topper && adsType!=null) this.updateables.push(new Topper(this.x+xOff, 190*scale, this.z+zOff));
+          if (topper && adsType!=null) this.updateables.push(new Topper(this.x+xOff, 190*scale, this.z+zOff, this.game));
 
           // smoke
-          if (Math.random()<0.05) this.updateables.push(new Smoke(this.x+xOff, 190*scale, this.z+zOff));
+          if (Math.random()<0.05) this.updateables.push(new Smoke(this.x+xOff, 190*scale, this.z+zOff, this.game));
 
-          let mesh = new Mesh( window.game.assets.getModel(type), mat );
+          let mesh = new Mesh( this.game.assets.getModel(type), mat );
           mesh.position.set( this.x+xOff, 0, this.z+zOff );
           mesh.scale.set(1, scale, 1);
           mesh.rotateY(rotate*Math.PI/180);
           this.meshesCollid.push(mesh);
 
           if (adsType!=null) {
-            let ad = new Advert( this.x+xOff, 0, this.z+zOff, window.game.assets.getModel(adsType), false );
+            let ad = new Advert( this.x+xOff, 0, this.z+zOff, this.game.assets.getModel(adsType), false, this.game );
             ad.mesh.scale.set(1, scale, 1);
             ad.mesh.rotateY(-rotate*Math.PI/180);
             this.updateables.push(ad);
@@ -178,14 +179,14 @@ class GeneratorItem_CityBlock {
 
       let scale = 1+(rotateNoise*0.5);
 
-      let mesh = new Mesh( window.game.assets.getModel(type), mat );
+      let mesh = new Mesh( this.game.assets.getModel(type), mat );
       mesh.position.set( this.x+xOff, 0, this.z+zOff );
       mesh.scale.set(1, scale, 1);
       mesh.rotateY(rotate*Math.PI/180);
       this.meshesCollid.push(mesh);
 
       if (adsType!=null) {
-        let ad = new Advert( this.x+xOff, 0, this.z+zOff, window.game.assets.getModel(adsType), isTower );
+        let ad = new Advert( this.x+xOff, 0, this.z+zOff, this.game.assets.getModel(adsType), isTower, this.game );
         ad.mesh.scale.set(1, scale, 1);
         ad.mesh.rotateY(-rotate*Math.PI/180);
         this.updateables.push(ad);
@@ -194,7 +195,7 @@ class GeneratorItem_CityBlock {
     }
 
     // ground plane
-    let groundMesh = new Mesh( window.game.assets.getModel('ground'), window.game.assets.getMaterial('ground') );
+    let groundMesh = new Mesh( this.game.assets.getModel('ground'), this.game.assets.getMaterial('ground') );
     groundMesh.rotateX(-Math.PI/2);
     groundMesh.position.set( this.x+(this.cityBlockSize/2), 0, this.z+(this.cityBlockSize/2) );
     this.meshes.push(groundMesh);
@@ -204,34 +205,34 @@ class GeneratorItem_CityBlock {
       let mats = ['storefronts','building_02','building_03','building_07'];
       let mat = mats[Math.floor(subtypeNoise*mats.length)];
       if (!mat) mat = 'storefronts';
-      var mesh = new Mesh( window.game.assets.getModel('storefronts'), window.game.assets.getMaterial(mat) );
+      var mesh = new Mesh( this.game.assets.getModel('storefronts'), this.game.assets.getMaterial(mat) );
       mesh.position.set( this.x+this.cityBlockSize+this.roadWidth/2, 0, this.z+this.cityBlockSize+this.roadWidth/2);
       this.meshesCollid.push(mesh);
     }
 
     // add meshes to scene
     for (var i=0; i<this.meshes.length; i++) {
-      window.game.scene.add(this.meshes[i]);
+      this.game.scene.add(this.meshes[i]);
     }
     // add collision meshes to scene and collider
     for (var i=0; i<this.meshesCollid.length; i++) {
-      window.game.scene.add(this.meshesCollid[i]);
-      window.game.collider.add(this.meshesCollid[i]);
+      this.game.scene.add(this.meshesCollid[i]);
+      this.game.collider.add(this.meshesCollid[i]);
     }
 
   }
   remove() {
     // remove meshes
     for (var i=0; i<this.meshes.length; i++) {
-      window.game.scene.remove(this.meshes[i]);
+      this.game.scene.remove(this.meshes[i]);
     }
     for (var i=0; i<this.updateables.length; i++) {
       this.updateables[i].remove();
     }
     // remove collision meshes
     for (var i=0; i<this.meshesCollid.length; i++) {
-      window.game.collider.remove(this.meshesCollid[i].uuid);
-      window.game.scene.remove(this.meshesCollid[i]);
+      this.game.collider.remove(this.meshesCollid[i].uuid);
+      this.game.scene.remove(this.meshesCollid[i]);
     }
   }
   update() {
@@ -244,7 +245,8 @@ class GeneratorItem_CityBlock {
 // building decorations
 
 class Advert {
-  constructor(x, y, z, geo, is_tower) {
+  constructor(x, y, z, geo, is_tower, game) {
+    this.game = game;
 
     if (is_tower) {
       this.adsMats = ['ads_large_01','ads_large_02','ads_large_03','ads_large_04','ads_large_05'];
@@ -252,11 +254,11 @@ class Advert {
     else {
       this.adsMats = ['ads_01','ads_02','ads_03','ads_04','ads_05'];
     }
-    let mat = window.game.assets.getMaterial(this.adsMats[Math.floor(Math.random()*this.adsMats.length)]);
+    let mat = this.game.assets.getMaterial(this.adsMats[Math.floor(Math.random()*this.adsMats.length)]);
 
     this.mesh = new Mesh( geo, mat );
     this.mesh.position.set(x,y,z);
-    window.game.scene.add( this.mesh );
+    this.game.scene.add( this.mesh );
     
     this.interval = 200+Math.random()*800;
     this.counter = Math.random()*this.interval;
@@ -264,21 +266,22 @@ class Advert {
 
   }
   remove() {
-    window.game.scene.remove(this.mesh);
+    this.game.scene.remove(this.mesh);
   }
   update(){
     if (this.switches) {
       this.counter++;
       if (this.counter>this.interval) {
         this.counter=0;
-        this.mesh.material = window.game.assets.getMaterial(this.adsMats[Math.floor(Math.random()*this.adsMats.length)]);
+        this.mesh.material = this.game.assets.getMaterial(this.adsMats[Math.floor(Math.random()*this.adsMats.length)]);
       }
     }
   }
 }
 
 class Topper {
-  constructor(x, y, z) {
+  constructor(x, y, z, game) {
+    this.game = game;
 
     let topperGeos = [
       'topper_01',
@@ -296,21 +299,21 @@ class Topper {
     ];
 
     let mats = ['ads_large_01','ads_large_02','ads_large_03','ads_large_04','ads_large_05'];
-    let mat = window.game.assets.getMaterial(mats[Math.floor(Math.random()*mats.length)]);
+    let mat = this.game.assets.getMaterial(mats[Math.floor(Math.random()*mats.length)]);
 
-    let geo = window.game.assets.getModel(topperGeos[Math.floor(Math.random()*topperGeos.length)]);
+    let geo = this.game.assets.getModel(topperGeos[Math.floor(Math.random()*topperGeos.length)]);
 
     this.mesh = new Mesh( geo, mat );
     this.mesh.position.set(x,y,z);
     let s = 0.8+Math.random();
     this.mesh.scale.set(s,s,s);          
-    window.game.scene.add( this.mesh );
+    this.game.scene.add( this.mesh );
 
     this.rdir = Math.random()<=0.5 ? Math.random()*0.01 : -Math.random()*0.01;
 
   }
   remove() {
-    window.game.scene.remove(this.mesh);
+    this.game.scene.remove(this.mesh);
   }
   update(){
     this.mesh.rotation.y = this.mesh.rotation.y+this.rdir;
@@ -318,44 +321,46 @@ class Topper {
 }
 
 class Smoke {
-  constructor(x, y, z) {
+  constructor(x, y, z, game) {
+    this.game = game;
     let mats = ['smoke_01','smoke_02','smoke_03'];
-    let mat = window.game.assets.getMaterial(mats[Math.floor(Math.random()*mats.length)]);
-    this.mesh = new Mesh( window.game.assets.getModel('smoke'), mat );
+    let mat = this.game.assets.getMaterial(mats[Math.floor(Math.random()*mats.length)]);
+    this.mesh = new Mesh( this.game.assets.getModel('smoke'), mat );
     this.mesh.position.set(x,y,z);
     var s = 1+Math.random()*8;
     var sy = s * (1+Math.random()*0.5);
     this.mesh.scale.set(s,sy,s);          
-    window.game.scene.add( this.mesh );
+    this.game.scene.add( this.mesh );
     this.rstep = Math.random()*7;
   }
   remove() {
-    window.game.scene.remove(this.mesh);
+    this.game.scene.remove(this.mesh);
   }
   update(){
     this.rstep+=0.0025;
-    this.mesh.lookAt(window.game.player.camera.position);
+    this.mesh.lookAt(this.game.player.camera.position);
     this.mesh.rotation.x += Math.cos(this.rstep)*0.25;
   }
 }
 
 class Spotlight {
-  constructor(x, y, z) {
+  constructor(x, y, z, game) {
+    this.game = game;
     let mats = ['spotlight_01','spotlight_02','spotlight_03','spotlight_04'];
-    let mat = window.game.assets.getMaterial(mats[Math.floor(Math.random()*mats.length)]);
-    this.mesh = new Mesh( window.game.assets.getModel('spotlight'), mat );
+    let mat = this.game.assets.getMaterial(mats[Math.floor(Math.random()*mats.length)]);
+    this.mesh = new Mesh( this.game.assets.getModel('spotlight'), mat );
     this.mesh.position.set(x,y,z);
     var s = 10+Math.random()*10;
     this.mesh.scale.set(s,s,s);          
-    window.game.scene.add( this.mesh );
+    this.game.scene.add( this.mesh );
     this.rstep = Math.random()*7;
   }
   remove() {
-    window.game.scene.remove(this.mesh);
+    this.game.scene.remove(this.mesh);
   }
   update(){
     this.rstep+=0.01;
-    this.mesh.lookAt(window.game.player.camera.position);
+    this.mesh.lookAt(this.game.player.camera.position);
     this.mesh.rotation.x += Math.cos(this.rstep)*0.4;
   }
 }

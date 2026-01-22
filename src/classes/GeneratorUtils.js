@@ -1,6 +1,8 @@
 class GeneratorUtils {
 
-  constructor() {}
+  constructor(game) {
+    this.game = game;
+  }
 
   getBuildingMat(noise) {
     let mats = [
@@ -11,7 +13,7 @@ class GeneratorUtils {
       'building_05',
       'building_07'
     ];
-    return window.game.assets.getMaterial(mats[Math.floor(noise*mats.length)]);
+    return this.game.assets.getMaterial(mats[Math.floor(noise*mats.length)]);
   }
 
   getBigBuildingMat(noise, rare) {
@@ -28,8 +30,8 @@ class GeneratorUtils {
       'building_09',
       'building_10'
     ];
-    if (!rare) return window.game.assets.getMaterial(mats[Math.floor(noise*mats.length)]);
-    else return window.game.assets.getMaterial(matsRare[Math.floor(noise*matsRare.length)]);
+    if (!rare) return this.game.assets.getMaterial(mats[Math.floor(noise*mats.length)]);
+    else return this.game.assets.getMaterial(matsRare[Math.floor(noise*matsRare.length)]);
   }
 
   getBuildingRotation(noise) {

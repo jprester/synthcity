@@ -1,16 +1,17 @@
 import { GeneratorUtils } from './GeneratorUtils.js';
 
 class GeneratorItem_CityLight {
-  constructor(x,z) {
+  constructor(x, z, game) {
 
     this.x = x;
     this.z = z;
+    this.game = game;
 
-    this.utils = new GeneratorUtils();
+    this.utils = new GeneratorUtils(this.game);
 
-    this.cityLights = window.game.cityLights;
-    this.noise = window.game.cityBlockNoise;
-    this.noiseFactor = window.game.cityBlockNoiseFactor;
+    this.cityLights = this.game.cityLights;
+    this.noise = this.game.cityBlockNoise;
+    this.noiseFactor = this.game.cityBlockNoiseFactor;
 
     this.lightIndex = null;
 

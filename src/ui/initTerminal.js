@@ -10,78 +10,18 @@ export function initTerminal({
   onStartLoad
 }) {
   if (!terminalEl || !resourcesEl || !controlsEl || !cursorEl) {
-    return () => {};
+    return { api: null, cleanup: () => {} };
   }
 
   let colorClass = 'c1';
   let controlsInterval = null;
   let cursorVisible = true;
 
-  window.showCredits = function () {
-    setTimeout(function () {
-      window.newLine();
-      window.newLine();
-      window.setColor('c1');
-      window.write('synthcity --credits', 80, 800, function () {
-        window.newLine();
-        window.newLine();
-        window.setColor('c4');
-        window.write('<3d graphics library> three.js [threejs.org]', 0, 50, function () {
-          window.newLine();
-          window.write('<bladerunner car> quaz30 [sketchfab.com/quaz30]', 0, 50, function () {
-            window.newLine();
-            window.write('<sound fx> freesound [freesound.org]', 0, 50, function () {
-              window.newLine();
-              window.newLine();
-              window.write('# Music from #Uppbeat (free for Creators!)', 0, 50, function () {
-                window.newLine();
-                window.newLine();
-                window.write('<prigida> [uppbeat.io/browse/artist/prigida]', 0, 50, function () {
-                  window.newLine();
-                  window.write('<pecan-pie> [uppbeat.io/browse/artist/pecan-pie]', 0, 50, function () {
-                    window.newLine();
-                    window.write('<mountaineer> [uppbeat.io/browse/artist/mountaineer]', 0, 50, function () {
-                      window.newLine();
-                      window.write('<d0d> [uppbeat.io/browse/artist/d0d]', 0, 50, function () {
-                        window.newLine();
-                        window.write('<fass> [uppbeat.io/browse/artist/fass]', 0, 50, function () {
-                          window.newLine();
-                          window.write('<tatami> [uppbeat.io/browse/artist/tatami]', 0, 50, function () {
-                            window.newLine();
-                            window.write('<kaleidoscope> [uppbeat.io/browse/artist/kaleidoscope]', 0, 50, function () {
-                              window.newLine();
-                              window.write('<noise-cake> [uppbeat.io/browse/artist/noise-cake]', 0, 50, function () {
-                                window.newLine();
-                                window.write('<mood-maze> [uppbeat.io/browse/artist/mood-maze]', 0, 50, function () {
-                                  window.newLine();
-                                  window.write('<bosnow> [uppbeat.io/browse/artist/bosnow]', 0, 50, function () {
-                                    window.newLine();
-                                    window.write('<tecnosine> [uppbeat.io/browse/artist/tecnosine]', 0, 50, function () {
-                                      window.newLine();
-                                    });
-                                  });
-                                });
-                              });
-                            });
-                          });
-                        });
-                      });
-                    });
-                  });
-                });
-              });
-            });
-          });
-        });
-      });
-    }, 2500);
-  };
-
-  window.setColor = function (c) {
+  function setColor(c) {
     colorClass = c;
-  };
+  }
 
-  window.write = function (s, speed, delay, callback) {
+  function write(s, speed, delay, callback) {
     let i = 0;
     let interval = setInterval(function () {
       const newNode = document.createElement('span');
@@ -103,31 +43,15 @@ export function initTerminal({
         }
       }
     }, speed);
-  };
+  }
 
-  window.newLine = function () {
+  function newLine() {
     const node = document.createElement('br');
     terminalEl.insertBefore(node, cursorEl);
     terminalEl.scrollTop = terminalEl.scrollHeight;
-  };
+  }
 
-  window.updateControls = function (arr) {
-    controlsEl.innerHTML = '';
-    clearInterval(controlsInterval);
-    window.writeControls(arr[0], function () {
-      window.writeControls(arr[1], function () {
-        window.writeControls(arr[2], function () {
-          window.writeControls(arr[3], function () {
-            window.writeControls(arr[4], function () {
-              window.writeControls(arr[5], null);
-            });
-          });
-        });
-      });
-    });
-  };
-
-  window.writeControls = function (s, callback) {
+  function writeControls(s, callback) {
     let i = 0;
     const linebreak = document.createElement('br');
     controlsEl.insertBefore(linebreak, controlsEl.lastChild);
@@ -143,9 +67,25 @@ export function initTerminal({
         if (callback) callback();
       }
     }, 0);
-  };
+  }
 
-  window.writeAsset = function (url, itemsLoaded, itemsTotal) {
+  function updateControls(arr) {
+    controlsEl.innerHTML = '';
+    clearInterval(controlsInterval);
+    writeControls(arr[0], function () {
+      writeControls(arr[1], function () {
+        writeControls(arr[2], function () {
+          writeControls(arr[3], function () {
+            writeControls(arr[4], function () {
+              writeControls(arr[5], null);
+            });
+          });
+        });
+      });
+    });
+  }
+
+  function writeAsset(url, itemsLoaded, itemsTotal) {
     const exts = ['.cfg', '.dll', '.bio', '.tek', '.bin', '.syn', '.dna', '.xlc'];
     const coolName = makeId() + exts[Math.floor(Math.random() * exts.length)];
     const percent = ((itemsLoaded / itemsTotal) * 100).toFixed(2);
@@ -157,9 +97,9 @@ export function initTerminal({
     const textNode = document.createTextNode('>> [' + percent + '%] ' + coolName);
     newNode.appendChild(textNode);
     resourcesEl.insertBefore(newNode, resourcesEl.firstChild);
-  };
+  }
 
-  window.strToBin = function (str) {
+  function strToBin(str) {
     let res = '';
     res = str
       .split('')
@@ -168,7 +108,72 @@ export function initTerminal({
       })
       .join(' ');
     return res.substring(0, 32);
-  };
+  }
+
+  function showCredits() {
+    setTimeout(function () {
+      newLine();
+      newLine();
+      setColor('c1');
+      write('synthcity --credits', 80, 800, function () {
+        newLine();
+        newLine();
+        setColor('c4');
+        write('<3d graphics library> three.js [threejs.org]', 0, 50, function () {
+          newLine();
+          write('<bladerunner car> quaz30 [sketchfab.com/quaz30]', 0, 50, function () {
+            newLine();
+            write('<sound fx> freesound [freesound.org]', 0, 50, function () {
+              newLine();
+              newLine();
+              write('# Music from #Uppbeat (free for Creators!)', 0, 50, function () {
+                newLine();
+                newLine();
+                write('<prigida> [uppbeat.io/browse/artist/prigida]', 0, 50, function () {
+                  newLine();
+                  write('<pecan-pie> [uppbeat.io/browse/artist/pecan-pie]', 0, 50, function () {
+                    newLine();
+                    write('<mountaineer> [uppbeat.io/browse/artist/mountaineer]', 0, 50, function () {
+                      newLine();
+                      write('<d0d> [uppbeat.io/browse/artist/d0d]', 0, 50, function () {
+                        newLine();
+                        write('<fass> [uppbeat.io/browse/artist/fass]', 0, 50, function () {
+                          newLine();
+                          write('<tatami> [uppbeat.io/browse/artist/tatami]', 0, 50, function () {
+                            newLine();
+                            write(
+                              '<kaleidoscope> [uppbeat.io/browse/artist/kaleidoscope]',
+                              0,
+                              50,
+                              function () {
+                                newLine();
+                                write('<noise-cake> [uppbeat.io/browse/artist/noise-cake]', 0, 50, function () {
+                                  newLine();
+                                  write('<mood-maze> [uppbeat.io/browse/artist/mood-maze]', 0, 50, function () {
+                                    newLine();
+                                    write('<bosnow> [uppbeat.io/browse/artist/bosnow]', 0, 50, function () {
+                                      newLine();
+                                      write('<tecnosine> [uppbeat.io/browse/artist/tecnosine]', 0, 50, function () {
+                                        newLine();
+                                      });
+                                    });
+                                  });
+                                });
+                              }
+                            );
+                          });
+                        });
+                      });
+                    });
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
+    }, 2500);
+  }
 
   const cursorBlinkIntervalId = window.setInterval(function () {
     if (cursorVisible === true) {
@@ -180,71 +185,84 @@ export function initTerminal({
     }
   }, 400);
 
-  runBootSequence({ onShowSettings, onStartLoad });
+  const api = {
+    setColor,
+    write,
+    newLine,
+    updateControls,
+    writeControls,
+    writeAsset,
+    strToBin,
+    showCredits
+  };
 
-  return () => {
+  runBootSequence(api, { onShowSettings, onStartLoad });
+
+  const cleanup = () => {
     window.clearInterval(cursorBlinkIntervalId);
   };
+
+  return { api, cleanup };
 }
 
-function runBootSequence({ onShowSettings, onStartLoad }) {
+function runBootSequence(api, { onShowSettings, onStartLoad }) {
   setTimeout(function () {
-    window.setColor('c1');
-    window.write('synthcity --run', 80, 500, function () {
-      window.newLine();
+    api.setColor('c1');
+    api.write('synthcity --run', 80, 500, function () {
+      api.newLine();
       if (isMobile()) {
-        window.newLine();
-        window.setColor('g1');
-        window.write('>> Error: Mobile devices not supported', 0, 0, null);
+        api.newLine();
+        api.setColor('g1');
+        api.write('>> Error: Mobile devices not supported', 0, 0, null);
       } else {
-        window.setColor('g1');
-        window.write('                      __  .__           .__  __        ', 0, 0, function () {
-          window.newLine();
-          window.setColor('g1');
-          window.write('  _________.__. _____/  |_|  |__   ____ |__|/  |_ ___.__.', 0, 0, function () {
-            window.newLine();
-            window.setColor('g2');
-            window.write(' /  ___<   |  |/    \\   __\\  |  \\_/ ___\\|  \\   __<   |  |', 0, 0, function () {
-              window.newLine();
-              window.setColor('g3');
-              window.write(' \\___ \\ \\___  |   |  \\  | |   Y  \\  \\___|  ||  |  \\___  |', 0, 0, function () {
-                window.newLine();
-                window.setColor('g4');
-                window.write('/____  >/ ____|___|  /__| |___|  /\\___  >__||__|  / ____|', 0, 0, function () {
-                  window.newLine();
-                  window.setColor('g5');
-                  window.write('     \\/ \\/         \\/          \\/     \\/          \\/     ', 0, 0, function () {
-                    window.newLine();
-                    window.newLine();
-                    window.setColor('g1');
-                    window.write('   an interactive audiovisual experience by jeff beene', 0, 0, function () {
-                      window.newLine();
-                      window.newLine();
-                      window.write('▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚', 0, 800, function () {
-                        window.newLine();
-                        window.newLine();
-                        window.setColor('c3');
-                        window.write('>> initiating boot sequence...', 0, 500, function () {
+        api.setColor('g1');
+        api.write('                      __  .__           .__  __        ', 0, 0, function () {
+          api.newLine();
+          api.setColor('g1');
+          api.write('  _________.__. _____/  |_|  |__   ____ |__|/  |_ ___.__.', 0, 0, function () {
+            api.newLine();
+            api.setColor('g2');
+            api.write(' /  ___<   |  |/    \\   __\\  |  \\_/ ___\\|  \\   __<   |  |', 0, 0, function () {
+              api.newLine();
+              api.setColor('g3');
+              api.write(' \\___ \\ \\___  |   |  \\  | |   Y  \\  \\___|  ||  |  \\___  |', 0, 0, function () {
+                api.newLine();
+                api.setColor('g4');
+                api.write('/____  >/ ____|___|  /__| |___|  /\\___  >__||__|  / ____|', 0, 0, function () {
+                  api.newLine();
+                  api.setColor('g5');
+                  api.write('     \\/ \\/         \\/          \\/     \\/          \\/     ', 0, 0, function () {
+                    api.newLine();
+                    api.newLine();
+                    api.setColor('g1');
+                    api.write('   an interactive audiovisual experience by jeff beene', 0, 0, function () {
+                      api.newLine();
+                      api.newLine();
+                      api.write('▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚', 0, 800, function () {
+                        api.newLine();
+                        api.newLine();
+                        api.setColor('c3');
+                        api.write('>> initiating boot sequence...', 0, 500, function () {
                           if (onShowSettings) onShowSettings();
 
-                          window.newLine();
-                          window.newLine();
-                          window.setColor('c4');
-                          window.write('build version: ' + version, 0, 50, function () {
-                            window.newLine();
-                            window.write('system manufacturer: jeff beene [www.jeff-beene.com]', 0, 50, function () {
-                              window.newLine();
-                              window.write('system boot time: ' + bootDate(), 0, 50, function () {
-                                window.newLine();
-                                window.write('os name: three.js', 0, 50, function () {
-                                  window.newLine();
-                                  window.write('os version: ' + threeVersion, 0, 50, function () {
-                                    window.newLine();
-                                    window.write('audio driver: uppbeat.io', 0, 50, function () {
-                                      window.newLine();
-                                      window.newLine();
-                                      window.setColor('c3');
-                                      window.write('>> loading resources...', 0, 50, function () {
+                          api.newLine();
+                          api.newLine();
+                          api.setColor('c4');
+                          api.write('build version: ' + version, 0, 50, function () {
+                            api.newLine();
+                            api.write('system manufacturer: jeff beene [www.jeff-beene.com]', 0, 50, function () {
+                              api.newLine();
+                              api.write('system boot time: ' + bootDate(), 0, 50, function () {
+                                api.newLine();
+                                api.write('os name: three.js', 0, 50, function () {
+                                  api.newLine();
+                                  api.write('os version: ' + threeVersion, 0, 50, function () {
+                                    api.newLine();
+                                    api.write('audio driver: uppbeat.io', 0, 50, function () {
+                                      api.newLine();
+                                      api.newLine();
+                                      api.setColor('c3');
+                                      api.write('>> loading resources...', 0, 50, function () {
                                         if (onStartLoad) onStartLoad();
                                       });
                                     });

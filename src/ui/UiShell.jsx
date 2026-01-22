@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useGameStore } from '../game/GameContext.jsx';
 import { initTerminal } from './initTerminal.js';
 
 const curatedWorldSeeds = [9746, 6362, 4217, 5794];
@@ -31,67 +32,64 @@ function randomCuratedSeed() {
 }
 
 export default function UiShell() {
-  const terminalRef = useRef(null);
+  const { settings, setSettings, gameRef, terminalRef } = useGameStore();
+  const terminalRefLocal = useRef(null);
   const resourcesRef = useRef(null);
   const controlsRef = useRef(null);
   const cursorRef = useRef(null);
 
   const [showSettings, setShowSettings] = useState(false);
   const [settingsLocked, setSettingsLocked] = useState(false);
-  const [mode, setMode] = useState('drive');
+  const [mode, setMode] = useState(settings.mode ?? 'drive');
   const [worldSeedMode, setWorldSeedMode] = useState('curated');
-  const [worldSeedValue, setWorldSeedValue] = useState(randomCuratedSeed);
-  const [renderScaling, setRenderScaling] = useState('1');
-  const [windshieldShader, setWindshieldShader] = useState('simple');
+  const [worldSeedValue, setWorldSeedValue] = useState(settings.worldSeed ?? randomCuratedSeed());
+  const [renderScaling, setRenderScaling] = useState(String(settings.renderScaling ?? 1));
+  const [windshieldShader, setWindshieldShader] = useState(settings.windshieldShader ?? 'simple');
 
   useEffect(() => {
-    window.userSettings = window.userSettings || {};
-    window.userSettings.worldSeed = worldSeedValue;
-    window.userSettings.mode = mode;
-    window.userSettings.renderScaling = parseFloat(renderScaling);
-    window.userSettings.windshieldShader = windshieldShader;
-    const cleanup = initTerminal({
-      terminalEl: terminalRef.current,
+    const { api, cleanup } = initTerminal({
+      terminalEl: terminalRefLocal.current,
       resourcesEl: resourcesRef.current,
       controlsEl: controlsRef.current,
       cursorEl: cursorRef.current,
       onShowSettings: () => {
         setShowSettings(true);
-        if (window.updateControls) {
-          window.updateControls(controlsText[mode]);
+        if (api?.updateControls) {
+          api.updateControls(controlsText[mode]);
         }
       },
       onStartLoad: () => {
-        if (window.game && window.game.load) {
-          window.game.load();
+        if (gameRef.current && gameRef.current.load) {
+          gameRef.current.load();
         }
       }
     });
+
+    terminalRef.current = api || null;
+    if (gameRef.current && gameRef.current.setTerminal) {
+      gameRef.current.setTerminal(api || null);
+    }
 
     return cleanup;
   }, []);
 
   useEffect(() => {
-    window.userSettings = window.userSettings || {};
-    window.userSettings.mode = mode;
-    if (window.updateControls) {
-      window.updateControls(controlsText[mode]);
+    setSettings((prev) => ({ ...prev, mode }));
+    if (terminalRef.current?.updateControls) {
+      terminalRef.current.updateControls(controlsText[mode]);
     }
   }, [mode]);
 
   useEffect(() => {
-    window.userSettings = window.userSettings || {};
-    window.userSettings.worldSeed = worldSeedValue;
+    setSettings((prev) => ({ ...prev, worldSeed: worldSeedValue }));
   }, [worldSeedValue]);
 
   useEffect(() => {
-    window.userSettings = window.userSettings || {};
-    window.userSettings.renderScaling = parseFloat(renderScaling);
+    setSettings((prev) => ({ ...prev, renderScaling: parseFloat(renderScaling) }));
   }, [renderScaling]);
 
   useEffect(() => {
-    window.userSettings = window.userSettings || {};
-    window.userSettings.windshieldShader = windshieldShader;
+    setSettings((prev) => ({ ...prev, windshieldShader }));
   }, [windshieldShader]);
 
   function handleModeChange(event) {
@@ -132,7 +130,7 @@ export default function UiShell() {
           <div className="tCol leftCol">
             <div className="tRow" style={{ height: '100%' }}>
               <div className="tHeader">&gt;Terminal</div>
-              <div id="terminal" ref={terminalRef}>
+              <div id="terminal" ref={terminalRefLocal}>
                 <span id="cursor" ref={cursorRef}>
                   &#9619;
                 </span>

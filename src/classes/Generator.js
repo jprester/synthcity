@@ -28,6 +28,7 @@ class Generator {
   	this.noise_scale = options.noise_scale || defaults.noise_scale;
 
   	this.spawn_obj = options.spawn_obj || defaults.spawn_obj;
+    this.spawn_context = options.spawn_context || null;
 
 		// init position
   	this.x = Math.floor(this.camera.position.x / this.cell_size);
@@ -156,7 +157,7 @@ class Generator {
 		  		if (this.grid[i][j]==null) {
 			  		xx = (Math.floor(this.camera.position.x / this.cell_size) * this.cell_size) + (j*this.cell_size) - Math.floor((this.cell_count*this.cell_size)/2);
 			  		zz = (Math.floor(this.camera.position.z / this.cell_size) * this.cell_size) + (i*this.cell_size) - Math.floor((this.cell_count*this.cell_size)/2);
-			  		this.grid[i][j] = new this.spawn_obj(xx, zz);
+			  		this.grid[i][j] = new this.spawn_obj(xx, zz, this.spawn_context);
 			  	}
 			  }
 	  	}

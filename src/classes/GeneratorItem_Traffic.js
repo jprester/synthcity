@@ -4,18 +4,19 @@ import {
 } from 'three';
 
 class GeneratorItem_Traffic {
-  constructor(x,z) {
+  constructor(x, z, game) {
 
     this.x = x;
     this.z = z;
+    this.game = game;
 
-    this.roadWidth = window.game.roadWidth;
+    this.roadWidth = this.game.roadWidth;
 
     this.cars = [];
 
     for (let j=0; j<3; j++) {
       for (let k=0; k<(Math.floor(Math.random()*3)); k++) 
-        this.cars.push( new Car(j, this.x-this.roadWidth/2, this.z-this.roadWidth/2) );
+        this.cars.push(new Car(this.game, j, this.x - this.roadWidth / 2, this.z - this.roadWidth / 2));
     }
 
   }
@@ -32,8 +33,9 @@ class GeneratorItem_Traffic {
 }
 
 class Car {
-  constructor(dir, spawn_x, spawn_z) {
+  constructor(game, dir, spawn_x, spawn_z) {
 
+    this.game = game;
     this.dir = dir; // 0, 1, 2, 3
 
     this.spawn_x = spawn_x;
@@ -50,12 +52,12 @@ class Car {
     // create mesh
 
     let carGeos = ['car_01','car_02','car_03','car_04','car_05','car_06','car_07','car_08'];
-    let geo = window.game.assets.getModel(carGeos[Math.floor(Math.random()*8)]);
-    let mat = window.game.assets.getMaterial('cars');
+    let geo = this.game.assets.getModel(carGeos[Math.floor(Math.random()*8)]);
+    let mat = this.game.assets.getMaterial('cars');
 
     this.mesh = new Mesh( geo, mat );
     this.mesh.position.set(this.spawn_x, this.alt, this.spawn_z);
-    window.game.scene.add( this.mesh );
+    this.game.scene.add(this.mesh);
 
     // east
     if (this.dir==0) {
@@ -96,7 +98,7 @@ class Car {
 
   }
   remove() {
-    window.game.scene.remove(this.mesh);
+    this.game.scene.remove(this.mesh);
   }
   update(){
 
@@ -108,7 +110,7 @@ class Car {
       this.mesh.position.set(this.x, this.alt+this.alt_offset, this.z);
 
       // destroy
-      if (this.mesh.position.distanceTo(window.game.player.body.position) > (1000+Math.random()*500)) {
+      if (this.mesh.position.distanceTo(this.game.player.body.position) > (1000 + Math.random() * 500)) {
         // remove
         // if (this.mesh) {
         //   scene.remove(this.mesh);

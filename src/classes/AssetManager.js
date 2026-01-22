@@ -19,12 +19,14 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 
 class AssetManager {
 
-  constructor() {
+  constructor(game, terminal = null) {
+    this.game = game;
+    this.terminal = terminal;
 
     this.path = '';
 
     this.textureAnisotropy = 8;
-    this.buildingWindowsEmissiveIntensity = window.game.environment.windowLights ? 1.5 : 0;;
+    this.buildingWindowsEmissiveIntensity = this.game.environment.windowLights ? 1.5 : 0;
     this.adsEmissiveIntensity = 0.1;
 
     this.textures = {};
@@ -47,11 +49,15 @@ class AssetManager {
 
     this.loadingManager = new LoadingManager();
     this.loadingManager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
-      window.writeAsset(url, itemsLoaded, itemsTotal);
+      if (self.terminal && self.terminal.writeAsset) {
+        self.terminal.writeAsset(url, itemsLoaded, itemsTotal);
+      }
     };
     this.loadingManager.onLoad = function () {
       console.log( 'AssetManager: Assets loaded' );
-      window.game.onLoad();
+      if (self.game) {
+        self.game.onLoad();
+      }
     };
     this.loadingManager.onError = function ( url ) {
       console.error( 'AssetManager: Failed to load ' + url );
@@ -177,7 +183,7 @@ class AssetManager {
     });
 
     // ground plane
-    this.models['ground'] = new PlaneGeometry( window.game.cityBlockSize+window.game.roadWidth, window.game.cityBlockSize+window.game.roadWidth );
+    this.models['ground'] = new PlaneGeometry(this.game.cityBlockSize + this.game.roadWidth, this.game.cityBlockSize + this.game.roadWidth);
 
     // storefronts
     this.objLoader.load(this.path+'models/storefronts.obj', function (obj) {
@@ -296,7 +302,7 @@ class AssetManager {
       map: this.getTexture('ground'),
       emissive: 0x0090ff,
       emissiveMap: this.getTexture('ground_em'),
-      emissiveIntensity: window.game.environment.name=='night' ? 0.2 : 0,
+      emissiveIntensity: this.game.environment.name == 'night' ? 0.2 : 0,
       shininess: 0
     });
 
@@ -453,6 +459,10 @@ class AssetManager {
 
   getMaterial(id) {
     return this.materials[id];
+  }
+
+  setTerminal(terminal) {
+    this.terminal = terminal;
   }
 
   // utils
