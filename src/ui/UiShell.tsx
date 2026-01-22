@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { useGameStore } from '../context/GameContext';
+import type { QualityLevel, FrameRateLimit } from '../context/GameContext';
 import { initTerminal } from './initTerminal';
 import { PRESET_NAMES } from '../scene/effects';
 
@@ -57,6 +58,8 @@ export default function UiShell() {
   const [renderScaling, setRenderScaling] = useState(String(settings.renderScaling ?? 1));
   const [windshieldShader, setWindshieldShader] = useState(settings.windshieldShader ?? 'simple');
   const [visualPreset, setVisualPreset] = useState(settings.visualPreset ?? 'Default');
+  const [qualityLevel, setQualityLevel] = useState<QualityLevel>(settings.qualityLevel ?? 'high');
+  const [frameRateLimit, setFrameRateLimit] = useState<FrameRateLimit>(settings.frameRateLimit ?? 0);
 
   useEffect(() => {
     const { api, cleanup } = initTerminal({
@@ -108,6 +111,14 @@ export default function UiShell() {
     setSettings((prev) => ({ ...prev, visualPreset }));
   }, [visualPreset]);
 
+  useEffect(() => {
+    setSettings((prev) => ({ ...prev, qualityLevel }));
+  }, [qualityLevel]);
+
+  useEffect(() => {
+    setSettings((prev) => ({ ...prev, frameRateLimit }));
+  }, [frameRateLimit]);
+
   function handleModeChange(event: ChangeEvent<HTMLInputElement>) {
     setMode(event.target.value);
   }
@@ -137,6 +148,14 @@ export default function UiShell() {
 
   function handleVisualPresetChange(event: ChangeEvent<HTMLInputElement>) {
     setVisualPreset(event.target.value);
+  }
+
+  function handleQualityLevelChange(event: ChangeEvent<HTMLInputElement>) {
+    setQualityLevel(event.target.value as QualityLevel);
+  }
+
+  function handleFrameRateLimitChange(event: ChangeEvent<HTMLInputElement>) {
+    setFrameRateLimit(Number(event.target.value) as FrameRateLimit);
   }
 
   function handleEnterClick() {
@@ -260,7 +279,27 @@ export default function UiShell() {
                   />
                 </div>
                 <div style={{ marginBottom: '5px' }}>
-                  <span>Render Scaling:</span>
+                  <span>Resolution:</span>
+                  <label className="formCheckContainer">
+                    <input
+                      type="radio"
+                      name="settingsRenderScaling"
+                      value="0.5"
+                      checked={renderScaling === '0.5'}
+                      onChange={handleRenderScalingChange}
+                    />
+                    <span className="checkmark">[0.5x]</span>
+                  </label>
+                  <label className="formCheckContainer">
+                    <input
+                      type="radio"
+                      name="settingsRenderScaling"
+                      value="0.75"
+                      checked={renderScaling === '0.75'}
+                      onChange={handleRenderScalingChange}
+                    />
+                    <span className="checkmark">[0.75x]</span>
+                  </label>
                   <label className="formCheckContainer">
                     <input
                       type="radio"
@@ -281,15 +320,48 @@ export default function UiShell() {
                     />
                     <span className="checkmark">[1.5x]</span>
                   </label>
+                </div>
+                <div style={{ marginBottom: '5px' }}>
+                  <span>FPS Limit:</span>
                   <label className="formCheckContainer">
                     <input
                       type="radio"
-                      name="settingsRenderScaling"
-                      value="2"
-                      checked={renderScaling === '2'}
-                      onChange={handleRenderScalingChange}
+                      name="settingsFrameRateLimit"
+                      value="30"
+                      checked={frameRateLimit === 30}
+                      onChange={handleFrameRateLimitChange}
                     />
-                    <span className="checkmark">[2.0x]</span>
+                    <span className="checkmark">[30]</span>
+                  </label>
+                  <label className="formCheckContainer">
+                    <input
+                      type="radio"
+                      name="settingsFrameRateLimit"
+                      value="60"
+                      checked={frameRateLimit === 60}
+                      onChange={handleFrameRateLimitChange}
+                    />
+                    <span className="checkmark">[60]</span>
+                  </label>
+                  <label className="formCheckContainer">
+                    <input
+                      type="radio"
+                      name="settingsFrameRateLimit"
+                      value="120"
+                      checked={frameRateLimit === 120}
+                      onChange={handleFrameRateLimitChange}
+                    />
+                    <span className="checkmark">[120]</span>
+                  </label>
+                  <label className="formCheckContainer">
+                    <input
+                      type="radio"
+                      name="settingsFrameRateLimit"
+                      value="0"
+                      checked={frameRateLimit === 0}
+                      onChange={handleFrameRateLimitChange}
+                    />
+                    <span className="checkmark">[Off]</span>
                   </label>
                 </div>
                 <div
@@ -319,6 +391,39 @@ export default function UiShell() {
                   </label>
                 </div>
                 <div style={{ marginBottom: '5px' }}>
+                  <span>Quality:</span>
+                  <label className="formCheckContainer">
+                    <input
+                      type="radio"
+                      name="settingsQualityLevel"
+                      value="low"
+                      checked={qualityLevel === 'low'}
+                      onChange={handleQualityLevelChange}
+                    />
+                    <span className="checkmark">[Low]</span>
+                  </label>
+                  <label className="formCheckContainer">
+                    <input
+                      type="radio"
+                      name="settingsQualityLevel"
+                      value="medium"
+                      checked={qualityLevel === 'medium'}
+                      onChange={handleQualityLevelChange}
+                    />
+                    <span className="checkmark">[Medium]</span>
+                  </label>
+                  <label className="formCheckContainer">
+                    <input
+                      type="radio"
+                      name="settingsQualityLevel"
+                      value="high"
+                      checked={qualityLevel === 'high'}
+                      onChange={handleQualityLevelChange}
+                    />
+                    <span className="checkmark">[High]</span>
+                  </label>
+                </div>
+                <div style={{ marginBottom: '5px', display: qualityLevel !== 'low' ? 'block' : 'none' }}>
                   <span>Visual FX:</span>
                   {PRESET_NAMES.map((presetName) => (
                     <label key={presetName} className="formCheckContainer">

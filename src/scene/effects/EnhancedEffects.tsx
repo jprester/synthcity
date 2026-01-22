@@ -9,30 +9,79 @@ import {
   BrightnessContrast,
   HueSaturation,
   SMAA,
+  FXAA,
 } from "@react-three/postprocessing";
-import { ToneMappingMode, BlendFunction } from "postprocessing";
+import { ToneMappingMode, BlendFunction, KernelSize } from "postprocessing";
 import { Vector2 } from "three";
 import type { VisualPreset } from "./VisualPresets";
 import { PRESET_DEFAULT } from "./VisualPresets";
+import type { QualityLevel } from "../../context/GameContext";
 
 type EnhancedEffectsProps = {
   preset?: VisualPreset;
   enabled?: boolean;
   isDay?: boolean;
+  qualityLevel?: QualityLevel;
 };
 
 /**
- * Enhanced post-processing effects with preset support
+ * Quality-based settings for post-processing effects
+ * - low: Minimal effects for maximum performance
+ * - medium: Balanced effects with optimized bloom
+ * - high: Full quality effects as defined by preset
+ */
+const QUALITY_SETTINGS = {
+  low: {
+    enableBloom: false,
+    enableChromaticAberration: false,
+    enableColorGrading: false,
+    enableVignette: false,
+    enableNoise: false,
+    useSmaa: false, // Use faster FXAA
+    bloomResolutionScale: 0.25,
+    bloomKernelSize: KernelSize.VERY_SMALL,
+  },
+  medium: {
+    enableBloom: true,
+    enableChromaticAberration: false,
+    enableColorGrading: false,
+    enableVignette: true,
+    enableNoise: false,
+    useSmaa: false, // Use faster FXAA
+    bloomResolutionScale: 0.5,
+    bloomKernelSize: KernelSize.SMALL,
+  },
+  high: {
+    enableBloom: true,
+    enableChromaticAberration: true,
+    enableColorGrading: true,
+    enableVignette: true,
+    enableNoise: true,
+    useSmaa: true,
+    bloomResolutionScale: 1.0,
+    bloomKernelSize: KernelSize.LARGE,
+  },
+} as const;
+
+/**
+ * Enhanced post-processing effects with preset and quality level support
  */
 export function EnhancedEffects({
   preset = PRESET_DEFAULT,
   enabled = true,
   isDay = false,
+  qualityLevel = "high",
 }: EnhancedEffectsProps) {
-  // Adjust bloom intensity for day/night
-  const bloomIntensity = isDay
-    ? Math.max(0.35, preset.bloom.intensity * 0.05)
-    : preset.bloom.intensity;
+  const quality = QUALITY_SETTINGS[qualityLevel];
+
+  // Adjust bloom intensity for day/night and quality
+  const bloomIntensity = useMemo(() => {
+    const baseIntensity = isDay
+      ? Math.max(0.35, preset.bloom.intensity * 0.05)
+      : preset.bloom.intensity;
+    // Reduce bloom intensity slightly on medium quality
+    return qualityLevel === "medium" ? baseIntensity * 0.7 : baseIntensity;
+  }, [isDay, preset.bloom.intensity, qualityLevel]);
 
   // Create chromatic aberration offset vector
   const chromaticOffset = useMemo(
@@ -48,30 +97,45 @@ export function EnhancedEffects({
     return null;
   }
 
+  // Low quality: minimal post-processing
+  if (qualityLevel === "low") {
+    return (
+      <EffectComposer multisampling={0}>
+        <FXAA />
+        <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
+      </EffectComposer>
+    );
+  }
+
   return (
     <EffectComposer multisampling={0}>
-      {/* SMAA - antialiasing (better quality than FXAA) */}
-      <SMAA />
+      {/* Antialiasing - SMAA for high quality, FXAA for medium */}
+      {quality.useSmaa ? <SMAA /> : <FXAA />}
 
       {/* Bloom - glow effect on bright areas */}
-      <Bloom
-        intensity={bloomIntensity}
-        luminanceThreshold={preset.bloom.luminanceThreshold}
-        luminanceSmoothing={preset.bloom.luminanceSmoothing}
-        mipmapBlur={preset.bloom.mipmapBlur ?? false}
-      />
-
-      {/* Chromatic Aberration - color fringing at edges */}
-      {preset.chromaticAberration.enabled && (
-        <ChromaticAberration
-          offset={chromaticOffset}
-          radialModulation={true}
-          modulationOffset={0.5}
+      {quality.enableBloom && (
+        <Bloom
+          intensity={bloomIntensity}
+          luminanceThreshold={preset.bloom.luminanceThreshold}
+          luminanceSmoothing={preset.bloom.luminanceSmoothing}
+          mipmapBlur={true} // Always use mipmap blur for better performance
+          resolutionScale={quality.bloomResolutionScale}
+          kernelSize={quality.bloomKernelSize}
         />
       )}
 
-      {/* Color Grading - saturation, contrast, brightness */}
-      {preset.colorGrading.enabled && (
+      {/* Chromatic Aberration - color fringing at edges (high quality only) */}
+      {quality.enableChromaticAberration &&
+        preset.chromaticAberration.enabled && (
+          <ChromaticAberration
+            offset={chromaticOffset}
+            radialModulation={true}
+            modulationOffset={0.5}
+          />
+        )}
+
+      {/* Color Grading - saturation, contrast, brightness (high quality only) */}
+      {quality.enableColorGrading && preset.colorGrading.enabled && (
         <>
           <HueSaturation
             blendFunction={BlendFunction.NORMAL}
@@ -85,15 +149,15 @@ export function EnhancedEffects({
       )}
 
       {/* Vignette - darkened edges */}
-      {preset.vignette.enabled && (
+      {quality.enableVignette && preset.vignette.enabled && (
         <Vignette
           darkness={preset.vignette.darkness}
           offset={preset.vignette.offset}
         />
       )}
 
-      {/* Film Noise/Grain */}
-      {preset.noise.enabled && (
+      {/* Film Noise/Grain (high quality only) */}
+      {quality.enableNoise && preset.noise.enabled && (
         <Noise
           opacity={preset.noise.opacity}
           blendFunction={BlendFunction.OVERLAY}

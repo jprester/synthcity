@@ -1,6 +1,9 @@
 import { createContext, useContext, useMemo, useRef, useState } from "react";
 import type { Dispatch, SetStateAction, MutableRefObject } from "react";
 
+export type QualityLevel = "low" | "medium" | "high";
+export type FrameRateLimit = 0 | 30 | 60 | 120; // 0 = unlimited
+
 export type GameSettings = {
   mode: string;
   worldSeed: number;
@@ -9,6 +12,8 @@ export type GameSettings = {
   windshieldShader: string;
   renderScaling: number;
   visualPreset: string;
+  qualityLevel: QualityLevel;
+  frameRateLimit: FrameRateLimit;
 };
 
 type GameStore = {
@@ -34,6 +39,8 @@ const defaultSettings: GameSettings = {
   windshieldShader: "simple",
   renderScaling: 1.0,
   visualPreset: "Default",
+  qualityLevel: "high",
+  frameRateLimit: 0, // unlimited by default
 };
 
 export function GameProvider({ children }) {

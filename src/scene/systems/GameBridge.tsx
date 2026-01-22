@@ -105,6 +105,7 @@ export function GameBridge() {
         preset={getPreset(settings.visualPreset)}
         isDay={environment?.name === "day"}
         enabled={true}
+        qualityLevel={settings.qualityLevel}
       />
     </>
   );
