@@ -2,7 +2,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { EffectComposer, Bloom, FXAA, ToneMapping } from '@react-three/postprocessing';
 import { ToneMappingMode } from 'postprocessing';
 import { Fog, NoToneMapping, SRGBColorSpace } from 'three';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Game } from '../index.js';
 import { useGameStore } from '../game/GameContext.jsx';
 
@@ -111,6 +111,13 @@ function GameBridge() {
 
 function GeneratorSystem() {
   const { gameRef } = useGameStore();
+  const groupRef = useRef(null);
+
+  useEffect(() => {
+    if (gameRef.current && groupRef.current) {
+      gameRef.current.setGeneratorRoot(groupRef.current);
+    }
+  }, [gameRef]);
 
   useFrame(() => {
     const game = gameRef.current;
@@ -118,10 +125,14 @@ function GeneratorSystem() {
       return;
     }
 
+    if (game.initialized && !game.generatorsInitialized) {
+      game.createGenerators();
+    }
+
     game.updateGenerators();
   }, 2);
 
-  return null;
+  return <group ref={groupRef} />;
 }
 
 export default function R3FExperience() {

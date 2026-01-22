@@ -57,7 +57,7 @@ class Car {
 
     this.mesh = new Mesh( geo, mat );
     this.mesh.position.set(this.spawn_x, this.alt, this.spawn_z);
-    this.game.scene.add(this.mesh);
+    this.game.addGeneratorObject(this.mesh);
 
     // east
     if (this.dir==0) {
@@ -98,7 +98,7 @@ class Car {
 
   }
   remove() {
-    this.game.scene.remove(this.mesh);
+    this.game.removeGeneratorObject(this.mesh);
   }
   update(){
 
@@ -113,7 +113,7 @@ class Car {
       if (this.mesh.position.distanceTo(this.game.player.body.position) > (1000 + Math.random() * 500)) {
         // remove
         // if (this.mesh) {
-        //   scene.remove(this.mesh);
+        //   this.game.removeGeneratorObject(this.mesh);
         //   this.mesh = null;
         // }
         // reverse

@@ -212,11 +212,11 @@ class GeneratorItem_CityBlock {
 
     // add meshes to scene
     for (var i=0; i<this.meshes.length; i++) {
-      this.game.scene.add(this.meshes[i]);
+      this.game.addGeneratorObject(this.meshes[i]);
     }
     // add collision meshes to scene and collider
     for (var i=0; i<this.meshesCollid.length; i++) {
-      this.game.scene.add(this.meshesCollid[i]);
+      this.game.addGeneratorObject(this.meshesCollid[i]);
       this.game.collider.add(this.meshesCollid[i]);
     }
 
@@ -224,7 +224,7 @@ class GeneratorItem_CityBlock {
   remove() {
     // remove meshes
     for (var i=0; i<this.meshes.length; i++) {
-      this.game.scene.remove(this.meshes[i]);
+      this.game.removeGeneratorObject(this.meshes[i]);
     }
     for (var i=0; i<this.updateables.length; i++) {
       this.updateables[i].remove();
@@ -232,7 +232,7 @@ class GeneratorItem_CityBlock {
     // remove collision meshes
     for (var i=0; i<this.meshesCollid.length; i++) {
       this.game.collider.remove(this.meshesCollid[i].uuid);
-      this.game.scene.remove(this.meshesCollid[i]);
+      this.game.removeGeneratorObject(this.meshesCollid[i]);
     }
   }
   update() {
@@ -258,7 +258,7 @@ class Advert {
 
     this.mesh = new Mesh( geo, mat );
     this.mesh.position.set(x,y,z);
-    this.game.scene.add( this.mesh );
+    this.game.addGeneratorObject( this.mesh );
     
     this.interval = 200+Math.random()*800;
     this.counter = Math.random()*this.interval;
@@ -266,7 +266,7 @@ class Advert {
 
   }
   remove() {
-    this.game.scene.remove(this.mesh);
+    this.game.removeGeneratorObject(this.mesh);
   }
   update(){
     if (this.switches) {
@@ -307,13 +307,13 @@ class Topper {
     this.mesh.position.set(x,y,z);
     let s = 0.8+Math.random();
     this.mesh.scale.set(s,s,s);          
-    this.game.scene.add( this.mesh );
+    this.game.addGeneratorObject( this.mesh );
 
     this.rdir = Math.random()<=0.5 ? Math.random()*0.01 : -Math.random()*0.01;
 
   }
   remove() {
-    this.game.scene.remove(this.mesh);
+    this.game.removeGeneratorObject(this.mesh);
   }
   update(){
     this.mesh.rotation.y = this.mesh.rotation.y+this.rdir;
@@ -330,11 +330,11 @@ class Smoke {
     var s = 1+Math.random()*8;
     var sy = s * (1+Math.random()*0.5);
     this.mesh.scale.set(s,sy,s);          
-    this.game.scene.add( this.mesh );
+    this.game.addGeneratorObject( this.mesh );
     this.rstep = Math.random()*7;
   }
   remove() {
-    this.game.scene.remove(this.mesh);
+    this.game.removeGeneratorObject(this.mesh);
   }
   update(){
     this.rstep+=0.0025;
@@ -352,11 +352,11 @@ class Spotlight {
     this.mesh.position.set(x,y,z);
     var s = 10+Math.random()*10;
     this.mesh.scale.set(s,s,s);          
-    this.game.scene.add( this.mesh );
+    this.game.addGeneratorObject( this.mesh );
     this.rstep = Math.random()*7;
   }
   remove() {
-    this.game.scene.remove(this.mesh);
+    this.game.removeGeneratorObject(this.mesh);
   }
   update(){
     this.rstep+=0.01;

@@ -53,6 +53,7 @@ class Game {
     this.externalGenerators = options.externalGenerators ?? false;
     this.settingsOverrides = options.settings ? { ...options.settings } : {};
     this.terminal = options.terminal || null;
+    this.generatorRoot = options.generatorRoot || null;
 
     this.environment = this.getEnvironment('night');
 
@@ -277,50 +278,10 @@ class Game {
 
     /*----- generators -----*/
 
-    this.cityBlockNoise = new Perlin(this.settings.worldSeed);
-    this.cityBlockNoise.noiseDetail(8, 0.5);
-    this.cityBlockNoiseFactor = 0.0017;//0.0017;
-
-    this.generatorCityBlock = new Generator({
-      camera: this.player.camera,
-      cell_size: this.cityBlockSize+this.roadWidth,
-      cell_count: 40,
-      spawn_obj: GeneratorItem_CityBlock,
-      spawn_context: this
-    });
-
-    this.cityLights = [];
-    this.generatorCityLights = null;
-    if (this.environment.cityLights) {
-      // create lights
-      for (let i=0; i<10; i++) {
-        let light = new PointLight( 0x000000, 100, 2000 );
-        light.decay = 1;
-        let l = {
-          light: light,
-          free: true
-        }
-        this.scene.add(l.light);
-        this.cityLights.push(l);
-      }
-      // create generator
-      this.generatorCityLights = new Generator({
-        camera: this.player.camera,
-        cell_size: (this.cityBlockSize+this.roadWidth)*4,
-        cell_count: 8,
-        spawn_obj: GeneratorItem_CityLight,
-        spawn_context: this
-      });
+    this.generatorsInitialized = false;
+    if (!this.externalGenerators) {
+      this.createGenerators();
     }
-
-    this.generatorTraffic = new Generator({
-      camera: this.player.camera,
-      cell_size: this.cityBlockSize+this.roadWidth,
-      cell_count: 12,
-      debug: false,
-      spawn_obj: GeneratorItem_Traffic,
-      spawn_context: this
-    });
 
     /*----- animate -----*/
 
@@ -494,9 +455,77 @@ class Game {
   }
 
   updateGenerators() {
+    if (!this.generatorsInitialized) {
+      return;
+    }
     this.generatorCityBlock.update();
     if (this.generatorCityLights !== null) this.generatorCityLights.update();
     this.generatorTraffic.update();
+  }
+
+  createGenerators() {
+    if (this.generatorsInitialized) {
+      return;
+    }
+
+    this.cityBlockNoise = new Perlin(this.settings.worldSeed);
+    this.cityBlockNoise.noiseDetail(8, 0.5);
+    this.cityBlockNoiseFactor = 0.0017;
+
+    this.generatorCityBlock = new Generator({
+      camera: this.player.camera,
+      cell_size: this.cityBlockSize + this.roadWidth,
+      cell_count: 40,
+      spawn_obj: GeneratorItem_CityBlock,
+      spawn_context: this
+    });
+
+    this.cityLights = [];
+    this.generatorCityLights = null;
+    if (this.environment.cityLights) {
+      for (let i = 0; i < 10; i++) {
+        let light = new PointLight(0x000000, 100, 2000);
+        light.decay = 1;
+        let l = {
+          light: light,
+          free: true
+        };
+        this.addGeneratorObject(l.light);
+        this.cityLights.push(l);
+      }
+      this.generatorCityLights = new Generator({
+        camera: this.player.camera,
+        cell_size: (this.cityBlockSize + this.roadWidth) * 4,
+        cell_count: 8,
+        spawn_obj: GeneratorItem_CityLight,
+        spawn_context: this
+      });
+    }
+
+    this.generatorTraffic = new Generator({
+      camera: this.player.camera,
+      cell_size: this.cityBlockSize + this.roadWidth,
+      cell_count: 12,
+      debug: false,
+      spawn_obj: GeneratorItem_Traffic,
+      spawn_context: this
+    });
+
+    this.generatorsInitialized = true;
+  }
+
+  setGeneratorRoot(root) {
+    this.generatorRoot = root || null;
+  }
+
+  addGeneratorObject(object) {
+    const target = this.generatorRoot || this.scene;
+    target.add(object);
+  }
+
+  removeGeneratorObject(object) {
+    const target = this.generatorRoot || this.scene;
+    target.remove(object);
   }
 
   setSettings(nextSettings = {}) {
