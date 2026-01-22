@@ -50,6 +50,9 @@ class Game {
     this.options = options;
     this.externalRenderer = Boolean(options.renderer);
     this.manageRendererSize = options.manageRendererSize ?? !this.externalRenderer;
+    this.useComposer = options.useComposer ?? true;
+    this.externalRender = options.externalRender ?? false;
+    this.setupEnvironment = options.setupEnvironment ?? true;
 
     this.environment = this.getEnvironment('night');
 
@@ -216,54 +219,59 @@ class Game {
 
     /*----- post processing -----*/
 
-    this.composer = new EffectComposer( this.renderer );
+    if (this.useComposer) {
+      this.composer = new EffectComposer(this.renderer);
 
-    // render pass
-    this.composer.addPass(  new RenderPass( this.scene, this.player.camera ) );
+      // render pass
+      this.composer.addPass(new RenderPass(this.scene, this.player.camera));
 
-    // anti aliasing
-    const fxaa = new ShaderPass( FXAAShader );
-    const pixelRatio = this.renderer.getPixelRatio();
-    fxaa.material.uniforms[ 'resolution' ].value.x = 1 / ( window.innerWidth * pixelRatio );
-    fxaa.material.uniforms[ 'resolution' ].value.y = 1 / ( window.innerHeight * pixelRatio );
-    this.composer.addPass( fxaa );
+      // anti aliasing
+      const fxaa = new ShaderPass(FXAAShader);
+      const pixelRatio = this.renderer.getPixelRatio();
+      fxaa.material.uniforms['resolution'].value.x = 1 / (window.innerWidth * pixelRatio);
+      fxaa.material.uniforms['resolution'].value.y = 1 / (window.innerHeight * pixelRatio);
+      this.composer.addPass(fxaa);
 
-    // bloom
-    const bloomPass = new UnrealBloomPass( new Vector2( window.innerWidth, window.innerHeight ), 0, 0, 0 );
-    if (this.environment.name=='night') {
-      bloomPass.threshold = 0.0;
-      bloomPass.strength = 7.0;
-      bloomPass.radius = 1.0;
+      // bloom
+      const bloomPass = new UnrealBloomPass(new Vector2(window.innerWidth, window.innerHeight), 0, 0, 0);
+      if (this.environment.name == 'night') {
+        bloomPass.threshold = 0.0;
+        bloomPass.strength = 7.0;
+        bloomPass.radius = 1.0;
+      } else if (this.environment.name == 'day') {
+        bloomPass.threshold = 0;
+        bloomPass.strength = 0.35;
+        bloomPass.radius = 1;
+      }
+      this.composer.addPass(bloomPass);
+    } else {
+      this.composer = null;
     }
-    else if (this.environment.name=='day') {
-      bloomPass.threshold = 0;
-      bloomPass.strength = 0.35;
-      bloomPass.radius = 1;
-    }
-    this.composer.addPass( bloomPass );
 
     /*----- environment -----*/
 
-    // sky and fog
+    if (this.setupEnvironment) {
+      // sky and fog
 
-    this.scene.background = this.assets.getTexture(this.environment.sky);
+      this.scene.background = this.assets.getTexture(this.environment.sky);
 
-    // this.scene.environment = this.assets.getTexture(this.environment.environmentMap);
-    
-    this.scene.fog = new Fog(this.environment.fog.color, this.environment.fog.start, this.environment.fog.end);
+      // this.scene.environment = this.assets.getTexture(this.environment.environmentMap);
 
-    // lights
+      this.scene.fog = new Fog(this.environment.fog.color, this.environment.fog.start, this.environment.fog.end);
 
-    const light_sun = new DirectionalLight( this.environment.sun.color, this.environment.sun.intensity );
-    light_sun.castShadow = false;
-    light_sun.position.x = this.environment.sun.x;
-    light_sun.position.y = this.environment.sun.y;
-    light_sun.position.z = this.environment.sun.z;
-    this.scene.add( light_sun );
-    this.scene.add( light_sun.target );
+      // lights
 
-    const light_ambient = new AmbientLight( this.environment.ambient.color, this.environment.ambient.intensity );
-    this.scene.add( light_ambient );
+      const light_sun = new DirectionalLight(this.environment.sun.color, this.environment.sun.intensity);
+      light_sun.castShadow = false;
+      light_sun.position.x = this.environment.sun.x;
+      light_sun.position.y = this.environment.sun.y;
+      light_sun.position.z = this.environment.sun.z;
+      this.scene.add(light_sun);
+      this.scene.add(light_sun.target);
+
+      const light_ambient = new AmbientLight(this.environment.ambient.color, this.environment.ambient.intensity);
+      this.scene.add(light_ambient);
+    }
 
     /*----- generators -----*/
 
@@ -466,10 +474,12 @@ class Game {
 
     // render
 
-    if (this.composer) {
-      this.composer.render();
-    } else {
-      this.renderer.render(this.scene, this.player.camera);
+    if (!this.externalRender) {
+      if (this.composer) {
+        this.composer.render();
+      } else {
+        this.renderer.render(this.scene, this.player.camera);
+      }
     }
     // this.renderer.render(this.scene, this.player.camera);
 
