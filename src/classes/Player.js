@@ -11,7 +11,6 @@ class Player {
 		// params
 
 		this.scene = params.scene;
-    this.renderer = params.renderer;
 		this.controller = params.controller;
 
 		// settings
