@@ -50,6 +50,7 @@ class Game {
     this.useComposer = options.useComposer ?? true;
     this.externalRender = options.externalRender ?? false;
     this.setupEnvironment = options.setupEnvironment ?? true;
+    this.externalGenerators = options.externalGenerators ?? false;
 
     this.environment = this.getEnvironment('night');
 
@@ -462,9 +463,9 @@ class Game {
     if (this.radio) this.radio.update();
     this.playerController.update();
 
-    this.generatorCityBlock.update();
-    if (this.generatorCityLights!==null) this.generatorCityLights.update();
-    this.generatorTraffic.update();
+    if (!this.externalGenerators) {
+      this.updateGenerators();
+    }
 
     // render
 
@@ -480,6 +481,12 @@ class Game {
     // start collision checking
     if (!this.collider.enabled) this.collider.enabled = true;
 
+  }
+
+  updateGenerators() {
+    this.generatorCityBlock.update();
+    if (this.generatorCityLights !== null) this.generatorCityLights.update();
+    this.generatorTraffic.update();
   }
 
   getEnvironment(id) {

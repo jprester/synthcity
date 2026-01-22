@@ -19,7 +19,8 @@ function GameBridge() {
       manageRendererSize: false,
       useComposer: false,
       externalRender: true,
-      setupEnvironment: false
+      setupEnvironment: false,
+      externalGenerators: true
     });
     gameRef.current = game;
     setEnvironment(game.environment);
@@ -61,6 +62,15 @@ function GameBridge() {
       set({ camera: game.player.camera });
     }
   }, 1);
+
+  useFrame(() => {
+    const game = gameRef.current;
+    if (!game || !game.isRunning) {
+      return;
+    }
+
+    game.updateGenerators();
+  }, 2);
 
   return (
     <>
