@@ -26,6 +26,7 @@ import { usePlayerController } from './usePlayerController';
 import { PlayerCarVisuals } from "./PlayerCarVisuals";
 import { TrafficCarVisuals } from "./TrafficCarVisuals";
 import { CityBlockVisuals } from "./CityBlockVisuals";
+import { CityBlockUpdateableVisuals } from "./CityBlockUpdateableVisuals";
 
 declare const Perlin: new (seed?: number) => {
   noiseDetail: (lod: number, falloff: number) => void;
@@ -412,11 +413,12 @@ function GeneratorSystem() {
           <group key={item.__genId}>
             <CityBlockVisuals item={item} game={gameRef.current} />
             {(item.updateables || [])
-              .filter((updateable) => updateable?.isVisual && updateable.mesh)
-              .map((updateable) => (
-                <primitive
-                  key={`u-${updateable.mesh.uuid}`}
-                  object={updateable.mesh}
+              .filter((updateable) => updateable?.isVisual)
+              .map((updateable, index) => (
+                <CityBlockUpdateableVisuals
+                  key={`u-${index}`}
+                  updateable={updateable}
+                  game={gameRef.current}
                 />
               ))}
           </group>

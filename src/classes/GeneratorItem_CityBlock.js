@@ -183,18 +183,18 @@ class GeneratorItem_CityBlock {
           });
 
           if (adsType != null) {
-            let ad = new Advert(
-              this.x + xOff,
-              0,
-              this.z + zOff,
-              this.game.assets.getModel(adsType),
-              false,
-              this.game,
-            );
-            ad.mesh.scale.set(1, scale, 1);
-            ad.mesh.rotateY((-rotate * Math.PI) / 180);
-            this.updateables.push(ad);
-          }
+          let ad = new Advert(
+            this.x + xOff,
+            0,
+            this.z + zOff,
+            adsType,
+            false,
+            this.game,
+          );
+          ad.scale = { x: 1, y: scale, z: 1 };
+          ad.rotationY = (-rotate * Math.PI) / 180;
+          this.updateables.push(ad);
+        }
         }
       }
     } else {
@@ -274,12 +274,12 @@ class GeneratorItem_CityBlock {
           this.x + xOff,
           0,
           this.z + zOff,
-          this.game.assets.getModel(adsType),
+          adsType,
           isTower,
           this.game,
         );
-        ad.mesh.scale.set(1, scale, 1);
-        ad.mesh.rotateY((-rotate * Math.PI) / 180);
+        ad.scale = { x: 1, y: scale, z: 1 };
+        ad.rotationY = (-rotate * Math.PI) / 180;
         this.updateables.push(ad);
       }
     }
@@ -354,6 +354,11 @@ class Advert {
   constructor(x, y, z, geo, is_tower, game) {
     this.game = game;
     this.isVisual = true;
+    this.kind = "advert";
+    this.modelKey = geo;
+    this.position = { x, y, z };
+    this.scale = { x: 1, y: 1, z: 1 };
+    this.rotationY = 0;
 
     if (is_tower) {
       this.adsMats = [
@@ -366,12 +371,8 @@ class Advert {
     } else {
       this.adsMats = ["ads_01", "ads_02", "ads_03", "ads_04", "ads_05"];
     }
-    let mat = this.game.assets.getMaterial(
-      this.adsMats[Math.floor(Math.random() * this.adsMats.length)],
-    );
-
-    this.mesh = new Mesh(geo, mat);
-    this.mesh.position.set(x, y, z);
+    this.currentMatKey =
+      this.adsMats[Math.floor(Math.random() * this.adsMats.length)];
 
     this.interval = 200 + Math.random() * 800;
     this.counter = Math.random() * this.interval;
@@ -383,9 +384,8 @@ class Advert {
       this.counter++;
       if (this.counter > this.interval) {
         this.counter = 0;
-        this.mesh.material = this.game.assets.getMaterial(
-          this.adsMats[Math.floor(Math.random() * this.adsMats.length)],
-        );
+        this.currentMatKey =
+          this.adsMats[Math.floor(Math.random() * this.adsMats.length)];
       }
     }
   }
@@ -395,6 +395,7 @@ class Topper {
   constructor(x, y, z, game) {
     this.game = game;
     this.isVisual = true;
+    this.kind = "topper";
 
     let topperGeos = [
       "topper_01",
@@ -418,25 +419,22 @@ class Topper {
       "ads_large_04",
       "ads_large_05",
     ];
-    let mat = this.game.assets.getMaterial(
-      mats[Math.floor(Math.random() * mats.length)],
-    );
+    let matKey = mats[Math.floor(Math.random() * mats.length)];
 
-    let geo = this.game.assets.getModel(
-      topperGeos[Math.floor(Math.random() * topperGeos.length)],
-    );
-
-    this.mesh = new Mesh(geo, mat);
-    this.mesh.position.set(x, y, z);
+    let geoKey = topperGeos[Math.floor(Math.random() * topperGeos.length)];
     let s = 0.8 + Math.random();
-    this.mesh.scale.set(s, s, s);
+    this.modelKey = geoKey;
+    this.matKey = matKey;
+    this.position = { x, y, z };
+    this.scale = { x: s, y: s, z: s };
+    this.rotationY = 0;
 
     this.rdir =
       Math.random() <= 0.5 ? Math.random() * 0.01 : -Math.random() * 0.01;
   }
   remove() {}
   update() {
-    this.mesh.rotation.y = this.mesh.rotation.y + this.rdir;
+    this.rotationY += this.rdir;
   }
 }
 
@@ -444,22 +442,20 @@ class Smoke {
   constructor(x, y, z, game) {
     this.game = game;
     this.isVisual = true;
+    this.kind = "smoke";
     let mats = ["smoke_01", "smoke_02", "smoke_03"];
-    let mat = this.game.assets.getMaterial(
-      mats[Math.floor(Math.random() * mats.length)],
-    );
-    this.mesh = new Mesh(this.game.assets.getModel("smoke"), mat);
-    this.mesh.position.set(x, y, z);
+    let matKey = mats[Math.floor(Math.random() * mats.length)];
+    this.modelKey = "smoke";
+    this.matKey = matKey;
+    this.position = { x, y, z };
     var s = 1 + Math.random() * 8;
     var sy = s * (1 + Math.random() * 0.5);
-    this.mesh.scale.set(s, sy, s);
+    this.scale = { x: s, y: sy, z: s };
     this.rstep = Math.random() * 7;
   }
   remove() {}
   update() {
     this.rstep += 0.0025;
-    this.mesh.lookAt(this.game.player.camera.position);
-    this.mesh.rotation.x += Math.cos(this.rstep) * 0.25;
   }
 }
 
@@ -467,21 +463,19 @@ class Spotlight {
   constructor(x, y, z, game) {
     this.game = game;
     this.isVisual = true;
+    this.kind = "spotlight";
     let mats = ["spotlight_01", "spotlight_02", "spotlight_03", "spotlight_04"];
-    let mat = this.game.assets.getMaterial(
-      mats[Math.floor(Math.random() * mats.length)],
-    );
-    this.mesh = new Mesh(this.game.assets.getModel("spotlight"), mat);
-    this.mesh.position.set(x, y, z);
+    let matKey = mats[Math.floor(Math.random() * mats.length)];
+    this.modelKey = "spotlight";
+    this.matKey = matKey;
+    this.position = { x, y, z };
     var s = 10 + Math.random() * 10;
-    this.mesh.scale.set(s, s, s);
+    this.scale = { x: s, y: s, z: s };
     this.rstep = Math.random() * 7;
   }
   remove() {}
   update() {
     this.rstep += 0.01;
-    this.mesh.lookAt(this.game.player.camera.position);
-    this.mesh.rotation.x += Math.cos(this.rstep) * 0.4;
   }
 }
 
