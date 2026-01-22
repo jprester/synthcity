@@ -112,6 +112,8 @@ function GameBridge() {
 function GeneratorSystem() {
   const { gameRef } = useGameStore();
   const groupRef = useRef(null);
+  const [cityBlockItems, setCityBlockItems] = useState([]);
+  const cityBlockVersionRef = useRef(-1);
 
   useEffect(() => {
     if (gameRef.current && groupRef.current) {
@@ -130,9 +132,33 @@ function GeneratorSystem() {
     }
 
     game.updateGenerators();
+
+    if (game.generatorCityBlock) {
+      const version = game.generatorCityBlock.version ?? 0;
+      if (version !== cityBlockVersionRef.current) {
+        cityBlockVersionRef.current = version;
+        setCityBlockItems(game.generatorCityBlock.getItems());
+      }
+    }
   }, 2);
 
-  return <group ref={groupRef} />;
+  return (
+    <>
+      <group ref={groupRef} />
+      <group>
+        {cityBlockItems.map((item) => (
+          <group key={item.__genId}>
+            {(item.meshes || []).map((mesh, index) => (
+              <primitive key={`m-${index}`} object={mesh} />
+            ))}
+            {(item.meshesCollid || []).map((mesh, index) => (
+              <primitive key={`c-${index}`} object={mesh} />
+            ))}
+          </group>
+        ))}
+      </group>
+    </>
+  );
 }
 
 export default function R3FExperience() {

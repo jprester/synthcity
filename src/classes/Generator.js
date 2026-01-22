@@ -29,6 +29,8 @@ class Generator {
 
   	this.spawn_obj = options.spawn_obj || defaults.spawn_obj;
     this.spawn_context = options.spawn_context || null;
+    this.itemId = 1;
+    this.version = 0;
 
 		// init position
   	this.x = Math.floor(this.camera.position.x / this.cell_size);
@@ -47,6 +49,7 @@ class Generator {
 
   	// add items
 		this.add_items();
+    this.version += 1;
 
   }
 
@@ -69,6 +72,7 @@ class Generator {
 
 			// add items
 			this.add_items();
+      this.version += 1;
 
 		}
 
@@ -157,7 +161,9 @@ class Generator {
 		  		if (this.grid[i][j]==null) {
 			  		xx = (Math.floor(this.camera.position.x / this.cell_size) * this.cell_size) + (j*this.cell_size) - Math.floor((this.cell_count*this.cell_size)/2);
 			  		zz = (Math.floor(this.camera.position.z / this.cell_size) * this.cell_size) + (i*this.cell_size) - Math.floor((this.cell_count*this.cell_size)/2);
-			  		this.grid[i][j] = new this.spawn_obj(xx, zz, this.spawn_context);
+			  		const item = new this.spawn_obj(xx, zz, this.spawn_context);
+          item.__genId = this.itemId++;
+			  		this.grid[i][j] = item;
 			  	}
 			  }
 	  	}
@@ -175,6 +181,19 @@ class Generator {
 	  		}
 	  	}
 	  }
+  }
+
+  getItems() {
+    const items = [];
+    for (let i = 0; i < this.grid.length; i++) {
+      for (let j = 0; j < this.grid[i].length; j++) {
+        const item = this.grid[i][j];
+        if (item) {
+          items.push(item);
+        }
+      }
+    }
+    return items;
   }
 
   distance(p1,p2) {

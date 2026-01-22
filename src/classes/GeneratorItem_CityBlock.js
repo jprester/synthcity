@@ -210,29 +210,19 @@ class GeneratorItem_CityBlock {
       this.meshesCollid.push(mesh);
     }
 
-    // add meshes to scene
-    for (var i=0; i<this.meshes.length; i++) {
-      this.game.addGeneratorObject(this.meshes[i]);
-    }
-    // add collision meshes to scene and collider
+    // register collision meshes
     for (var i=0; i<this.meshesCollid.length; i++) {
-      this.game.addGeneratorObject(this.meshesCollid[i]);
       this.game.collider.add(this.meshesCollid[i]);
     }
 
   }
   remove() {
-    // remove meshes
-    for (var i=0; i<this.meshes.length; i++) {
-      this.game.removeGeneratorObject(this.meshes[i]);
-    }
     for (var i=0; i<this.updateables.length; i++) {
       this.updateables[i].remove();
     }
     // remove collision meshes
     for (var i=0; i<this.meshesCollid.length; i++) {
       this.game.collider.remove(this.meshesCollid[i].uuid);
-      this.game.removeGeneratorObject(this.meshesCollid[i]);
     }
   }
   update() {
