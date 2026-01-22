@@ -4,7 +4,6 @@ import {
   WebGLRenderer,
   ACESFilmicToneMapping,
   SRGBColorSpace,
-  PerspectiveCamera,
   BufferGeometry,
   Mesh,
   Vector2,
@@ -16,8 +15,6 @@ import {
   AudioLoader,
   AudioListener
 } from 'three';
-
-import { PointerLockControls }  from 'three/examples/jsm/controls/PointerLockControls.js';
 
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
@@ -183,13 +180,8 @@ class Game {
 
     this.scene = this.options.scene || new Scene();
 
-    // camera (for pointer lock controls, player creates own camera)
-
-    this.camera = new PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000 );
-
     // controls
 
-    this.controls = new PointerLockControls( this.camera, document.body );
     this.playerController = new PlayerController();
 
     // create player
@@ -329,8 +321,8 @@ class Game {
 
     window.addEventListener( 'resize', () => this.onWindowResize(), false );
 
-    this.controls.addEventListener( 'lock', () => this.onControlsLock(), false );
-    this.controls.addEventListener( 'unlock', () => this.onControlsUnlock(), false );
+    this.pointerLockElement = this.canvas || (this.renderer ? this.renderer.domElement : null);
+    this.bindPointerLock();
 
   }
 
@@ -568,7 +560,12 @@ class Game {
     this.initAudio();
     this.blocker.style.backgroundColor = '#25004bb9';
     this.blocker.classList.add('hide');
-    this.controls.lock();
+    if (!this.pointerLockElement) {
+      this.pointerLockElement = this.canvas || (this.renderer ? this.renderer.domElement : null);
+    }
+    if (this.pointerLockElement && this.pointerLockElement.requestPointerLock) {
+      this.pointerLockElement.requestPointerLock();
+    }
   }
   onControlsLock() {
     this.playerController.enabled = true;
@@ -578,6 +575,18 @@ class Game {
     if (this.uiOnUnfocus) {
       this.blocker.classList.remove('hide');
     }
+  }
+
+  bindPointerLock() {
+    const element = this.pointerLockElement || document.body;
+    this.pointerLockElement = element;
+    document.addEventListener('pointerlockchange', () => {
+      if (document.pointerLockElement === this.pointerLockElement) {
+        this.onControlsLock();
+      } else {
+        this.onControlsUnlock();
+      }
+    });
   }
 
 }
