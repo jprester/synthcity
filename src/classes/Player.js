@@ -37,10 +37,15 @@ class Player {
     this.camera_fov = 80;
     this.camera_fov_to = this.camera_fov;
 
-		this.camera = new PerspectiveCamera( this.camera_fov, window.innerWidth / window.innerHeight, 1, 2800 );
-		this.camera.rotation.order = 'YXZ';
-		this.camera.rotation.y = Math.PI;
-		this.camera.position.y = this.player_height;
+    this.camera = params.camera || new PerspectiveCamera(this.camera_fov, window.innerWidth / window.innerHeight, 1, 2800);
+    this.camera.rotation.order = 'YXZ';
+    this.camera.rotation.y = Math.PI;
+    this.camera.position.y = this.player_height;
+    this.camera.fov = this.camera_fov;
+    this.camera.near = 1;
+    this.camera.far = 2800;
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
 		
 		this.camera_target = new Object3D(); // used to get camera rotation set by PointerLockControls
 		this.camera_target.rotation.order = 'YXZ';

@@ -191,6 +191,7 @@ class Game {
         scene: this.scene,
         renderer: this.renderer,
         controller: this.playerController,
+        camera: this.options.camera,
         x: -this.roadWidth/2,
         z: 0
       });
@@ -200,6 +201,7 @@ class Game {
         scene: this.scene,
         renderer: this.renderer,
         controller: this.playerController,
+        camera: this.options.camera,
         x: 0,
         z: 0
       });
