@@ -13,6 +13,9 @@ const defaultSettings = {
 
 export function GameProvider({ children }) {
   const [settings, setSettings] = useState(defaultSettings);
+  const [launchReady, setLaunchReady] = useState(false);
+  const [showBlocker, setShowBlocker] = useState(true);
+  const [showCrash, setShowCrash] = useState(false);
   const gameRef = useRef(null);
   const terminalRef = useRef(null);
 
@@ -20,10 +23,16 @@ export function GameProvider({ children }) {
     () => ({
       settings,
       setSettings,
+      launchReady,
+      setLaunchReady,
+      showBlocker,
+      setShowBlocker,
+      showCrash,
+      setShowCrash,
       gameRef,
       terminalRef
     }),
-    [settings]
+    [settings, launchReady, showBlocker, showCrash]
   );
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

@@ -32,7 +32,16 @@ function randomCuratedSeed() {
 }
 
 export default function UiShell() {
-  const { settings, setSettings, gameRef, terminalRef } = useGameStore();
+  const {
+    settings,
+    setSettings,
+    gameRef,
+    terminalRef,
+    launchReady,
+    showBlocker,
+    setShowBlocker,
+    showCrash
+  } = useGameStore();
   const terminalRefLocal = useRef(null);
   const resourcesRef = useRef(null);
   const controlsRef = useRef(null);
@@ -121,11 +130,23 @@ export default function UiShell() {
 
   function handleEnterClick() {
     setSettingsLocked(true);
+    const game = gameRef.current;
+    if (game) {
+      game.onEnterClick();
+      if (!game.initialized) {
+        return;
+      }
+      setShowBlocker(false);
+      const target = game.canvas || document.body;
+      if (target && target.requestPointerLock) {
+        target.requestPointerLock();
+      }
+    }
   }
 
   return (
     <>
-      <div id="blocker">
+      <div id="blocker" className={showBlocker ? '' : 'hide'}>
         <div id="container">
           <div className="tCol leftCol">
             <div className="tRow" style={{ height: '100%' }}>
@@ -295,7 +316,7 @@ export default function UiShell() {
               </div>
             </div>
             <div className="tRow" style={{ height: '32px' }}>
-              <button id="enterBtn" style={{ display: 'none' }} onClick={handleEnterClick}>
+              <button id="enterBtn" style={{ display: launchReady ? 'block' : 'none' }} onClick={handleEnterClick}>
                 &gt;&gt;Launch&lt;&lt;
               </button>
             </div>
@@ -303,7 +324,7 @@ export default function UiShell() {
         </div>
       </div>
 
-      <div id="crashMessage" style={{ display: 'none' }}>
+      <div id="crashMessage" style={{ display: showCrash ? 'flex' : 'none' }}>
         <div className="g1">[ You crashed ]</div>
       </div>
 

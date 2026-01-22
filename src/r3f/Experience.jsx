@@ -1,19 +1,33 @@
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { EffectComposer, Bloom, FXAA, ToneMapping } from '@react-three/postprocessing';
-import { ToneMappingMode } from 'postprocessing';
-import { Fog, NoToneMapping, SRGBColorSpace, PointLight, Audio, AudioListener, AudioLoader } from 'three';
-import { useEffect, useState, useRef } from 'react';
-import { Game } from '../index.js';
-import { useGameStore } from '../game/GameContext.jsx';
-import { GeneratorItem_CityBlock } from '../classes/GeneratorItem_CityBlock.js';
-import { GeneratorItem_CityLight } from '../classes/GeneratorItem_CityLight.js';
-import { GeneratorItem_Traffic } from '../classes/GeneratorItem_Traffic.js';
-import { Radio } from '../classes/Radio.js';
-import { usePlayerController } from './usePlayerController.js';
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import {
+  EffectComposer,
+  Bloom,
+  FXAA,
+  ToneMapping,
+} from "@react-three/postprocessing";
+import { ToneMappingMode } from "postprocessing";
+import {
+  Fog,
+  NoToneMapping,
+  SRGBColorSpace,
+  PointLight,
+  Audio,
+  AudioListener,
+  AudioLoader,
+} from "three";
+import { useEffect, useState, useRef } from "react";
+import { Game } from "../index.js";
+import { useGameStore } from "../game/GameContext.jsx";
+import { GeneratorItem_CityBlock } from "../classes/GeneratorItem_CityBlock.js";
+import { GeneratorItem_CityLight } from "../classes/GeneratorItem_CityLight.js";
+import { GeneratorItem_Traffic } from "../classes/GeneratorItem_Traffic.js";
+import { Radio } from "../classes/Radio.js";
+import { usePlayerController } from "./usePlayerController.js";
 
 function GameBridge() {
-  const { gl, scene, camera, set } = useThree();
-  const { settings, gameRef, terminalRef } = useGameStore();
+  const { gl, scene, camera, set, size } = useThree();
+  const { settings, gameRef, terminalRef, setLaunchReady, setShowCrash } =
+    useGameStore();
   const controller = usePlayerController();
   const [environment, setEnvironment] = useState(null);
 
@@ -23,13 +37,13 @@ function GameBridge() {
     }
 
     const game = new Game({
-      scene,
       camera,
       canvas: gl.domElement,
-      setupEnvironment: false,
       settings,
       terminal: terminalRef.current,
-      controller
+      controller,
+      onAssetsLoaded: () => setLaunchReady(true),
+      onCrashChange: (value) => setShowCrash(Boolean(value)),
     });
     gameRef.current = game;
     setEnvironment(game.environment);
@@ -46,12 +60,25 @@ function GameBridge() {
   }, [settings, gameRef]);
 
   useEffect(() => {
+    const game = gameRef.current;
+    if (!game || !game.player?.camera) {
+      return;
+    }
+    game.player.camera.aspect = size.width / size.height;
+    game.player.camera.updateProjectionMatrix();
+  }, [size, gameRef]);
+
+  useEffect(() => {
     if (!environment || !gameRef.current) {
       return;
     }
 
     const game = gameRef.current;
-    scene.fog = new Fog(environment.fog.color, environment.fog.start, environment.fog.end);
+    scene.fog = new Fog(
+      environment.fog.color,
+      environment.fog.start,
+      environment.fog.end,
+    );
 
     const intervalId = setInterval(() => {
       if (game.assets) {
@@ -80,7 +107,10 @@ function GameBridge() {
     <>
       {environment && (
         <>
-          <ambientLight intensity={environment.ambient.intensity} color={environment.ambient.color} />
+          <ambientLight
+            intensity={environment.ambient.intensity}
+            color={environment.ambient.color}
+          />
           <directionalLight
             castShadow={false}
             intensity={environment.sun.intensity}
@@ -92,7 +122,7 @@ function GameBridge() {
       <EffectComposer>
         <FXAA />
         <Bloom
-          intensity={environment?.name === 'day' ? 0.35 : 7.0}
+          intensity={environment?.name === "day" ? 0.35 : 7.0}
           luminanceThreshold={0.0}
           luminanceSmoothing={0.0}
         />
@@ -112,17 +142,17 @@ function GeneratorSystem() {
   const trafficStateRef = useRef({
     gridX: 0,
     gridZ: 0,
-    items: new Map()
+    items: new Map(),
   });
   const cityLightStateRef = useRef({
     gridX: 0,
     gridZ: 0,
-    items: new Map()
+    items: new Map(),
   });
   const cityBlockStateRef = useRef({
     gridX: 0,
     gridZ: 0,
-    items: new Map()
+    items: new Map(),
   });
 
   useFrame(() => {
@@ -145,7 +175,6 @@ function GeneratorSystem() {
     updateCityBlocks(game);
     updateTraffic(game);
     updateCityLights(game);
-
   }, 2);
 
   function initializeGenerators(game) {
@@ -177,7 +206,11 @@ function GeneratorSystem() {
     const gridZ = Math.floor(camera.position.z / cellSize);
     const state = cityBlockStateRef.current;
 
-    if (state.gridX !== gridX || state.gridZ !== gridZ || state.items.size === 0) {
+    if (
+      state.gridX !== gridX ||
+      state.gridZ !== gridZ ||
+      state.items.size === 0
+    ) {
       state.gridX = gridX;
       state.gridZ = gridZ;
 
@@ -204,7 +237,7 @@ function GeneratorSystem() {
 
       for (const [key, item] of state.items.entries()) {
         if (!nextKeys.has(key)) {
-          if (typeof item.remove === 'function') {
+          if (typeof item.remove === "function") {
             item.remove();
           }
           state.items.delete(key);
@@ -216,7 +249,7 @@ function GeneratorSystem() {
     }
 
     for (const item of state.items.values()) {
-      if (typeof item.update === 'function') {
+      if (typeof item.update === "function") {
         item.update();
       }
     }
@@ -231,7 +264,11 @@ function GeneratorSystem() {
     const gridZ = Math.floor(camera.position.z / cellSize);
     const state = trafficStateRef.current;
 
-    if (state.gridX !== gridX || state.gridZ !== gridZ || state.items.size === 0) {
+    if (
+      state.gridX !== gridX ||
+      state.gridZ !== gridZ ||
+      state.items.size === 0
+    ) {
       state.gridX = gridX;
       state.gridZ = gridZ;
 
@@ -258,7 +295,7 @@ function GeneratorSystem() {
 
       for (const [key, item] of state.items.entries()) {
         if (!nextKeys.has(key)) {
-          if (typeof item.remove === 'function') {
+          if (typeof item.remove === "function") {
             item.remove();
           }
           state.items.delete(key);
@@ -270,7 +307,7 @@ function GeneratorSystem() {
     }
 
     for (const item of state.items.values()) {
-      if (typeof item.update === 'function') {
+      if (typeof item.update === "function") {
         item.update();
       }
     }
@@ -285,7 +322,11 @@ function GeneratorSystem() {
     const gridZ = Math.floor(camera.position.z / cellSize);
     const state = cityLightStateRef.current;
 
-    if (state.gridX !== gridX || state.gridZ !== gridZ || state.items.size === 0) {
+    if (
+      state.gridX !== gridX ||
+      state.gridZ !== gridZ ||
+      state.items.size === 0
+    ) {
       state.gridX = gridX;
       state.gridZ = gridZ;
 
@@ -312,7 +353,7 @@ function GeneratorSystem() {
 
       for (const [key, item] of state.items.entries()) {
         if (!nextKeys.has(key)) {
-          if (typeof item.remove === 'function') {
+          if (typeof item.remove === "function") {
             item.remove();
           }
           state.items.delete(key);
@@ -321,7 +362,7 @@ function GeneratorSystem() {
     }
 
     for (const item of state.items.values()) {
-      if (typeof item.update === 'function') {
+      if (typeof item.update === "function") {
         item.update();
       }
     }
@@ -341,7 +382,10 @@ function GeneratorSystem() {
             {(item.updateables || [])
               .filter((updateable) => updateable?.isVisual && updateable.mesh)
               .map((updateable) => (
-                <primitive key={`u-${updateable.mesh.uuid}`} object={updateable.mesh} />
+                <primitive
+                  key={`u-${updateable.mesh.uuid}`}
+                  object={updateable.mesh}
+                />
               ))}
           </group>
         ))}
@@ -350,7 +394,9 @@ function GeneratorSystem() {
         {trafficItems.map((item) => (
           <group key={item.__genId}>
             {(item.cars || []).map((car, index) =>
-              car.mesh ? <primitive key={`t-${index}`} object={car.mesh} /> : null
+              car.mesh ? (
+                <primitive key={`t-${index}`} object={car.mesh} />
+              ) : null,
             )}
           </group>
         ))}
@@ -369,9 +415,10 @@ function PlayerSystem() {
   const [playerVisuals, setPlayerVisuals] = useState({
     car: null,
     windows: null,
-    light: null
+    light: null,
   });
   const visualsReadyRef = useRef(false);
+  const playerRef = useRef(null);
 
   useFrame((state, delta) => {
     const game = gameRef.current;
@@ -379,11 +426,16 @@ function PlayerSystem() {
       return;
     }
 
+    if (game.player && game.player !== playerRef.current) {
+      visualsReadyRef.current = false;
+      playerRef.current = game.player;
+    }
+
     if (!visualsReadyRef.current && game.player) {
       const nextVisuals = {
         car: game.player.car || null,
         windows: game.player.car_windows || null,
-        light: game.player.light || null
+        light: game.player.light || null,
       };
       setPlayerVisuals(nextVisuals);
       visualsReadyRef.current = true;
@@ -399,7 +451,9 @@ function PlayerSystem() {
   return (
     <group>
       {playerVisuals.car ? <primitive object={playerVisuals.car} /> : null}
-      {playerVisuals.windows ? <primitive object={playerVisuals.windows} /> : null}
+      {playerVisuals.windows ? (
+        <primitive object={playerVisuals.windows} />
+      ) : null}
       {playerVisuals.light ? <primitive object={playerVisuals.light} /> : null}
     </group>
   );
@@ -409,7 +463,7 @@ function AudioSystem() {
   const { gameRef } = useGameStore();
   const initializedRef = useRef(false);
 
-  useFrame(() => {
+  useFrame((state, delta) => {
     const game = gameRef.current;
     if (!game || !game.isRunning) {
       return;
@@ -421,9 +475,9 @@ function AudioSystem() {
     }
 
     if (game.canvasOpacity < 1 && game.canvas) {
-      game.canvasOpacity += game.clockDelta * 0.005;
+      game.canvasOpacity += delta * 0.15;
       game.canvas.style.opacity = game.canvasOpacity;
-      game.masterVolume += game.clockDelta * 0.005;
+      game.masterVolume += delta * 0.15;
     }
 
     if (game.playerController.key_plus) {
@@ -434,7 +488,9 @@ function AudioSystem() {
     }
 
     if (game.audioListener) {
-      game.audioListener.setMasterVolume(game.masterVolume * game.userMasterVolume);
+      game.audioListener.setMasterVolume(
+        game.masterVolume * game.userMasterVolume,
+      );
     }
 
     if (game.radio) {
@@ -460,29 +516,29 @@ function initializeAudio(game) {
   if (game.settings.music == 1) {
     game.radio = new Radio({
       audioListener: audioListener,
-      controller: game.playerController
+      controller: game.playerController,
     });
   }
 
   if (game.settings.soundFx == 1) {
     const soundTrafficAmbient = new Audio(audioListener);
-    audioLoader.load('assets/sounds/traffic_ambient.wav', function (buffer) {
+    audioLoader.load("assets/sounds/traffic_ambient.wav", function (buffer) {
       soundTrafficAmbient.setBuffer(buffer);
       soundTrafficAmbient.setLoop(true);
       soundTrafficAmbient.setVolume(1);
       soundTrafficAmbient.play();
     });
 
-    if (game.settings.mode == 'drive') {
+    if (game.settings.mode == "drive") {
       const soundCarAmbient = new Audio(audioListener);
-      audioLoader.load('assets/sounds/car_ambient.wav', function (buffer) {
+      audioLoader.load("assets/sounds/car_ambient.wav", function (buffer) {
         soundCarAmbient.setBuffer(buffer);
         soundCarAmbient.setLoop(true);
         soundCarAmbient.setVolume(1);
         soundCarAmbient.play();
       });
       const soundCarWind = new Audio(audioListener);
-      audioLoader.load('assets/sounds/car_wind.wav', function (buffer) {
+      audioLoader.load("assets/sounds/car_wind.wav", function (buffer) {
         soundCarWind.setBuffer(buffer);
         soundCarWind.setLoop(true);
         soundCarWind.setVolume(0);
@@ -490,7 +546,7 @@ function initializeAudio(game) {
         game.player.soundWind = soundCarWind;
       });
       const soundCarStress = new Audio(audioListener);
-      audioLoader.load('assets/sounds/car_stress.wav', function (buffer) {
+      audioLoader.load("assets/sounds/car_stress.wav", function (buffer) {
         soundCarStress.setBuffer(buffer);
         soundCarStress.setLoop(true);
         soundCarStress.setVolume(0);
@@ -498,21 +554,21 @@ function initializeAudio(game) {
         game.player.soundStress = soundCarStress;
       });
       const soundCarChimeUp = new Audio(audioListener);
-      audioLoader.load('assets/sounds/chime_up.wav', function (buffer) {
+      audioLoader.load("assets/sounds/chime_up.wav", function (buffer) {
         soundCarChimeUp.setBuffer(buffer);
         soundCarChimeUp.setLoop(false);
         soundCarChimeUp.setVolume(1);
         game.player.soundChimeUp = soundCarChimeUp;
       });
       const soundCarChimeDown = new Audio(audioListener);
-      audioLoader.load('assets/sounds/chime_down.wav', function (buffer) {
+      audioLoader.load("assets/sounds/chime_down.wav", function (buffer) {
         soundCarChimeDown.setBuffer(buffer);
         soundCarChimeDown.setLoop(false);
         soundCarChimeDown.setVolume(1);
         game.player.soundChimeDown = soundCarChimeDown;
       });
       const soundCarCrash = new Audio(audioListener);
-      audioLoader.load('assets/sounds/crash.wav', function (buffer) {
+      audioLoader.load("assets/sounds/crash.wav", function (buffer) {
         soundCarCrash.setBuffer(buffer);
         soundCarCrash.setLoop(false);
         soundCarCrash.setVolume(1);
@@ -520,7 +576,7 @@ function initializeAudio(game) {
       });
     } else {
       const soundCityAmbient = new Audio(audioListener);
-      audioLoader.load('assets/sounds/city_ambient.wav', function (buffer) {
+      audioLoader.load("assets/sounds/city_ambient.wav", function (buffer) {
         soundCityAmbient.setBuffer(buffer);
         soundCityAmbient.setLoop(true);
         soundCityAmbient.setVolume(0);
@@ -528,7 +584,7 @@ function initializeAudio(game) {
         game.player.soundCityAmbient = soundCityAmbient;
       });
       const soundWind = new Audio(audioListener);
-      audioLoader.load('assets/sounds/car_wind.wav', function (buffer) {
+      audioLoader.load("assets/sounds/car_wind.wav", function (buffer) {
         soundWind.setBuffer(buffer);
         soundWind.setLoop(true);
         soundWind.setVolume(0);
@@ -540,7 +596,7 @@ function initializeAudio(game) {
 }
 
 function PointerLockSystem() {
-  const { gameRef } = useGameStore();
+  const { gameRef, setShowBlocker } = useGameStore();
 
   useEffect(() => {
     function handlePointerLockChange() {
@@ -552,26 +608,30 @@ function PointerLockSystem() {
       const target = game.pointerLockElement || game.canvas || document.body;
       if (document.pointerLockElement === target) {
         game.playerController.enabled = true;
+        setShowBlocker(false);
       } else {
         game.playerController.enabled = false;
-        if (game.uiOnUnfocus && game.blocker) {
-          game.blocker.classList.remove('hide');
+        if (game.uiOnUnfocus) {
+          setShowBlocker(true);
         }
       }
     }
 
-    document.addEventListener('pointerlockchange', handlePointerLockChange);
+    document.addEventListener("pointerlockchange", handlePointerLockChange);
     return () => {
-      document.removeEventListener('pointerlockchange', handlePointerLockChange);
+      document.removeEventListener(
+        "pointerlockchange",
+        handlePointerLockChange,
+      );
     };
-  }, [gameRef]);
+  }, [gameRef, setShowBlocker]);
 
   return null;
 }
 
 export default function R3FExperience() {
   return (
-    <Canvas style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
+    <Canvas style={{ position: "fixed", inset: 0, zIndex: 0 }}>
       <GameBridge />
       <GeneratorSystem />
       <PlayerSystem />

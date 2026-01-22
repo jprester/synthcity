@@ -12,7 +12,6 @@ class PlayerCar {
 
 		// params
 
-    this.scene = params.scene;
 		this.controller = params.controller;
     this.game = params.game;
 
@@ -254,14 +253,18 @@ class PlayerCar {
       if (this.game.collider.intersectsSphere(this.body.position, 1)) {
 
         this.crashed = true;
-        document.getElementById('crashMessage').style.display = 'flex';
+        if (this.game && typeof this.game.onCrashChange === 'function') {
+          this.game.onCrashChange(true);
+        }
 
         if (this.soundCrash) this.soundCrash.play();
 
         setTimeout( () => {
 
           this.crashed = false;
-          document.getElementById('crashMessage').style.display = 'none';
+          if (this.game && typeof this.game.onCrashChange === 'function') {
+            this.game.onCrashChange(false);
+          }
 
           this.car_dir = 0;
           this.car_dir_v = 0;

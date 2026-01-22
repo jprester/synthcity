@@ -10,7 +10,6 @@ class Player {
 
 		// params
 
-		this.scene = params.scene;
 		this.controller = params.controller;
 
 		// settings

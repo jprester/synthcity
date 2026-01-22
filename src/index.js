@@ -1,17 +1,6 @@
-import {
-  Clock,
-  Scene,
-  BufferGeometry,
-  Mesh,
-  Fog,
-  DirectionalLight,
-  AmbientLight,
-  PointLight
-} from 'three';
+import { BufferGeometry, Mesh } from 'three';
 
 import { AssetManager } from './classes/AssetManager.js';
-import { Shaders } from './classes/Shaders.js';
-
 import { Player } from './classes/Player.js';
 import { PlayerCar } from './classes/PlayerCar.js';
 
@@ -27,9 +16,10 @@ class Game {
 
     this.initialized = false;
     this.options = options;
-    this.setupEnvironment = options.setupEnvironment ?? true;
     this.settingsOverrides = options.settings ? { ...options.settings } : {};
     this.terminal = options.terminal || null;
+    this.onAssetsLoaded = options.onAssetsLoaded || null;
+    this.onCrashChange = options.onCrashChange || null;
 
     this.environment = this.getEnvironment('night');
 
@@ -42,8 +32,6 @@ class Game {
 
     // elements
 
-    this.blocker = document.getElementById('blocker');
-    this.enterBtn = document.getElementById('enterBtn');
     this.canvas = options.canvas || document.getElementById('canvas');
 
     // fade in / volume
@@ -51,10 +39,6 @@ class Game {
     this.canvasOpacity = 0;
     this.masterVolume = 0;
     this.userMasterVolume = 1;
-
-    // launch button
-
-    this.enterBtn.addEventListener( 'click', () => this.onEnterClick(), false );
 
     // world settings (do not change)
 
@@ -90,8 +74,9 @@ class Game {
       this.terminal.showCredits();
     }
 
-    // show launch button
-    document.getElementById('enterBtn').style.display = 'block';
+    if (typeof this.onAssetsLoaded === 'function') {
+      this.onAssetsLoaded();
+    }
 
   }
 
@@ -126,10 +111,6 @@ class Game {
 
     /*----- setup -----*/
 
-    // scene
-
-    this.scene = this.options.scene || new Scene();
-
     // controls
 
     this.playerController = this.options.controller || null;
@@ -142,7 +123,6 @@ class Game {
 
     if (this.settings.mode=='drive') {
       this.player = new PlayerCar({
-        scene: this.scene,
         controller: this.playerController,
         game: this,
         camera: this.options.camera,
@@ -152,7 +132,6 @@ class Game {
     }
     else {
       this.player = new Player({
-        scene: this.scene,
         controller: this.playerController,
         game: this,
         camera: this.options.camera,
@@ -167,55 +146,19 @@ class Game {
 
     // post processing handled by R3F
 
-    /*----- environment -----*/
-
-    if (this.setupEnvironment) {
-      // sky and fog
-
-      this.scene.background = this.assets.getTexture(this.environment.sky);
-
-      // this.scene.environment = this.assets.getTexture(this.environment.environmentMap);
-
-      this.scene.fog = new Fog(this.environment.fog.color, this.environment.fog.start, this.environment.fog.end);
-
-      // lights
-
-      const light_sun = new DirectionalLight(this.environment.sun.color, this.environment.sun.intensity);
-      light_sun.castShadow = false;
-      light_sun.position.x = this.environment.sun.x;
-      light_sun.position.y = this.environment.sun.y;
-      light_sun.position.z = this.environment.sun.z;
-      this.scene.add(light_sun);
-      this.scene.add(light_sun.target);
-
-      const light_ambient = new AmbientLight(this.environment.ambient.color, this.environment.ambient.intensity);
-      this.scene.add(light_ambient);
-    }
-
     // generators are managed by the R3F system
     /*----- animate -----*/
 
-    // time
-
-    this.clock = new Clock();
-    this.clockDelta = 0;
     this.isRunning = true;
 
     /*----- event listeners -----*/
-
-    window.addEventListener('resize', () => this.onWindowResize(), false);
 
     this.pointerLockElement = this.canvas || document.body;
 
   }
 
 
-  updatePlayer(deltaOverride) {
-    const delta = typeof deltaOverride === 'number' ? deltaOverride : this.clock.getDelta();
-    this.clockDelta += delta;
-
-    // update
-
+  updatePlayer(delta) {
     this.player.update();
     this.playerController.update();
   }
@@ -291,27 +234,8 @@ class Game {
 
   }
 
-  // event listener callbacks
-
-  onWindowResize() {
-
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-  
-    this.player.onWindowResize();
-  
-  }
-
   onEnterClick() {
     this.init();
-    this.blocker.style.backgroundColor = '#25004bb9';
-    this.blocker.classList.add('hide');
-    if (!this.pointerLockElement) {
-      this.pointerLockElement = this.canvas || document.body;
-    }
-    if (this.pointerLockElement && this.pointerLockElement.requestPointerLock) {
-      this.pointerLockElement.requestPointerLock();
-    }
   }
 }
 
