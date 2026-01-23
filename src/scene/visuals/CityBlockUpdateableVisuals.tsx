@@ -1,15 +1,36 @@
 import { useEffect, useRef, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Mesh } from "three";
+import type { VisibilitySettings } from "../../context/GameContext";
 
 type UpdateableVisualProps = {
   updateable: any;
   game: any;
+  visibility: VisibilitySettings;
 };
+
+/**
+ * Check if an updateable should be visible based on its kind
+ */
+function isUpdateableVisible(kind: string, visibility: VisibilitySettings): boolean {
+  switch (kind) {
+    case "advert":
+      return visibility.ads;
+    case "smoke":
+      return visibility.smoke;
+    case "spotlight":
+      return visibility.spotlights;
+    case "topper":
+      return visibility.toppers;
+    default:
+      return true;
+  }
+}
 
 export function CityBlockUpdateableVisuals({
   updateable,
   game,
+  visibility,
 }: UpdateableVisualProps) {
   const [mesh, setMesh] = useState<Mesh | null>(null);
   const meshRef = useRef<Mesh | null>(null);
@@ -99,6 +120,11 @@ export function CityBlockUpdateableVisuals({
       mesh.rotation.x += Math.cos(updateable.rstep || 0) * 0.4;
     }
   }, 1);
+
+  // Check visibility based on updateable kind
+  if (!isUpdateableVisible(updateable?.kind, visibility)) {
+    return null;
+  }
 
   return mesh ? <primitive object={mesh} /> : null;
 }

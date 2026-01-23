@@ -32,7 +32,8 @@ type CityLightDescriptor = {
 };
 
 export function GeneratorSystem() {
-  const { gameRef } = useGameStore();
+  const { gameRef, settings } = useGameStore();
+  const { visibility } = settings;
   const [cityBlockItems, setCityBlockItems] = useState<
     WithGenId<GeneratorItem_CityBlock>[]
   >([]);
@@ -314,6 +315,7 @@ export function GeneratorSystem() {
               item={item}
               game={gameRef.current}
               skipMegaBuildings
+              visibility={visibility}
             />
             {(item.updateables || [])
               .filter((updateable) => updateable?.isVisual)
@@ -322,33 +324,40 @@ export function GeneratorSystem() {
                   key={`u-${index}`}
                   updateable={updateable}
                   game={gameRef.current}
+                  visibility={visibility}
                 />
               ))}
           </group>
         ))}
       </group>
-      <InstancedMegaBuildings
-        megaBuildings={megaBuildings}
-        game={gameRef.current}
-      />
-      <PooledTrafficVisuals
-        trafficItems={trafficItems}
-        game={gameRef.current}
-      />
-      <group>
-        {cityLights.map((light, index) =>
-          light.free ? null : (
-            <pointLight
-              key={`cl-${index}`}
-              intensity={15}
-              distance={500}
-              decay={2}
-              color={`hsl(${light.color.h * 360}, ${light.color.s * 100}%, ${light.color.l * 100}%)`}
-              position={[light.position.x, light.position.y, light.position.z]}
-            />
-          ),
-        )}
-      </group>
+      {visibility.megaBuildings && (
+        <InstancedMegaBuildings
+          megaBuildings={megaBuildings}
+          game={gameRef.current}
+        />
+      )}
+      {visibility.trafficCars && (
+        <PooledTrafficVisuals
+          trafficItems={trafficItems}
+          game={gameRef.current}
+        />
+      )}
+      {visibility.cityLights && (
+        <group>
+          {cityLights.map((light, index) =>
+            light.free ? null : (
+              <pointLight
+                key={`cl-${index}`}
+                intensity={15}
+                distance={500}
+                decay={2}
+                color={`hsl(${light.color.h * 360}, ${light.color.s * 100}%, ${light.color.l * 100}%)`}
+                position={[light.position.x, light.position.y, light.position.z]}
+              />
+            ),
+          )}
+        </group>
+      )}
     </>
   );
 }

@@ -27,7 +27,9 @@ export function PlayerSystem() {
   }, 1);
 
   const game = gameRef.current;
-  const shouldRenderCar = Boolean(player?.carPose && game?.assets);
+  const shouldRenderCar = Boolean(
+    player?.carPose && game?.assets && settings.visibility.playerCar
+  );
 
   return shouldRenderCar ? (
     <PlayerCarVisuals

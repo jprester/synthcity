@@ -8,7 +8,7 @@ import { EnhancedEffects, getPreset } from "../effects";
 
 export function GameBridge() {
   const { gl, scene, camera, set, size } = useThree();
-  const { settings, gameRef, terminalRef, setLaunchReady, setShowCrash } =
+  const { settings, gameRef, terminalRef, launchReady, setLaunchReady, setShowCrash } =
     useGameStore();
   const controller = usePlayerController();
   const [environment, setEnvironment] = useState<any | null>(null);
@@ -40,6 +40,16 @@ export function GameBridge() {
       gameRef.current.setSettings(settings);
     }
   }, [settings, gameRef]);
+
+  // Update emissive intensities when visual preset changes or assets become available
+  useEffect(() => {
+    const game = gameRef.current;
+    if (!game?.assets?.updateEmissiveIntensities) {
+      return;
+    }
+    const preset = getPreset(settings.visualPreset);
+    game.assets.updateEmissiveIntensities(preset.emissive);
+  }, [settings.visualPreset, launchReady, gameRef]);
 
   useEffect(() => {
     const game = gameRef.current;

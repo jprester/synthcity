@@ -34,6 +34,16 @@ export type VisualPreset = {
     enabled: boolean;
     opacity: number;
   };
+  /**
+   * Emissive intensity multipliers for different object categories
+   * Base value is 1.0 - values above increase glow, below decrease
+   */
+  emissive: {
+    ads: number; // Ads, toppers, billboards
+    buildings: number; // Window lights on buildings
+    neons: number; // Storefronts, signs
+    ambient: number; // Ground glow, misc ambient
+  };
 };
 
 /**
@@ -69,6 +79,12 @@ export const PRESET_DEFAULT: VisualPreset = {
   noise: {
     enabled: false,
     opacity: 0.02,
+  },
+  emissive: {
+    ads: 1.0,
+    buildings: 1.0,
+    neons: 1.0,
+    ambient: 1.0,
   },
 };
 
@@ -107,6 +123,12 @@ export const PRESET_INTENSE_NEON: VisualPreset = {
     enabled: false,
     opacity: 0.02,
   },
+  emissive: {
+    ads: 1.5, // Brighter ads for neon feel
+    buildings: 1.2,
+    neons: 1.5,
+    ambient: 1.0,
+  },
 };
 
 /**
@@ -144,6 +166,12 @@ export const PRESET_BLADE_RUNNER: VisualPreset = {
     enabled: true,
     opacity: 0.03,
   },
+  emissive: {
+    ads: 1.1, // Slightly brighter for cinematic contrast
+    buildings: 0.8, // Dimmer buildings for moody atmosphere
+    neons: 1.1,
+    ambient: 0.7,
+  },
 };
 
 /**
@@ -179,6 +207,12 @@ export const PRESET_RETRO_CRT: VisualPreset = {
   noise: {
     enabled: true,
     opacity: 0.04,
+  },
+  emissive: {
+    ads: 1.0,
+    buildings: 1.0,
+    neons: 1.0,
+    ambient: 1.2, // Slightly boosted ambient for CRT glow
   },
 };
 
@@ -217,17 +251,23 @@ export const PRESET_HYPERCOLOR: VisualPreset = {
     enabled: false,
     opacity: 0.02,
   },
+  emissive: {
+    ads: 2.0, // Maximum glow for extreme effect
+    buildings: 1.5,
+    neons: 2.0,
+    ambient: 1.5,
+  },
 };
 
 /**
  * All available presets - keys match the preset.name for easy lookup
  */
 export const VISUAL_PRESETS: Record<string, VisualPreset> = {
-  "Default": PRESET_DEFAULT,
+  Default: PRESET_DEFAULT,
   "Intense Neon": PRESET_INTENSE_NEON,
   "Blade Runner": PRESET_BLADE_RUNNER,
   "Retro CRT": PRESET_RETRO_CRT,
-  "Hypercolor": PRESET_HYPERCOLOR,
+  Hypercolor: PRESET_HYPERCOLOR,
 };
 
 export const PRESET_NAMES = Object.keys(VISUAL_PRESETS);

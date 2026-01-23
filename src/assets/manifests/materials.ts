@@ -33,7 +33,7 @@ export function createMaterialFactories(): MaterialFactoryMap {
       map: getTexture("ground"),
       emissive: 0x0090ff,
       emissiveMap: getTexture("ground_em"),
-      emissiveIntensity: ctx.environmentName === "night" ? 0.2 : 0,
+      emissiveIntensity: ctx.environmentName === "night" ? 0.2 : 0, // Legacy: overwritten by preset
       shininess: 0,
     });
 
@@ -48,7 +48,7 @@ export function createMaterialFactories(): MaterialFactoryMap {
       metalness: 0,
       emissive: 0xffffff,
       emissiveMap: getTexture("spinner_interior_em"),
-      emissiveIntensity: 0.1,
+      emissiveIntensity: 0.1, // Legacy: overwritten by preset
     });
 
   factories["spinner_exterior"] = (getTexture) =>
@@ -90,7 +90,7 @@ export function createMaterialFactories(): MaterialFactoryMap {
       map: getTexture("cars"),
       emissive: 0xffffff,
       emissiveMap: getTexture("cars_em"),
-      emissiveIntensity: 1.0,
+      emissiveIntensity: 1.0, // Legacy: overwritten by preset
       side: DoubleSide,
     });
 
@@ -100,7 +100,7 @@ export function createMaterialFactories(): MaterialFactoryMap {
       map: getTexture("storefronts"),
       emissive: 0xffffff,
       emissiveMap: getTexture("storefronts_em"),
-      emissiveIntensity: ctx.windowLightsEnabled ? 1.5 : 0,
+      emissiveIntensity: ctx.windowLightsEnabled ? 1.5 : 0, // Legacy: overwritten by preset
       shininess: 0,
     });
 
@@ -112,13 +112,12 @@ export function createMaterialFactories(): MaterialFactoryMap {
       shininess: 1,
       emissive: 0xffffff,
       emissiveMap: getTexture("mega_building_01_em"),
-      emissiveIntensity: ctx.windowLightsEnabled ? 2.0 : 0,
+      emissiveIntensity: ctx.windowLightsEnabled ? 2.0 : 0, // Legacy: overwritten by preset
       bumpMap: getTexture("mega_building_01"),
       bumpScale: 10,
     });
 
   // Building materials (10 variants with random emissive colors)
-  // Boosted emissive intensity for enhanced neon glow
   for (let i = 1; i <= 10; i++) {
     const id = i.toString().padStart(2, "0");
     const key = `building_${id}`;
@@ -130,34 +129,34 @@ export function createMaterialFactories(): MaterialFactoryMap {
         envMap: getTexture("env_night"),
         emissive: new Color(`hsl(${Math.random() * 360}, 100%, 95%)`),
         emissiveMap: getTexture(`${key}_em`),
-        emissiveIntensity: ctx.windowLightsEnabled ? 2.0 : 0,
+        emissiveIntensity: ctx.windowLightsEnabled ? 2.0 : 0, // Legacy: overwritten by preset
         bumpMap: getTexture(key),
         bumpScale: 5,
       });
   }
 
-  // Small ads (5 variants) - boosted emissive for neon glow
+  // Small ads (5 variants) - bright emissive for neon glow
   for (let i = 1; i <= 5; i++) {
     const id = i.toString().padStart(2, "0");
     factories[`ads_${id}`] = (getTexture) =>
       new MeshPhongMaterial({
         emissive: 0xffffff,
         emissiveMap: getTexture(`ads_${id}`),
-        emissiveIntensity: 0.25,
+        emissiveIntensity: 0.25, // Legacy: overwritten by BASE_EMISSIVE_INTENSITIES × preset multiplier
         blending: AdditiveBlending,
         fog: false,
         side: DoubleSide,
       });
   }
 
-  // Large ads (5 variants) - boosted emissive for neon glow
+  // Large ads (5 variants) - bright emissive for neon glow
   for (let i = 1; i <= 5; i++) {
     const id = i.toString().padStart(2, "0");
     factories[`ads_large_${id}`] = (getTexture) =>
       new MeshPhongMaterial({
         emissive: 0xffffff,
         emissiveMap: getTexture(`ads_large_${id}`),
-        emissiveIntensity: 0.25,
+        emissiveIntensity: 0.25, // Legacy: overwritten by BASE_EMISSIVE_INTENSITIES × preset multiplier
         blending: AdditiveBlending,
         fog: false,
         side: DoubleSide,

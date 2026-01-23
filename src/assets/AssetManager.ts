@@ -24,7 +24,10 @@ import type {
   ProceduralGeometryEntry,
   MaterialContext,
   AssetLoadProgress,
+  EmissiveMultipliers,
 } from "./types";
+
+import { BASE_EMISSIVE_INTENSITIES } from "./types";
 
 import { createTextureManifest } from "./manifests/textures";
 import { createModelManifest, detectModelFormat } from "./manifests/models";
@@ -388,6 +391,24 @@ export class AssetManager {
   }
 
   // ===========================================================================
+  // Emissive Intensity Control
+  // ===========================================================================
+
+  /**
+   * Update emissive intensities on all materials based on preset multipliers
+   * This allows dynamic control of glow effects for different visual presets
+   */
+  updateEmissiveIntensities(multipliers: EmissiveMultipliers): void {
+    for (const [key, material] of this.materials) {
+      const config = BASE_EMISSIVE_INTENSITIES[key];
+      if (config && "emissiveIntensity" in material) {
+        (material as any).emissiveIntensity =
+          config.base * multipliers[config.category];
+      }
+    }
+  }
+
+  // ===========================================================================
   // Public Getters (backward compatible API)
   // ===========================================================================
 
@@ -564,6 +585,10 @@ export class LegacyAssetManager {
 
   getMaterial(key: string) {
     return this.manager.getMaterial(key);
+  }
+
+  updateEmissiveIntensities(multipliers: EmissiveMultipliers): void {
+    this.manager.updateEmissiveIntensities(multipliers);
   }
 
   // Expose the underlying manager for advanced usage

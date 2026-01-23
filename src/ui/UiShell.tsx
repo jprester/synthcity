@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { useGameStore } from '../context/GameContext';
-import type { QualityLevel, FrameRateLimit } from '../context/GameContext';
+import type { QualityLevel, FrameRateLimit, VisibilitySettings } from '../context/GameContext';
 import { initTerminal } from './initTerminal';
 import { PRESET_NAMES } from '../scene/effects';
 
@@ -60,6 +60,8 @@ export default function UiShell() {
   const [visualPreset, setVisualPreset] = useState(settings.visualPreset ?? 'Default');
   const [qualityLevel, setQualityLevel] = useState<QualityLevel>(settings.qualityLevel ?? 'high');
   const [frameRateLimit, setFrameRateLimit] = useState<FrameRateLimit>(settings.frameRateLimit ?? 0);
+  const [visibility, setVisibility] = useState<VisibilitySettings>(settings.visibility);
+  const [showDebug, setShowDebug] = useState(false);
 
   useEffect(() => {
     const { api, cleanup } = initTerminal({
@@ -119,6 +121,10 @@ export default function UiShell() {
     setSettings((prev) => ({ ...prev, frameRateLimit }));
   }, [frameRateLimit]);
 
+  useEffect(() => {
+    setSettings((prev) => ({ ...prev, visibility }));
+  }, [visibility]);
+
   function handleModeChange(event: ChangeEvent<HTMLInputElement>) {
     setMode(event.target.value);
   }
@@ -156,6 +162,10 @@ export default function UiShell() {
 
   function handleFrameRateLimitChange(event: ChangeEvent<HTMLInputElement>) {
     setFrameRateLimit(Number(event.target.value) as FrameRateLimit);
+  }
+
+  function handleVisibilityChange(key: keyof VisibilitySettings) {
+    setVisibility((prev) => ({ ...prev, [key]: !prev[key] }));
   }
 
   function handleEnterClick() {
@@ -438,6 +448,41 @@ export default function UiShell() {
                     </label>
                   ))}
                 </div>
+                <div style={{ marginBottom: '5px' }}>
+                  <span
+                    style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                    onClick={() => setShowDebug(!showDebug)}
+                  >
+                    Debug: [{showDebug ? '-' : '+'}]
+                  </span>
+                </div>
+                {showDebug && (
+                  <div style={{ marginBottom: '5px', paddingLeft: '10px' }}>
+                    <div className="g1" style={{ marginBottom: '3px' }}>&gt;&gt; Object Visibility</div>
+                    {([
+                      ['buildings', 'Buildings'],
+                      ['megaBuildings', 'Mega Buildings'],
+                      ['ads', 'Ads'],
+                      ['smoke', 'Smoke'],
+                      ['spotlights', 'Spotlights'],
+                      ['toppers', 'Toppers'],
+                      ['trafficCars', 'Traffic Cars'],
+                      ['playerCar', 'Player Car'],
+                      ['ground', 'Ground'],
+                      ['storefronts', 'Storefronts'],
+                      ['cityLights', 'City Lights'],
+                    ] as const).map(([key, label]) => (
+                      <label key={key} className="formCheckContainer" style={{ display: 'block' }}>
+                        <input
+                          type="checkbox"
+                          checked={visibility[key]}
+                          onChange={() => handleVisibilityChange(key)}
+                        />
+                        <span className="checkmark">[{visibility[key] ? 'x' : ' '}] {label}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
             <div className="tRow" style={{ height: '25%' }}>

@@ -5,6 +5,7 @@ import type { BufferGeometry, Material } from "three";
 type AssetGetter = {
   getModel: (key: string) => BufferGeometry;
   getMaterial: (key: string) => Material;
+  loaded: boolean;
 };
 
 type MegaBuildingDescriptor = {
@@ -38,7 +39,9 @@ export function useMegaBuildingInstances(assets: AssetGetter | null) {
 
   // Initialize InstancedMesh objects
   useEffect(() => {
-    if (!assets || initializedRef.current) {
+    // Wait for assets to be fully loaded before creating InstancedMesh
+    // This ensures textures are available for the material
+    if (!assets || !assets.loaded || initializedRef.current) {
       return;
     }
 
@@ -68,7 +71,7 @@ export function useMegaBuildingInstances(assets: AssetGetter | null) {
       instanceCountsRef.current.clear();
       initializedRef.current = false;
     };
-  }, [assets]);
+  }, [assets, assets?.loaded]);
 
   // Update all instances based on current mega building descriptors
   const updateInstances = useCallback(

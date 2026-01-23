@@ -198,8 +198,8 @@ class Game {
           z: 0.25,
         },
         ambient: {
-          color: 0x1b2c80,
-          intensity: 0.5,
+          color: 0x1a2b44,
+          intensity: 0.1,
         },
       },
       day: {

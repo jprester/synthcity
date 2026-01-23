@@ -4,6 +4,24 @@ import type { Dispatch, SetStateAction, MutableRefObject } from "react";
 export type QualityLevel = "low" | "medium" | "high";
 export type FrameRateLimit = 0 | 30 | 60 | 120; // 0 = unlimited
 
+/**
+ * Debug visibility toggles for different object types
+ * Useful for identifying objects in the scene and measuring performance impact
+ */
+export type VisibilitySettings = {
+  buildings: boolean;
+  megaBuildings: boolean;
+  ads: boolean;
+  smoke: boolean;
+  spotlights: boolean;
+  toppers: boolean;
+  trafficCars: boolean;
+  playerCar: boolean;
+  ground: boolean;
+  storefronts: boolean;
+  cityLights: boolean;
+};
+
 export type GameSettings = {
   mode: string;
   worldSeed: number;
@@ -14,6 +32,7 @@ export type GameSettings = {
   visualPreset: string;
   qualityLevel: QualityLevel;
   frameRateLimit: FrameRateLimit;
+  visibility: VisibilitySettings;
 };
 
 type GameStore = {
@@ -41,6 +60,19 @@ const defaultSettings: GameSettings = {
   visualPreset: "Default",
   qualityLevel: "low",
   frameRateLimit: 0, // unlimited by default
+  visibility: {
+    buildings: true,
+    megaBuildings: true,
+    ads: true,
+    smoke: true,
+    spotlights: true,
+    toppers: true,
+    trafficCars: true,
+    playerCar: true,
+    ground: true,
+    storefronts: true,
+    cityLights: true,
+  },
 };
 
 export function GameProvider({ children }) {

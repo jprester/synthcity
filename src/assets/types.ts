@@ -108,6 +108,56 @@ export type MaterialContext = {
   textureAnisotropy: number;
 };
 
+/**
+ * Emissive intensity multipliers for different material categories
+ * These are applied on top of base emissive intensities
+ */
+export type EmissiveMultipliers = {
+  ads: number; // Ads, toppers, billboards
+  buildings: number; // Window lights on buildings
+  neons: number; // Storefronts, signs
+  ambient: number; // Ground glow, misc ambient
+};
+
+/**
+ * Base emissive intensities for each material category
+ * These are multiplied by the preset multipliers
+ */
+export const BASE_EMISSIVE_INTENSITIES: Record<
+  string,
+  { category: keyof EmissiveMultipliers; base: number }
+> = {
+  // Ads
+  ads_01: { category: "ads", base: 0.5 },
+  ads_02: { category: "ads", base: 0.5 },
+  ads_03: { category: "ads", base: 0.5 },
+  ads_04: { category: "ads", base: 0.5 },
+  ads_05: { category: "ads", base: 0.5 },
+  ads_large_01: { category: "ads", base: 0.5 },
+  ads_large_02: { category: "ads", base: 0.5 },
+  ads_large_03: { category: "ads", base: 0.5 },
+  ads_large_04: { category: "ads", base: 0.5 },
+  ads_large_05: { category: "ads", base: 0.5 },
+  // Buildings (base when windowLightsEnabled)
+  building_01: { category: "buildings", base: 2.0 },
+  building_02: { category: "buildings", base: 2.0 },
+  building_03: { category: "buildings", base: 2.0 },
+  building_04: { category: "buildings", base: 2.0 },
+  building_05: { category: "buildings", base: 2.0 },
+  building_06: { category: "buildings", base: 2.0 },
+  building_07: { category: "buildings", base: 2.0 },
+  building_08: { category: "buildings", base: 2.0 },
+  building_09: { category: "buildings", base: 2.0 },
+  building_10: { category: "buildings", base: 2.0 },
+  mega_building_01: { category: "buildings", base: 2.0 },
+  // Neons (storefronts, signs)
+  storefronts: { category: "neons", base: 0.5 },
+  // Ambient
+  ground: { category: "ambient", base: 0.2 },
+  cars: { category: "ambient", base: 1.0 },
+  spinner_interior: { category: "ambient", base: 0.5 },
+};
+
 // ============================================================================
 // Asset Manager Types
 // ============================================================================
