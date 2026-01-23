@@ -152,10 +152,10 @@ export function createTextureManifest(anisotropy: number): TextureManifest {
     };
   }
 
-  // Small ads (5 variants)
-  for (let i = 1; i <= 5; i++) {
+  // Small ads (7 variants)
+  for (let i = 1; i <= 7; i++) {
     const id = i.toString().padStart(2, "0");
-    manifest[`ads_${id}`] = { path: `textures/ads_${id}.jpg` };
+    manifest[`ads_${id}`] = { path: `textures/ads_new_${id}.jpg` };
   }
 
   // Large ads (5 variants)

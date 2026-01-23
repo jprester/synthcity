@@ -182,18 +182,18 @@ class GeneratorItem_CityBlock {
           });
 
           if (adsType != null) {
-          let ad = new Advert(
-            this.x + xOff,
-            0,
-            this.z + zOff,
-            adsType,
-            false,
-            this.game,
-          );
-          ad.scale = { x: 1, y: scale, z: 1 };
-          ad.rotationY = (-rotate * Math.PI) / 180;
-          this.updateables.push(ad);
-        }
+            let ad = new Advert(
+              this.x + xOff,
+              0,
+              this.z + zOff,
+              adsType,
+              false,
+              this.game,
+            );
+            ad.scale = { x: 1, y: scale, z: 1 };
+            ad.rotationY = (-rotate * Math.PI) / 180;
+            this.updateables.push(ad);
+          }
         }
       }
     } else {
@@ -368,7 +368,15 @@ class Advert {
         "ads_large_05",
       ];
     } else {
-      this.adsMats = ["ads_01", "ads_02", "ads_03", "ads_04", "ads_05"];
+      this.adsMats = [
+        "ads_01",
+        "ads_02",
+        "ads_03",
+        "ads_04",
+        "ads_05",
+        "ads_06",
+        "ads_07",
+      ];
     }
     this.currentMatKey =
       this.adsMats[Math.floor(Math.random() * this.adsMats.length)];
