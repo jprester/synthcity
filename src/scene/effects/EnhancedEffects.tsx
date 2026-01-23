@@ -57,9 +57,9 @@ const QUALITY_SETTINGS = {
     enableColorGrading: true,
     enableVignette: true,
     enableNoise: true,
-    useSmaa: true,
-    bloomResolutionScale: 1.0,
-    bloomKernelSize: KernelSize.LARGE,
+    useSmaa: false, // FXAA is much cheaper, SMAA rarely worth the cost
+    bloomResolutionScale: 0.5, // Half resolution bloom - big GPU savings, minimal visual difference
+    bloomKernelSize: KernelSize.MEDIUM, // Medium kernel - good balance of quality/performance
   },
 } as const;
 

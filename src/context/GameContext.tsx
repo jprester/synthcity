@@ -39,7 +39,7 @@ const defaultSettings: GameSettings = {
   windshieldShader: "simple",
   renderScaling: 1.0,
   visualPreset: "Default",
-  qualityLevel: "high",
+  qualityLevel: "low",
   frameRateLimit: 0, // unlimited by default
 };
 

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import { AudioSystem } from "./AudioSystem";
 import { GameBridge } from "./GameBridge";
@@ -6,6 +6,11 @@ import { GeneratorSystem } from "./GeneratorSystem";
 import { PlayerSystem } from "./PlayerSystem";
 import { PointerLockSystem } from "./PointerLockSystem";
 import { useGameStore } from "../../context/GameContext";
+import {
+  PerformanceMonitor,
+  PerformanceStatsCollector,
+  type PerformanceStats,
+} from "../../ui/PerformanceMonitor";
 
 /**
  * Frame rate limiter using demand-based rendering with timed invalidation
@@ -48,7 +53,13 @@ function FrameLimiter() {
   return null;
 }
 
-function SceneContent() {
+function SceneContent({
+  showPerfMonitor,
+  onStats,
+}: {
+  showPerfMonitor: boolean;
+  onStats: (stats: PerformanceStats) => void;
+}) {
   return (
     <>
       <FrameLimiter />
@@ -57,19 +68,54 @@ function SceneContent() {
       <PlayerSystem />
       <AudioSystem />
       <PointerLockSystem />
+      {showPerfMonitor && <PerformanceStatsCollector onStats={onStats} />}
     </>
   );
 }
 
+const defaultStats: PerformanceStats = {
+  fps: 0,
+  frameTime: 0,
+  drawCalls: 0,
+  triangles: 0,
+  geometries: 0,
+  textures: 0,
+  programs: 0,
+  jsHeapUsed: 0,
+  jsHeapTotal: 0,
+};
+
 export default function SynthCityScene() {
   const { settings } = useGameStore();
+  const [showPerfMonitor, setShowPerfMonitor] = useState(false);
+  const [perfStats, setPerfStats] = useState<PerformanceStats>(defaultStats);
+
+  // Toggle performance monitor with backtick key (`)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "`" || e.key === "F3") {
+        e.preventDefault();
+        setShowPerfMonitor((prev) => !prev);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   return (
-    <Canvas
-      style={{ position: "fixed", inset: 0, zIndex: 0 }}
-      frameloop={settings.frameRateLimit > 0 ? "demand" : "always"}
-    >
-      <SceneContent />
-    </Canvas>
+    <>
+      <Canvas
+        style={{ position: "fixed", inset: 0, zIndex: 0 }}
+        frameloop={settings.frameRateLimit > 0 ? "demand" : "always"}
+      >
+        <SceneContent showPerfMonitor={showPerfMonitor} onStats={setPerfStats} />
+      </Canvas>
+      <PerformanceMonitor
+        visible={showPerfMonitor}
+        position="top-right"
+        stats={perfStats}
+      />
+    </>
   );
 }
