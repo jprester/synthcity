@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
-import { Mesh, PointLight } from "three";
+import { Mesh, PointLight, Vector3 } from "three";
 import type { Object3D } from "three";
 
 type PlayerVisuals = {
@@ -48,8 +48,9 @@ export function PlayerCarVisuals({
       game.assets.getModel("spinner_windows"),
       windowsMaterial,
     );
-    const lightObject = new PointLight(0x00d2ed, 0.25, 3);
-    lightObject.decay = 1;
+    // Interior cockpit light - positioned above dashboard
+    const lightObject = new PointLight(0x4488aa, 3, 5);
+    lightObject.decay = 2;
 
     const newObjects = {
       car: carPrimitive,
@@ -83,7 +84,10 @@ export function PlayerCarVisuals({
       objects.windows.rotation.copy(pose.rotation);
     }
     if (objects.light) {
-      objects.light.position.copy(pose.position);
+      // Position light inside cockpit (offset forward and up from car center)
+      const offset = new Vector3(0, 0.5, 0.8);
+      offset.applyQuaternion(pose.quaternion);
+      objects.light.position.copy(pose.position).add(offset);
     }
   }, 1);
 
