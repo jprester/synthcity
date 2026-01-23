@@ -376,6 +376,7 @@ class Advert {
         "ads_05",
         "ads_06",
         "ads_07",
+        "ads_08",
       ];
     }
     this.currentMatKey =

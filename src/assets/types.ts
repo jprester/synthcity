@@ -135,6 +135,7 @@ export const BASE_EMISSIVE_INTENSITIES: Record<
   ads_05: { category: "ads", base: 0.5 },
   ads_06: { category: "ads", base: 0.5 },
   ads_07: { category: "ads", base: 0.5 },
+  ads_08: { category: "ads", base: 0.5 },
   ads_large_01: { category: "ads", base: 0.5 },
   ads_large_02: { category: "ads", base: 0.5 },
   ads_large_03: { category: "ads", base: 0.5 },

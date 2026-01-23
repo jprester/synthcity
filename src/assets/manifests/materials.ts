@@ -136,7 +136,7 @@ export function createMaterialFactories(): MaterialFactoryMap {
   }
 
   // Small ads (7 variants) - bright emissive for neon glow
-  for (let i = 1; i <= 7; i++) {
+  for (let i = 1; i <= 8; i++) {
     const id = i.toString().padStart(2, "0");
     factories[`ads_${id}`] = (getTexture) =>
       new MeshPhongMaterial({
