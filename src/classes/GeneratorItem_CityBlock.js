@@ -153,7 +153,8 @@ class GeneratorItem_CityBlock {
           let matNoise = this.utils.fixNoise(
             this.noise.noise((this.x + xOff) * -3, (this.z + zOff) * -3),
           );
-          let mat = this.utils.getBuildingMat(matNoise);
+          let matKey = this.utils.getBuildingMatKey(matNoise);
+          let mat = this.game.assets.getMaterial(matKey);
 
           // topper
           if (topper && adsType != null)
@@ -175,6 +176,7 @@ class GeneratorItem_CityBlock {
           this.meshesCollid.push(colliderMesh);
           this.visuals.push({
             modelKey: type,
+            materialKey: matKey,
             material: mat,
             position: { x: this.x + xOff, y: 0, z: this.z + zOff },
             scale: { x: 1, y: scale, z: 1 },
@@ -220,7 +222,8 @@ class GeneratorItem_CityBlock {
       let matNoise = this.utils.fixNoise(
         this.noise.noise((this.x + xOff) * -3, (this.z + zOff) * -3),
       );
-      let mat = this.utils.getBigBuildingMat(matNoise, subtypeNoise > 0.9);
+      let matKey = this.utils.getBigBuildingMatKey(matNoise, subtypeNoise > 0.9);
+      let mat = this.game.assets.getMaterial(matKey);
 
       let rotateNoise = this.utils.fixNoise(
         this.noise.noise((this.x + xOff) * 4, (this.z + zOff) * 4),
@@ -262,6 +265,7 @@ class GeneratorItem_CityBlock {
       this.meshesCollid.push(colliderMesh);
       this.visuals.push({
         modelKey: type,
+        materialKey: matKey,
         material: mat,
         position: { x: this.x + xOff, y: 0, z: this.z + zOff },
         scale: { x: 1, y: scale, z: 1 },

@@ -17,6 +17,7 @@ type CityBlockVisualsProps = {
   item: any;
   game: any;
   skipMegaBuildings?: boolean;
+  skipBuildings?: boolean;
   visibility: VisibilitySettings;
 };
 
@@ -35,6 +36,7 @@ export function CityBlockVisuals({
   item,
   game,
   skipMegaBuildings = false,
+  skipBuildings = false,
   visibility,
 }: CityBlockVisualsProps) {
   const [meshes, setMeshes] = useState<Object3D[]>([]);
@@ -45,10 +47,14 @@ export function CityBlockVisuals({
       return;
     }
 
-    // Filter visuals based on skipMegaBuildings flag and visibility settings
+    // Filter visuals based on skip flags and visibility settings
     const visualsToRender = (item.visuals as VisualDescriptor[]).filter((v) => {
       // Skip mega buildings if they're rendered via InstancedMesh
       if (skipMegaBuildings && v.modelKey?.startsWith("mega_")) {
+        return false;
+      }
+      // Skip standard buildings (s_XX_XX) if they're rendered via InstancedMesh
+      if (skipBuildings && v.modelKey?.startsWith("s_")) {
         return false;
       }
       // Apply visibility settings
@@ -81,7 +87,7 @@ export function CityBlockVisuals({
     return () => {
       meshesRef.current = [];
     };
-  }, [item, game, skipMegaBuildings, visibility]);
+  }, [item, game, skipMegaBuildings, skipBuildings, visibility]);
 
   return (
     <group>

@@ -6,7 +6,7 @@ class GeneratorUtils {
     this.game = game;
   }
 
-  getBuildingMat(noise) {
+  getBuildingMatKey(noise) {
     const mats = [
       "building_01",
       "building_02",
@@ -15,10 +15,14 @@ class GeneratorUtils {
       "building_05",
       "building_07",
     ];
-    return this.game.assets.getMaterial(pickFromNoise(mats, noise));
+    return pickFromNoise(mats, noise);
   }
 
-  getBigBuildingMat(noise, rare) {
+  getBuildingMat(noise) {
+    return this.game.assets.getMaterial(this.getBuildingMatKey(noise));
+  }
+
+  getBigBuildingMatKey(noise, rare) {
     const mats = [
       "building_01",
       "building_02",
@@ -33,7 +37,11 @@ class GeneratorUtils {
       "building_10",
     ];
     const list = rare ? matsRare : mats;
-    return this.game.assets.getMaterial(pickFromNoise(list, noise));
+    return pickFromNoise(list, noise);
+  }
+
+  getBigBuildingMat(noise, rare) {
+    return this.game.assets.getMaterial(this.getBigBuildingMatKey(noise, rare));
   }
 
   getBuildingRotation(noise) {

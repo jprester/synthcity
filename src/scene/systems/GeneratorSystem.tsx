@@ -12,6 +12,10 @@ import {
   InstancedMegaBuildings,
   type MegaBuildingDescriptor,
 } from "../visuals/InstancedMegaBuildings";
+import {
+  InstancedBuildings,
+  type BuildingDescriptor,
+} from "../visuals/InstancedBuildings";
 
 declare const Perlin: new (seed?: number) => {
   noiseDetail: (lod: number, falloff: number) => void;
@@ -245,6 +249,28 @@ export function GeneratorSystem() {
     return result;
   }, [cityBlockItems]);
 
+  // Collect all standard buildings (s_XX_XX) from city blocks for instanced rendering
+  const buildings = useMemo((): BuildingDescriptor[] => {
+    const result: BuildingDescriptor[] = [];
+    for (const item of cityBlockItems) {
+      if (!item.visuals) continue;
+      for (const visual of item.visuals) {
+        // Match building models: s_01_XX through s_05_XX
+        if (visual.modelKey?.startsWith("s_") && visual.materialKey) {
+          result.push({
+            modelKey: visual.modelKey,
+            materialKey: visual.materialKey,
+            position: visual.position,
+            scale: visual.scale || { x: 1, y: 1, z: 1 },
+            rotationY: visual.rotationY || 0,
+            blockKey: item.__genId || "",
+          });
+        }
+      }
+    }
+    return result;
+  }, [cityBlockItems]);
+
   function updateCityLights(game: any) {
     const cellSize = (game.cityBlockSize + game.roadWidth) * 4;
     const cellCount = 8;
@@ -315,6 +341,7 @@ export function GeneratorSystem() {
               item={item}
               game={gameRef.current}
               skipMegaBuildings
+              skipBuildings
               visibility={visibility}
             />
             {(item.updateables || [])
@@ -333,6 +360,12 @@ export function GeneratorSystem() {
       {visibility.megaBuildings && (
         <InstancedMegaBuildings
           megaBuildings={megaBuildings}
+          game={gameRef.current}
+        />
+      )}
+      {visibility.buildings && (
+        <InstancedBuildings
+          buildings={buildings}
           game={gameRef.current}
         />
       )}
