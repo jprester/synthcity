@@ -1,6 +1,7 @@
 import { BufferGeometry, Mesh } from "three";
 
 import { LegacyAssetManager as AssetManager } from "../assets";
+import { CITY_BLOCK_SIZE, ROAD_WIDTH, getEnvironment } from "../config";
 import { Player } from "./Player.js";
 import { PlayerCar } from "./PlayerCar.js";
 
@@ -22,7 +23,7 @@ class Game {
     this.onAssetsLoaded = options.onAssetsLoaded || null;
     this.onCrashChange = options.onCrashChange || null;
 
-    this.environment = this.getEnvironment("night");
+    this.environment = getEnvironment("night");
 
     // query params
 
@@ -42,10 +43,10 @@ class Game {
     this.masterVolume = 0;
     this.userMasterVolume = 1;
 
-    // world settings (do not change)
+    // world settings (from centralized config)
 
-    this.cityBlockSize = 128;
-    this.roadWidth = 24;
+    this.cityBlockSize = CITY_BLOCK_SIZE;
+    this.roadWidth = ROAD_WIDTH;
 
     // collision
 
@@ -174,61 +175,6 @@ class Game {
     if (this.assets && typeof this.assets.setTerminal === "function") {
       this.assets.setTerminal(terminal);
     }
-  }
-
-  getEnvironment(id) {
-    const environments = {
-      night: {
-        name: "night",
-        sky: "sky_night",
-        environmentMap: "env_night",
-        cityLights: true,
-        windowLights: true,
-        spotLights: true,
-        fog: {
-          color: 0x12122a,
-          start: 0,
-          end: 2700,
-        },
-        sun: {
-          color: 0x8b79ff,
-          intensity: 0.1,
-          x: 1,
-          y: 0.5,
-          z: 0.25,
-        },
-        ambient: {
-          color: 0x1b2c80,
-          intensity: 0.2,
-        },
-      },
-      day: {
-        name: "day",
-        sky: "sky_day",
-        environmentMap: "env_day",
-        cityLights: false,
-        windowLights: false,
-        spotLights: false,
-        fog: {
-          color: 0xaf6a3b,
-          start: -500,
-          end: 2700,
-        },
-        sun: {
-          color: 0xffa25e,
-          intensity: 2,
-          x: 1,
-          y: 0.2,
-          z: 0.65,
-        },
-        ambient: {
-          color: 0x825233,
-          intensity: 0.65,
-        },
-      },
-    };
-
-    return environments[id];
   }
 
   onEnterClick() {

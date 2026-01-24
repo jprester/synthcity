@@ -1,6 +1,8 @@
 import { createContext, useContext, useMemo, useRef, useState } from "react";
 import type { Dispatch, SetStateAction, MutableRefObject } from "react";
 
+import { DEFAULT_GAME_SETTINGS } from "../config";
+
 export type QualityLevel = "low" | "medium" | "high";
 export type FrameRateLimit = 0 | 30 | 60 | 120; // 0 = unlimited
 
@@ -50,33 +52,8 @@ type GameStore = {
 
 const GameContext = createContext<GameStore | null>(null);
 
-const defaultSettings: GameSettings = {
-  mode: "drive",
-  worldSeed: 9746,
-  music: true,
-  soundFx: true,
-  windshieldShader: "simple",
-  renderScaling: 1.0,
-  visualPreset: "Default",
-  qualityLevel: "low",
-  frameRateLimit: 60,
-  visibility: {
-    buildings: true,
-    megaBuildings: true,
-    ads: true,
-    smoke: true,
-    spotlights: true,
-    toppers: true,
-    trafficCars: true,
-    playerCar: true,
-    ground: true,
-    storefronts: true,
-    cityLights: true,
-  },
-};
-
 export function GameProvider({ children }) {
-  const [settings, setSettings] = useState(defaultSettings);
+  const [settings, setSettings] = useState(DEFAULT_GAME_SETTINGS);
   const [launchReady, setLaunchReady] = useState(false);
   const [showBlocker, setShowBlocker] = useState(true);
   const [showCrash, setShowCrash] = useState(false);

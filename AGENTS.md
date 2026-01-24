@@ -12,6 +12,9 @@ This repo is a modernized fork of SynthCity (React + Vite + R3F). This guide hel
 
 ## Key Paths
 
+- `src/config/` – World constants, environments, default settings
+- `src/constants/` – Colors, UI labels
+- `src/utils/` – Math, angles, random helpers
 - `src/scene/systems/` – GameBridge, Generator, Player, Audio, PointerLock
 - `src/scene/visuals/` – Visual mesh/light components
 - `src/controllers/` – Input hooks
@@ -26,6 +29,9 @@ This repo is a modernized fork of SynthCity (React + Vite + R3F). This guide hel
 - If a class must create a collider mesh, call `updateMatrixWorld(true)` after transforms.
 - Avoid adding `window` globals.
 - TypeScript is used for React/R3F/UI; classes remain JS.
+- Use centralized config: import from `src/config/` for world/environment constants.
+- Use centralized utils: import math/random helpers from `src/utils/`.
+- Colors and labels live in `src/constants/`.
 
 ## Commands
 
@@ -43,6 +49,8 @@ This repo is a modernized fork of SynthCity (React + Vite + R3F). This guide hel
 - **Move visuals**: create a component in `src/scene/visuals/` and bind to class state.
 - **New update loop**: add a system in `src/scene/systems/`.
 - **UI changes**: use `src/context/GameContext.tsx` for shared state.
+- **Add constants**: add to appropriate file in `src/config/` or `src/constants/`.
+- **Add utility functions**: add to appropriate file in `src/utils/`.
 
 ## Don’ts
 

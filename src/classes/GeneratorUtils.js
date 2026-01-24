@@ -1,10 +1,13 @@
+import { clamp, mapRange } from "../utils";
+import { pickFromNoise, getRotationFromNoise } from "../utils";
+
 class GeneratorUtils {
   constructor(game) {
     this.game = game;
   }
 
   getBuildingMat(noise) {
-    let mats = [
+    const mats = [
       "building_01",
       "building_02",
       "building_03",
@@ -12,43 +15,39 @@ class GeneratorUtils {
       "building_05",
       "building_07",
     ];
-    return this.game.assets.getMaterial(mats[Math.floor(noise * mats.length)]);
+    return this.game.assets.getMaterial(pickFromNoise(mats, noise));
   }
 
   getBigBuildingMat(noise, rare) {
-    let mats = [
+    const mats = [
       "building_01",
       "building_02",
       "building_03",
       "building_04",
       "building_05",
     ];
-    let matsRare = ["building_06", "building_08", "building_09", "building_10"];
-    if (!rare)
-      return this.game.assets.getMaterial(
-        mats[Math.floor(noise * mats.length)],
-      );
-    else
-      return this.game.assets.getMaterial(
-        matsRare[Math.floor(noise * matsRare.length)],
-      );
+    const matsRare = [
+      "building_06",
+      "building_08",
+      "building_09",
+      "building_10",
+    ];
+    const list = rare ? matsRare : mats;
+    return this.game.assets.getMaterial(pickFromNoise(list, noise));
   }
 
   getBuildingRotation(noise) {
-    let angles = [0, 90, 180, 270];
-    return angles[Math.floor(noise * angles.length)];
+    return getRotationFromNoise(noise);
   }
 
   // greatly improves proc-noise distribution
   fixNoise(noise) {
-    let inMin = 0.2;
-    let inMax = 0.75;
-    let outMin = 0;
-    let outMax = 0.9999;
-    let n = ((noise - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
-    if (n < outMin) n = outMin;
-    if (n > outMax) n = outMax;
-    return n;
+    const inMin = 0.2;
+    const inMax = 0.75;
+    const outMin = 0;
+    const outMax = 0.9999;
+    const mapped = mapRange(noise, inMin, inMax, outMin, outMax);
+    return clamp(mapped, outMin, outMax);
   }
 }
 

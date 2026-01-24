@@ -49,6 +49,20 @@ npm run typecheck
 
 ```
 src/
+  config/
+    index.ts                  # Config barrel exports
+    world.ts                  # World constants (block size, seeds)
+    environments.ts           # Night/day environment presets
+    settings.ts               # Default game settings
+  constants/
+    index.ts                  # Constants barrel exports
+    colors.ts                 # Centralized color values
+    labels.ts                 # UI labels and text
+  utils/
+    index.ts                  # Utils barrel exports
+    math.ts                   # clamp, lerp, mapRange, etc.
+    angles.ts                 # Angle normalization, rotation helpers
+    random.ts                 # Noise-based selection, shuffling
   scene/
     systems/
       SynthCityScene.tsx      # R3F canvas + system composition
