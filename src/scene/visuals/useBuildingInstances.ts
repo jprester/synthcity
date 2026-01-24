@@ -50,6 +50,9 @@ const BUILDING_MATERIAL_KEYS = [
   "building_10",
 ];
 
+// Models that use embedded materials from GLB files (don't apply external textures)
+const MODELS_WITH_EMBEDDED_MATERIALS = new Set(["s_04_03"]);
+
 // Max instances per (model, material) combination
 // Buildings are common, so we need more instances than mega buildings
 const MAX_INSTANCES_PER_COMBO = 100;
@@ -78,7 +81,34 @@ export function useBuildingInstances(assets: AssetGetter | null) {
     for (const modelKey of BUILDING_MODEL_KEYS) {
       const geometry = assets.getModel(modelKey);
       if (!geometry) {
-        console.warn(`useBuildingInstances: geometry for ${modelKey} not found`);
+        console.warn(
+          `useBuildingInstances: geometry for ${modelKey} not found`,
+        );
+        continue;
+      }
+
+      // For models with embedded materials (GLB with textures), use the embedded material
+      if (MODELS_WITH_EMBEDDED_MATERIALS.has(modelKey)) {
+        const embeddedMaterialKey = `__embedded_${modelKey}`;
+        const material = assets.getMaterial(embeddedMaterialKey);
+        if (!material) {
+          console.warn(
+            `useBuildingInstances: embedded material for ${modelKey} not found`,
+          );
+          continue;
+        }
+
+        // Create a single InstancedMesh for this model (all instances use the same embedded material)
+        // Use a special combo key that maps any material to the embedded one
+        const comboKey = getComboKey(modelKey, embeddedMaterialKey);
+        const instancedMesh = new InstancedMesh(
+          geometry,
+          material,
+          MAX_INSTANCES_PER_COMBO,
+        );
+        instancedMesh.count = 0;
+        instancedMesh.frustumCulled = false;
+        instancedMeshesRef.current.set(comboKey, instancedMesh);
         continue;
       }
 
@@ -124,7 +154,11 @@ export function useBuildingInstances(assets: AssetGetter | null) {
     const buildingsByCombo = new Map<string, BuildingDescriptor[]>();
 
     for (const building of buildings) {
-      const comboKey = getComboKey(building.modelKey, building.materialKey);
+      // For models with embedded materials, remap to use the embedded material key
+      const materialKey = MODELS_WITH_EMBEDDED_MATERIALS.has(building.modelKey)
+        ? `__embedded_${building.modelKey}`
+        : building.materialKey;
+      const comboKey = getComboKey(building.modelKey, materialKey);
       let list = buildingsByCombo.get(comboKey);
       if (!list) {
         list = [];
@@ -134,7 +168,10 @@ export function useBuildingInstances(assets: AssetGetter | null) {
     }
 
     // Update each InstancedMesh
-    for (const [comboKey, instancedMesh] of instancedMeshesRef.current.entries()) {
+    for (const [
+      comboKey,
+      instancedMesh,
+    ] of instancedMeshesRef.current.entries()) {
       const comboBuildings = buildingsByCombo.get(comboKey) || [];
       const count = Math.min(comboBuildings.length, MAX_INSTANCES_PER_COMBO);
       instancedMesh.count = count;

@@ -45,6 +45,9 @@ export type ModelOptions = {
   // For GLB: which mesh to extract (by name or index)
   meshName?: string;
   meshIndex?: number;
+  // For GLB: preserve the embedded material instead of applying external textures
+  // When true, the material from the GLB file will be stored as `__embedded_{modelKey}`
+  useEmbeddedMaterial?: boolean;
 };
 
 export type ModelManifestEntry = {

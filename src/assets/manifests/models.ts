@@ -58,6 +58,13 @@ export function createModelManifest(cityBlockSize: number, roadWidth: number): M
     }
   }
 
+  // Override s_04_03 with new GLB model that has embedded textures
+  manifest["s_04_03"] = {
+    path: "models/scifi-cyberpunk-building3.glb",
+    format: "glb",
+    options: { computeBVH: true, useEmbeddedMaterial: true },
+  };
+
   // Mega buildings (6 variants)
   for (let i = 1; i <= 6; i++) {
     const id = i.toString().padStart(2, "0");

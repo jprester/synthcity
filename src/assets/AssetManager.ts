@@ -159,7 +159,7 @@ export class AssetManager {
       if (format === "obj") {
         geometry = await this.loadOBJ(fullPath, entry.options);
       } else if (format === "glb" || format === "gltf") {
-        geometry = await this.loadGLTF(fullPath, entry.options);
+        geometry = await this.loadGLTF(fullPath, entry.options, key);
       }
 
       if (geometry) {
@@ -256,7 +256,7 @@ export class AssetManager {
       });
     } else if (format === "glb" || format === "gltf") {
       this.gltfLoader.load(fullPath, (gltf) => {
-        const geometry = this.extractGeometryFromGLTF(gltf, entry.options);
+        const geometry = this.extractGeometryFromGLTF(gltf, entry.options, key);
         if (geometry) {
           this.applyGeometryOptions(geometry, entry.options);
           this.models.set(key, geometry);
@@ -292,6 +292,7 @@ export class AssetManager {
   private extractGeometryFromGLTF(
     gltf: { scene: Group },
     options?: ModelManifestEntry["options"],
+    modelKey?: string,
   ): BufferGeometry | null {
     const meshIndex = options?.meshIndex ?? 0;
     const meshName = options?.meshName;
@@ -310,6 +311,20 @@ export class AssetManager {
 
     if (!targetMesh && meshes[meshIndex]) {
       targetMesh = meshes[meshIndex];
+    }
+
+    // Store embedded material if requested
+    if (targetMesh && options?.useEmbeddedMaterial && modelKey) {
+      const embeddedMaterial = targetMesh.material;
+      if (embeddedMaterial) {
+        const materialKey = `__embedded_${modelKey}`;
+        if (Array.isArray(embeddedMaterial)) {
+          // If multiple materials, use the first one
+          this.materials.set(materialKey, embeddedMaterial[0]);
+        } else {
+          this.materials.set(materialKey, embeddedMaterial);
+        }
+      }
     }
 
     return targetMesh?.geometry ?? null;
@@ -357,13 +372,14 @@ export class AssetManager {
   private loadGLTF(
     path: string,
     options?: ModelManifestEntry["options"],
+    modelKey?: string,
   ): Promise<BufferGeometry | null> {
     return new Promise((resolve) => {
       const loader = new GLTFLoader();
       loader.load(
         path,
         (gltf) => {
-          const geometry = this.extractGeometryFromGLTF(gltf, options);
+          const geometry = this.extractGeometryFromGLTF(gltf, options, modelKey);
           if (geometry) {
             this.applyGeometryOptions(geometry, options);
           }
