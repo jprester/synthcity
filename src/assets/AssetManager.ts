@@ -591,6 +591,11 @@ export class LegacyAssetManager {
     this.manager.updateEmissiveIntensities(multipliers);
   }
 
+  // Expose loaded state for race condition prevention
+  get loaded(): boolean {
+    return this.manager.loaded;
+  }
+
   // Expose the underlying manager for advanced usage
   get internal(): AssetManager {
     return this.manager;

@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect } from "react";
+import { useRef, useCallback, useEffect, useState } from "react";
 import { Mesh } from "three";
 import type { BufferGeometry, Material } from "three";
 
@@ -10,8 +10,9 @@ type CarMeshPool = {
 };
 
 type AssetGetter = {
-  getModel: (key: string) => BufferGeometry;
-  getMaterial: (key: string) => Material;
+  getModel: (key: string) => BufferGeometry | undefined;
+  getMaterial: (key: string) => Material | undefined;
+  loaded?: boolean;
 };
 
 const CAR_MODEL_KEYS = [
@@ -33,20 +34,39 @@ export function useTrafficCarPool(assets: AssetGetter | null) {
     inUse: new Set(),
   });
   const initializedRef = useRef(false);
+  const [isReady, setIsReady] = useState(false);
 
   // Initialize pool with pre-allocated meshes
   useEffect(() => {
-    if (!assets || initializedRef.current) {
+    // Already initialized - don't re-run
+    if (initializedRef.current) {
+      return;
+    }
+
+    // Wait until assets exist AND are fully loaded
+    if (!assets || !assets.loaded) {
       return;
     }
 
     const pool = poolRef.current;
     const carsMaterial = assets.getMaterial("cars");
 
+    // Defensive check: ensure material exists before creating meshes
+    if (!carsMaterial) {
+      console.warn("useTrafficCarPool: cars material not found, waiting...");
+      return;
+    }
+
     for (const modelKey of CAR_MODEL_KEYS) {
-      const meshes: PooledMesh[] = [];
       const geometry = assets.getModel(modelKey);
 
+      // Defensive check: ensure geometry exists
+      if (!geometry) {
+        console.warn(`useTrafficCarPool: geometry for ${modelKey} not found, skipping`);
+        continue;
+      }
+
+      const meshes: PooledMesh[] = [];
       for (let i = 0; i < POOL_SIZE_PER_MODEL; i++) {
         const mesh = new Mesh(geometry, carsMaterial) as PooledMesh;
         mesh.__poolKey = modelKey;
@@ -58,14 +78,16 @@ export function useTrafficCarPool(assets: AssetGetter | null) {
     }
 
     initializedRef.current = true;
+    setIsReady(true);
 
     // Cleanup: Clear pool on unmount
     return () => {
       pool.available.clear();
       pool.inUse.clear();
       initializedRef.current = false;
+      setIsReady(false);
     };
-  }, [assets]);
+  }, [assets, assets?.loaded]);
 
   // Acquire a mesh from the pool for a given model
   const acquire = useCallback((modelKey: string): PooledMesh | null => {
@@ -124,6 +146,6 @@ export function useTrafficCarPool(assets: AssetGetter | null) {
     acquire,
     release,
     getAllMeshes,
-    isReady: initializedRef.current,
+    isReady,
   };
 }
