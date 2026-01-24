@@ -43,6 +43,7 @@ export type VisualPreset = {
     buildings: number; // Window lights on buildings
     neons: number; // Storefronts, signs
     ambient: number; // Ground glow, misc ambient
+    smoke: number; // Atmospheric smoke/steam effects
   };
 };
 
@@ -85,6 +86,7 @@ export const PRESET_DEFAULT: VisualPreset = {
     buildings: 1.0,
     neons: 1.0,
     ambient: 1.0,
+    smoke: 1.0,
   },
 };
 
@@ -128,6 +130,7 @@ export const PRESET_INTENSE_NEON: VisualPreset = {
     buildings: 1.2,
     neons: 1.5,
     ambient: 1.0,
+    smoke: 1.2,
   },
 };
 
@@ -171,6 +174,7 @@ export const PRESET_BLADE_RUNNER: VisualPreset = {
     buildings: 0.8, // Dimmer buildings for moody atmosphere
     neons: 1.1,
     ambient: 0.7,
+    smoke: 1.5, // More visible smoke for atmospheric effect
   },
 };
 
@@ -213,6 +217,7 @@ export const PRESET_RETRO_CRT: VisualPreset = {
     buildings: 1.0,
     neons: 1.0,
     ambient: 1.2, // Slightly boosted ambient for CRT glow
+    smoke: 1.0,
   },
 };
 
@@ -256,6 +261,7 @@ export const PRESET_HYPERCOLOR: VisualPreset = {
     buildings: 1.5,
     neons: 2.0,
     ambient: 1.5,
+    smoke: 2.0, // Maximum smoke glow
   },
 };
 

@@ -199,7 +199,7 @@ class Game {
         },
         ambient: {
           color: 0x1b2c80,
-          intensity: 0.35,
+          intensity: 0.2,
         },
       },
       day: {

@@ -117,6 +117,7 @@ export type EmissiveMultipliers = {
   buildings: number; // Window lights on buildings
   neons: number; // Storefronts, signs
   ambient: number; // Ground glow, misc ambient
+  smoke: number; // Atmospheric smoke/steam effects
 };
 
 /**
@@ -159,6 +160,10 @@ export const BASE_EMISSIVE_INTENSITIES: Record<
   ground: { category: "ambient", base: 0.2 },
   cars: { category: "ambient", base: 1.0 },
   spinner_interior: { category: "ambient", base: 0.5 },
+  // Smoke
+  smoke_01: { category: "smoke", base: 0.3 },
+  smoke_02: { category: "smoke", base: 0.3 },
+  smoke_03: { category: "smoke", base: 0.3 },
 };
 
 // ============================================================================

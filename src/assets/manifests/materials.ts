@@ -170,6 +170,8 @@ export function createMaterialFactories(): MaterialFactoryMap {
       new MeshPhongMaterial({
         alphaMap: getTexture(`smoke_${id}`),
         color: 0xffffff,
+        emissive: 0x4488aa,
+        emissiveIntensity: 0.3,
         shininess: 0,
         specular: 0x000000,
         blending: AdditiveBlending,
