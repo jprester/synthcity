@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Fog, NoToneMapping, SRGBColorSpace } from "three";
-import { Game } from "../../index.js";
+import { Game } from "../../classes/Game.js";
 import { useGameStore } from "../../context/GameContext";
 import { usePlayerController } from "../../controllers/usePlayerController";
 import { EnhancedEffects, getPreset } from "../effects";

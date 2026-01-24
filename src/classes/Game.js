@@ -1,17 +1,17 @@
 import { BufferGeometry, Mesh } from "three";
 
-import { LegacyAssetManager as AssetManager } from "./assets";
-import { Player } from "./classes/Player.js";
-import { PlayerCar } from "./classes/PlayerCar.js";
+import { LegacyAssetManager as AssetManager } from "../assets";
+import { Player } from "./Player.js";
+import { PlayerCar } from "./PlayerCar.js";
 
-import { Radio } from "./classes/Radio.js";
+import { Radio } from "./Radio.js";
 
 import {
   computeBoundsTree,
   disposeBoundsTree,
   acceleratedRaycast,
 } from "three-mesh-bvh";
-import { Collider } from "./classes/Collider.js";
+import { Collider } from "./Collider.js";
 
 class Game {
   constructor(options = {}) {
@@ -198,8 +198,8 @@ class Game {
           z: 0.25,
         },
         ambient: {
-          color: 0x1a2b44,
-          intensity: 0.1,
+          color: 0x1b2c80,
+          intensity: 0.35,
         },
       },
       day: {

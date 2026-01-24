@@ -59,7 +59,7 @@ const defaultSettings: GameSettings = {
   renderScaling: 1.0,
   visualPreset: "Default",
   qualityLevel: "low",
-  frameRateLimit: 0, // unlimited by default
+  frameRateLimit: 60,
   visibility: {
     buildings: true,
     megaBuildings: true,
