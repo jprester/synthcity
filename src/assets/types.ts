@@ -157,9 +157,9 @@ export const BASE_EMISSIVE_INTENSITIES: Record<
   building_09: { category: "buildings", base: 2.0 },
   building_10: { category: "buildings", base: 2.0 },
   mega_building_01: { category: "buildings", base: 2.0 },
-  // Embedded GLB models (1.5x intensity)
-  __embedded_s_04_03: { category: "buildings", base: 3.0 }, // sci-fi-building-9_1.glb
-  __embedded_s_05_01: { category: "buildings", base: 3.0 }, // sci-fi-building-6_1.glb
+  // Embedded GLB models (match standard building base for consistent presets)
+  __embedded_s_04_03: { category: "buildings", base: 2.0 }, // sci-fi-building-9_1.glb
+  __embedded_s_05_01: { category: "buildings", base: 2.0 }, // sci-fi-building-6_1.glb
   // Neons (storefronts, signs)
   storefronts: { category: "neons", base: 0.5 },
   // Ambient

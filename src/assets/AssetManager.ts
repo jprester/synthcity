@@ -5,13 +5,7 @@ import {
   BoxGeometry,
   SphereGeometry,
 } from "three";
-import type {
-  Texture,
-  Material,
-  BufferGeometry,
-  Group,
-  Mesh,
-} from "three";
+import type { Texture, Material, BufferGeometry, Group, Mesh } from "three";
 
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
@@ -318,16 +312,60 @@ export class AssetManager {
       const embeddedMaterial = targetMesh.material;
       if (embeddedMaterial) {
         const materialKey = `__embedded_${modelKey}`;
+        let materialToStore: Material;
+
         if (Array.isArray(embeddedMaterial)) {
           // If multiple materials, use the first one
-          this.materials.set(materialKey, embeddedMaterial[0]);
+          materialToStore = embeddedMaterial[0];
         } else {
-          this.materials.set(materialKey, embeddedMaterial);
+          materialToStore = embeddedMaterial;
         }
+
+        // Enhance embedded material to work better with scene lighting
+        this.enhanceEmbeddedMaterial(materialToStore);
+        this.materials.set(materialKey, materialToStore);
       }
     }
 
     return targetMesh?.geometry ?? null;
+  }
+
+  /**
+   * Enhance embedded GLB materials to work better with scene lighting
+   * Adjusts PBR properties to make materials more visible in low-light scenes
+   */
+  private enhanceEmbeddedMaterial(material: Material): void {
+    // Check if it's a PBR material (MeshStandardMaterial or MeshPhysicalMaterial)
+    if ("roughness" in material && "metalness" in material) {
+      const mat = material as any;
+
+      // Increase roughness slightly for better diffuse light response
+      // (very smooth materials can appear dark without strong reflections)
+      if (mat.roughness !== undefined && mat.roughness < 0.4) {
+        mat.roughness = Math.max(mat.roughness, 0.5);
+      }
+
+      // Add environment map if available and not already set
+      if (!mat.envMap) {
+        mat.envMap = this.textures.get("env_night");
+        mat.envMapIntensity = 0.4;
+      }
+
+      // Normalize emissive for embedded materials so preset system can control them
+      if (mat.emissiveMap && mat.emissiveIntensity !== undefined) {
+        // Set consistent white emissive color - the map provides color variation
+        mat.emissive = mat.emissive || 0xffffff;
+        // Normalize base intensity to 1.0 - the preset system will multiply this
+        // by the category multiplier from BASE_EMISSIVE_INTENSITIES
+        mat.emissiveIntensity = 1.0;
+      } else if ("emissiveIntensity" in mat) {
+        // Even without a map, normalize the intensity for consistent preset control
+        mat.emissiveIntensity = 1.0;
+      }
+    }
+
+    // Force material to update
+    material.needsUpdate = true;
   }
 
   private applyGeometryOptions(
@@ -339,7 +377,8 @@ export class AssetManager {
     if (options.rotateX) geometry.rotateX(options.rotateX);
     if (options.rotateY) geometry.rotateY(options.rotateY);
     if (options.rotateZ) geometry.rotateZ(options.rotateZ);
-    if (options.scale) geometry.scale(options.scale, options.scale, options.scale);
+    if (options.scale)
+      geometry.scale(options.scale, options.scale, options.scale);
 
     if (options.computeBVH) {
       // computeBoundsTree is added by three-mesh-bvh
@@ -379,7 +418,11 @@ export class AssetManager {
       loader.load(
         path,
         (gltf) => {
-          const geometry = this.extractGeometryFromGLTF(gltf, options, modelKey);
+          const geometry = this.extractGeometryFromGLTF(
+            gltf,
+            options,
+            modelKey,
+          );
           if (geometry) {
             this.applyGeometryOptions(geometry, options);
           }

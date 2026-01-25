@@ -8,8 +8,14 @@ import { EnhancedEffects, getPreset } from "../effects";
 
 export function GameBridge() {
   const { gl, scene, camera, set, size } = useThree();
-  const { settings, gameRef, terminalRef, launchReady, setLaunchReady, setShowCrash } =
-    useGameStore();
+  const {
+    settings,
+    gameRef,
+    terminalRef,
+    launchReady,
+    setLaunchReady,
+    setShowCrash,
+  } = useGameStore();
   const controller = usePlayerController();
   const [environment, setEnvironment] = useState<any | null>(null);
 
@@ -41,15 +47,27 @@ export function GameBridge() {
     }
   }, [settings, gameRef]);
 
-  // Update emissive intensities when visual preset changes or assets become available
+  // Update emissive intensities when visual preset or quality level changes
+  // Medium quality reduces bloom intensity by 0.7x, so we compensate by increasing
+  // emissive intensity to maintain visual consistency across quality levels
   useEffect(() => {
     const game = gameRef.current;
     if (!game?.assets?.updateEmissiveIntensities) {
       return;
     }
     const preset = getPreset(settings.visualPreset);
-    game.assets.updateEmissiveIntensities(preset.emissive);
-  }, [settings.visualPreset, launchReady, gameRef]);
+    // Compensate for reduced bloom on medium quality (bloom is 0.7x, so emissive ~1.4x)
+    const qualityEmissiveMultiplier =
+      settings.qualityLevel === "medium" ? 1.4 : 1.0;
+    const adjustedEmissive = {
+      ads: preset.emissive.ads * qualityEmissiveMultiplier,
+      buildings: preset.emissive.buildings * qualityEmissiveMultiplier,
+      neons: preset.emissive.neons * qualityEmissiveMultiplier,
+      ambient: preset.emissive.ambient * qualityEmissiveMultiplier,
+      smoke: preset.emissive.smoke * qualityEmissiveMultiplier,
+    };
+    game.assets.updateEmissiveIntensities(adjustedEmissive);
+  }, [settings.visualPreset, settings.qualityLevel, launchReady, gameRef]);
 
   useEffect(() => {
     const game = gameRef.current;
