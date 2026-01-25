@@ -7,7 +7,10 @@ import type { ModelManifest } from "../types";
  * Format auto-detected from file extension, or specify explicitly:
  * { path: 'model.glb', format: 'glb', options: { computeBVH: true } }
  */
-export function createModelManifest(cityBlockSize: number, roadWidth: number): ModelManifest {
+export function createModelManifest(
+  cityBlockSize: number,
+  roadWidth: number,
+): ModelManifest {
   const manifest: ModelManifest = {
     // Player car (spinner)
     spinner: {
@@ -60,9 +63,16 @@ export function createModelManifest(cityBlockSize: number, roadWidth: number): M
 
   // Override s_04_03 with new GLB model that has embedded textures
   manifest["s_04_03"] = {
-    path: "models/scifi-cyberpunk-building3.glb",
+    path: "models/sci-fi-building-9_1.glb",
     format: "glb",
-    options: { computeBVH: true, useEmbeddedMaterial: true },
+    options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1.3 },
+  };
+
+  // Override s_05_01 with new GLB model that has embedded textures
+  manifest["s_05_01"] = {
+    path: "models/sci-fi-building-6_1.glb",
+    format: "glb",
+    options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1.3 },
   };
 
   // Mega buildings (6 variants)

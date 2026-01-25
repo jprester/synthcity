@@ -13,7 +13,6 @@ class GeneratorUtils {
       "building_03",
       "building_04",
       "building_05",
-      "building_07",
     ];
     return pickFromNoise(mats, noise);
   }
