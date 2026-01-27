@@ -32,6 +32,8 @@ const BUILDING_MODEL_KEYS = [
   "s_04_02",
   "s_04_03",
   "s_05_01",
+  "s_05_02",
+  "s_05_03",
 ];
 
 // All building material keys
@@ -42,13 +44,14 @@ const BUILDING_MATERIAL_KEYS = [
   "building_04",
   "building_05",
   "building_06",
+  "building_07",
   "building_08",
   "building_09",
   "building_10",
 ];
 
 // Models that use embedded materials from GLB files (don't apply external textures)
-const MODELS_WITH_EMBEDDED_MATERIALS = new Set(["s_04_03", "s_05_01"]);
+const MODELS_WITH_EMBEDDED_MATERIALS = new Set(["s_04_03"]);
 
 // Max instances per (model, material) combination
 // Buildings are common, so we need more instances than mega buildings

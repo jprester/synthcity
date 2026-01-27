@@ -68,12 +68,12 @@ export function createModelManifest(
     options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1.3 },
   };
 
-  // Override s_05_01 with new GLB model that has embedded textures
-  manifest["s_05_01"] = {
-    path: "models/sci-fi-building-6_1.glb",
-    format: "glb",
-    options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1.3 },
-  };
+  // // Override s_05_01 with new GLB model that has embedded textures
+  // manifest["s_05_01"] = {
+  //   path: "models/sci-fi-building-6_1.glb",
+  //   format: "glb",
+  //   options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1.3 },
+  // };
 
   // Mega buildings (6 variants)
   for (let i = 1; i <= 6; i++) {
