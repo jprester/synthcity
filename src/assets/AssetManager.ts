@@ -4,8 +4,10 @@ import {
   PlaneGeometry,
   BoxGeometry,
   SphereGeometry,
+  Matrix4,
 } from "three";
 import type { Texture, Material, BufferGeometry, Group, Mesh } from "three";
+import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js";
 
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
@@ -307,8 +309,30 @@ export class AssetManager {
       targetMesh = meshes[meshIndex];
     }
 
+    if (!targetMesh) {
+      return null;
+    }
+
+    // Apply world matrix to geometry to bake in node transforms (position, rotation, scale)
+    // This is important for GLB models that have transforms on their nodes
+    targetMesh.updateWorldMatrix(true, false);
+    const worldMatrix = targetMesh.matrixWorld;
+
+    // Get the geometry - handle multi-material meshes by checking if geometry has groups
+    let finalGeometry: BufferGeometry;
+    const sourceGeometry = targetMesh.geometry;
+
+    if (sourceGeometry) {
+      // Clone geometry so we don't modify the original
+      finalGeometry = sourceGeometry.clone();
+      // Apply the world matrix to bake in node transforms
+      finalGeometry.applyMatrix4(worldMatrix);
+    } else {
+      return null;
+    }
+
     // Store embedded material if requested
-    if (targetMesh && options?.useEmbeddedMaterial && modelKey) {
+    if (options?.useEmbeddedMaterial && modelKey) {
       const embeddedMaterial = targetMesh.material;
       if (embeddedMaterial) {
         const materialKey = `__embedded_${modelKey}`;
@@ -327,7 +351,7 @@ export class AssetManager {
       }
     }
 
-    return targetMesh?.geometry ?? null;
+    return finalGeometry;
   }
 
   /**

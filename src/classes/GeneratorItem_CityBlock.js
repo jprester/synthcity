@@ -214,15 +214,20 @@ class GeneratorItem_CityBlock {
         else if (subtypeNoise < 0.66) type = "s_05_02";
         else type = "s_05_03";
       } else {
-        if (subtypeNoise < 0.33) type = "s_04_01";
-        else if (subtypeNoise < 0.66) type = "s_04_02";
-        else type = "s_04_03";
+        // s_04 series has 4 variants (including GLB models)
+        if (subtypeNoise < 0.25) type = "s_04_01";
+        else if (subtypeNoise < 0.5) type = "s_04_02";
+        else if (subtypeNoise < 0.75) type = "s_04_03";
+        else type = "s_04_04";
       }
 
       let matNoise = this.utils.fixNoise(
         this.noise.noise((this.x + xOff) * -3, (this.z + zOff) * -3),
       );
-      let matKey = this.utils.getBigBuildingMatKey(matNoise, subtypeNoise > 0.9);
+      let matKey = this.utils.getBigBuildingMatKey(
+        matNoise,
+        subtypeNoise > 0.9,
+      );
       let mat = this.game.assets.getMaterial(matKey);
 
       let rotateNoise = this.utils.fixNoise(

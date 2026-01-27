@@ -17,7 +17,7 @@ export type BuildingDescriptor = {
   blockKey: string;
 };
 
-// All building model keys (s_01 through s_05, 3 variants each)
+// All building model keys (s_01 through s_05, 3 variants each + s_04_04 extra)
 const BUILDING_MODEL_KEYS = [
   "s_01_01",
   "s_01_02",
@@ -31,6 +31,7 @@ const BUILDING_MODEL_KEYS = [
   "s_04_01",
   "s_04_02",
   "s_04_03",
+  "s_04_04",
   "s_05_01",
   "s_05_02",
   "s_05_03",
@@ -51,7 +52,7 @@ const BUILDING_MATERIAL_KEYS = [
 ];
 
 // Models that use embedded materials from GLB files (don't apply external textures)
-const MODELS_WITH_EMBEDDED_MATERIALS = new Set(["s_04_03"]);
+const MODELS_WITH_EMBEDDED_MATERIALS = new Set(["s_04_03", "s_04_04"]);
 
 // Max instances per (model, material) combination
 // Buildings are common, so we need more instances than mega buildings
