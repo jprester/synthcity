@@ -63,7 +63,7 @@ export function createModelManifest(
 
   // Override s_04_03 with new GLB model that has embedded textures
   manifest["s_04_03"] = {
-    path: "models/sci-fi-building-6_1.glb",
+    path: "models/dark-skyscraper.001_baked.glb",
     format: "glb",
     options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1 },
   };
