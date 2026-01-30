@@ -32,8 +32,10 @@ from pathlib import Path
 # CONFIGURATION - Modify these paths as needed
 # ============================================================================
 
-TEXTURES_BASE_PATH = "/Users/jankoprester/Projects/3d-modeling/blender/baked-textures"
-GLB_OUTPUT_PATH = "/Users/jankoprester/Projects/3d-modeling/blender/render-outputs/baked-models"
+# Use user's home directory for generic paths
+HOME_DIR = str(Path.home())
+TEXTURES_BASE_PATH = os.path.join(HOME_DIR, "Projects/3d-modeling/blender/baked-textures")
+GLB_OUTPUT_PATH = os.path.join(HOME_DIR, "Projects/3d-modeling/blender/render-outputs/baked-models")
 
 # ============================================================================
 # QUALITY PRESET - Set to "low", "medium", or "high"
