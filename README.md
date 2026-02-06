@@ -11,6 +11,11 @@ SynthCity is an interactive WebGL experience: drive a flying car through an infi
 - Game logic remains in classes, while visuals are split into R3F components.
 - Audio, pointer-lock, and UI flow are handled in React systems.
 - TypeScript enabled for the React/R3F/UI layer (legacy classes remain JS).
+- Manifest-based asset loading with lazy material factories.
+- GLB multi-material support: models with multiple PBR materials are auto-merged and rendered via InstancedMesh.
+- Building instancing, pooled traffic, and instanced mega buildings for improved performance.
+- Enhanced visual effects system with presets and dynamic emissive intensity control.
+- Blender baking script (`scripts/bake_model_textures.py`) for texture baking workflows.
 
 ## Quick Start
 
@@ -76,6 +81,15 @@ src/
       TrafficCarVisuals.tsx
       CityBlockVisuals.tsx
       CityBlockUpdateableVisuals.tsx
+      useBuildingInstances.ts  # Instanced building rendering
+      useMegaBuildingInstances.ts
+  assets/
+    AssetManager.ts            # Manifest loader, GLB merging, material storage
+    manifests/
+      models.ts                # Model manifest with GLB overrides
+      textures.ts
+      materials.ts
+    types.ts                   # Emissive intensity config (BASE_EMISSIVE_INTENSITIES)
   controllers/
     usePlayerController.ts    # Input state hook
   context/
@@ -85,8 +99,10 @@ src/
     initTerminal.ts           # Terminal boot sequence
   classes/
     (legacy state classes)
+scripts/
+  bake_model_textures.py       # Blender texture baking script
 public/
-  assets/                      # Textures, models, audio
+  assets/                      # Textures, models (OBJ + GLB), audio
 ```
 
 ### Architecture Notes

@@ -123,6 +123,34 @@ Runs in `useFrame`:
 - Lazy material creation with factories
 - Methods: `getModel()`, `getMaterial()`, `getTexture()`
 
+### GLB Multi-Material Support
+
+GLTFLoader creates separate Mesh objects per material primitive inside a Group. `mergeGLTFMeshes()` in AssetManager recombines them:
+
+1. Extracts geometry + material from each child Mesh
+2. Merges geometries via `BufferGeometryUtils.mergeGeometries(geos, true)` — the `true` flag creates indexed groups mapping to `Material[]` indices
+3. Stores the merged geometry and `Material[]` array
+4. InstancedMesh natively supports `Material[]` with geometry groups
+
+### Embedded Material System
+
+Some GLB models ship with their own PBR materials instead of using the shared external material system:
+
+- **Model manifest** (`src/assets/manifests/models.ts`): GLB entries use `useEmbeddedMaterial: true` in options
+- **Material storage**: Embedded materials are stored under `__embedded_{modelKey}` keys (e.g. `__embedded_s_04_04`)
+- **Visual routing**: `MODELS_WITH_EMBEDDED_MATERIALS` set in `src/scene/visuals/useBuildingInstances.ts` controls which models use embedded vs external materials
+- **Emissive intensity**: Per-material emissive intensity is configured in `BASE_EMISSIVE_INTENSITIES` (`src/assets/types.ts`)
+- **Emissive maps**: Mipmaps are disabled on emissive maps (`generateMipmaps=false`, `LinearFilter`) for crisp window lights at distance
+
+### Current GLB Model Overrides
+
+| Slot     | GLB File                    | Notes                          |
+| -------- | --------------------------- | ------------------------------ |
+| s_04_03  | `sci-fi-building-9_1.glb`  | Multi-material embedded        |
+| s_04_04  | `dark_skyscraper_new2.glb` | Multi-material embedded        |
+| s_05_01  | `sci-fi-building-6_1.glb`  | Multi-material embedded        |
+| s_05_02  | `futuristic-tower.glb`     | Multi-material embedded        |
+
 ### Loading Flow
 
 1. `game.load()` → creates AssetManager

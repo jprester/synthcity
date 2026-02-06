@@ -51,6 +51,12 @@ This repo is a modernized fork of SynthCity (React + Vite + R3F). This guide hel
 - **UI changes**: use `src/context/GameContext.tsx` for shared state.
 - **Add constants**: add to appropriate file in `src/config/` or `src/constants/`.
 - **Add utility functions**: add to appropriate file in `src/utils/`.
+- **Replace/add a GLB building model**:
+  1. Place the `.glb` file in `public/assets/models/`
+  2. Add or update the manifest override in `src/assets/manifests/models.ts` with `useEmbeddedMaterial: true`
+  3. Add the model key to `MODELS_WITH_EMBEDDED_MATERIALS` in `src/scene/visuals/useBuildingInstances.ts`
+  4. Add an `__embedded_{modelKey}` entry in `BASE_EMISSIVE_INTENSITIES` (`src/assets/types.ts`)
+  5. GLTFLoader multi-material meshes are auto-merged by `mergeGLTFMeshes()` in AssetManager — no manual geometry work needed
 
 ## Don’ts
 
