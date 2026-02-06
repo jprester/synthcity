@@ -13,6 +13,7 @@ This repo is a modernized fork of SynthCity (React + Vite + R3F). This guide hel
 ## Key Paths
 
 - `src/config/` – World constants, environments, default settings
+- `src/types/` – Shared TypeScript contracts (`settings`, `game`)
 - `src/constants/` – Colors, UI labels
 - `src/utils/` – Math, angles, random helpers
 - `src/scene/systems/` – GameBridge, Generator, Player, Audio, PointerLock
@@ -42,7 +43,8 @@ This repo is a modernized fork of SynthCity (React + Vite + R3F). This guide hel
 
 ## Known Globals
 
-- `Perlin` is provided by `public/js/proc-noise.js` (global). Avoid refactoring unless replacing with a module.
+- `Perlin` is provided by `public/js/proc-noise.js` (global).
+- For TypeScript code, use `createPerlin()` from `src/utils/perlin.ts` instead of local `declare const Perlin`.
 
 ## Common Tasks
 

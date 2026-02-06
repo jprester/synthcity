@@ -1,3 +1,15 @@
+# 0.3.2 - P1 Runtime/Type Hardening
+
+- Unified app settings typing into a single source: `src/types/settings.ts`
+  - `GameContext`, config defaults, runtime contracts, UI, and effects now share one settings type layer
+- Pointer lock flow hardened:
+  - `UiShell` no longer hides blocker optimistically on launch
+  - `PointerLockSystem` now derives controller/blocker state from actual pointer lock state
+- Added typed Perlin wrapper (`src/utils/perlin.ts`) and switched `GeneratorSystem` to `createPerlin(...)`
+- Removed `GameBridge` sky/background polling loop in favor of `launchReady`-driven background setup
+- Replaced remaining memory `any` casts in `PerformanceMonitor` with explicit typed access
+- Added defensive missing-asset guards in `useMegaBuildingInstances`
+
 # 0.3.1
 
 - Replaced baked dark skyscraper model (`dark-skyscraper.001_baked.glb`) with new multi-material GLB (`dark_skyscraper_new2.glb`) for building slot `s_04_04`

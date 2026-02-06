@@ -16,6 +16,7 @@ The app starts in `src/main.tsx` which renders `src/App.tsx`. The App wraps ever
 2. **GameBridge** (`src/scene/systems/GameBridge.tsx`) creates the `Game` instance in a `useEffect`:
    - Passes camera, canvas, settings, controller
    - Sets up environment (fog, lighting)
+   - Applies sky background when `launchReady` is true (no asset polling loop)
    - Triggers `onAssetsLoaded` callback when ready
 
 3. **Game class** (`src/classes/Game.js`) constructor initializes:
@@ -89,6 +90,14 @@ Runs in `useFrame`:
 
 - Captures keyboard/mouse during pointer lock
 - Tracks ~20 input states
+
+### Pointer Lock
+
+`src/scene/systems/PointerLockSystem.tsx`:
+
+- Source of truth is `document.pointerLockElement`
+- Controller enable/disable and blocker visibility are synchronized from actual lock state
+- Launch does not assume lock success; UI transitions after lock is confirmed
 
 ---
 
@@ -186,6 +195,8 @@ EnhancedEffects → Post-processing
 | Config       | `src/config/world.ts`, `src/config/environments.ts`, `src/config/settings.ts` |
 | Constants    | `src/constants/colors.ts`, `src/constants/labels.ts`                          |
 | Utilities    | `src/utils/math.ts`, `src/utils/angles.ts`, `src/utils/random.ts`             |
+| Perlin Wrap  | `src/utils/perlin.ts`                                                          |
+| Shared Types | `src/types/settings.ts`, `src/types/game.ts`                                   |
 | Game Logic   | `src/classes/Game.js`                                                         |
 | Player Logic | `src/classes/Player.js`, `src/classes/PlayerCar.js`                           |
 | Generators   | `src/classes/GeneratorItem_*.js`, `src/scene/systems/GeneratorSystem.tsx`     |

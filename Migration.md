@@ -55,8 +55,29 @@ This document summarizes the modernization work from the original Three.js app t
 - `public/js/alea.js` and `public/js/proc-noise.js` provide global `Perlin` noise.
 - Assets are served from `public/assets/`.
 
+## Recent P1 Hardening
+
+- **Shared settings type layer**
+  - Added `src/types/settings.ts` as the single source for `GameSettings`, `QualityLevel`, `FrameRateLimit`, and `VisibilitySettings`.
+  - Context/config/runtime contracts now reference this shared type set.
+
+- **Pointer lock state flow**
+  - Launch no longer assumes pointer lock success.
+  - `PointerLockSystem` now drives UI blocker and controller enabled state from actual lock state (`document.pointerLockElement`).
+
+- **Perlin wrapper**
+  - Added `src/utils/perlin.ts` (`createPerlin`) to avoid ad-hoc `declare const Perlin` usage in TS files.
+  - Global script dependency remains (`public/js/proc-noise.js`), but TS integration is now centralized and typed.
+
+- **Background setup**
+  - `GameBridge` no longer polls for assets with an interval.
+  - Scene background is applied once assets are ready (`launchReady`).
+
+- **Additional safety/typing cleanup**
+  - `PerformanceMonitor` now uses typed browser memory access (no `any`).
+  - `useMegaBuildingInstances` now guards missing material/geometry to avoid invalid instanced meshes.
+
 ## Suggested Next Steps
 
-- Consider typing generator/visual descriptor shapes more strictly.
 - Optional: migrate remaining class-level mesh construction to descriptors.
-- If desired, move Perlin into a module import to remove global dependency.
+- If desired, replace the global Perlin script with an ESM module implementation.
