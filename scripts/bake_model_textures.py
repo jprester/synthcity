@@ -392,6 +392,51 @@ def prepare_emissive_for_bake(obj):
             print(f"      No emission in: {mat.name}")
 
 
+def get_original_uv_name(obj):
+    """Get the name of the first non-bake UV map (the original UV layout)."""
+    for uv_layer in obj.data.uv_layers:
+        if uv_layer.name != "BakeUV":
+            return uv_layer.name
+    return None
+
+
+def fix_texture_uv_references(obj, original_uv_name):
+    """
+    Ensure all source texture nodes explicitly reference the original UV map.
+
+    When BakeUV is set as the active UV layer (required for bake output),
+    texture nodes without explicit UV connections will incorrectly sample
+    from BakeUV instead of the original UV. This adds UV Map nodes to
+    preserve correct texture sampling during baking.
+    """
+    if not original_uv_name:
+        print("      WARNING: No original UV map found, skipping UV fix")
+        return
+
+    fixed_count = 0
+    for slot in obj.material_slots:
+        mat = slot.material
+        if not mat or not mat.use_nodes:
+            continue
+
+        nodes = mat.node_tree.nodes
+        links = mat.node_tree.links
+
+        for node in list(nodes):
+            if node.type == 'TEX_IMAGE' and node.name != "BakeTarget":
+                if not node.inputs['Vector'].is_linked:
+                    uv_node = nodes.new('ShaderNodeUVMap')
+                    uv_node.uv_map = original_uv_name
+                    uv_node.location = (node.location.x - 200, node.location.y)
+                    links.new(uv_node.outputs['UV'], node.inputs['Vector'])
+                    fixed_count += 1
+
+    if fixed_count > 0:
+        print(f"      Fixed {fixed_count} texture node(s) to use original UV: '{original_uv_name}'")
+    else:
+        print(f"      All texture nodes already have explicit UV references")
+
+
 def bake_channel(obj, image, bake_type, **kwargs):
     """Bake a specific channel to image."""
     # Setup bake target node in all materials
@@ -607,11 +652,23 @@ def main():
     joined_obj = join_meshes(work_objects)
     print(f"      Joined into: {joined_obj.name}")
     
+    # Record original UV map name before creating BakeUV
+    original_uv_name = get_original_uv_name(joined_obj)
+    if original_uv_name:
+        print(f"      Original UV map: '{original_uv_name}'")
+    else:
+        print("      WARNING: No existing UV map found on joined object")
+
     # Step 4: Create bake UV map
     print("\n[4/8] Creating bake UV map (Smart UV Project)...")
     create_bake_uv_map(joined_obj, "BakeUV")
     print("      UV map created: BakeUV")
-    
+
+    # Fix source texture UV references so they sample from original UV,
+    # not the now-active BakeUV
+    print("      Fixing texture UV references...")
+    fix_texture_uv_references(joined_obj, original_uv_name)
+
     # Step 5: Setup Cycles
     print("\n[5/8] Setting up Cycles renderer...")
     setup_cycles()

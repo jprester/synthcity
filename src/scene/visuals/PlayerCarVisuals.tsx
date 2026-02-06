@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Mesh, PointLight, Vector3 } from "three";
-import type { Object3D } from "three";
+import type { Object3D, Material } from "three";
 import type { GameRuntime, RuntimePlayer } from "../../types/game";
 
 type PlayerVisuals = {
@@ -38,8 +38,8 @@ export function PlayerCarVisuals({
     }
 
     const carPrimitive = new Mesh(game.assets.getModel("spinner"), [
-      game.assets.getMaterial("spinner_interior"),
-      game.assets.getMaterial("spinner_exterior"),
+      game.assets.getMaterial("spinner_interior") as Material,
+      game.assets.getMaterial("spinner_exterior") as Material,
     ]);
     const windowsMaterial =
       windshieldShader == "advanced"

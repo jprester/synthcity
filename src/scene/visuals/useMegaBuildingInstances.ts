@@ -3,8 +3,8 @@ import { InstancedMesh, Matrix4, Object3D } from "three";
 import type { BufferGeometry, Material } from "three";
 
 type AssetGetter = {
-  getModel: (key: string) => BufferGeometry;
-  getMaterial: (key: string) => Material;
+  getModel: (key: string) => BufferGeometry | undefined;
+  getMaterial: (key: string) => Material | Material[] | undefined;
   loaded: boolean;
 };
 

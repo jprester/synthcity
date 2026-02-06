@@ -5,6 +5,7 @@ import {
   BoxGeometry,
   SphereGeometry,
   Matrix4,
+  LinearFilter,
 } from "three";
 import type { Texture, Material, BufferGeometry, Group, Mesh } from "three";
 import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js";
@@ -67,7 +68,7 @@ export class AssetManager {
   // Asset storage
   private textures: Map<string, Texture> = new Map();
   private models: Map<string, BufferGeometry> = new Map();
-  private materials: Map<string, Material> = new Map();
+  private materials: Map<string, Material | Material[]> = new Map();
 
   // Manifests
   private textureManifest: TextureManifest;
@@ -305,6 +306,18 @@ export class AssetManager {
       }
     });
 
+    // Multi-mesh GLB with embedded materials: merge all meshes into one
+    // geometry with material groups. GLTFLoader creates separate Mesh objects
+    // for each material primitive, so we need to recombine them.
+    if (
+      options?.useEmbeddedMaterial &&
+      modelKey &&
+      meshes.length > 1 &&
+      !meshName
+    ) {
+      return this.mergeGLTFMeshes(meshes, modelKey);
+    }
+
     if (!targetMesh && meshes[meshIndex]) {
       targetMesh = meshes[meshIndex];
     }
@@ -318,40 +331,91 @@ export class AssetManager {
     targetMesh.updateWorldMatrix(true, false);
     const worldMatrix = targetMesh.matrixWorld;
 
-    // Get the geometry - handle multi-material meshes by checking if geometry has groups
+    // Get the geometry
     let finalGeometry: BufferGeometry;
     const sourceGeometry = targetMesh.geometry;
 
     if (sourceGeometry) {
-      // Clone geometry so we don't modify the original
       finalGeometry = sourceGeometry.clone();
-      // Apply the world matrix to bake in node transforms
       finalGeometry.applyMatrix4(worldMatrix);
     } else {
       return null;
     }
 
-    // Store embedded material if requested
+    // Store embedded material(s) if requested
     if (options?.useEmbeddedMaterial && modelKey) {
       const embeddedMaterial = targetMesh.material;
       if (embeddedMaterial) {
         const materialKey = `__embedded_${modelKey}`;
-        let materialToStore: Material;
 
         if (Array.isArray(embeddedMaterial)) {
-          // If multiple materials, use the first one
-          materialToStore = embeddedMaterial[0];
+          for (const mat of embeddedMaterial) {
+            this.enhanceEmbeddedMaterial(mat);
+          }
+          this.materials.set(materialKey, embeddedMaterial);
         } else {
-          materialToStore = embeddedMaterial;
+          this.enhanceEmbeddedMaterial(embeddedMaterial);
+          this.materials.set(materialKey, embeddedMaterial);
         }
-
-        // Enhance embedded material to work better with scene lighting
-        this.enhanceEmbeddedMaterial(materialToStore);
-        this.materials.set(materialKey, materialToStore);
       }
     }
 
     return finalGeometry;
+  }
+
+  /**
+   * Merge multiple GLB meshes into a single geometry with material groups.
+   * GLTFLoader splits multi-material objects into separate Mesh objects;
+   * this recombines them so they can be rendered as one InstancedMesh
+   * with a Material[] array.
+   */
+  private mergeGLTFMeshes(
+    meshes: Mesh[],
+    modelKey: string,
+  ): BufferGeometry | null {
+    const geometries: BufferGeometry[] = [];
+    const materials: Material[] = [];
+
+    for (const mesh of meshes) {
+      mesh.updateWorldMatrix(true, false);
+      const geo = mesh.geometry.clone();
+      geo.applyMatrix4(mesh.matrixWorld);
+      geometries.push(geo);
+
+      const mat = mesh.material;
+      if (Array.isArray(mat)) {
+        materials.push(...mat);
+      } else {
+        materials.push(mat);
+      }
+    }
+
+    // Merge with useGroups=true so each input geometry becomes a
+    // material group (group index maps to the material array index)
+    const mergedGeometry = BufferGeometryUtils.mergeGeometries(
+      geometries,
+      true,
+    );
+    if (!mergedGeometry) {
+      console.warn(
+        `AssetManager: Failed to merge ${meshes.length} meshes for ${modelKey}, ` +
+          `falling back to first mesh`,
+      );
+      return null;
+    }
+
+    // Enhance and store all materials
+    const materialKey = `__embedded_${modelKey}`;
+    for (const mat of materials) {
+      this.enhanceEmbeddedMaterial(mat);
+    }
+    this.materials.set(materialKey, materials);
+
+    console.log(
+      `AssetManager: Merged ${meshes.length} meshes with ${materials.length} materials for ${modelKey}`,
+    );
+
+    return mergedGeometry;
   }
 
   /**
@@ -382,6 +446,13 @@ export class AssetManager {
         // Normalize base intensity to 1.0 - the preset system will multiply this
         // by the category multiplier from BASE_EMISSIVE_INTENSITIES
         mat.emissiveIntensity = 1.0;
+
+        // Disable mipmaps on emissive maps for crisp window lights at distance
+        // (mipmaps blur small bright details like window emissions)
+        mat.emissiveMap.generateMipmaps = false;
+        mat.emissiveMap.minFilter = LinearFilter;
+        mat.emissiveMap.magFilter = LinearFilter;
+        mat.emissiveMap.needsUpdate = true;
       } else if ("emissiveIntensity" in mat) {
         // Even without a map, normalize the intensity for consistent preset control
         mat.emissiveIntensity = 1.0;
@@ -482,11 +553,18 @@ export class AssetManager {
    * This allows dynamic control of glow effects for different visual presets
    */
   updateEmissiveIntensities(multipliers: EmissiveMultipliers): void {
-    for (const [key, material] of this.materials) {
+    for (const [key, materialOrArray] of this.materials) {
       const config = BASE_EMISSIVE_INTENSITIES[key];
-      if (config && "emissiveIntensity" in material) {
-        (material as any).emissiveIntensity =
-          config.base * multipliers[config.category];
+      if (!config) continue;
+
+      const materials = Array.isArray(materialOrArray)
+        ? materialOrArray
+        : [materialOrArray];
+      for (const material of materials) {
+        if ("emissiveIntensity" in material) {
+          (material as any).emissiveIntensity =
+            config.base * multipliers[config.category];
+        }
       }
     }
   }
@@ -503,7 +581,7 @@ export class AssetManager {
     return this.models.get(key);
   }
 
-  getMaterial(key: string): Material | undefined {
+  getMaterial(key: string): Material | Material[] | undefined {
     return this.materials.get(key);
   }
 
@@ -589,8 +667,12 @@ export class AssetManager {
     for (const geometry of this.models.values()) {
       geometry.dispose();
     }
-    for (const material of this.materials.values()) {
-      material.dispose();
+    for (const materialOrArray of this.materials.values()) {
+      if (Array.isArray(materialOrArray)) {
+        for (const mat of materialOrArray) mat.dispose();
+      } else {
+        materialOrArray.dispose();
+      }
     }
 
     this.textures.clear();
@@ -666,7 +748,7 @@ export class LegacyAssetManager {
     return this.manager.getModel(key);
   }
 
-  getMaterial(key: string) {
+  getMaterial(key: string): Material | Material[] | undefined {
     return this.manager.getMaterial(key);
   }
 

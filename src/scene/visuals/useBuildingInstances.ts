@@ -4,7 +4,7 @@ import type { BufferGeometry, Material } from "three";
 
 type AssetGetter = {
   getModel: (key: string) => BufferGeometry | undefined;
-  getMaterial: (key: string) => Material | undefined;
+  getMaterial: (key: string) => Material | Material[] | undefined;
   loaded: boolean;
 };
 
@@ -52,7 +52,12 @@ const BUILDING_MATERIAL_KEYS = [
 ];
 
 // Models that use embedded materials from GLB files (don't apply external textures)
-const MODELS_WITH_EMBEDDED_MATERIALS = new Set(["s_04_03", "s_04_04"]);
+const MODELS_WITH_EMBEDDED_MATERIALS = new Set([
+  "s_04_03",
+  "s_04_04",
+  "s_05_01",
+  "s_05_02",
+]);
 
 // Max instances per (model, material) combination
 // Buildings are common, so we need more instances than mega buildings

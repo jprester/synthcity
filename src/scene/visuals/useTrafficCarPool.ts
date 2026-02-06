@@ -11,7 +11,7 @@ type CarMeshPool = {
 
 type AssetGetter = {
   getModel: (key: string) => BufferGeometry | undefined;
-  getMaterial: (key: string) => Material | undefined;
+  getMaterial: (key: string) => Material | Material[] | undefined;
   loaded?: boolean;
 };
 

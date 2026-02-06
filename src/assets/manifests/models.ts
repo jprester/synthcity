@@ -63,24 +63,32 @@ export function createModelManifest(
 
   // Override s_04_03 with new GLB model that has embedded textures
   manifest["s_04_03"] = {
-    path: "models/dark-skyscraper.001_baked.glb",
-    format: "glb",
-    options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1 },
-  };
-
-  // Override s_04_04 with baked GLB model (single material with baked textures)
-  manifest["s_04_04"] = {
     path: "models/sci-fi-building-9_1.glb",
+
     format: "glb",
     options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1 },
   };
 
-  // // Override s_05_01 with new GLB model that has embedded textures
-  // manifest["s_05_01"] = {
-  //   path: "models/sci-fi-building-6_1.glb",
-  //   format: "glb",
-  //   options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1.3 },
-  // };
+  // Override s_04_04 with new GLB model that has embedded textures
+  manifest["s_04_04"] = {
+    path: "models/dark_skyscraper_new2.glb",
+    format: "glb",
+    options: { computeBVH: true, useEmbeddedMaterial: true, scale: 2 },
+  };
+
+  // Override s_05_01 with new GLB model that has embedded textures
+  manifest["s_05_01"] = {
+    path: "models/sci-fi-building-6_1.glb",
+    format: "glb",
+    options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1.3 },
+  };
+
+  // Override s_05_02 with multi-material GLB (diffuse + emissive)
+  manifest["s_05_02"] = {
+    path: "models/futuristic-tower.glb",
+    format: "glb",
+    options: { computeBVH: true, useEmbeddedMaterial: true, scale: 2 },
+  };
 
   // Mega buildings (6 variants)
   for (let i = 1; i <= 6; i++) {

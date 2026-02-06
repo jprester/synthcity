@@ -55,7 +55,7 @@ export type RuntimeSettings = {
 export type RuntimeAssets = {
   getTexture: (key: string) => Texture | undefined;
   getModel: (key: string) => BufferGeometry | undefined;
-  getMaterial: (key: string) => Material | undefined;
+  getMaterial: (key: string) => Material | Material[] | undefined;
   updateEmissiveIntensities?: (multipliers: EmissiveMultipliers) => void;
   setTerminal?: (terminal: TerminalApi | null) => void;
   loaded: boolean;

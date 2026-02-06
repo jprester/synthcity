@@ -4,7 +4,9 @@
       "Bash(npm run build:*)",
       "Bash(npm run lint:*)",
       "Bash(npx tsc:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(npx vite build:*)",
+      "WebFetch(domain:github.com)"
     ]
   }
 }
