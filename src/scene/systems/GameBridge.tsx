@@ -85,24 +85,28 @@ export function GameBridge() {
       return;
     }
 
-    const game = gameRef.current;
     scene.fog = new Fog(
       environment.fog.color,
       environment.fog.start,
       environment.fog.end,
     );
+  }, [environment, scene, gameRef]);
 
-    const intervalId = setInterval(() => {
-      if (game.assets) {
-        scene.background = game.assets.getTexture(environment.sky);
-        clearInterval(intervalId);
-      }
-    }, 100);
+  useEffect(() => {
+    if (!environment || !launchReady) {
+      return;
+    }
 
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [environment, scene]);
+    const game = gameRef.current;
+    if (!game?.assets) {
+      return;
+    }
+
+    const skyTexture = game.assets.getTexture(environment.sky);
+    if (skyTexture) {
+      scene.background = skyTexture;
+    }
+  }, [environment, launchReady, scene, gameRef]);
 
   useFrame(() => {
     const game = gameRef.current;

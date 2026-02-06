@@ -4,7 +4,7 @@ import { useGameStore } from "../../context/GameContext";
 export function PointerLockSystem() {
   const { gameRef, setShowBlocker } = useGameStore();
 
-  const handlePointerLockChange = useCallback(() => {
+  const syncPointerLockState = useCallback(() => {
     const game = gameRef.current;
     if (!game) {
       return;
@@ -13,24 +13,22 @@ export function PointerLockSystem() {
     const target = game.pointerLockElement || game.canvas || document.body;
     const isLocked = document.pointerLockElement === target;
 
-    // If game is not initialized yet, we can't enable controls
-    // but we should still track that pointer lock was requested
-    if (!game.playerController) {
-      // Store the pending state so it can be applied when game initializes
-      game.__pendingPointerLock = isLocked;
+    if (!game.initialized || !game.playerController) {
+      setShowBlocker(true);
       return;
     }
 
+    game.playerController.enabled = isLocked;
     if (isLocked) {
-      game.playerController.enabled = true;
       setShowBlocker(false);
-    } else {
-      game.playerController.enabled = false;
-      if (game.uiOnUnfocus) {
-        setShowBlocker(true);
-      }
+    } else if (game.uiOnUnfocus) {
+      setShowBlocker(true);
     }
   }, [gameRef, setShowBlocker]);
+
+  const handlePointerLockChange = useCallback(() => {
+    syncPointerLockState();
+  }, [syncPointerLockState]);
 
   // Listen for pointer lock changes
   useEffect(() => {
@@ -43,18 +41,9 @@ export function PointerLockSystem() {
     };
   }, [handlePointerLockChange]);
 
-  // Also check on mount and when game initializes to handle pending state
   useEffect(() => {
-    const game = gameRef.current;
-    if (game?.playerController && game.__pendingPointerLock) {
-      const target = game.pointerLockElement || game.canvas || document.body;
-      if (document.pointerLockElement === target) {
-        game.playerController.enabled = true;
-        setShowBlocker(false);
-      }
-      game.__pendingPointerLock = false;
-    }
-  });
+    syncPointerLockState();
+  }, [syncPointerLockState]);
 
   return null;
 }

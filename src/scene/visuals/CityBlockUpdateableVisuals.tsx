@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Mesh } from "three";
-import type { VisibilitySettings } from "../../context/GameContext";
+import type { VisibilitySettings } from "../../types/settings";
 import type { GameRuntime, UpdateableVisualState } from "../../types/game";
 
 type UpdateableVisualProps = {

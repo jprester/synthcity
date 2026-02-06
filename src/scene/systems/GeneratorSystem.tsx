@@ -15,6 +15,7 @@ import {
   InstancedBuildings,
   type BuildingDescriptor,
 } from "../visuals/InstancedBuildings";
+import { createPerlin } from "../../utils";
 import type {
   CityBlockItemState,
   CityLightDescriptor,
@@ -23,11 +24,6 @@ import type {
   TrafficItemState,
   WithGenId,
 } from "../../types/game";
-
-declare const Perlin: new (seed?: number) => {
-  noise: (x: number, y: number, z?: number) => number;
-  noiseDetail: (lod: number, falloff: number) => void;
-};
 
 type GridState<T> = {
   gridX: number;
@@ -84,7 +80,7 @@ export function GeneratorSystem() {
   }, 2);
 
   function initializeGenerators(game: GameRuntime) {
-    game.cityBlockNoise = new Perlin(game.settings.worldSeed);
+    game.cityBlockNoise = createPerlin(game.settings.worldSeed);
     game.cityBlockNoise.noiseDetail(8, 0.5);
     game.cityBlockNoiseFactor = 0.0017;
 

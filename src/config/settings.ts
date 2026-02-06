@@ -9,7 +9,7 @@ import type {
   QualityLevel,
   FrameRateLimit,
   VisibilitySettings,
-} from "../context/GameContext";
+} from "../types/settings";
 
 /**
  * Default visibility settings for all scene objects

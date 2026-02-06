@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Mesh } from "three";
-import type { VisibilitySettings } from "../../context/GameContext";
+import type { VisibilitySettings } from "../../types/settings";
 import type {
   CityBlockItemState,
   CityBlockVisualDescriptor,

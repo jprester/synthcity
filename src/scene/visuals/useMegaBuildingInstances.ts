@@ -46,9 +46,21 @@ export function useMegaBuildingInstances(assets: AssetGetter | null) {
     }
 
     const material = assets.getMaterial("mega_building_01");
+    if (!material) {
+      console.warn(
+        "useMegaBuildingInstances: mega_building_01 material not found",
+      );
+      return;
+    }
 
     for (const modelKey of MEGA_MODEL_KEYS) {
       const geometry = assets.getModel(modelKey);
+      if (!geometry) {
+        console.warn(
+          `useMegaBuildingInstances: geometry for ${modelKey} not found`,
+        );
+        continue;
+      }
       const instancedMesh = new InstancedMesh(
         geometry,
         material,

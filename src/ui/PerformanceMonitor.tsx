@@ -2,6 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import type { WebGLRenderer } from "three";
 
+type PerformanceWithMemory = Performance & {
+  memory?: {
+    usedJSHeapSize: number;
+    totalJSHeapSize: number;
+  };
+};
+
 export type PerformanceStats = {
   fps: number;
   frameTime: number;
@@ -78,7 +85,7 @@ export function PerformanceStatsCollector({
     const fps = Math.round(1000 / avgFrameTime);
 
     // Get memory info (Chrome only)
-    const memory = (performance as any).memory;
+    const memory = (performance as PerformanceWithMemory).memory;
     const jsHeapUsed = memory ? Math.round(memory.usedJSHeapSize / 1048576) : 0;
     const jsHeapTotal = memory
       ? Math.round(memory.totalJSHeapSize / 1048576)
@@ -264,7 +271,7 @@ export function PerformanceMonitorOverlay({
       const fps = Math.round(1000 / avgFrameTime);
 
       const info = renderer?.info;
-      const memory = (performance as any).memory;
+      const memory = (performance as PerformanceWithMemory).memory;
 
       setStats({
         fps,

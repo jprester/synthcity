@@ -11,6 +11,11 @@ import type {
 import type { EmissiveMultipliers } from "../assets/types";
 import type { PlayerController } from "../controllers/usePlayerController";
 import type { EnvironmentConfig } from "../config/environments";
+import type {
+  FrameRateLimit,
+  QualityLevel,
+  VisibilitySettings,
+} from "./settings";
 import type { TerminalApi } from "../ui/initTerminal";
 
 export type Vector3Like = {
@@ -25,20 +30,6 @@ export type RotationLike = {
   z?: number;
 };
 
-export type SceneVisibilitySettings = {
-  buildings: boolean;
-  megaBuildings: boolean;
-  ads: boolean;
-  smoke: boolean;
-  spotlights: boolean;
-  toppers: boolean;
-  trafficCars: boolean;
-  playerCar: boolean;
-  ground: boolean;
-  storefronts: boolean;
-  cityLights: boolean;
-};
-
 export type RuntimeSettings = {
   mode: string;
   worldSeed: number;
@@ -47,9 +38,9 @@ export type RuntimeSettings = {
   windshieldShader: string;
   renderScaling: number;
   visualPreset?: string;
-  qualityLevel?: string;
-  frameRateLimit?: number;
-  visibility?: SceneVisibilitySettings;
+  qualityLevel?: QualityLevel;
+  frameRateLimit?: FrameRateLimit;
+  visibility?: VisibilitySettings;
 };
 
 export type RuntimeAssets = {
@@ -164,7 +155,6 @@ export type GameRuntime = {
   canvas?: HTMLElement | null;
   pointerLockElement?: Element | null;
   uiOnUnfocus?: boolean;
-  __pendingPointerLock?: boolean;
   canvasOpacity: number;
   masterVolume: number;
   userMasterVolume: number;

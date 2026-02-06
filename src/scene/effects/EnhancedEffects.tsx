@@ -15,7 +15,7 @@ import { ToneMappingMode, BlendFunction, KernelSize } from "postprocessing";
 import { Vector2 } from "three";
 import type { VisualPreset } from "./VisualPresets";
 import { PRESET_DEFAULT } from "./VisualPresets";
-import type { QualityLevel } from "../../context/GameContext";
+import type { QualityLevel } from "../../types/settings";
 
 type EnhancedEffectsProps = {
   preset?: VisualPreset;

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { useGameStore } from '../context/GameContext';
-import type { QualityLevel, FrameRateLimit, VisibilitySettings } from '../context/GameContext';
+import type { QualityLevel, FrameRateLimit, VisibilitySettings } from '../types/settings';
 import { initTerminal } from './initTerminal';
 import { PRESET_NAMES } from '../scene/effects';
 
@@ -42,7 +42,6 @@ export default function UiShell() {
     terminalRef,
     launchReady,
     showBlocker,
-    setShowBlocker,
     showCrash
   } = useGameStore();
   const terminalRefLocal = useRef<HTMLDivElement | null>(null);
@@ -176,7 +175,6 @@ export default function UiShell() {
       if (!game.initialized) {
         return;
       }
-      setShowBlocker(false);
       const target = game.canvas || document.body;
       if (target && target.requestPointerLock) {
         target.requestPointerLock();
