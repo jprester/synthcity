@@ -3,6 +3,7 @@ import { useFrame } from "@react-three/fiber";
 import { Audio, AudioListener, AudioLoader } from "three";
 import { useGameStore } from "../../context/GameContext";
 import { Radio } from "../../classes/Radio.js";
+import type { GameRuntime } from "../../types/game";
 
 export function AudioSystem() {
   const { gameRef } = useGameStore();
@@ -21,7 +22,7 @@ export function AudioSystem() {
 
     if (game.canvasOpacity < 1 && game.canvas) {
       game.canvasOpacity += delta * 0.15;
-      game.canvas.style.opacity = game.canvasOpacity;
+      game.canvas.style.opacity = String(game.canvasOpacity);
       game.masterVolume += delta * 0.15;
     }
 
@@ -46,7 +47,7 @@ export function AudioSystem() {
   return null;
 }
 
-function initializeAudio(game: any) {
+function initializeAudio(game: GameRuntime) {
   if (game.audioListener) {
     return;
   }

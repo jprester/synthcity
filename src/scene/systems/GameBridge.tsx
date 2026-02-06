@@ -4,6 +4,8 @@ import { Fog, NoToneMapping, SRGBColorSpace } from "three";
 import { Game } from "../../classes/Game.js";
 import { useGameStore } from "../../context/GameContext";
 import { usePlayerController } from "../../controllers/usePlayerController";
+import type { EnvironmentConfig } from "../../config/environments";
+import type { GameRuntime } from "../../types/game";
 import { EnhancedEffects, getPreset } from "../effects";
 
 export function GameBridge() {
@@ -17,7 +19,7 @@ export function GameBridge() {
     setShowCrash,
   } = useGameStore();
   const controller = usePlayerController();
-  const [environment, setEnvironment] = useState<any | null>(null);
+  const [environment, setEnvironment] = useState<EnvironmentConfig | null>(null);
 
   useEffect(() => {
     if (gameRef.current) {
@@ -32,7 +34,7 @@ export function GameBridge() {
       controller,
       onAssetsLoaded: () => setLaunchReady(true),
       onCrashChange: (value) => setShowCrash(Boolean(value)),
-    });
+    }) as unknown as GameRuntime;
     gameRef.current = game;
     setEnvironment(game.environment);
 

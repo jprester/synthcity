@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Mesh, PointLight, Vector3 } from "three";
 import type { Object3D } from "three";
+import type { GameRuntime, RuntimePlayer } from "../../types/game";
 
 type PlayerVisuals = {
   car: Object3D | null;
@@ -10,8 +11,8 @@ type PlayerVisuals = {
 };
 
 type PlayerCarVisualsProps = {
-  player: any;
-  game: any;
+  player: RuntimePlayer | null;
+  game: GameRuntime | null;
   windshieldShader: string;
 };
 

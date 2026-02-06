@@ -2,17 +2,21 @@ import { useEffect, useRef, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Mesh } from "three";
 import type { VisibilitySettings } from "../../context/GameContext";
+import type { GameRuntime, UpdateableVisualState } from "../../types/game";
 
 type UpdateableVisualProps = {
-  updateable: any;
-  game: any;
+  updateable: UpdateableVisualState;
+  game: GameRuntime | null;
   visibility: VisibilitySettings;
 };
 
 /**
  * Check if an updateable should be visible based on its kind
  */
-function isUpdateableVisible(kind: string, visibility: VisibilitySettings): boolean {
+function isUpdateableVisible(
+  kind: UpdateableVisualState["kind"] | undefined,
+  visibility: VisibilitySettings,
+): boolean {
   switch (kind) {
     case "advert":
       return visibility.ads;
@@ -122,7 +126,7 @@ export function CityBlockUpdateableVisuals({
   }, 1);
 
   // Check visibility based on updateable kind
-  if (!isUpdateableVisible(updateable?.kind, visibility)) {
+  if (!isUpdateableVisible(updateable.kind, visibility)) {
     return null;
   }
 

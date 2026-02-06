@@ -2,20 +2,11 @@ import { useEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Mesh, Group, Object3D } from "three";
 import { useTrafficCarPool } from "./useTrafficCarPool";
-
-type Car = {
-  modelKey: string;
-  pose: Object3D;
-};
-
-type TrafficItem = {
-  cars: Car[];
-  __genId?: string;
-};
+import type { GameRuntime, TrafficCarState, TrafficItemState, WithGenId } from "../../types/game";
 
 type PooledTrafficVisualsProps = {
-  trafficItems: TrafficItem[];
-  game: any;
+  trafficItems: Array<WithGenId<TrafficItemState>>;
+  game: GameRuntime | null;
 };
 
 type PooledMesh = Mesh & { __poolKey?: string };
@@ -25,7 +16,7 @@ export function PooledTrafficVisuals({
   game,
 }: PooledTrafficVisualsProps) {
   const groupRef = useRef<Group>(null);
-  const assignmentsRef = useRef<Map<Car, PooledMesh>>(new Map());
+  const assignmentsRef = useRef<Map<TrafficCarState, PooledMesh>>(new Map());
   const { acquire, release, getAllMeshes, isReady } = useTrafficCarPool(
     game?.assets ?? null,
   );
@@ -60,7 +51,7 @@ export function PooledTrafficVisuals({
     }
 
     const currentAssignments = assignmentsRef.current;
-    const newCars = new Set<Car>();
+    const newCars = new Set<TrafficCarState>();
 
     // Collect all current cars
     for (const item of trafficItems) {

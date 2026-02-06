@@ -4,10 +4,11 @@ import {
   useMegaBuildingInstances,
   type MegaBuildingDescriptor,
 } from "./useMegaBuildingInstances";
+import type { GameRuntime } from "../../types/game";
 
 type InstancedMegaBuildingsProps = {
   megaBuildings: MegaBuildingDescriptor[];
-  game: any;
+  game: GameRuntime | null;
 };
 
 export function InstancedMegaBuildings({

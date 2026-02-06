@@ -2,11 +2,12 @@ import { useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useGameStore } from "../../context/GameContext";
 import { PlayerCarVisuals } from "../visuals/PlayerCarVisuals";
+import type { GameRuntime, RuntimePlayer } from "../../types/game";
 
 export function PlayerSystem() {
   const { gameRef, settings } = useGameStore();
-  const playerRef = useRef<any>(null);
-  const [player, setPlayer] = useState<any>(null);
+  const playerRef = useRef<RuntimePlayer | null>(null);
+  const [player, setPlayer] = useState<RuntimePlayer | null>(null);
 
   useFrame((state, delta) => {
     const game = gameRef.current;
@@ -26,7 +27,7 @@ export function PlayerSystem() {
     }
   }, 1);
 
-  const game = gameRef.current;
+  const game = gameRef.current as GameRuntime | null;
   const shouldRenderCar = Boolean(
     player?.carPose && game?.assets && settings.visibility.playerCar
   );

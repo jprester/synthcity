@@ -1,6 +1,5 @@
 import { useRef, useState, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
-import type { PointLight } from "three";
 import { useGameStore } from "../../context/GameContext";
 import { GeneratorItem_CityBlock } from "../../classes/GeneratorItem_CityBlock.js";
 import { GeneratorItem_CityLight } from "../../classes/GeneratorItem_CityLight.js";
@@ -16,8 +15,17 @@ import {
   InstancedBuildings,
   type BuildingDescriptor,
 } from "../visuals/InstancedBuildings";
+import type {
+  CityBlockItemState,
+  CityLightDescriptor,
+  CityLightItemState,
+  GameRuntime,
+  TrafficItemState,
+  WithGenId,
+} from "../../types/game";
 
 declare const Perlin: new (seed?: number) => {
+  noise: (x: number, y: number, z?: number) => number;
   noiseDetail: (lod: number, falloff: number) => void;
 };
 
@@ -27,39 +35,27 @@ type GridState<T> = {
   items: Map<string, T>;
 };
 
-type WithGenId<T> = T & { __genId?: string };
-
-type CityLightDescriptor = {
-  free: boolean;
-  position: { x: number; y: number; z: number };
-  color: { h: number; s: number; l: number };
-};
-
 export function GeneratorSystem() {
   const { gameRef, settings } = useGameStore();
   const { visibility } = settings;
   const [cityBlockItems, setCityBlockItems] = useState<
-    WithGenId<GeneratorItem_CityBlock>[]
+    WithGenId<CityBlockItemState>[]
   >([]);
   const [trafficItems, setTrafficItems] = useState<
-    WithGenId<GeneratorItem_Traffic>[]
+    WithGenId<TrafficItemState>[]
   >([]);
   const [cityLights, setCityLights] = useState<CityLightDescriptor[]>([]);
-  const trafficStateRef = useRef<GridState<WithGenId<GeneratorItem_Traffic>>>({
+  const trafficStateRef = useRef<GridState<WithGenId<TrafficItemState>>>({
     gridX: 0,
     gridZ: 0,
     items: new Map(),
   });
-  const cityLightStateRef = useRef<
-    GridState<WithGenId<GeneratorItem_CityLight>>
-  >({
+  const cityLightStateRef = useRef<GridState<WithGenId<CityLightItemState>>>({
     gridX: 0,
     gridZ: 0,
     items: new Map(),
   });
-  const cityBlockStateRef = useRef<
-    GridState<WithGenId<GeneratorItem_CityBlock>>
-  >({
+  const cityBlockStateRef = useRef<GridState<WithGenId<CityBlockItemState>>>({
     gridX: 0,
     gridZ: 0,
     items: new Map(),
@@ -87,7 +83,7 @@ export function GeneratorSystem() {
     updateCityLights(game);
   }, 2);
 
-  function initializeGenerators(game: any) {
+  function initializeGenerators(game: GameRuntime) {
     game.cityBlockNoise = new Perlin(game.settings.worldSeed);
     game.cityBlockNoise.noiseDetail(8, 0.5);
     game.cityBlockNoiseFactor = 0.0017;
@@ -107,7 +103,7 @@ export function GeneratorSystem() {
     setCityLights([...game.cityLights]);
   }
 
-  function updateCityBlocks(game: any) {
+  function updateCityBlocks(game: GameRuntime) {
     const cellSize = game.cityBlockSize + game.roadWidth;
     const cellCount = 40;
     const rad = Math.ceil(cellCount / 2);
@@ -142,7 +138,7 @@ export function GeneratorSystem() {
               worldX,
               worldZ,
               game,
-            ) as WithGenId<GeneratorItem_CityBlock>;
+            ) as unknown as WithGenId<CityBlockItemState>;
             item.__genId = `${key}`;
             state.items.set(key, item);
           }
@@ -168,7 +164,7 @@ export function GeneratorSystem() {
     }
   }
 
-  function updateTraffic(game: any) {
+  function updateTraffic(game: GameRuntime) {
     const cellSize = game.cityBlockSize + game.roadWidth;
     const cellCount = 12;
     const rad = Math.ceil(cellCount / 2);
@@ -203,7 +199,7 @@ export function GeneratorSystem() {
               worldX,
               worldZ,
               game,
-            ) as WithGenId<GeneratorItem_Traffic>;
+            ) as unknown as WithGenId<TrafficItemState>;
             item.__genId = `${key}`;
             state.items.set(key, item);
           }
@@ -271,7 +267,7 @@ export function GeneratorSystem() {
     return result;
   }, [cityBlockItems]);
 
-  function updateCityLights(game: any) {
+  function updateCityLights(game: GameRuntime) {
     const cellSize = (game.cityBlockSize + game.roadWidth) * 4;
     const cellCount = 8;
     const rad = Math.ceil(cellCount / 2);
@@ -306,7 +302,7 @@ export function GeneratorSystem() {
               worldX,
               worldZ,
               game,
-            ) as WithGenId<GeneratorItem_CityLight>;
+            ) as unknown as WithGenId<CityLightItemState>;
             item.__genId = `${key}`;
             state.items.set(key, item);
           }

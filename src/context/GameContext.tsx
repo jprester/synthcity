@@ -2,6 +2,8 @@ import { createContext, useContext, useMemo, useRef, useState } from "react";
 import type { Dispatch, SetStateAction, MutableRefObject } from "react";
 
 import { DEFAULT_GAME_SETTINGS } from "../config";
+import type { GameRuntime } from "../types/game";
+import type { TerminalApi } from "../ui/initTerminal";
 
 export type QualityLevel = "low" | "medium" | "high";
 export type FrameRateLimit = 0 | 30 | 60 | 120; // 0 = unlimited
@@ -46,8 +48,8 @@ type GameStore = {
   setShowBlocker: Dispatch<SetStateAction<boolean>>;
   showCrash: boolean;
   setShowCrash: Dispatch<SetStateAction<boolean>>;
-  gameRef: MutableRefObject<any>;
-  terminalRef: MutableRefObject<any>;
+  gameRef: MutableRefObject<GameRuntime | null>;
+  terminalRef: MutableRefObject<TerminalApi | null>;
 };
 
 const GameContext = createContext<GameStore | null>(null);
@@ -57,8 +59,8 @@ export function GameProvider({ children }) {
   const [launchReady, setLaunchReady] = useState(false);
   const [showBlocker, setShowBlocker] = useState(true);
   const [showCrash, setShowCrash] = useState(false);
-  const gameRef = useRef(null);
-  const terminalRef = useRef(null);
+  const gameRef = useRef<GameRuntime | null>(null);
+  const terminalRef = useRef<TerminalApi | null>(null);
 
   const value = useMemo(
     () => ({

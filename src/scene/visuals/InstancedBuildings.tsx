@@ -4,10 +4,11 @@ import {
   useBuildingInstances,
   type BuildingDescriptor,
 } from "./useBuildingInstances";
+import type { GameRuntime } from "../../types/game";
 
 type InstancedBuildingsProps = {
   buildings: BuildingDescriptor[];
-  game: any;
+  game: GameRuntime | null;
 };
 
 export function InstancedBuildings({

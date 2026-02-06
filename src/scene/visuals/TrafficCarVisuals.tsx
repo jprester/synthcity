@@ -2,10 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Mesh } from "three";
 import type { Object3D } from "three";
+import type { GameRuntime, TrafficCarState } from "../../types/game";
 
 type TrafficCarVisualsProps = {
-  car: any;
-  game: any;
+  car: TrafficCarState;
+  game: GameRuntime | null;
 };
 
 export function TrafficCarVisuals({ car, game }: TrafficCarVisualsProps) {
