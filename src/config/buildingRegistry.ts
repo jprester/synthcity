@@ -180,16 +180,6 @@ export const BUILDING_REGISTRY: SeriesGroup[] = [
             },
           },
           { key: "s_05_03", weight: 1 },
-          {
-            key: "s_05_04",
-            weight: 1,
-            source: {
-              format: "glb",
-              path: "models/new-massive-skyscraper.glb",
-              emissiveBase: 0.7,
-              scale: 1.8,
-            },
-          },
         ],
       },
     ],
@@ -248,10 +238,7 @@ export function getEmbeddedEmissiveEntries(): Record<
 }
 
 /** Generate model manifest entries for all buildings */
-export function getBuildingManifestEntries(): Record<
-  string,
-  ModelManifestEntry
-> {
+export function getBuildingManifestEntries(): Record<string, ModelManifestEntry> {
   const entries: Record<string, ModelManifestEntry> = {};
   for (const v of getAllVariants()) {
     if (v.source?.format === "glb") {
