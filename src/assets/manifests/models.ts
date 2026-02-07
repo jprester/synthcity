@@ -99,7 +99,13 @@ export function createModelManifest(
   manifest["s_05_02"] = {
     path: "models/hero-skyscraper.glb",
     format: "glb",
-    options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1 },
+    options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1.4 },
+  };
+
+  manifest["s_05_04"] = {
+    path: "models/new-massive-skyscraper.glb",
+    format: "glb",
+    options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1.7 },
   };
 
   // Add s_04_05: glowing industrial building (GLB with embedded materials)

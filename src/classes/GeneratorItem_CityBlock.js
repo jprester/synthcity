@@ -211,15 +211,18 @@ class GeneratorItem_CityBlock {
       let type = null;
 
       if (isTower) {
-        if (subtypeNoise < 0.33) type = "s_05_01";
-        else if (subtypeNoise < 0.66) type = "s_05_02";
-        else type = "s_05_03";
+        // s_05_02 (hero-skyscraper) is rare (~5%), rest share ~31.7% each
+        if (subtypeNoise < 0.317) type = "s_05_01";
+        else if (subtypeNoise < 0.367) type = "s_05_02";
+        else if (subtypeNoise < 0.683) type = "s_05_03";
+        else type = "s_05_04";
       } else {
-        // s_04 series has 5 variants (including GLB models)
-        // s_04_05 (glowing-industrial) is rare (~5%), rest share ~24% each
-        if (subtypeNoise < 0.2375) type = "s_04_01";
-        else if (subtypeNoise < 0.475) type = "s_04_02";
-        else if (subtypeNoise < 0.7125) type = "s_04_03";
+        // s_04_01 (sci-fi-building-9_1) is rare (~5%)
+        // s_04_05 (glowing-industrial) is rare (~5%)
+        // rest share ~30% each
+        if (subtypeNoise < 0.05) type = "s_04_01";
+        else if (subtypeNoise < 0.35) type = "s_04_02";
+        else if (subtypeNoise < 0.65) type = "s_04_03";
         else if (subtypeNoise < 0.95) type = "s_04_04";
         else type = "s_04_05";
       }

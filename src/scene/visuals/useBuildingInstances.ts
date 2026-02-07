@@ -37,6 +37,7 @@ const BUILDING_MODEL_KEYS = [
   "s_05_01",
   "s_05_02",
   "s_05_03",
+  "s_05_04",
 ];
 
 // All building material keys
@@ -62,6 +63,7 @@ const MODELS_WITH_EMBEDDED_MATERIALS = new Set([
   "s_04_05",
   // "s_05_01",
   "s_05_02",
+  "s_05_04",
 ]);
 
 // Max instances per (model, material) combination
