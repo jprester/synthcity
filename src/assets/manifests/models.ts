@@ -1,8 +1,4 @@
 import type { ModelManifest } from "../types";
-import {
-  getBuildingManifestEntries,
-  getAllAdModelKeys,
-} from "../../config/buildingRegistry";
 
 /**
  * Model manifest - defines all 3D models to be loaded
@@ -52,8 +48,66 @@ export function createModelManifest(
     },
   };
 
-  // Buildings — derived from building registry
-  Object.assign(manifest, getBuildingManifestEntries());
+  // Standard buildings (s_01 through s_05, 3 variants each)
+  const buildingSeries = ["01", "02", "03", "04", "05"];
+  for (const series of buildingSeries) {
+    for (let variant = 1; variant <= 3; variant++) {
+      const id = variant.toString().padStart(2, "0");
+      const key = `s_${series}_${id}`;
+      manifest[key] = {
+        path: `models/${key}.obj`,
+        options: { computeBVH: true },
+      };
+    }
+  }
+
+  // Add s_03_04: cylinder building (GLB with embedded materials)
+  manifest["s_03_04"] = {
+    path: "models/cylinder-building.glb",
+    format: "glb",
+    options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1 },
+  };
+
+  // Override s_04_01 with new GLB model that has embedded textures
+  manifest["s_04_01"] = {
+    path: "models/sci-fi-building-9_1.glb",
+    format: "glb",
+    options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1 },
+  };
+
+  // Override s_04_03 with new GLB model that has embedded textures
+  manifest["s_04_03"] = {
+    path: "models/sci-fi-corporate-building.glb ",
+    format: "glb",
+    options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1 },
+  };
+
+  manifest["s_04_04"] = {
+    path: "models/dark_skyscraper_new2.glb",
+    format: "glb",
+    options: { computeBVH: true, useEmbeddedMaterial: true, scale: 2 },
+  };
+
+  // Override s_05_01 with new GLB model that has embedded textures
+  // manifest["s_05_01"] = {
+  //   path: "models/sci-fi-building-6_1.glb",
+  //   format: "glb",
+  //   options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1.3 },
+  // };
+
+  // Override s_05_02 with multi-material GLB (diffuse + emissive)
+  manifest["s_05_02"] = {
+    path: "models/hero-skyscraper.glb",
+    format: "glb",
+    options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1 },
+  };
+
+  // Add s_04_05: glowing industrial building (GLB with embedded materials)
+  manifest["s_04_05"] = {
+    path: "models/glowing-industrial-building.glb",
+    format: "glb",
+    options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1 },
+  };
 
   // Mega buildings (6 variants)
   for (let i = 1; i <= 6; i++) {
@@ -64,8 +118,24 @@ export function createModelManifest(
     };
   }
 
-  // Advertisement models — derived from building registry
-  for (const key of getAllAdModelKeys()) {
+  // Advertisement models
+  const adModels = [
+    "ads_s_01_01",
+    "ads_s_01_02",
+    "ads_s_02_01",
+    "ads_s_02_02",
+    "ads_s_03_01",
+    "ads_s_03_02",
+    "ads_s_04_01",
+    "ads_s_04_02",
+    "ads_s_04_03",
+    "ads_s_04_04",
+    "ads_s_05_01",
+    "ads_s_05_02",
+    "ads_s_05_03",
+    "ads_s_05_04",
+  ];
+  for (const key of adModels) {
     manifest[key] = { path: `models/${key}.obj` };
   }
 

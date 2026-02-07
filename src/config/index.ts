@@ -5,4 +5,3 @@
 export * from "./world";
 export * from "./environments";
 export * from "./settings";
-export * from "./buildingRegistry";

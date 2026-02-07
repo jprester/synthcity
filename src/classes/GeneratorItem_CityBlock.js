@@ -1,32 +1,6 @@
 import { Mesh } from "three";
 
 import { GeneratorUtils } from "./GeneratorUtils.js";
-import {
-  BUILDING_REGISTRY,
-  buildVariantThresholds,
-  selectVariantFromNoise,
-} from "../config/buildingRegistry";
-
-// Pre-compute series data from registry (once at module load, not per block)
-const SMALL_GROUP = BUILDING_REGISTRY.find((g) => g.name === "small");
-const LARGE_GROUP = BUILDING_REGISTRY.find((g) => g.name === "large");
-const TOWER_GROUP = BUILDING_REGISTRY.find((g) => g.name === "tower");
-
-const SMALL_SERIES = SMALL_GROUP?.series ?? [];
-const SMALL_SERIES_DATA = SMALL_SERIES.map((s) => ({
-  series: s,
-  thresholds: buildVariantThresholds(s.variants),
-}));
-
-const LARGE_SERIES = LARGE_GROUP?.series[0];
-const LARGE_THRESHOLDS = LARGE_SERIES
-  ? buildVariantThresholds(LARGE_SERIES.variants)
-  : [];
-
-const TOWER_SERIES = TOWER_GROUP?.series[0];
-const TOWER_THRESHOLDS = TOWER_SERIES
-  ? buildVariantThresholds(TOWER_SERIES.variants)
-  : [];
 
 class GeneratorItem_CityBlock {
   constructor(x, z, game) {
@@ -128,38 +102,50 @@ class GeneratorItem_CityBlock {
           subtypeNoise = this.utils.fixNoise(
             this.noise.noise((this.x + xOff) * 5, (this.z + zOff) * 5),
           );
-          // Select series from registry based on typeNoise
-          let seriesIndex = Math.min(
-            Math.floor(typeNoise * SMALL_SERIES_DATA.length),
-            SMALL_SERIES_DATA.length - 1,
-          );
-          let seriesData = SMALL_SERIES_DATA[seriesIndex];
-          let series = seriesData.series;
-
-          let type = selectVariantFromNoise(seriesData.thresholds, subtypeNoise);
-          let adsType =
-            Math.round(typeNoise * 100) % 2 == 0
-              ? series.ads[0]
-              : series.ads[Math.min(1, series.ads.length - 1)];
-
-          // topper (only for series that support it)
-          if (series.toppers) {
+          let type = null;
+          let adsType = null;
+          if (typeNoise < 0.267) {
+            if (subtypeNoise < 0.33) type = "s_01_01";
+            else if (subtypeNoise < 0.66) type = "s_01_02";
+            else type = "s_01_03";
+            adsType =
+              Math.round(typeNoise * 100) % 2 == 0
+                ? "ads_s_01_01"
+                : "ads_s_01_02";
+          } else if (typeNoise < 0.534) {
+            if (subtypeNoise < 0.33) type = "s_02_01";
+            else if (subtypeNoise < 0.66) type = "s_02_02";
+            else type = "s_02_03";
+            adsType =
+              Math.round(typeNoise * 100) % 2 == 0
+                ? "ads_s_02_01"
+                : "ads_s_02_02";
+          } else {
+            if (subtypeNoise < 0.25) type = "s_03_01";
+            else if (subtypeNoise < 0.5) type = "s_03_02";
+            else if (subtypeNoise < 0.75) type = "s_03_03";
+            else type = "s_03_04";
+            adsType =
+              Math.round(typeNoise * 100) % 2 == 0
+                ? "ads_s_03_01"
+                : "ads_s_03_02";
+            // topper
             let topperNoise = this.utils.fixNoise(
               this.noise.noise((this.x + xOff) * 6, (this.z + zOff) * 6),
             );
             topper = topperNoise > 0.998;
-          }
-          // spotlight (only for series that support it)
-          if (series.spotlights && this.game.environment.spotLights) {
-            if (Math.random() < 0.1 && subtypeNoise > 0.8 && !topper)
-              this.updateables.push(
-                new Spotlight(
-                  this.x + xOff,
-                  160 * scale,
-                  this.z + zOff,
-                  this.game,
-                ),
-              );
+            // spotlight
+            if (this.game.environment.spotLights) {
+              if (Math.random() < 0.1 && subtypeNoise > 0.8 && !topper)
+                this.updateables.push(
+                  new Spotlight(
+                    this.x + xOff,
+                    160 * scale,
+                    this.z + zOff,
+                    this.game,
+                  ),
+                );
+            }
           }
 
           // remove ads
@@ -225,9 +211,17 @@ class GeneratorItem_CityBlock {
       let type = null;
 
       if (isTower) {
-        type = selectVariantFromNoise(TOWER_THRESHOLDS, subtypeNoise);
+        if (subtypeNoise < 0.33) type = "s_05_01";
+        else if (subtypeNoise < 0.66) type = "s_05_02";
+        else type = "s_05_03";
       } else {
-        type = selectVariantFromNoise(LARGE_THRESHOLDS, subtypeNoise);
+        // s_04 series has 5 variants (including GLB models)
+        // s_04_05 (glowing-industrial) is rare (~5%), rest share ~24% each
+        if (subtypeNoise < 0.2375) type = "s_04_01";
+        else if (subtypeNoise < 0.475) type = "s_04_02";
+        else if (subtypeNoise < 0.7125) type = "s_04_03";
+        else if (subtypeNoise < 0.95) type = "s_04_04";
+        else type = "s_04_05";
       }
 
       let matNoise = this.utils.fixNoise(
@@ -252,9 +246,19 @@ class GeneratorItem_CityBlock {
           this.noise.noise((this.x + xOff) * 6, (this.z + zOff) * 6),
         );
         if (isTower) {
-          adsTypes = TOWER_SERIES?.ads ?? [];
+          adsTypes = [
+            "ads_s_05_01",
+            "ads_s_05_02",
+            "ads_s_05_03",
+            "ads_s_05_04",
+          ];
         } else {
-          adsTypes = LARGE_SERIES?.ads ?? [];
+          adsTypes = [
+            "ads_s_04_01",
+            "ads_s_04_02",
+            "ads_s_04_03",
+            "ads_s_04_04",
+          ];
         }
         adsType = adsTypes[Math.floor(adsNoise * adsTypes.length)];
       }

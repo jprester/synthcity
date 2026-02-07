@@ -123,8 +123,6 @@ export type EmissiveMultipliers = {
   smoke: number; // Atmospheric smoke/steam effects
 };
 
-import { getEmbeddedEmissiveEntries } from "../config/buildingRegistry";
-
 /**
  * Base emissive intensities for each material category
  * These are multiplied by the preset multipliers
@@ -159,8 +157,14 @@ export const BASE_EMISSIVE_INTENSITIES: Record<
   building_09: { category: "buildings", base: 2.0 },
   building_10: { category: "buildings", base: 2.0 },
   mega_building_01: { category: "buildings", base: 2.0 },
-  // Embedded GLB models — derived from building registry
-  ...getEmbeddedEmissiveEntries(),
+  // Embedded GLB models (match standard building base for consistent presets)
+  __embedded_s_03_04: { category: "buildings", base: 2.0 }, // cylinder-building.glb
+  __embedded_s_04_01: { category: "buildings", base: 2.0 }, // sci-fi-building-9_1.glb
+  __embedded_s_04_03: { category: "buildings", base: 2.0 }, // sci-fi-building-9_1.glb
+  __embedded_s_04_04: { category: "buildings", base: 2.0 }, // dark_skyscraper_new2.glb
+  __embedded_s_04_05: { category: "buildings", base: 1.5 }, // sci-fi-corporate-building.glb
+  // __embedded_s_05_01: { category: "buildings", base: 2.0 }, // sci-fi-building-6_1.glb
+  __embedded_s_05_02: { category: "buildings", base: 1.0 }, // hero-skyscraper.glb
   // Neons (storefronts, signs)
   storefronts: { category: "neons", base: 0.5 },
   // Ambient

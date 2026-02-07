@@ -1,10 +1,6 @@
 import { useRef, useEffect, useCallback, useState } from "react";
 import { InstancedMesh, Object3D } from "three";
 import type { BufferGeometry, Material } from "three";
-import {
-  getAllModelKeys,
-  getEmbeddedMaterialKeys,
-} from "../../config/buildingRegistry";
 
 type AssetGetter = {
   getModel: (key: string) => BufferGeometry | undefined;
@@ -21,11 +17,29 @@ export type BuildingDescriptor = {
   blockKey: string;
 };
 
-// Derived from building registry — no manual maintenance needed
-const BUILDING_MODEL_KEYS = getAllModelKeys();
-const MODELS_WITH_EMBEDDED_MATERIALS = getEmbeddedMaterialKeys();
+// All building model keys (s_01 through s_05, 3 variants each + s_04_04 extra)
+const BUILDING_MODEL_KEYS = [
+  "s_01_01",
+  "s_01_02",
+  "s_01_03",
+  "s_02_01",
+  "s_02_02",
+  "s_02_03",
+  "s_03_01",
+  "s_03_02",
+  "s_03_03",
+  "s_03_04",
+  "s_04_01",
+  "s_04_02",
+  "s_04_03",
+  "s_04_04",
+  "s_04_05",
+  "s_05_01",
+  "s_05_02",
+  "s_05_03",
+];
 
-// All building material keys (shared texture materials, not per-building)
+// All building material keys
 const BUILDING_MATERIAL_KEYS = [
   "building_01",
   "building_02",
@@ -38,6 +52,17 @@ const BUILDING_MATERIAL_KEYS = [
   "building_09",
   "building_10",
 ];
+
+// Models that use embedded materials from GLB files (don't apply external textures)
+const MODELS_WITH_EMBEDDED_MATERIALS = new Set([
+  "s_03_04",
+  "s_04_01",
+  "s_04_03",
+  "s_04_04",
+  "s_04_05",
+  // "s_05_01",
+  "s_05_02",
+]);
 
 // Max instances per (model, material) combination
 // Buildings are common, so we need more instances than mega buildings
