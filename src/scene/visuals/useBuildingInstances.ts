@@ -28,10 +28,12 @@ const BUILDING_MODEL_KEYS = [
   "s_03_01",
   "s_03_02",
   "s_03_03",
+  "s_03_04",
   "s_04_01",
   "s_04_02",
   "s_04_03",
   "s_04_04",
+  "s_04_05",
   "s_05_01",
   "s_05_02",
   "s_05_03",
@@ -53,9 +55,11 @@ const BUILDING_MATERIAL_KEYS = [
 
 // Models that use embedded materials from GLB files (don't apply external textures)
 const MODELS_WITH_EMBEDDED_MATERIALS = new Set([
+  "s_03_04",
   "s_04_01",
   "s_04_03",
   "s_04_04",
+  "s_04_05",
   // "s_05_01",
   "s_05_02",
 ]);

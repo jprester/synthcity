@@ -61,10 +61,18 @@ export function createModelManifest(
     }
   }
 
-  manifest["s_04_01"] = {
-    path: "models/dark_skyscraper_new2.glb",
+  // Add s_03_04: cylinder building (GLB with embedded materials)
+  manifest["s_03_04"] = {
+    path: "models/cylinder-building.glb",
     format: "glb",
-    options: { computeBVH: true, useEmbeddedMaterial: true, scale: 2 },
+    options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1 },
+  };
+
+  // Override s_04_01 with new GLB model that has embedded textures
+  manifest["s_04_01"] = {
+    path: "models/sci-fi-building-9_1.glb",
+    format: "glb",
+    options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1 },
   };
 
   // Override s_04_03 with new GLB model that has embedded textures
@@ -74,12 +82,10 @@ export function createModelManifest(
     options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1 },
   };
 
-  // Override s_04_04 with new GLB model that has embedded textures
   manifest["s_04_04"] = {
-    path: "models/sci-fi-building-9_1.glb",
-
+    path: "models/dark_skyscraper_new2.glb",
     format: "glb",
-    options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1 },
+    options: { computeBVH: true, useEmbeddedMaterial: true, scale: 2 },
   };
 
   // Override s_05_01 with new GLB model that has embedded textures
@@ -92,6 +98,13 @@ export function createModelManifest(
   // Override s_05_02 with multi-material GLB (diffuse + emissive)
   manifest["s_05_02"] = {
     path: "models/hero-skyscraper.glb",
+    format: "glb",
+    options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1 },
+  };
+
+  // Add s_04_05: glowing industrial building (GLB with embedded materials)
+  manifest["s_04_05"] = {
+    path: "models/glowing-industrial-building.glb",
     format: "glb",
     options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1 },
   };
