@@ -115,6 +115,13 @@ export function createModelManifest(
     options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1 },
   };
 
+  // Add s_04_06: brutalist tower (GLB with embedded materials)
+  manifest["s_04_06"] = {
+    path: "models/brutalist-tower.glb",
+    format: "glb",
+    options: { computeBVH: true, useEmbeddedMaterial: true, scale: 1 },
+  };
+
   // Mega buildings (6 variants)
   for (let i = 1; i <= 6; i++) {
     const id = i.toString().padStart(2, "0");

@@ -163,6 +163,7 @@ export const BASE_EMISSIVE_INTENSITIES: Record<
   __embedded_s_04_03: { category: "buildings", base: 2.0 }, // sci-fi-building-9_1.glb
   __embedded_s_04_04: { category: "buildings", base: 2.0 }, // dark_skyscraper_new2.glb
   __embedded_s_04_05: { category: "buildings", base: 1.5 }, // sci-fi-corporate-building.glb
+  __embedded_s_04_06: { category: "buildings", base: 2.0 }, // brutalist-tower.glb
   // __embedded_s_05_01: { category: "buildings", base: 2.0 }, // sci-fi-building-6_1.glb
   __embedded_s_05_02: { category: "buildings", base: 1.0 }, // hero-skyscraper.glb
   __embedded_s_05_04: { category: "buildings", base: 2.0 }, // new-massive-skyscraper.glb

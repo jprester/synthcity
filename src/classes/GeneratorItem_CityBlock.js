@@ -219,12 +219,14 @@ class GeneratorItem_CityBlock {
       } else {
         // s_04_01 (sci-fi-building-9_1) is rare (~5%)
         // s_04_05 (glowing-industrial) is rare (~5%)
-        // rest share ~30% each
+        // s_04_06 (brutalist-tower) is common (~22.5%)
+        // rest share ~22.5% each
         if (subtypeNoise < 0.05) type = "s_04_01";
-        else if (subtypeNoise < 0.35) type = "s_04_02";
-        else if (subtypeNoise < 0.65) type = "s_04_03";
-        else if (subtypeNoise < 0.95) type = "s_04_04";
-        else type = "s_04_05";
+        else if (subtypeNoise < 0.275) type = "s_04_02";
+        else if (subtypeNoise < 0.5) type = "s_04_03";
+        else if (subtypeNoise < 0.725) type = "s_04_04";
+        else if (subtypeNoise < 0.775) type = "s_04_05";
+        else type = "s_04_06";
       }
 
       let matNoise = this.utils.fixNoise(
