@@ -1,6 +1,13 @@
 import { Mesh } from "three";
 
 import { GeneratorUtils } from "./GeneratorUtils.js";
+import {
+  LARGE_THRESHOLDS,
+  TOWER_THRESHOLDS,
+  LARGE_SERIES,
+  TOWER_SERIES,
+  selectVariantFromNoise,
+} from "../config/buildingRegistry";
 
 class GeneratorItem_CityBlock {
   constructor(x, z, game) {
@@ -211,22 +218,9 @@ class GeneratorItem_CityBlock {
       let type = null;
 
       if (isTower) {
-        // s_05_02 (hero-skyscraper) is rare (~5%), rest share ~31.7% each
-        if (subtypeNoise < 0.317) type = "s_05_01";
-        else if (subtypeNoise < 0.367) type = "s_05_02";
-        else if (subtypeNoise < 0.683) type = "s_05_03";
-        else type = "s_05_04";
+        type = selectVariantFromNoise(TOWER_THRESHOLDS, subtypeNoise);
       } else {
-        // s_04_01 (sci-fi-building-9_1) is rare (~5%)
-        // s_04_05 (glowing-industrial) is rare (~5%)
-        // s_04_06 (brutalist-tower) is common (~22.5%)
-        // rest share ~22.5% each
-        if (subtypeNoise < 0.05) type = "s_04_01";
-        else if (subtypeNoise < 0.275) type = "s_04_02";
-        else if (subtypeNoise < 0.5) type = "s_04_03";
-        else if (subtypeNoise < 0.725) type = "s_04_04";
-        else if (subtypeNoise < 0.775) type = "s_04_05";
-        else type = "s_04_06";
+        type = selectVariantFromNoise(LARGE_THRESHOLDS, subtypeNoise);
       }
 
       let matNoise = this.utils.fixNoise(
@@ -251,19 +245,9 @@ class GeneratorItem_CityBlock {
           this.noise.noise((this.x + xOff) * 6, (this.z + zOff) * 6),
         );
         if (isTower) {
-          adsTypes = [
-            "ads_s_05_01",
-            "ads_s_05_02",
-            "ads_s_05_03",
-            "ads_s_05_04",
-          ];
+          adsTypes = TOWER_SERIES.ads;
         } else {
-          adsTypes = [
-            "ads_s_04_01",
-            "ads_s_04_02",
-            "ads_s_04_03",
-            "ads_s_04_04",
-          ];
+          adsTypes = LARGE_SERIES.ads;
         }
         adsType = adsTypes[Math.floor(adsNoise * adsTypes.length)];
       }
