@@ -9,7 +9,10 @@
       "WebFetch(domain:github.com)",
       "Bash(npx:*)",
       "Bash(node -e:*)",
-      "Bash(git revert:*)"
+      "Bash(git revert:*)",
+      "Bash(npm install:*)",
+      "Bash(npm info:*)",
+      "Bash(python3:*)"
     ]
   }
 }
