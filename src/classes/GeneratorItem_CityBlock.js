@@ -245,9 +245,19 @@ class GeneratorItem_CityBlock {
           this.noise.noise((this.x + xOff) * 6, (this.z + zOff) * 6),
         );
         if (isTower) {
-          adsTypes = TOWER_SERIES.ads;
+          adsTypes = [
+            "ads_s_05_01",
+            "ads_s_05_02",
+            "ads_s_05_03",
+            "ads_s_05_04",
+          ];
         } else {
-          adsTypes = LARGE_SERIES.ads;
+          adsTypes = [
+            "ads_s_04_01",
+            "ads_s_04_02",
+            "ads_s_04_03",
+            "ads_s_04_04",
+          ];
         }
         adsType = adsTypes[Math.floor(adsNoise * adsTypes.length)];
       }

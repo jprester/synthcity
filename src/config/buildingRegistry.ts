@@ -129,8 +129,8 @@ export const LARGE_SERIES: BuildingSeries = {
       weight: 20,
       source: {
         format: "glb",
-        path: "models/ny-office-building.glb",
-        scale: 1.5,
+        path: "models/brutalist-skyscraper-4.glb",
+        scale: 3.5,
         emissiveBase: 2.0,
       },
     },
