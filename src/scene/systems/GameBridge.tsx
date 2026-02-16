@@ -12,6 +12,7 @@ export function GameBridge() {
   const { gl, scene, camera, set, size } = useThree();
   const {
     settings,
+    quickstart,
     gameRef,
     terminalRef,
     launchReady,
@@ -41,6 +42,11 @@ export function GameBridge() {
     gl.toneMapping = NoToneMapping;
     gl.toneMappingExposure = 1.0;
     gl.outputColorSpace = SRGBColorSpace;
+
+    // In quickstart mode, start loading assets immediately (no terminal boot delay)
+    if (quickstart) {
+      game.load();
+    }
   }, [gl, scene, camera, settings, gameRef, terminalRef]);
 
   useEffect(() => {

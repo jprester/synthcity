@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, useRef, useState } from "react";
 import type { Dispatch, SetStateAction, MutableRefObject } from "react";
 
-import { DEFAULT_GAME_SETTINGS } from "../config";
+import { getInitialSettings } from "../config/querySettings";
 import type { GameRuntime } from "../types/game";
 import type { GameSettings } from "../types/settings";
 import type { TerminalApi } from "../ui/initTerminal";
@@ -9,6 +9,7 @@ import type { TerminalApi } from "../ui/initTerminal";
 type GameStore = {
   settings: GameSettings;
   setSettings: Dispatch<SetStateAction<GameSettings>>;
+  quickstart: boolean;
   launchReady: boolean;
   setLaunchReady: Dispatch<SetStateAction<boolean>>;
   showBlocker: boolean;
@@ -21,8 +22,10 @@ type GameStore = {
 
 const GameContext = createContext<GameStore | null>(null);
 
+const quickstart = new URLSearchParams(window.location.search).has("quickstart");
+
 export function GameProvider({ children }) {
-  const [settings, setSettings] = useState(DEFAULT_GAME_SETTINGS);
+  const [settings, setSettings] = useState(getInitialSettings);
   const [launchReady, setLaunchReady] = useState(false);
   const [showBlocker, setShowBlocker] = useState(true);
   const [showCrash, setShowCrash] = useState(false);
@@ -33,6 +36,7 @@ export function GameProvider({ children }) {
     () => ({
       settings,
       setSettings,
+      quickstart,
       launchReady,
       setLaunchReady,
       showBlocker,

@@ -38,6 +38,7 @@ export default function UiShell() {
   const {
     settings,
     setSettings,
+    quickstart,
     gameRef,
     terminalRef,
     launchReady,
@@ -63,6 +64,11 @@ export default function UiShell() {
   const [showDebug, setShowDebug] = useState(false);
 
   useEffect(() => {
+    // In quickstart mode, GameBridge handles asset loading directly
+    if (quickstart) {
+      return () => {};
+    }
+
     const { api, cleanup } = initTerminal({
       terminalEl: terminalRefLocal.current,
       resourcesEl: resourcesRef.current,
@@ -88,6 +94,19 @@ export default function UiShell() {
 
     return cleanup;
   }, []);
+
+  // Quickstart: auto-init game once assets are loaded (pointer lock still needs user click)
+  const quickstartInitDone = useRef(false);
+  const [quickstartReady, setQuickstartReady] = useState(false);
+  useEffect(() => {
+    if (!quickstart || !launchReady || quickstartInitDone.current) return;
+    quickstartInitDone.current = true;
+    const game = gameRef.current;
+    if (game) {
+      game.onEnterClick();
+      setQuickstartReady(true);
+    }
+  }, [quickstart, launchReady]);
 
   useEffect(() => {
     setSettings((prev) => ({ ...prev, mode }));
@@ -180,6 +199,48 @@ export default function UiShell() {
         target.requestPointerLock();
       }
     }
+  }
+
+  // Quickstart: show minimal overlay instead of full splash
+  if (quickstart) {
+    function handleQuickstartClick() {
+      const game = gameRef.current;
+      if (!game || !game.initialized) return;
+      const target = game.canvas || document.body;
+      if (target && target.requestPointerLock) {
+        target.requestPointerLock();
+      }
+    }
+
+    return (
+      <>
+        <div
+          id="blocker"
+          className={showBlocker ? '' : 'hide'}
+          onClick={quickstartReady ? handleQuickstartClick : undefined}
+          style={{ cursor: quickstartReady ? 'pointer' : 'default' }}
+        >
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontFamily: "'Courier New', monospace",
+            color: '#00fff7',
+            fontSize: '18px',
+            letterSpacing: '4px',
+            textShadow: '0 0 10px #00fff7, 0 0 20px #00fff7',
+          }}>
+            {quickstartReady ? '>> CLICK TO START <<' : '>> LOADING... <<'}
+          </div>
+        </div>
+
+        <div id="crashMessage" style={{ display: showCrash ? 'flex' : 'none' }}>
+          <div className="g1">[ You crashed ]</div>
+        </div>
+      </>
+    );
   }
 
   return (
