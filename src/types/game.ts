@@ -66,6 +66,8 @@ export type RuntimePlayer = {
 
 export type RuntimeCollider = {
   enabled: boolean;
+  add: (mesh: import("three").Mesh) => void;
+  remove: (uuid: string) => void;
 };
 
 export type RuntimeRadio = {

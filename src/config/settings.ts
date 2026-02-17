@@ -6,6 +6,7 @@
 import { CURATED_WORLD_SEEDS } from "./world";
 import type {
   GameSettings,
+  CityMode,
   QualityLevel,
   FrameRateLimit,
   VisibilitySettings,
@@ -33,6 +34,7 @@ export const DEFAULT_VISIBILITY: VisibilitySettings = {
  */
 export const DEFAULT_GAME_SETTINGS: GameSettings = {
   mode: "drive",
+  cityMode: "procedural" as CityMode,
   worldSeed: CURATED_WORLD_SEEDS[0],
   music: true,
   soundFx: true,

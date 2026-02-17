@@ -19,8 +19,11 @@ export type VisibilitySettings = {
   cityLights: boolean;
 };
 
+export type CityMode = "procedural" | "finite";
+
 export type GameSettings = {
   mode: string;
+  cityMode: CityMode;
   worldSeed: number;
   music: boolean;
   soundFx: boolean;

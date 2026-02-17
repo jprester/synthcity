@@ -4,6 +4,7 @@
  * Supported params:
  *   quickstart     - skip splash screen, auto-launch (presence is enough)
  *   mode           - "drive" | "freeroam"
+ *   city           - "procedural" | "finite"
  *   seed           - world seed number
  *   quality        - "low" | "medium" | "high"
  *   fps            - 0 | 30 | 60 | 120
@@ -14,13 +15,14 @@
  *   sfx            - "0" or "1"
  *
  * Example:
- *   ?quickstart&mode=freeroam&seed=1234&quality=high&fps=0
+ *   ?quickstart&mode=freeroam&city=finite&seed=1234&quality=high&fps=0
  */
 
 import { DEFAULT_GAME_SETTINGS } from "./settings";
-import type { GameSettings, QualityLevel, FrameRateLimit } from "../types/settings";
+import type { GameSettings, CityMode, QualityLevel, FrameRateLimit } from "../types/settings";
 
 const VALID_MODES = new Set(["drive", "freeroam"]);
+const VALID_CITY_MODES = new Set<string>(["procedural", "finite"]);
 const VALID_QUALITY: Set<string> = new Set(["low", "medium", "high"]);
 const VALID_FPS = new Set([0, 30, 60, 120]);
 const VALID_RESOLUTIONS = new Set([0.5, 0.75, 1, 1.5]);
@@ -39,6 +41,11 @@ export function parseQuerySettings(search: string = window.location.search): Que
   const mode = params.get("mode");
   if (mode && VALID_MODES.has(mode)) {
     settings.mode = mode;
+  }
+
+  const cityMode = params.get("city");
+  if (cityMode && VALID_CITY_MODES.has(cityMode)) {
+    settings.cityMode = cityMode as CityMode;
   }
 
   const seed = params.get("seed");

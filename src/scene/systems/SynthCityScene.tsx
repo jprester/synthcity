@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import { AudioSystem } from "./AudioSystem";
 import { GameBridge } from "./GameBridge";
+import { FiniteCitySystem } from "./FiniteCitySystem";
 import { GeneratorSystem } from "./GeneratorSystem";
 import { PlayerSystem } from "./PlayerSystem";
 import { PointerLockSystem } from "./PointerLockSystem";
@@ -60,11 +61,13 @@ function SceneContent({
   showPerfMonitor: boolean;
   onStats: (stats: PerformanceStats) => void;
 }) {
+  const { settings } = useGameStore();
+
   return (
     <>
       <FrameLimiter />
       <GameBridge />
-      <GeneratorSystem />
+      {settings.cityMode === "finite" ? <FiniteCitySystem /> : <GeneratorSystem />}
       <PlayerSystem />
       <AudioSystem />
       <PointerLockSystem />
