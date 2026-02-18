@@ -1,37 +1,43 @@
-import { useEffect, useRef, useState } from 'react';
-import type { ChangeEvent } from 'react';
-import { useGameStore } from '../context/GameContext';
-import type { QualityLevel, FrameRateLimit, VisibilitySettings } from '../types/settings';
-import { initTerminal } from './initTerminal';
-import { PRESET_NAMES } from '../scene/effects';
+import { useEffect, useRef, useState } from "react";
+import type { ChangeEvent } from "react";
+import { useGameStore } from "../context/GameContext";
+import type {
+  QualityLevel,
+  FrameRateLimit,
+  VisibilitySettings,
+} from "../types/settings";
+import { initTerminal } from "./initTerminal";
+import { PRESET_NAMES, VISUAL_PRESETS } from "../scene/effects";
 
 const curatedWorldSeeds = [9746, 6362, 4217, 5794];
 
 const controlsText = {
   drive: [
-    'use mouse to look around/steer',
-    'use mouse wheel to zoom',
-    'press <space> to toggle autopilot',
-    'hold <w> to boost, <s> to brake',
-    'use <+> and <-> to adjust volume',
-    'press <]> to skip current song',
-    'press <p> to pause current song',
-    'press <esc> to open terminal'
+    "use mouse to look around/steer",
+    "use mouse wheel to zoom",
+    "press <space> to toggle autopilot",
+    "hold <w> to boost, <s> to brake",
+    "use <+> and <-> to adjust volume",
+    "press <]> to skip current song",
+    "press <p> to pause current song",
+    "press <esc> to open terminal",
   ],
   freeroam: [
-    'use <w,a,s,d> to move camera',
-    'use mouse wheel to zoom',
-    'use <r> and <f> to adjust height',
-    'hold <shift> to increase speed',
-    'use <+> and <-> to adjust volume',
-    'press <]> to skip current song',
-    'press <p> to pause current song',
-    'press <esc> to open terminal'
-  ]
+    "use <w,a,s,d> to move camera",
+    "use mouse wheel to zoom",
+    "use <r> and <f> to adjust height",
+    "hold <shift> to increase speed",
+    "use <+> and <-> to adjust volume",
+    "press <]> to skip current song",
+    "press <p> to pause current song",
+    "press <esc> to open terminal",
+  ],
 };
 
 function randomCuratedSeed() {
-  return curatedWorldSeeds[Math.floor(Math.random() * curatedWorldSeeds.length)];
+  return curatedWorldSeeds[
+    Math.floor(Math.random() * curatedWorldSeeds.length)
+  ];
 }
 
 export default function UiShell() {
@@ -43,7 +49,7 @@ export default function UiShell() {
     terminalRef,
     launchReady,
     showBlocker,
-    showCrash
+    showCrash,
   } = useGameStore();
   const terminalRefLocal = useRef<HTMLDivElement | null>(null);
   const resourcesRef = useRef<HTMLDivElement | null>(null);
@@ -52,15 +58,29 @@ export default function UiShell() {
 
   const [showSettings, setShowSettings] = useState(false);
   const [settingsLocked, setSettingsLocked] = useState(false);
-  const [mode, setMode] = useState(settings.mode ?? 'drive');
-  const [worldSeedMode, setWorldSeedMode] = useState('curated');
-  const [worldSeedValue, setWorldSeedValue] = useState(settings.worldSeed ?? randomCuratedSeed());
-  const [renderScaling, setRenderScaling] = useState(String(settings.renderScaling ?? 1));
-  const [windshieldShader, setWindshieldShader] = useState(settings.windshieldShader ?? 'simple');
-  const [visualPreset, setVisualPreset] = useState(settings.visualPreset ?? 'Default');
-  const [qualityLevel, setQualityLevel] = useState<QualityLevel>(settings.qualityLevel ?? 'high');
-  const [frameRateLimit, setFrameRateLimit] = useState<FrameRateLimit>(settings.frameRateLimit ?? 0);
-  const [visibility, setVisibility] = useState<VisibilitySettings>(settings.visibility);
+  const [mode, setMode] = useState(settings.mode ?? "drive");
+  const [worldSeedMode, setWorldSeedMode] = useState("curated");
+  const [worldSeedValue, setWorldSeedValue] = useState(
+    settings.worldSeed ?? randomCuratedSeed(),
+  );
+  const [renderScaling, setRenderScaling] = useState(
+    String(settings.renderScaling ?? 1),
+  );
+  const [windshieldShader, setWindshieldShader] = useState(
+    settings.windshieldShader ?? "simple",
+  );
+  const [visualPreset, setVisualPreset] = useState(
+    settings.visualPreset ?? "default",
+  );
+  const [qualityLevel, setQualityLevel] = useState<QualityLevel>(
+    settings.qualityLevel ?? "high",
+  );
+  const [frameRateLimit, setFrameRateLimit] = useState<FrameRateLimit>(
+    settings.frameRateLimit ?? 0,
+  );
+  const [visibility, setVisibility] = useState<VisibilitySettings>(
+    settings.visibility,
+  );
   const [showDebug, setShowDebug] = useState(false);
 
   useEffect(() => {
@@ -84,7 +104,7 @@ export default function UiShell() {
         if (gameRef.current && gameRef.current.load) {
           gameRef.current.load();
         }
-      }
+      },
     });
 
     terminalRef.current = api || null;
@@ -120,7 +140,10 @@ export default function UiShell() {
   }, [worldSeedValue]);
 
   useEffect(() => {
-    setSettings((prev) => ({ ...prev, renderScaling: parseFloat(renderScaling) }));
+    setSettings((prev) => ({
+      ...prev,
+      renderScaling: parseFloat(renderScaling),
+    }));
   }, [renderScaling]);
 
   useEffect(() => {
@@ -151,9 +174,9 @@ export default function UiShell() {
     const value = event.target.value;
     setWorldSeedMode(value);
 
-    if (value === 'curated') {
+    if (value === "curated") {
       setWorldSeedValue(randomCuratedSeed());
-    } else if (value === 'random') {
+    } else if (value === "random") {
       setWorldSeedValue(Math.round(Math.random() * 999999));
     }
   }
@@ -216,27 +239,27 @@ export default function UiShell() {
       <>
         <div
           id="blocker"
-          className={showBlocker ? '' : 'hide'}
+          className={showBlocker ? "" : "hide"}
           onClick={quickstartReady ? handleQuickstartClick : undefined}
-          style={{ cursor: quickstartReady ? 'pointer' : 'default' }}
-        >
-          <div style={{
-            position: 'absolute',
-            inset: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontFamily: "'Courier New', monospace",
-            color: '#00fff7',
-            fontSize: '18px',
-            letterSpacing: '4px',
-            textShadow: '0 0 10px #00fff7, 0 0 20px #00fff7',
-          }}>
-            {quickstartReady ? '>> CLICK TO START <<' : '>> LOADING... <<'}
+          style={{ cursor: quickstartReady ? "pointer" : "default" }}>
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontFamily: "'Courier New', monospace",
+              color: "#00fff7",
+              fontSize: "18px",
+              letterSpacing: "4px",
+              textShadow: "0 0 10px #00fff7, 0 0 20px #00fff7",
+            }}>
+            {quickstartReady ? ">> CLICK TO START <<" : ">> LOADING... <<"}
           </div>
         </div>
 
-        <div id="crashMessage" style={{ display: showCrash ? 'flex' : 'none' }}>
+        <div id="crashMessage" style={{ display: showCrash ? "flex" : "none" }}>
           <div className="g1">[ You crashed ]</div>
         </div>
       </>
@@ -245,10 +268,10 @@ export default function UiShell() {
 
   return (
     <>
-      <div id="blocker" className={showBlocker ? '' : 'hide'}>
+      <div id="blocker" className={showBlocker ? "" : "hide"}>
         <div id="container">
           <div className="tCol leftCol">
-            <div className="tRow" style={{ height: '100%' }}>
+            <div className="tRow" style={{ height: "100%" }}>
               <div className="tHeader">&gt;Terminal</div>
               <div id="terminal" ref={terminalRefLocal}>
                 <span id="cursor" ref={cursorRef}>
@@ -257,35 +280,38 @@ export default function UiShell() {
               </div>
             </div>
           </div>
-          <div className="tCol rightCol" style={{ width: 'calc(100% - 540px)' }}>
-            <div className="tRow" style={{ height: '25%' }}>
+          <div
+            className="tCol rightCol"
+            style={{ width: "calc(100% - 540px)" }}>
+            <div className="tRow" style={{ height: "25%" }}>
               <div className="tHeader">#Resources</div>
               <div id="resources" ref={resourcesRef}>
                 &gt;&gt; No resources queued
               </div>
             </div>
-            <div className="tRow" style={{ height: '25%' }}>
+            <div className="tRow" style={{ height: "25%" }}>
               <div className="tHeader">#Settings</div>
               <div
                 id="settings"
-                className={settingsLocked ? 'locked' : ''}
-                style={{ display: showSettings ? 'block' : 'none' }}
-              >
+                className={settingsLocked ? "locked" : ""}
+                style={{ display: showSettings ? "block" : "none" }}>
                 <div
                   id="settingsLockMessage"
                   className="g1"
-                  style={{ display: settingsLocked ? 'block' : 'none', marginBottom: '10px' }}
-                >
+                  style={{
+                    display: settingsLocked ? "block" : "none",
+                    marginBottom: "10px",
+                  }}>
                   &gt;&gt; Settings locked: refresh page to unlock
                 </div>
-                <div style={{ marginBottom: '5px' }}>
+                <div style={{ marginBottom: "5px" }}>
                   <span>Mode:</span>
                   <label className="formCheckContainer">
                     <input
                       type="radio"
                       name="settingsMode"
                       value="drive"
-                      checked={mode === 'drive'}
+                      checked={mode === "drive"}
                       onChange={handleModeChange}
                     />
                     <span className="checkmark">[Drive]</span>
@@ -295,20 +321,20 @@ export default function UiShell() {
                       type="radio"
                       name="settingsMode"
                       value="freeroam"
-                      checked={mode === 'freeroam'}
+                      checked={mode === "freeroam"}
                       onChange={handleModeChange}
                     />
                     <span className="checkmark">[Freeroam]</span>
                   </label>
                 </div>
-                <div style={{ marginBottom: '5px' }}>
+                <div style={{ marginBottom: "5px" }}>
                   <span>World Seed:</span>
                   <label className="formCheckContainer">
                     <input
                       type="radio"
                       name="settingsWorldSeed"
                       value="curated"
-                      checked={worldSeedMode === 'curated'}
+                      checked={worldSeedMode === "curated"}
                       onChange={handleWorldSeedModeChange}
                     />
                     <span className="checkmark">[Curated]</span>
@@ -318,7 +344,7 @@ export default function UiShell() {
                       type="radio"
                       name="settingsWorldSeed"
                       value="random"
-                      checked={worldSeedMode === 'random'}
+                      checked={worldSeedMode === "random"}
                       onChange={handleWorldSeedModeChange}
                     />
                     <span className="checkmark">[Random]</span>
@@ -328,7 +354,7 @@ export default function UiShell() {
                       type="radio"
                       name="settingsWorldSeed"
                       value="custom"
-                      checked={worldSeedMode === 'custom'}
+                      checked={worldSeedMode === "custom"}
                       onChange={handleWorldSeedModeChange}
                     />
                     <span className="checkmark">[Custom]</span>
@@ -336,8 +362,10 @@ export default function UiShell() {
                 </div>
                 <div
                   id="settingsWorldSeedValueContainer"
-                  style={{ display: worldSeedMode === 'custom' ? 'block' : 'none', marginBottom: '5px' }}
-                >
+                  style={{
+                    display: worldSeedMode === "custom" ? "block" : "none",
+                    marginBottom: "5px",
+                  }}>
                   <span>Seed:</span>
                   <input
                     type="number"
@@ -347,14 +375,14 @@ export default function UiShell() {
                     onChange={handleWorldSeedValueChange}
                   />
                 </div>
-                <div style={{ marginBottom: '5px' }}>
+                <div style={{ marginBottom: "5px" }}>
                   <span>Resolution:</span>
                   <label className="formCheckContainer">
                     <input
                       type="radio"
                       name="settingsRenderScaling"
                       value="0.5"
-                      checked={renderScaling === '0.5'}
+                      checked={renderScaling === "0.5"}
                       onChange={handleRenderScalingChange}
                     />
                     <span className="checkmark">[0.5x]</span>
@@ -364,7 +392,7 @@ export default function UiShell() {
                       type="radio"
                       name="settingsRenderScaling"
                       value="0.75"
-                      checked={renderScaling === '0.75'}
+                      checked={renderScaling === "0.75"}
                       onChange={handleRenderScalingChange}
                     />
                     <span className="checkmark">[0.75x]</span>
@@ -374,7 +402,7 @@ export default function UiShell() {
                       type="radio"
                       name="settingsRenderScaling"
                       value="1"
-                      checked={renderScaling === '1'}
+                      checked={renderScaling === "1"}
                       onChange={handleRenderScalingChange}
                     />
                     <span className="checkmark">[1.0x]</span>
@@ -384,13 +412,13 @@ export default function UiShell() {
                       type="radio"
                       name="settingsRenderScaling"
                       value="1.5"
-                      checked={renderScaling === '1.5'}
+                      checked={renderScaling === "1.5"}
                       onChange={handleRenderScalingChange}
                     />
                     <span className="checkmark">[1.5x]</span>
                   </label>
                 </div>
-                <div style={{ marginBottom: '5px' }}>
+                <div style={{ marginBottom: "5px" }}>
                   <span>FPS Limit:</span>
                   <label className="formCheckContainer">
                     <input
@@ -435,15 +463,17 @@ export default function UiShell() {
                 </div>
                 <div
                   id="settingsWindshieldShaderContainer"
-                  style={{ marginBottom: '5px', display: mode === 'drive' ? 'block' : 'none' }}
-                >
+                  style={{
+                    marginBottom: "5px",
+                    display: mode === "drive" ? "block" : "none",
+                  }}>
                   <span>Windshield FX:</span>
                   <label className="formCheckContainer">
                     <input
                       type="radio"
                       name="settingsWindshieldShader"
                       value="simple"
-                      checked={windshieldShader === 'simple'}
+                      checked={windshieldShader === "simple"}
                       onChange={handleWindshieldShaderChange}
                     />
                     <span className="checkmark">[Simple]</span>
@@ -453,20 +483,20 @@ export default function UiShell() {
                       type="radio"
                       name="settingsWindshieldShader"
                       value="advanced"
-                      checked={windshieldShader === 'advanced'}
+                      checked={windshieldShader === "advanced"}
                       onChange={handleWindshieldShaderChange}
                     />
                     <span className="checkmark">[Advanced]</span>
                   </label>
                 </div>
-                <div style={{ marginBottom: '5px' }}>
+                <div style={{ marginBottom: "5px" }}>
                   <span>Quality:</span>
                   <label className="formCheckContainer">
                     <input
                       type="radio"
                       name="settingsQualityLevel"
                       value="low"
-                      checked={qualityLevel === 'low'}
+                      checked={qualityLevel === "low"}
                       onChange={handleQualityLevelChange}
                     />
                     <span className="checkmark">[Low]</span>
@@ -476,7 +506,7 @@ export default function UiShell() {
                       type="radio"
                       name="settingsQualityLevel"
                       value="medium"
-                      checked={qualityLevel === 'medium'}
+                      checked={qualityLevel === "medium"}
                       onChange={handleQualityLevelChange}
                     />
                     <span className="checkmark">[Medium]</span>
@@ -486,72 +516,89 @@ export default function UiShell() {
                       type="radio"
                       name="settingsQualityLevel"
                       value="high"
-                      checked={qualityLevel === 'high'}
+                      checked={qualityLevel === "high"}
                       onChange={handleQualityLevelChange}
                     />
                     <span className="checkmark">[High]</span>
                   </label>
                 </div>
-                <div style={{ marginBottom: '5px', display: qualityLevel !== 'low' ? 'block' : 'none' }}>
+                <div
+                  style={{
+                    marginBottom: "5px",
+                    display: qualityLevel !== "low" ? "block" : "none",
+                  }}>
                   <span>Visual FX:</span>
-                  {PRESET_NAMES.map((presetName) => (
-                    <label key={presetName} className="formCheckContainer">
+                  {PRESET_NAMES.map((presetId) => (
+                    <label key={presetId} className="formCheckContainer">
                       <input
                         type="radio"
                         name="settingsVisualPreset"
-                        value={presetName}
-                        checked={visualPreset === presetName}
+                        value={presetId}
+                        checked={visualPreset === presetId}
                         onChange={handleVisualPresetChange}
                       />
-                      <span className="checkmark">[{presetName}]</span>
+                      <span className="checkmark">
+                        [{VISUAL_PRESETS[presetId].name}]
+                      </span>
                     </label>
                   ))}
                 </div>
-                <div style={{ marginBottom: '5px' }}>
+                <div style={{ marginBottom: "5px" }}>
                   <span
-                    style={{ cursor: 'pointer', textDecoration: 'underline' }}
-                    onClick={() => setShowDebug(!showDebug)}
-                  >
-                    Debug: [{showDebug ? '-' : '+'}]
+                    style={{ cursor: "pointer", textDecoration: "underline" }}
+                    onClick={() => setShowDebug(!showDebug)}>
+                    Debug: [{showDebug ? "-" : "+"}]
                   </span>
                 </div>
                 {showDebug && (
-                  <div style={{ marginBottom: '5px', paddingLeft: '10px' }}>
-                    <div className="g1" style={{ marginBottom: '3px' }}>&gt;&gt; Object Visibility</div>
-                    {([
-                      ['buildings', 'Buildings'],
-                      ['megaBuildings', 'Mega Buildings'],
-                      ['ads', 'Ads'],
-                      ['smoke', 'Smoke'],
-                      ['spotlights', 'Spotlights'],
-                      ['toppers', 'Toppers'],
-                      ['trafficCars', 'Traffic Cars'],
-                      ['playerCar', 'Player Car'],
-                      ['ground', 'Ground'],
-                      ['storefronts', 'Storefronts'],
-                      ['cityLights', 'City Lights'],
-                    ] as const).map(([key, label]) => (
-                      <label key={key} className="formCheckContainer" style={{ display: 'block' }}>
+                  <div style={{ marginBottom: "5px", paddingLeft: "10px" }}>
+                    <div className="g1" style={{ marginBottom: "3px" }}>
+                      &gt;&gt; Object Visibility
+                    </div>
+                    {(
+                      [
+                        ["buildings", "Buildings"],
+                        ["megaBuildings", "Mega Buildings"],
+                        ["ads", "Ads"],
+                        ["smoke", "Smoke"],
+                        ["spotlights", "Spotlights"],
+                        ["toppers", "Toppers"],
+                        ["trafficCars", "Traffic Cars"],
+                        ["playerCar", "Player Car"],
+                        ["ground", "Ground"],
+                        ["storefronts", "Storefronts"],
+                        ["cityLights", "City Lights"],
+                      ] as const
+                    ).map(([key, label]) => (
+                      <label
+                        key={key}
+                        className="formCheckContainer"
+                        style={{ display: "block" }}>
                         <input
                           type="checkbox"
                           checked={visibility[key]}
                           onChange={() => handleVisibilityChange(key)}
                         />
-                        <span className="checkmark">[{visibility[key] ? 'x' : ' '}] {label}</span>
+                        <span className="checkmark">
+                          [{visibility[key] ? "x" : " "}] {label}
+                        </span>
                       </label>
                     ))}
                   </div>
                 )}
               </div>
             </div>
-            <div className="tRow" style={{ height: '25%' }}>
+            <div className="tRow" style={{ height: "25%" }}>
               <div className="tHeader">#Controls</div>
               <div id="controls" ref={controlsRef}>
                 &gt;&gt; No program loaded
               </div>
             </div>
-            <div className="tRow" style={{ height: '32px' }}>
-              <button id="enterBtn" style={{ display: launchReady ? 'block' : 'none' }} onClick={handleEnterClick}>
+            <div className="tRow" style={{ height: "32px" }}>
+              <button
+                id="enterBtn"
+                style={{ display: launchReady ? "block" : "none" }}
+                onClick={handleEnterClick}>
                 &gt;&gt;Launch&lt;&lt;
               </button>
             </div>
@@ -559,10 +606,9 @@ export default function UiShell() {
         </div>
       </div>
 
-      <div id="crashMessage" style={{ display: showCrash ? 'flex' : 'none' }}>
+      <div id="crashMessage" style={{ display: showCrash ? "flex" : "none" }}>
         <div className="g1">[ You crashed ]</div>
       </div>
-
     </>
   );
 }

@@ -40,7 +40,7 @@ export const DEFAULT_GAME_SETTINGS: GameSettings = {
   soundFx: true,
   windshieldShader: "simple",
   renderScaling: 1.0,
-  visualPreset: "Default",
+  visualPreset: "default",
   qualityLevel: "low" as QualityLevel,
   frameRateLimit: 60 as FrameRateLimit,
   visibility: DEFAULT_VISIBILITY,

@@ -3,6 +3,7 @@
  */
 
 export type VisualPreset = {
+  id: string;
   name: string;
   bloom: {
     intensity: number;
@@ -51,6 +52,7 @@ export type VisualPreset = {
  * Default/Original preset - clean look with bloom only on bright areas
  */
 export const PRESET_DEFAULT: VisualPreset = {
+  id: "default",
   name: "Default",
   bloom: {
     intensity: 5.0,
@@ -94,6 +96,7 @@ export const PRESET_DEFAULT: VisualPreset = {
  * Intense Neon - boosted bloom and saturation for vibrant neons
  */
 export const PRESET_INTENSE_NEON: VisualPreset = {
+  id: "intense-neon",
   name: "Intense Neon",
   bloom: {
     intensity: 12.0,
@@ -138,6 +141,7 @@ export const PRESET_INTENSE_NEON: VisualPreset = {
  * Blade Runner - cinematic with film grain and vignette
  */
 export const PRESET_BLADE_RUNNER: VisualPreset = {
+  id: "blade-runner",
   name: "Blade Runner",
   bloom: {
     intensity: 10.0,
@@ -182,6 +186,7 @@ export const PRESET_BLADE_RUNNER: VisualPreset = {
  * Retro CRT - scanlines and noise for vintage look
  */
 export const PRESET_RETRO_CRT: VisualPreset = {
+  id: "retro-crt",
   name: "Retro CRT",
   bloom: {
     intensity: 8.0,
@@ -225,6 +230,7 @@ export const PRESET_RETRO_CRT: VisualPreset = {
  * Hypercolor - extreme saturation and bloom
  */
 export const PRESET_HYPERCOLOR: VisualPreset = {
+  id: "hypercolor",
   name: "Hypercolor",
   bloom: {
     intensity: 15.0,
@@ -269,18 +275,21 @@ export const PRESET_HYPERCOLOR: VisualPreset = {
  * All available presets - keys match the preset.name for easy lookup
  */
 export const VISUAL_PRESETS: Record<string, VisualPreset> = {
-  Default: PRESET_DEFAULT,
-  "Intense Neon": PRESET_INTENSE_NEON,
-  "Blade Runner": PRESET_BLADE_RUNNER,
-  "Retro CRT": PRESET_RETRO_CRT,
-  Hypercolor: PRESET_HYPERCOLOR,
+  default: PRESET_DEFAULT,
+  "intense-neon": PRESET_INTENSE_NEON,
+  "blade-runner": PRESET_BLADE_RUNNER,
+  "retro-crt": PRESET_RETRO_CRT,
+  hypercolor: PRESET_HYPERCOLOR,
 };
 
-export const PRESET_NAMES = Object.keys(VISUAL_PRESETS);
+export const PRESET_IDS = Object.keys(VISUAL_PRESETS);
+
+/** @deprecated Use PRESET_IDS */
+export const PRESET_NAMES = PRESET_IDS;
 
 /**
- * Get a preset by name with fallback to default
+ * Get a preset by ID with fallback to default
  */
-export function getPreset(name: string): VisualPreset {
-  return VISUAL_PRESETS[name] ?? PRESET_DEFAULT;
+export function getPreset(id: string): VisualPreset {
+  return VISUAL_PRESETS[id] ?? PRESET_DEFAULT;
 }
