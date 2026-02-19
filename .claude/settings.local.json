@@ -12,7 +12,8 @@
       "Bash(git revert:*)",
       "Bash(npm install:*)",
       "Bash(npm info:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(ls:*)"
     ]
   }
 }
