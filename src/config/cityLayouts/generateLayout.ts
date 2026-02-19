@@ -8,6 +8,7 @@ import {
 import {
   LARGE_THRESHOLDS,
   TOWER_THRESHOLDS,
+  SLIM_TOWER_THRESHOLDS,
   LANDMARK_SERIES,
   selectVariantFromNoise,
 } from "../buildingRegistry";
@@ -218,6 +219,14 @@ export function generateLayout(
       if (typeNoise < bias.emptyThreshold) {
         // Empty block
       } else if (typeNoise < bias.smallThreshold) {
+        // Downtown uses slim towers in the small slot; everywhere else uses s_01–s_03
+        const isDowntown =
+          downtownDistrict !== undefined &&
+          gi >= downtownDistrict.minGi &&
+          gi <= downtownDistrict.maxGi &&
+          gj >= downtownDistrict.minGj &&
+          gj <= downtownDistrict.maxGj;
+
         // Small buildings — 2x2 grid per block
         for (let i = 0; i < 2; i++) {
           for (let j = 0; j < 2; j++) {
@@ -230,7 +239,6 @@ export function generateLayout(
 
             const rotateNoise = fixNoise(noise.noise(wx * 5, wz * 5));
             const rotate = getRotationFromNoise(rotateNoise);
-            const scale = 0.75 + rotateNoise * 0.45;
 
             // Update noise for subdivided location
             typeNoise = fixNoise(
@@ -238,35 +246,50 @@ export function generateLayout(
             );
             subtypeNoise = fixNoise(noise.noise(wx * 5, wz * 5));
 
-            let type: string;
-            if (typeNoise < 0.267) {
-              if (subtypeNoise < 0.33) type = "s_01_01";
-              else if (subtypeNoise < 0.66) type = "s_01_02";
-              else type = "s_01_03";
-            } else if (typeNoise < 0.534) {
-              if (subtypeNoise < 0.33) type = "s_02_01";
-              else if (subtypeNoise < 0.66) type = "s_02_02";
-              else type = "s_02_03";
+            if (isDowntown) {
+              // Slim towers — tall narrow buildings, fixed scale, embedded materials
+              const type = selectVariantFromNoise(SLIM_TOWER_THRESHOLDS, subtypeNoise);
+              buildings.push({
+                modelKey: type,
+                materialKey: `__embedded_${type}`,
+                x: wx,
+                z: wz,
+                scaleX: 1,
+                scaleY: 1,
+                scaleZ: 1,
+                rotationY: (rotate * Math.PI) / 180,
+              });
             } else {
-              if (subtypeNoise < 0.25) type = "s_03_01";
-              else if (subtypeNoise < 0.5) type = "s_03_02";
-              else if (subtypeNoise < 0.75) type = "s_03_03";
-              else type = "s_03_04";
+              // Regular small buildings — noise-driven height, shared texture materials
+              const scale = 0.75 + rotateNoise * 0.45;
+              let type: string;
+              if (typeNoise < 0.267) {
+                if (subtypeNoise < 0.33) type = "s_01_01";
+                else if (subtypeNoise < 0.66) type = "s_01_02";
+                else type = "s_01_03";
+              } else if (typeNoise < 0.534) {
+                if (subtypeNoise < 0.33) type = "s_02_01";
+                else if (subtypeNoise < 0.66) type = "s_02_02";
+                else type = "s_02_03";
+              } else {
+                if (subtypeNoise < 0.25) type = "s_03_01";
+                else if (subtypeNoise < 0.5) type = "s_03_02";
+                else if (subtypeNoise < 0.75) type = "s_03_03";
+                else type = "s_03_04";
+              }
+              const matNoise = fixNoise(noise.noise(wx * -3, wz * -3));
+              const matKey = getBuildingMatKey(matNoise);
+              buildings.push({
+                modelKey: type,
+                materialKey: matKey,
+                x: wx,
+                z: wz,
+                scaleX: 1,
+                scaleY: scale,
+                scaleZ: 1,
+                rotationY: (rotate * Math.PI) / 180,
+              });
             }
-
-            const matNoise = fixNoise(noise.noise(wx * -3, wz * -3));
-            const matKey = getBuildingMatKey(matNoise);
-
-            buildings.push({
-              modelKey: type,
-              materialKey: matKey,
-              x: wx,
-              z: wz,
-              scaleX: 1,
-              scaleY: scale,
-              scaleZ: 1,
-              rotationY: (rotate * Math.PI) / 180,
-            });
           }
         }
       } else {

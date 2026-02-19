@@ -89,30 +89,11 @@ export const LARGE_SERIES: BuildingSeries = {
     },
     {
       key: "s_04_04",
-      weight: 22.5,
-      source: {
-        format: "glb",
-        path: "models/dark_skyscraper_new2.glb",
-        scale: 2,
-        emissiveBase: 2.0,
-      },
-    },
-    {
-      key: "s_04_05",
       weight: 5,
       source: {
         format: "glb",
         path: "models/glowing-industrial-building.glb",
         emissiveBase: 1.5,
-      },
-    },
-    {
-      key: "s_04_06",
-      weight: 22.5,
-      source: {
-        format: "glb",
-        path: "models/brutalist-tower.glb",
-        emissiveBase: 2.0,
       },
     },
     {
@@ -148,6 +129,42 @@ export const TOWER_SERIES: BuildingSeries = {
   ],
 };
 
+// Slim tower buildings — tall, narrow footprint (same 2x2 sub-slot as small buildings).
+// Downtown-exclusive: only placed in the downtown district by the finite city generator.
+// Use embedded GLB materials. Adding a new slim tower = one entry here.
+export const SLIM_TOWER_SERIES: BuildingVariant[] = [
+  {
+    key: "s_06_01",
+    weight: 1,
+    source: {
+      format: "glb",
+      path: "models/brutalist-tower.glb",
+      scale: 1,
+      emissiveBase: 2.0,
+    },
+  },
+  {
+    key: "s_06_02",
+    weight: 1,
+    source: {
+      format: "glb",
+      path: "models/dark_skyscraper_new2.glb",
+      scale: 1,
+      emissiveBase: 2.0,
+    },
+  },
+  {
+    key: "s_06_03",
+    weight: 1,
+    source: {
+      format: "glb",
+      path: "models/ny-office-building.glb",
+      scale: 1,
+      emissiveBase: 2.0,
+    },
+  },
+];
+
 // Landmark buildings — unique high-quality assets, one instance per type per city.
 // Placed in the downtown zone by the layout generator (guaranteed, noise-driven position).
 // Adding a new landmark = one entry here. No other changes needed.
@@ -182,6 +199,7 @@ function getAllVariants(): BuildingVariant[] {
     ...SMALL_SERIES.flatMap((s) => s.variants),
     ...LARGE_SERIES.variants,
     ...TOWER_SERIES.variants,
+    ...SLIM_TOWER_SERIES,
     ...LANDMARK_SERIES,
   ];
 }
@@ -293,4 +311,5 @@ export function selectVariantFromNoise(
 // Pre-computed thresholds (computed once at module load)
 export const LARGE_THRESHOLDS = buildVariantThresholds(LARGE_SERIES.variants);
 export const TOWER_THRESHOLDS = buildVariantThresholds(TOWER_SERIES.variants);
+export const SLIM_TOWER_THRESHOLDS = buildVariantThresholds(SLIM_TOWER_SERIES);
 export const LANDMARK_THRESHOLDS = buildVariantThresholds(LANDMARK_SERIES);
