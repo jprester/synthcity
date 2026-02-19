@@ -5,6 +5,7 @@
  *   quickstart     - skip splash screen, auto-launch (presence is enough)
  *   mode           - "drive" | "freeroam"
  *   city           - "procedural" | "finite"
+ *   layout         - filename from public/layouts/ (e.g. "my_city.json"), implies city=finite
  *   seed           - world seed number
  *   quality        - "low" | "medium" | "high"
  *   fps            - 0 | 30 | 60 | 120
@@ -46,6 +47,13 @@ export function parseQuerySettings(search: string = window.location.search): Que
   const cityMode = params.get("city");
   if (cityMode && VALID_CITY_MODES.has(cityMode)) {
     settings.cityMode = cityMode as CityMode;
+  }
+
+  const layout = params.get("layout");
+  if (layout) {
+    settings.finiteLayout = layout;
+    // ?layout= implies finite city mode
+    if (!settings.cityMode) settings.cityMode = "finite";
   }
 
   const seed = params.get("seed");

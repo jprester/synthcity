@@ -8,14 +8,17 @@ import {
 import {
   LARGE_THRESHOLDS,
   TOWER_THRESHOLDS,
+  LANDMARK_SERIES,
   selectVariantFromNoise,
 } from "../buildingRegistry";
 import { CITY_BLOCK_SIZE, ROAD_WIDTH } from "../world";
+import { DEFAULT_DISTRICTS, getDistrictBias } from "./districts";
 import type {
   FiniteCityLayout,
   FiniteBuildingPlacement,
   FiniteMegaPlacement,
   FiniteStorefrontPlacement,
+  FiniteDistrict,
 } from "./types";
 
 function fixNoise(noise: number): number {
@@ -57,12 +60,17 @@ const CELL_SIZE = CITY_BLOCK_SIZE + ROAD_WIDTH;
  * Generate a finite city layout using the same Perlin noise logic as the
  * procedural generator, but iterating a fixed rectangular grid.
  *
+ * District biases control building type thresholds per zone, giving the city
+ * a sense of place (downtown core, industrial outskirts, etc.)
+ *
  * @param seed - World seed for deterministic generation
  * @param gridSize - Number of blocks per axis (default 15 = 225 blocks)
+ * @param districts - District zone definitions (defaults to DEFAULT_DISTRICTS)
  */
 export function generateLayout(
   seed: number = 9746,
   gridSize: number = 15,
+  districts: FiniteDistrict[] = DEFAULT_DISTRICTS,
 ): FiniteCityLayout {
   const noise = createPerlin(seed);
   noise.noiseDetail(8, 0.5);
@@ -74,6 +82,61 @@ export function generateLayout(
 
   // Center the grid around origin
   const halfGrid = Math.floor(gridSize / 2);
+
+  // ── Landmark pre-pass ────────────────────────────────────────────────────
+  // Find the best block in the downtown district for each landmark.
+  // All landmarks are guaranteed to appear exactly once per city.
+  // Placement is noise-driven and deterministic per seed.
+
+  // Determine downtown bounds from districts
+  const downtownDistrict = districts.find((d) => d.type === "downtown");
+
+  // Map of "gi,gj" → landmark modelKey for blocks claimed by the pre-pass
+  const landmarkBlocks = new Map<string, string>();
+
+  if (downtownDistrict) {
+    // Collect all downtown blocks with their typeNoise, sorted best-first
+    const candidates: { gi: number; gj: number; typeNoise: number }[] = [];
+    for (let gi = downtownDistrict.minGi; gi <= downtownDistrict.maxGi; gi++) {
+      for (let gj = downtownDistrict.minGj; gj <= downtownDistrict.maxGj; gj++) {
+        const blockX = (gi - halfGrid) * CELL_SIZE;
+        const blockZ = (gj - halfGrid) * CELL_SIZE;
+        const typeNoise = fixNoise(
+          noise.noise(blockX * NOISEFACTOR, blockZ * NOISEFACTOR),
+        );
+        candidates.push({ gi, gj, typeNoise });
+      }
+    }
+    candidates.sort((a, b) => b.typeNoise - a.typeNoise);
+
+    // Assign each landmark to the highest-noise unclaimed block
+    // Enforce a minimum separation of 2 blocks between landmarks
+    const MIN_SEPARATION = 2;
+    for (const landmark of LANDMARK_SERIES) {
+      for (const candidate of candidates) {
+        const blockKey = `${candidate.gi},${candidate.gj}`;
+        if (landmarkBlocks.has(blockKey)) continue;
+
+        // Check separation from already-placed landmarks
+        let tooClose = false;
+        for (const [placedKey] of landmarkBlocks) {
+          const [pgi, pgj] = placedKey.split(",").map(Number);
+          if (
+            Math.abs(candidate.gi - pgi) < MIN_SEPARATION &&
+            Math.abs(candidate.gj - pgj) < MIN_SEPARATION
+          ) {
+            tooClose = true;
+            break;
+          }
+        }
+        if (tooClose) continue;
+
+        landmarkBlocks.set(blockKey, landmark.key);
+        break;
+      }
+    }
+  }
+  // ────────────────────────────────────────────────────────────────────────
 
   for (let gi = 0; gi < gridSize; gi++) {
     for (let gj = 0; gj < gridSize; gj++) {
@@ -91,7 +154,30 @@ export function generateLayout(
       );
       let subtypeNoise = fixNoise(noise.noise(blockX * 5, blockZ * 5));
 
-      // Rare mega building
+      // Landmark block — place the assigned landmark at block center, skip normal generation
+      const landmarkKey = landmarkBlocks.get(`${gi},${gj}`);
+      if (landmarkKey) {
+        const wx = blockX + CITY_BLOCK_SIZE / 2;
+        const wz = blockZ + CITY_BLOCK_SIZE / 2;
+        const rotateNoise = fixNoise(noise.noise(wx * 4, wz * 4));
+        const rotate = getRotationFromNoise(rotateNoise);
+        buildings.push({
+          modelKey: landmarkKey,
+          materialKey: `__embedded_${landmarkKey}`,
+          x: wx,
+          z: wz,
+          scaleX: 1,
+          scaleY: 1,
+          scaleZ: 1,
+          rotationY: (rotate * Math.PI) / 180,
+        });
+        continue;
+      }
+
+      // District bias controls building category thresholds for this block
+      const bias = getDistrictBias(gi, gj, districts);
+
+      // Rare mega building (not district-biased — megas are always rare)
       if (typeNoise < 0.2) {
         if (
           blockX % (CELL_SIZE * 6) === 0 &&
@@ -129,9 +215,9 @@ export function generateLayout(
         }
       }
 
-      if (typeNoise < 0.1) {
+      if (typeNoise < bias.emptyThreshold) {
         // Empty block
-      } else if (typeNoise < 0.8) {
+      } else if (typeNoise < bias.smallThreshold) {
         // Small buildings — 2x2 grid per block
         for (let i = 0; i < 2; i++) {
           for (let j = 0; j < 2; j++) {
@@ -185,7 +271,7 @@ export function generateLayout(
         }
       } else {
         // Large building or tower — single per block
-        const isTower = typeNoise > 0.975;
+        const isTower = typeNoise > bias.towerThreshold;
         const xOff = CITY_BLOCK_SIZE / 2;
         const zOff = CITY_BLOCK_SIZE / 2;
         const wx = blockX + xOff;

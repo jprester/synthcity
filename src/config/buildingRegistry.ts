@@ -77,15 +77,6 @@ export const LARGE_SERIES: BuildingSeries = {
   id: "04",
   ads: ["ads_s_04_01", "ads_s_04_02", "ads_s_04_03", "ads_s_04_04"],
   variants: [
-    {
-      key: "s_04_01",
-      weight: 5,
-      source: {
-        format: "glb",
-        path: "models/sci-fi-building-9_1.glb",
-        emissiveBase: 2.0,
-      },
-    },
     { key: "s_04_02", weight: 22.5 },
     {
       key: "s_04_03",
@@ -143,16 +134,6 @@ export const TOWER_SERIES: BuildingSeries = {
   ads: ["ads_s_05_01", "ads_s_05_02", "ads_s_05_03", "ads_s_05_04"],
   variants: [
     { key: "s_05_01", weight: 31.7 },
-    {
-      key: "s_05_02",
-      weight: 5,
-      source: {
-        format: "glb",
-        path: "models/hero-skyscraper.glb",
-        scale: 1.4,
-        emissiveBase: 1.0,
-      },
-    },
     { key: "s_05_03", weight: 31.6 },
     {
       key: "s_05_04",
@@ -167,6 +148,31 @@ export const TOWER_SERIES: BuildingSeries = {
   ],
 };
 
+// Landmark buildings — unique high-quality assets, one instance per type per city.
+// Placed in the downtown zone by the layout generator (guaranteed, noise-driven position).
+// Adding a new landmark = one entry here. No other changes needed.
+export const LANDMARK_SERIES: BuildingVariant[] = [
+  {
+    key: "landmark_01",
+    weight: 1,
+    source: {
+      format: "glb",
+      path: "models/hero-skyscraper.glb",
+      scale: 1.4,
+      emissiveBase: 1.0,
+    },
+  },
+  {
+    key: "landmark_02",
+    weight: 1,
+    source: {
+      format: "glb",
+      path: "models/sci-fi-building-9_1.glb",
+      emissiveBase: 2.0,
+    },
+  },
+];
+
 // ============================================================================
 // Asset Pipeline Helpers
 // ============================================================================
@@ -176,6 +182,7 @@ function getAllVariants(): BuildingVariant[] {
     ...SMALL_SERIES.flatMap((s) => s.variants),
     ...LARGE_SERIES.variants,
     ...TOWER_SERIES.variants,
+    ...LANDMARK_SERIES,
   ];
 }
 
@@ -240,6 +247,11 @@ export function getBuildingManifestEntries(): Record<
   return entries;
 }
 
+/** Set of landmark model keys — these appear at most once in any scene */
+export function getLandmarkModelKeys(): Set<string> {
+  return new Set(LANDMARK_SERIES.map((v) => v.key));
+}
+
 /** All ad model keys across all series */
 export function getAllAdModelKeys(): string[] {
   return [
@@ -281,3 +293,4 @@ export function selectVariantFromNoise(
 // Pre-computed thresholds (computed once at module load)
 export const LARGE_THRESHOLDS = buildVariantThresholds(LARGE_SERIES.variants);
 export const TOWER_THRESHOLDS = buildVariantThresholds(TOWER_SERIES.variants);
+export const LANDMARK_THRESHOLDS = buildVariantThresholds(LANDMARK_SERIES);

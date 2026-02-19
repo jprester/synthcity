@@ -25,6 +25,17 @@ export type FiniteStorefrontPlacement = {
   materialKey: string;
 };
 
+export type DistrictType = "default" | "downtown" | "industrial" | "residential" | "outskirts";
+
+export type FiniteDistrict = {
+  type: DistrictType;
+  /** Block-grid indices (gi, gj), 0-based from top-left of the grid */
+  minGi: number;
+  maxGi: number;
+  minGj: number;
+  maxGj: number;
+};
+
 export type FiniteCityLayout = {
   name: string;
   bounds: { minX: number; maxX: number; minZ: number; maxZ: number };

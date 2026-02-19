@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Mesh, PlaneGeometry, MeshBasicMaterial, DoubleSide } from "three";
 import { useFrame } from "@react-three/fiber";
 import { useGameStore } from "../../context/GameContext";
-import { generateLayout } from "../../config/cityLayouts";
+import { generateLayout, loadLayoutFromURL } from "../../config/cityLayouts";
 import { createPerlin } from "../../utils";
 import type { FiniteCityLayout } from "../../config/cityLayouts";
 import {
@@ -20,10 +20,20 @@ export function FiniteCitySystem() {
   const { visibility } = settings;
   const initRef = useRef(false);
 
-  const layout = useMemo(
-    () => generateLayout(settings.worldSeed),
-    [settings.worldSeed],
-  );
+  const [layout, setLayout] = useState<FiniteCityLayout | null>(null);
+
+  useEffect(() => {
+    if (settings.finiteLayout) {
+      loadLayoutFromURL(`/layouts/${settings.finiteLayout}`)
+        .then(setLayout)
+        .catch((err) => {
+          console.warn("Failed to load layout, falling back to generated:", err);
+          setLayout(generateLayout(settings.worldSeed));
+        });
+    } else {
+      setLayout(generateLayout(settings.worldSeed));
+    }
+  }, [settings.finiteLayout, settings.worldSeed]);
 
   // Initialize noise on game (needed for asset system compatibility)
   useFrame(() => {
@@ -42,7 +52,7 @@ export function FiniteCitySystem() {
 
   const buildings: BuildingDescriptor[] = useMemo(
     () =>
-      layout.buildings.map((b) => ({
+      (layout?.buildings ?? []).map((b) => ({
         modelKey: b.modelKey,
         materialKey: b.materialKey,
         position: { x: b.x, y: 0, z: b.z },
@@ -55,7 +65,7 @@ export function FiniteCitySystem() {
 
   const megaBuildings: MegaBuildingDescriptor[] = useMemo(
     () =>
-      layout.megaBuildings.map((b) => ({
+      (layout?.megaBuildings ?? []).map((b) => ({
         modelKey: b.modelKey,
         position: { x: b.x, y: 0, z: b.z },
         scale: { x: b.scaleX, y: b.scaleY, z: b.scaleZ },
@@ -64,6 +74,8 @@ export function FiniteCitySystem() {
       })),
     [layout],
   );
+
+  if (!layout) return null;
 
   return (
     <>
