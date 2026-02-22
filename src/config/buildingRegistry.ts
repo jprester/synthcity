@@ -35,6 +35,7 @@ export type BuildingSeries = {
 // Runtime selection in GeneratorItem_CityBlock.js stays hardcoded for these.
 const SMALL_SERIES: BuildingSeries[] = [
   {
+    // Residential series
     id: "01",
     ads: ["ads_s_01_01", "ads_s_01_02"],
     variants: [
@@ -44,6 +45,7 @@ const SMALL_SERIES: BuildingSeries[] = [
     ],
   },
   {
+    // Commercial series
     id: "02",
     ads: ["ads_s_02_01", "ads_s_02_02"],
     variants: [
@@ -53,21 +55,13 @@ const SMALL_SERIES: BuildingSeries[] = [
     ],
   },
   {
+    // Industrial series
     id: "03",
     ads: ["ads_s_03_01", "ads_s_03_02"],
     variants: [
       { key: "s_03_01", weight: 1 },
       { key: "s_03_02", weight: 1 },
       { key: "s_03_03", weight: 1 },
-      {
-        key: "s_03_04",
-        weight: 1,
-        source: {
-          format: "glb",
-          path: "models/cylinder-building.glb",
-          emissiveBase: 2.0,
-        },
-      },
     ],
   },
 ];
@@ -77,7 +71,9 @@ export const LARGE_SERIES: BuildingSeries = {
   id: "04",
   ads: ["ads_s_04_01", "ads_s_04_02", "ads_s_04_03", "ads_s_04_04"],
   variants: [
+    { key: "s_04_01", weight: 22.5 },
     { key: "s_04_02", weight: 22.5 },
+    // { key: "s_04_03", weight: 22.5 },
     {
       key: "s_04_03",
       weight: 22.5,
@@ -87,25 +83,25 @@ export const LARGE_SERIES: BuildingSeries = {
         emissiveBase: 2.0,
       },
     },
-    {
-      key: "s_04_04",
-      weight: 5,
-      source: {
-        format: "glb",
-        path: "models/glowing-industrial-building.glb",
-        emissiveBase: 1.5,
-      },
-    },
-    {
-      key: "s_04_07",
-      weight: 20,
-      source: {
-        format: "glb",
-        path: "models/brutalist-skyscraper-4.glb",
-        scale: 3.5,
-        emissiveBase: 2.0,
-      },
-    },
+    // {
+    //   key: "s_04_04",
+    //   weight: 5,
+    //   source: {
+    //     format: "glb",
+    //     path: "models/glowing-industrial-building.glb",
+    //     emissiveBase: 1.5,
+    //   },
+    // },
+    // {
+    //   key: "s_04_07",
+    //   weight: 20,
+    //   source: {
+    //     format: "glb",
+    //     path: "models/brutalist-skyscraper-4.glb",
+    //     scale: 3.5,
+    //     emissiveBase: 2.0,
+    //   },
+    // },
   ],
 };
 
