@@ -55,6 +55,7 @@ export type RuntimeAssets = {
 export type RuntimePlayer = {
   camera: PerspectiveCamera;
   body: Object3D;
+  camera_target?: Object3D;
   carPose?: Object3D;
   soundWind?: ThreeAudio;
   soundStress?: ThreeAudio;

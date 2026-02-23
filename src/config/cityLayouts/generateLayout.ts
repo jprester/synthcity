@@ -178,43 +178,7 @@ export function generateLayout(
       // District bias controls building category thresholds for this block
       const bias = getDistrictBias(gi, gj, districts);
 
-      // Rare mega building (not district-biased — megas are always rare)
-      if (typeNoise < 0.2) {
-        if (
-          blockX % (CELL_SIZE * 6) === 0 &&
-          blockZ % (CELL_SIZE * 6) === 0
-        ) {
-          const xOff = CITY_BLOCK_SIZE / 2;
-          const zOff = CITY_BLOCK_SIZE / 2;
-          const wx = blockX + xOff;
-          const wz = blockZ + zOff;
-
-          // Don't place too close to player spawn path
-          if (!(wx < 128 && wx > -128)) {
-            const rotateNoise = fixNoise(noise.noise(wx * 5, wz * 5));
-            const rotate = getRotationFromNoise(rotateNoise);
-            const scale = 0.75 + rotateNoise * 0.25;
-
-            let type: string;
-            if (subtypeNoise < 0.16) type = "mega_01";
-            else if (subtypeNoise < 0.32) type = "mega_02";
-            else if (subtypeNoise < 0.48) type = "mega_03";
-            else if (subtypeNoise < 0.64) type = "mega_04";
-            else if (subtypeNoise < 0.8) type = "mega_05";
-            else type = "mega_06";
-
-            megaBuildings.push({
-              modelKey: type,
-              x: wx,
-              z: wz,
-              scaleX: 1,
-              scaleY: scale,
-              scaleZ: 1,
-              rotationY: (rotate * Math.PI) / 180,
-            });
-          }
-        }
-      }
+      // Mega buildings disabled — reserved for future use
 
       if (typeNoise < bias.emptyThreshold) {
         // Empty block
@@ -357,9 +321,10 @@ export function generateLayout(
       maxZ: worldExtent,
     },
     spawn: {
+      // South edge of the grid, centered on a road lane, facing north toward downtown
       x: -ROAD_WIDTH / 2,
-      z: 0,
-      rotationY: 0,
+      z: -(halfGrid * CELL_SIZE) + ROAD_WIDTH / 2,
+      rotationY: Math.PI,
     },
     buildings,
     megaBuildings,

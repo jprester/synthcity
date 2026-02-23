@@ -19,6 +19,7 @@ export function FiniteCitySystem() {
   const { gameRef, settings } = useGameStore();
   const { visibility } = settings;
   const initRef = useRef(false);
+  const spawnAppliedRef = useRef(false);
 
   const [layout, setLayout] = useState<FiniteCityLayout | null>(null);
 
@@ -35,19 +36,31 @@ export function FiniteCitySystem() {
     }
   }, [settings.finiteLayout, settings.worldSeed]);
 
-  // Initialize noise on game (needed for asset system compatibility)
+  // Initialize noise and apply spawn position once game is running
   useFrame(() => {
     const game = gameRef.current;
     if (!game || !game.isRunning || !game.initialized) return;
-    if (initRef.current) return;
 
-    if (!game.cityBlockNoise) {
-      game.cityBlockNoise = createPerlin(game.settings.worldSeed);
-      game.cityBlockNoise.noiseDetail(8, 0.5);
-      game.cityBlockNoiseFactor = 0.0017;
+    if (!initRef.current) {
+      if (!game.cityBlockNoise) {
+        game.cityBlockNoise = createPerlin(game.settings.worldSeed);
+        game.cityBlockNoise.noiseDetail(8, 0.5);
+        game.cityBlockNoiseFactor = 0.0017;
+      }
+      game.generatorsInitialized = true;
+      initRef.current = true;
     }
-    game.generatorsInitialized = true;
-    initRef.current = true;
+
+    // Apply layout spawn position once both game and layout are ready
+    if (!spawnAppliedRef.current && layout && game.player) {
+      const { x, z, rotationY } = layout.spawn;
+      game.player.body.position.x = x;
+      game.player.body.position.z = z;
+      if (game.player.camera_target) {
+        game.player.camera_target.rotation.y = rotationY;
+      }
+      spawnAppliedRef.current = true;
+    }
   });
 
   const buildings: BuildingDescriptor[] = useMemo(
