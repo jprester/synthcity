@@ -4,7 +4,6 @@ import type { BufferGeometry, Material } from "three";
 import {
   getAllModelKeys,
   getEmbeddedMaterialKeys,
-  getLandmarkModelKeys,
 } from "../../config/buildingRegistry";
 
 type AssetGetter = {
@@ -42,13 +41,8 @@ const BUILDING_MATERIAL_KEYS = [
 // Models that use embedded materials from GLB files — derived from building registry
 const MODELS_WITH_EMBEDDED_MATERIALS = getEmbeddedMaterialKeys();
 
-// Landmark models — appear exactly once per city, cap their InstancedMesh accordingly
-const LANDMARK_MODEL_KEYS = getLandmarkModelKeys();
-
 // Max instances per (model, material) combination
-// Buildings are common, so we need more instances than mega buildings
-const MAX_INSTANCES_PER_COMBO = 100;
-const MAX_INSTANCES_LANDMARK = 1;
+const MAX_INSTANCES_PER_COMBO = 150;
 
 // Create a composite key for (model, material) pair
 function getComboKey(modelKey: string, materialKey: string): string {
@@ -94,13 +88,10 @@ export function useBuildingInstances(assets: AssetGetter | null) {
         // Create a single InstancedMesh for this model (all instances use the same embedded material)
         // Use a special combo key that maps any material to the embedded one
         const comboKey = getComboKey(modelKey, embeddedMaterialKey);
-        const maxInstances = LANDMARK_MODEL_KEYS.has(modelKey)
-          ? MAX_INSTANCES_LANDMARK
-          : MAX_INSTANCES_PER_COMBO;
         const instancedMesh = new InstancedMesh(
           geometry,
           material,
-          maxInstances,
+          MAX_INSTANCES_PER_COMBO,
         );
         instancedMesh.count = 0;
         instancedMesh.frustumCulled = false;

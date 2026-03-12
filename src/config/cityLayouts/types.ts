@@ -41,7 +41,19 @@ export type FiniteCityLayout = {
   bounds: { minX: number; maxX: number; minZ: number; maxZ: number };
   spawn: { x: number; z: number; rotationY: number };
   buildings: FiniteBuildingPlacement[];
-  megaBuildings: FiniteMegaPlacement[];
+  megaBuildings?: FiniteMegaPlacement[];
   groundTiles: { x: number; z: number }[];
   storefronts: FiniteStorefrontPlacement[];
+};
+
+// ── Concentric zone system ──────────────────────────────────────────────────
+
+export type ZoneType = "suburbs" | "urban" | "business" | "financial" | "downtown";
+
+export type ZoneBias = {
+  emptyProbability: number;
+  smallProbability: number;
+  skyscraperProbability: number;
+  towerProbability: number;
+  smallWeights: { residential: number; commercial: number; industrial: number };
 };

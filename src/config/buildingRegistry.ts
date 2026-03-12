@@ -186,6 +186,50 @@ export const LANDMARK_SERIES: BuildingVariant[] = [
   },
 ];
 
+// ── Concentric-city series (finite mode only) ──────────────────────────────
+
+// Skyscrapers — mid-to-tall buildings for financial/business zones.
+// All use embedded GLB materials. Adding a new skyscraper = one entry here.
+export const SKYSCRAPER_SERIES: BuildingSeries = {
+  id: "skyscraper",
+  ads: ["ads_s_04_01", "ads_s_04_02", "ads_s_04_03", "ads_s_04_04"],
+  variants: [
+    { key: "skyscraper_01", weight: 1, source: { format: "glb", path: "models/skyscrapers/brutalist-skyscraper.glb", emissiveBase: 2.0 } },
+    { key: "skyscraper_02", weight: 1, source: { format: "glb", path: "models/skyscrapers/cylinder-building.glb", emissiveBase: 2.0 } },
+    { key: "skyscraper_03", weight: 1, source: { format: "glb", path: "models/skyscrapers/dark-skyscraper.glb", emissiveBase: 2.0 } },
+    { key: "skyscraper_04", weight: 1, source: { format: "glb", path: "models/skyscrapers/Frankfurt_Eurotheum_LOD0.glb", emissiveBase: 2.0 } },
+    { key: "skyscraper_05", weight: 1, source: { format: "glb", path: "models/skyscrapers/Frankfurt_Skyper_LOD0.glb", emissiveBase: 2.0 } },
+    { key: "skyscraper_06", weight: 1, source: { format: "glb", path: "models/skyscrapers/glowing-industrial-building.glb", emissiveBase: 1.5 } },
+    { key: "skyscraper_07", weight: 1, source: { format: "glb", path: "models/skyscrapers/glowing-office-building.glb", emissiveBase: 1.5 } },
+    { key: "skyscraper_08", weight: 1, source: { format: "glb", path: "models/skyscrapers/lz-skyscraper-2.glb", emissiveBase: 2.0 } },
+    { key: "skyscraper_09", weight: 1, source: { format: "glb", path: "models/skyscrapers/quality-skyscraper-curved.glb", emissiveBase: 2.0 } },
+    { key: "skyscraper_10", weight: 1, source: { format: "glb", path: "models/skyscrapers/quality-skyscraper-dual.glb", emissiveBase: 2.0 } },
+    { key: "skyscraper_11", weight: 1, source: { format: "glb", path: "models/skyscrapers/quality-skyscraper-rounded.glb", emissiveBase: 2.0 } },
+    { key: "skyscraper_12", weight: 1, source: { format: "glb", path: "models/skyscrapers/quality-skyscraper-thick.glb", emissiveBase: 2.0 } },
+    { key: "skyscraper_13", weight: 1, source: { format: "glb", path: "models/skyscrapers/rectangular-high-rise.glb", emissiveBase: 2.0 } },
+    { key: "skyscraper_14", weight: 1, source: { format: "glb", path: "models/skyscrapers/rounded-high-rise.glb", emissiveBase: 2.0 } },
+    { key: "skyscraper_15", weight: 1, source: { format: "glb", path: "models/skyscrapers/triangular-high-rise.glb", emissiveBase: 2.0 } },
+  ],
+};
+
+// New towers — massive downtown-only buildings for the concentric city center.
+// All use embedded GLB materials. Adding a new tower = one entry here.
+export const NEW_TOWER_SERIES: BuildingSeries = {
+  id: "new_tower",
+  ads: ["ads_s_05_01", "ads_s_05_02", "ads_s_05_03", "ads_s_05_04"],
+  variants: [
+    { key: "tower_01", weight: 1, source: { format: "glb", path: "models/towers/cyberpunk-hightower-big.glb", emissiveBase: 2.0 } },
+    { key: "tower_02", weight: 1, source: { format: "glb", path: "models/towers/cyberpunk-hightower-small.glb", emissiveBase: 2.0 } },
+    { key: "tower_03", weight: 1, source: { format: "glb", path: "models/towers/cyberpunk-skyscraper-top-ads.glb", emissiveBase: 2.0 } },
+    { key: "tower_04", weight: 1, source: { format: "glb", path: "models/towers/cyerpunk-light-show-skyscraper.glb", emissiveBase: 2.0 } },
+    { key: "tower_05", weight: 1, source: { format: "glb", path: "models/towers/hero-skyscraper.glb", emissiveBase: 1.0 } },
+    { key: "tower_06", weight: 1, source: { format: "glb", path: "models/towers/lz-tower-4.glb", emissiveBase: 2.0 } },
+    { key: "tower_07", weight: 1, source: { format: "glb", path: "models/towers/new-massive-skyscraper.001.glb", scale: 1.7, emissiveBase: 2.0 } },
+    { key: "tower_08", weight: 1, source: { format: "glb", path: "models/towers/quality-skyscraper-rectangular-big.glb", emissiveBase: 2.0 } },
+    { key: "tower_09", weight: 1, source: { format: "glb", path: "models/towers/rounded-scifi-tower.glb", emissiveBase: 2.0 } },
+  ],
+};
+
 // ============================================================================
 // Asset Pipeline Helpers
 // ============================================================================
@@ -197,6 +241,8 @@ function getAllVariants(): BuildingVariant[] {
     ...TOWER_SERIES.variants,
     ...SLIM_TOWER_SERIES,
     ...LANDMARK_SERIES,
+    ...SKYSCRAPER_SERIES.variants,
+    ...NEW_TOWER_SERIES.variants,
   ];
 }
 
@@ -261,9 +307,14 @@ export function getBuildingManifestEntries(): Record<
   return entries;
 }
 
-/** Set of landmark model keys — these appear at most once in any scene */
+/** Set of landmark model keys — legacy, kept for procedural mode compat */
 export function getLandmarkModelKeys(): Set<string> {
   return new Set(LANDMARK_SERIES.map((v) => v.key));
+}
+
+/** Tower model keys for the concentric city — no instance cap */
+export function getNewTowerModelKeys(): string[] {
+  return NEW_TOWER_SERIES.variants.map((v) => v.key);
 }
 
 /** All ad model keys across all series */
@@ -309,3 +360,7 @@ export const LARGE_THRESHOLDS = buildVariantThresholds(LARGE_SERIES.variants);
 export const TOWER_THRESHOLDS = buildVariantThresholds(TOWER_SERIES.variants);
 export const SLIM_TOWER_THRESHOLDS = buildVariantThresholds(SLIM_TOWER_SERIES);
 export const LANDMARK_THRESHOLDS = buildVariantThresholds(LANDMARK_SERIES);
+
+// Concentric-city thresholds
+export const SKYSCRAPER_THRESHOLDS = buildVariantThresholds(SKYSCRAPER_SERIES.variants);
+export const NEW_TOWER_THRESHOLDS = buildVariantThresholds(NEW_TOWER_SERIES.variants);

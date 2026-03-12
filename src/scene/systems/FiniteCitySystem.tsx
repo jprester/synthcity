@@ -9,10 +9,6 @@ import {
   InstancedBuildings,
   type BuildingDescriptor,
 } from "../visuals/InstancedBuildings";
-import {
-  InstancedMegaBuildings,
-  type MegaBuildingDescriptor,
-} from "../visuals/InstancedMegaBuildings";
 import type { GameRuntime } from "../../types/game";
 
 export function FiniteCitySystem() {
@@ -76,18 +72,6 @@ export function FiniteCitySystem() {
     [layout],
   );
 
-  const megaBuildings: MegaBuildingDescriptor[] = useMemo(
-    () =>
-      (layout?.megaBuildings ?? []).map((b) => ({
-        modelKey: b.modelKey,
-        position: { x: b.x, y: 0, z: b.z },
-        scale: { x: b.scaleX, y: b.scaleY, z: b.scaleZ },
-        rotationY: b.rotationY,
-        blockKey: "finite",
-      })),
-    [layout],
-  );
-
   if (!layout) return null;
 
   return (
@@ -99,12 +83,6 @@ export function FiniteCitySystem() {
       />
       {visibility.buildings && (
         <InstancedBuildings buildings={buildings} game={gameRef.current} />
-      )}
-      {visibility.megaBuildings && (
-        <InstancedMegaBuildings
-          megaBuildings={megaBuildings}
-          game={gameRef.current}
-        />
       )}
       <FiniteCityCollision
         layout={layout}
@@ -189,20 +167,6 @@ function FiniteCityCollision({
       const geometry = game.assets!.getModel(b.modelKey);
       if (!geometry) continue;
       const material = game.assets!.getMaterial(b.materialKey);
-      const mesh = new Mesh(geometry, material);
-      mesh.position.set(b.x, 0, b.z);
-      mesh.scale.set(b.scaleX, b.scaleY, b.scaleZ);
-      mesh.rotation.y = b.rotationY;
-      mesh.updateMatrixWorld(true);
-      game.collider.add(mesh);
-      meshes.push(mesh);
-    }
-
-    // Mega building collision meshes
-    for (const b of layout.megaBuildings) {
-      const geometry = game.assets!.getModel(b.modelKey);
-      if (!geometry) continue;
-      const material = game.assets!.getMaterial("mega_building_01");
       const mesh = new Mesh(geometry, material);
       mesh.position.set(b.x, 0, b.z);
       mesh.scale.set(b.scaleX, b.scaleY, b.scaleZ);
