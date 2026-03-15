@@ -79,8 +79,13 @@ export function generateLayout(
     }
   }
 
-  // Sort best-first (highest noise = most "downtown"), assign unique variants
-  towerCandidates.sort((a, b) => b.typeNoise - a.typeNoise);
+  // Sort downtown blocks first (guaranteed placement), then by noise
+  towerCandidates.sort((a, b) => {
+    const aDowntown = getZoneBias(a.gi, a.gj, gridSize).towerProbability === 1.0 ? 1 : 0;
+    const bDowntown = getZoneBias(b.gi, b.gj, gridSize).towerProbability === 1.0 ? 1 : 0;
+    if (aDowntown !== bDowntown) return bDowntown - aDowntown;
+    return b.typeNoise - a.typeNoise;
+  });
   const towerAssignments = new Map<string, string>(); // "gi,gj" → tower key
   const towerOverflow = new Set<string>(); // blocks that exceed variant count
   for (let i = 0; i < towerCandidates.length; i++) {

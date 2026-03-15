@@ -194,21 +194,143 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
   id: "skyscraper",
   ads: ["ads_s_04_01", "ads_s_04_02", "ads_s_04_03", "ads_s_04_04"],
   variants: [
-    { key: "skyscraper_01", weight: 1, source: { format: "glb", path: "models/skyscrapers/brutalist-skyscraper.glb", emissiveBase: 2.0 } },
-    { key: "skyscraper_02", weight: 1, source: { format: "glb", path: "models/skyscrapers/cylinder-building.glb", emissiveBase: 2.0 } },
-    { key: "skyscraper_03", weight: 1, source: { format: "glb", path: "models/skyscrapers/dark-skyscraper.glb", emissiveBase: 2.0 } },
-    { key: "skyscraper_04", weight: 1, source: { format: "glb", path: "models/skyscrapers/Frankfurt_Eurotheum_LOD0.glb", emissiveBase: 2.0 } },
-    { key: "skyscraper_05", weight: 1, source: { format: "glb", path: "models/skyscrapers/Frankfurt_Skyper_LOD0.glb", emissiveBase: 2.0 } },
-    { key: "skyscraper_06", weight: 1, source: { format: "glb", path: "models/skyscrapers/glowing-industrial-building.glb", emissiveBase: 1.5 } },
-    { key: "skyscraper_07", weight: 1, source: { format: "glb", path: "models/skyscrapers/glowing-office-building.glb", emissiveBase: 1.5 } },
-    { key: "skyscraper_08", weight: 1, source: { format: "glb", path: "models/skyscrapers/lz-skyscraper-2.glb", emissiveBase: 2.0 } },
-    { key: "skyscraper_09", weight: 1, source: { format: "glb", path: "models/skyscrapers/quality-skyscraper-curved.glb", emissiveBase: 2.0 } },
-    { key: "skyscraper_10", weight: 1, source: { format: "glb", path: "models/skyscrapers/quality-skyscraper-dual.glb", emissiveBase: 2.0 } },
-    { key: "skyscraper_11", weight: 1, source: { format: "glb", path: "models/skyscrapers/quality-skyscraper-rounded.glb", emissiveBase: 2.0 } },
-    { key: "skyscraper_12", weight: 1, source: { format: "glb", path: "models/skyscrapers/quality-skyscraper-thick.glb", emissiveBase: 2.0 } },
-    { key: "skyscraper_13", weight: 1, source: { format: "glb", path: "models/skyscrapers/rectangular-high-rise.glb", emissiveBase: 2.0 } },
-    { key: "skyscraper_14", weight: 1, source: { format: "glb", path: "models/skyscrapers/rounded-high-rise.glb", emissiveBase: 2.0 } },
-    { key: "skyscraper_15", weight: 1, source: { format: "glb", path: "models/skyscrapers/triangular-high-rise.glb", emissiveBase: 2.0 } },
+    {
+      key: "skyscraper_01",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/skyscrapers/brutalist-skyscraper.glb",
+        emissiveBase: 2.0,
+      },
+    },
+    {
+      key: "skyscraper_02",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/skyscrapers/cylinder-building.glb",
+        emissiveBase: 2.0,
+      },
+    },
+    {
+      key: "skyscraper_03",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/skyscrapers/dark-skyscraper.glb",
+        emissiveBase: 2.0,
+        scale: 1.6,
+      },
+    },
+    {
+      key: "skyscraper_04",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/skyscrapers/Frankfurt_Eurotheum_LOD0.glb",
+        emissiveBase: 2.0,
+      },
+    },
+    {
+      key: "skyscraper_05",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/skyscrapers/Frankfurt_Skyper_LOD0.glb",
+        emissiveBase: 2.0,
+      },
+    },
+    {
+      key: "skyscraper_06",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/skyscrapers/glowing-industrial-building.glb",
+        emissiveBase: 1.5,
+      },
+    },
+    {
+      key: "skyscraper_07",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/skyscrapers/glowing-office-building.glb",
+        emissiveBase: 1.5,
+        scale: 1.6,
+      },
+    },
+    {
+      key: "skyscraper_08",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/skyscrapers/lz-skyscraper-2.glb",
+        emissiveBase: 2.0,
+      },
+    },
+    {
+      key: "skyscraper_09",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/skyscrapers/quality-skyscraper-curved.glb",
+        emissiveBase: 2.0,
+      },
+    },
+    {
+      key: "skyscraper_10",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/skyscrapers/quality-skyscraper-dual.glb",
+        emissiveBase: 2.0,
+      },
+    },
+    {
+      key: "skyscraper_11",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/skyscrapers/quality-skyscraper-rounded.glb",
+        emissiveBase: 2.0,
+      },
+    },
+    {
+      key: "skyscraper_12",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/skyscrapers/quality-skyscraper-thick.glb",
+        emissiveBase: 2.0,
+      },
+    },
+    {
+      key: "skyscraper_13",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/skyscrapers/rectangular-high-rise.glb",
+        emissiveBase: 2.0,
+      },
+    },
+    {
+      key: "skyscraper_14",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/skyscrapers/rounded-high-rise.glb",
+        emissiveBase: 2.0,
+      },
+    },
+    {
+      key: "skyscraper_15",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/skyscrapers/triangular-high-rise.glb",
+        emissiveBase: 2.0,
+      },
+    },
   ],
 };
 
@@ -218,15 +340,117 @@ export const NEW_TOWER_SERIES: BuildingSeries = {
   id: "new_tower",
   ads: ["ads_s_05_01", "ads_s_05_02", "ads_s_05_03", "ads_s_05_04"],
   variants: [
-    { key: "tower_01", weight: 1, source: { format: "glb", path: "models/towers/cyberpunk-hightower-big.glb", emissiveBase: 2.0 } },
-    { key: "tower_02", weight: 1, source: { format: "glb", path: "models/towers/cyberpunk-hightower-small.glb", emissiveBase: 2.0 } },
-    { key: "tower_03", weight: 1, source: { format: "glb", path: "models/towers/cyberpunk-skyscraper-top-ads.glb", emissiveBase: 2.0 } },
-    { key: "tower_04", weight: 1, source: { format: "glb", path: "models/towers/cyerpunk-light-show-skyscraper.glb", emissiveBase: 2.0 } },
-    { key: "tower_05", weight: 1, source: { format: "glb", path: "models/towers/hero-skyscraper.glb", emissiveBase: 1.0 } },
-    { key: "tower_06", weight: 1, source: { format: "glb", path: "models/towers/lz-tower-4.glb", emissiveBase: 2.0 } },
-    { key: "tower_07", weight: 1, source: { format: "glb", path: "models/towers/new-massive-skyscraper.001.glb", scale: 1.7, emissiveBase: 2.0 } },
-    { key: "tower_08", weight: 1, source: { format: "glb", path: "models/towers/quality-skyscraper-rectangular-big.glb", emissiveBase: 2.0 } },
-    { key: "tower_09", weight: 1, source: { format: "glb", path: "models/towers/rounded-scifi-tower.glb", emissiveBase: 2.0 } },
+    {
+      key: "tower_01",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/towers/cyberpunk-hightower-big.glb",
+        emissiveBase: 2.0,
+      },
+    },
+    {
+      key: "tower_02",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/towers/cyberpunk-hightower-small.glb",
+        emissiveBase: 2.0,
+      },
+    },
+    {
+      key: "tower_03",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/towers/cyberpunk-skyscraper-top-ads.glb",
+        emissiveBase: 2.0,
+      },
+    },
+    {
+      key: "tower_04",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/towers/cyerpunk-light-show-skyscraper.glb",
+        emissiveBase: 2.0,
+      },
+    },
+    {
+      key: "tower_05",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/towers/hero-skyscraper.glb",
+        emissiveBase: 1.0,
+        scale: 1.7,
+      },
+    },
+    {
+      key: "tower_06",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/towers/lz-tower-4.glb",
+        emissiveBase: 2.0,
+      },
+    },
+    {
+      key: "tower_07",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/towers/new-massive-skyscraper.001.glb",
+        scale: 1.5,
+        emissiveBase: 2.0,
+      },
+    },
+    {
+      key: "tower_08",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/towers/quality-skyscraper-rectangular-big.glb",
+        emissiveBase: 2.0,
+      },
+    },
+    {
+      key: "tower_09",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/towers/rounded-scifi-tower.glb",
+        emissiveBase: 2.0,
+      },
+    },
+    {
+      key: "tower_10",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/towers/sci-fi-brutalist-tower.glb",
+        emissiveBase: 2.0,
+      },
+    },
+    {
+      key: "tower_11",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/towers/sci-fi-building-9_1.glb",
+        emissiveBase: 2.0,
+      },
+    },
+    {
+      key: "tower_12",
+      weight: 1,
+      source: {
+        format: "glb",
+        path: "models/towers/sci-fi-corporate-building.glb",
+        emissiveBase: 2.0,
+        scale: 1.7,
+      },
+    },
   ],
 };
 
@@ -362,5 +586,9 @@ export const SLIM_TOWER_THRESHOLDS = buildVariantThresholds(SLIM_TOWER_SERIES);
 export const LANDMARK_THRESHOLDS = buildVariantThresholds(LANDMARK_SERIES);
 
 // Concentric-city thresholds
-export const SKYSCRAPER_THRESHOLDS = buildVariantThresholds(SKYSCRAPER_SERIES.variants);
-export const NEW_TOWER_THRESHOLDS = buildVariantThresholds(NEW_TOWER_SERIES.variants);
+export const SKYSCRAPER_THRESHOLDS = buildVariantThresholds(
+  SKYSCRAPER_SERIES.variants,
+);
+export const NEW_TOWER_THRESHOLDS = buildVariantThresholds(
+  NEW_TOWER_SERIES.variants,
+);

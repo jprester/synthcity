@@ -8,58 +8,69 @@ type ZoneDef = {
   bias: ZoneBias;
 };
 
+// Downtown tower bias — used for explicit block positions instead of distance
+const DOWNTOWN_BIAS: ZoneBias = {
+  emptyProbability: 0,
+  smallProbability: 0,
+  skyscraperProbability: 0,
+  towerProbability: 1.0,
+  smallWeights: { residential: 0, commercial: 1, industrial: 0 },
+};
+
+/**
+ * Downtown blocks: two parallel rows of 6 towers each, centered on the grid.
+ * On a 17×17 grid (center=8): row 1 at gj=7 gi=5..10, row 2 at gj=9 gi=5..10.
+ * Scales with grid size.
+ */
+function isDowntownBlock(gi: number, gj: number, gridSize: number): boolean {
+  const center = Math.floor(gridSize / 2);
+  const halfRow = 3; // 6 blocks per row
+  const inRow = gi >= center - halfRow && gi < center + halfRow;
+  return inRow && (gj === center - 1 || gj === center + 1);
+}
+
 const ZONE_DEFS: ZoneDef[] = [
+  // Downtown is handled by isDowntownBlock() — skip distance-based entry
   {
-    type: "downtown",
-    maxDistance: 0.15,
+    type: "financial",
+    maxDistance: 0.40,
     bias: {
       emptyProbability: 0,
       smallProbability: 0,
-      skyscraperProbability: 0,
-      towerProbability: 1.0,
-      smallWeights: { residential: 0, commercial: 1, industrial: 0 },
-    },
-  },
-  {
-    type: "financial",
-    maxDistance: 0.35,
-    bias: {
-      emptyProbability: 0,
-      smallProbability: 0.1,
-      skyscraperProbability: 0.9,
-      towerProbability: 0,
-      smallWeights: { residential: 0.1, commercial: 0.8, industrial: 0.1 },
+      skyscraperProbability: 0.85,
+      towerProbability: 0.15,
+      smallWeights: { residential: 0, commercial: 0.9, industrial: 0.1 },
     },
   },
   {
     type: "business",
-    maxDistance: 0.55,
+    maxDistance: 0.58,
     bias: {
       emptyProbability: 0.05,
-      smallProbability: 0.35,
-      skyscraperProbability: 0.6,
+      smallProbability: 0.1,
+      skyscraperProbability: 0.85,
       towerProbability: 0,
-      smallWeights: { residential: 0.15, commercial: 0.55, industrial: 0.3 },
+      smallWeights: { residential: 0.1, commercial: 0.6, industrial: 0.3 },
     },
   },
   {
     type: "urban",
     maxDistance: 0.75,
     bias: {
-      emptyProbability: 0.1,
-      smallProbability: 0.7,
-      skyscraperProbability: 0.2,
+      emptyProbability: 0.05,
+      smallProbability: 0.35,
+      skyscraperProbability: 0.6,
       towerProbability: 0,
-      smallWeights: { residential: 0.4, commercial: 0.35, industrial: 0.25 },
+      smallWeights: { residential: 0.3, commercial: 0.4, industrial: 0.3 },
     },
   },
   {
     type: "suburbs",
     maxDistance: 1.0,
     bias: {
-      emptyProbability: 0.25,
-      smallProbability: 0.7,
-      skyscraperProbability: 0.05,
+      emptyProbability: 0.15,
+      smallProbability: 0.6,
+      skyscraperProbability: 0.25,
       towerProbability: 0,
       smallWeights: { residential: 0.7, commercial: 0.2, industrial: 0.1 },
     },
@@ -93,6 +104,11 @@ function interpolateZoneBias(a: ZoneBias, b: ZoneBias, t: number): ZoneBias {
  * corner distance, with smooth interpolation at zone boundaries.
  */
 export function getZoneBias(gi: number, gj: number, gridSize: number): ZoneBias {
+  // Downtown: two parallel rows of towers, checked before distance-based zones
+  if (isDowntownBlock(gi, gj, gridSize)) {
+    return DOWNTOWN_BIAS;
+  }
+
   const center = (gridSize - 1) / 2;
   const dx = gi - center;
   const dz = gj - center;
