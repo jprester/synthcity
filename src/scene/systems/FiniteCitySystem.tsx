@@ -9,7 +9,8 @@ import {
   InstancedBuildings,
   type BuildingDescriptor,
 } from "../visuals/InstancedBuildings";
-import type { GameRuntime } from "../../types/game";
+import { CityBlockUpdateableVisuals } from "../visuals/CityBlockUpdateableVisuals";
+import type { GameRuntime, UpdateableVisualState } from "../../types/game";
 
 export function FiniteCitySystem() {
   const { gameRef, settings } = useGameStore();
@@ -72,6 +73,35 @@ export function FiniteCitySystem() {
     [layout],
   );
 
+  // Generate smoke visual states from building positions (seeded for determinism)
+  const smokeStates = useMemo(() => {
+    if (!layout) return [];
+    const smokes: UpdateableVisualState[] = [];
+    const smokeMats = ["smoke_01", "smoke_02", "smoke_03"];
+    // Simple seeded PRNG from world seed
+    let seed = settings.worldSeed;
+    const seededRandom = () => {
+      seed = (seed * 16807 + 0) % 2147483647;
+      return (seed - 1) / 2147483646;
+    };
+    for (const b of layout.buildings) {
+      if (seededRandom() < 0.05) {
+        const s = 1 + seededRandom() * 8;
+        const sy = s * (1 + seededRandom() * 0.5);
+        smokes.push({
+          isVisual: true,
+          kind: "smoke",
+          modelKey: "smoke",
+          matKey: smokeMats[Math.floor(seededRandom() * smokeMats.length)],
+          position: { x: b.x, y: 190 * b.scaleY, z: b.z },
+          scale: { x: s, y: sy, z: s },
+          rstep: seededRandom() * 7,
+        });
+      }
+    }
+    return smokes;
+  }, [layout, settings.worldSeed]);
+
   if (!layout) return null;
 
   return (
@@ -84,6 +114,11 @@ export function FiniteCitySystem() {
       {visibility.buildings && (
         <InstancedBuildings buildings={buildings} game={gameRef.current} />
       )}
+      <FiniteCitySmoke
+        smokeStates={smokeStates}
+        game={gameRef.current}
+        visibility={visibility}
+      />
       <FiniteCityCollision
         layout={layout}
         game={gameRef.current}
@@ -92,6 +127,44 @@ export function FiniteCitySystem() {
         layout={layout}
         game={gameRef.current}
       />
+    </>
+  );
+}
+
+// ─── Smoke ───────────────────────────────────────────────────────────────────
+
+function FiniteCitySmoke({
+  smokeStates,
+  game,
+  visibility,
+}: {
+  smokeStates: UpdateableVisualState[];
+  game: GameRuntime | null;
+  visibility: { smoke: boolean };
+}) {
+  // Animate rstep for all smoke each frame
+  useFrame(() => {
+    for (const s of smokeStates) {
+      if (s.rstep !== undefined) {
+        s.rstep += 0.0025;
+      }
+    }
+  });
+
+  // Wait for assets to be fully loaded before rendering smoke
+  // (CityBlockUpdateableVisuals doesn't re-run its useEffect when assets finish loading)
+  if (!game?.assets?.loaded) return null;
+
+  return (
+    <>
+      {smokeStates.map((s, i) => (
+        <CityBlockUpdateableVisuals
+          key={i}
+          updateable={s}
+          game={game}
+          visibility={visibility as any}
+        />
+      ))}
     </>
   );
 }
