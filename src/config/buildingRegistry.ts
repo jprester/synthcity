@@ -219,7 +219,7 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
         format: "glb",
         path: "models/skyscrapers/dark-skyscraper.glb",
         emissiveBase: 2.0,
-        scale: 1.6,
+        scale: 1,
       },
     },
     {
@@ -254,7 +254,8 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       weight: 1,
       source: {
         format: "glb",
-        path: "models/skyscrapers/glowing-office-building.glb",
+        // path: "models/skyscrapers/quality-skyscraper-office.glb",
+        path: "models/skyscrapers/ny-office-building.glb",
         emissiveBase: 1.5,
         scale: 1.6,
       },
@@ -381,9 +382,10 @@ export const NEW_TOWER_SERIES: BuildingSeries = {
       weight: 1,
       source: {
         format: "glb",
-        path: "models/towers/hero-skyscraper.glb",
+        path: "models/towers/quality-skyscraper-rectangular-big.glb",
+
         emissiveBase: 1.0,
-        scale: 1.7,
+        scale: 1,
       },
     },
     {
@@ -400,7 +402,7 @@ export const NEW_TOWER_SERIES: BuildingSeries = {
       weight: 1,
       source: {
         format: "glb",
-        path: "models/towers/new-massive-skyscraper.001.glb",
+        path: "models/towers/sci-fi-building-9_1.glb",
         scale: 1.5,
         emissiveBase: 2.0,
       },
@@ -410,8 +412,9 @@ export const NEW_TOWER_SERIES: BuildingSeries = {
       weight: 1,
       source: {
         format: "glb",
-        path: "models/towers/quality-skyscraper-rectangular-big.glb",
+        path: "models/towers/sci-fi-corporate-building.glb",
         emissiveBase: 2.0,
+        scale: 1.7,
       },
     },
     {
@@ -437,7 +440,7 @@ export const NEW_TOWER_SERIES: BuildingSeries = {
       weight: 1,
       source: {
         format: "glb",
-        path: "models/towers/sci-fi-building-9_1.glb",
+        path: "models/towers/new-massive-skyscraper.001.glb",
         emissiveBase: 2.0,
       },
     },
@@ -446,9 +449,9 @@ export const NEW_TOWER_SERIES: BuildingSeries = {
       weight: 1,
       source: {
         format: "glb",
-        path: "models/towers/sci-fi-corporate-building.glb",
+        path: "models/towers/hero-skyscraper.glb",
         emissiveBase: 2.0,
-        scale: 1.7,
+        scale: 1.6,
       },
     },
   ],
