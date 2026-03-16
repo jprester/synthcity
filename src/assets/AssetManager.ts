@@ -427,16 +427,10 @@ export class AssetManager {
     if ("roughness" in material && "metalness" in material) {
       const mat = material as any;
 
-      // Increase roughness slightly for better diffuse light response
-      // (very smooth materials can appear dark without strong reflections)
-      if (mat.roughness !== undefined && mat.roughness < 0.4) {
-        mat.roughness = Math.max(mat.roughness, 0.5);
-      }
-
       // Add environment map if available and not already set
       if (!mat.envMap) {
         mat.envMap = this.textures.get("env_night");
-        mat.envMapIntensity = 0.4;
+        mat.envMapIntensity = mat.roughness < 0.4 ? 1.0 : 0.4;
       }
 
       // Normalize emissive for embedded materials so preset system can control them
