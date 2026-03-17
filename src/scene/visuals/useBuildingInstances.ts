@@ -4,6 +4,7 @@ import type { BufferGeometry, Material } from "three";
 import {
   getAllModelKeys,
   getEmbeddedMaterialKeys,
+  getModelRotations,
 } from "../../config/buildingRegistry";
 
 type AssetGetter = {
@@ -40,6 +41,9 @@ const BUILDING_MATERIAL_KEYS = [
 
 // Models that use embedded materials from GLB files — derived from building registry
 const MODELS_WITH_EMBEDDED_MATERIALS = getEmbeddedMaterialKeys();
+
+// Per-model default rotation offsets (e.g. to correct orientation from Blender)
+const MODEL_ROTATIONS = getModelRotations();
 
 // Max instances per (model, material) combination
 const MAX_INSTANCES_PER_COMBO = 150;
@@ -171,14 +175,19 @@ export function useBuildingInstances(assets: AssetGetter | null) {
         const building = comboBuildings[i];
         const obj = tempObject.current;
 
-        // Set transform
+        // Set transform (apply per-model rotation offset if defined)
+        const rot = MODEL_ROTATIONS.get(building.modelKey);
         obj.position.set(
           building.position.x,
           building.position.y,
           building.position.z,
         );
         obj.scale.set(building.scale.x, building.scale.y, building.scale.z);
-        obj.rotation.set(0, building.rotationY, 0);
+        obj.rotation.set(
+          rot?.x ?? 0,
+          building.rotationY + (rot?.y ?? 0),
+          rot?.z ?? 0,
+        );
         obj.updateMatrix();
 
         instancedMesh.setMatrixAt(i, obj.matrix);

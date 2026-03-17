@@ -19,6 +19,8 @@ export type BuildingVariant = {
   weight: number;
   /** Model source. Defaults to OBJ at "models/{key}.obj" if omitted. */
   source?: BuildingModelSource;
+  /** Default rotation offset in radians applied to every instance of this model */
+  rotation?: { x?: number; y?: number; z?: number };
 };
 
 export type BuildingSeries = {
@@ -245,7 +247,7 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       weight: 1,
       source: {
         format: "glb",
-        path: "models/skyscrapers/glowing-industrial-building.glb",
+        path: "models/skyscrapers/dark-skyscraper.glb",
         emissiveBase: 1.5,
       },
     },
@@ -274,7 +276,7 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       weight: 1,
       source: {
         format: "glb",
-        path: "models/skyscrapers/quality-skyscraper-curved.glb",
+        path: "models/skyscrapers/quality-skyscraper-rounded.glb",
         emissiveBase: 2.0,
       },
     },
@@ -301,7 +303,7 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       weight: 1,
       source: {
         format: "glb",
-        path: "models/skyscrapers/quality-skyscraper-thick.glb",
+        path: "models/skyscrapers/dark-skyscraper.glb",
         emissiveBase: 2.0,
       },
     },
@@ -310,7 +312,7 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       weight: 1,
       source: {
         format: "glb",
-        path: "models/skyscrapers/rectangular-high-rise.glb",
+        path: "models/skyscrapers/quality-skyscraper-curved.glb",
         emissiveBase: 2.0,
       },
     },
@@ -319,7 +321,7 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       weight: 1,
       source: {
         format: "glb",
-        path: "models/skyscrapers/rounded-high-rise.glb",
+        path: "models/skyscrapers/cylinder-building.glb",
         emissiveBase: 2.0,
       },
     },
@@ -376,6 +378,7 @@ export const NEW_TOWER_SERIES: BuildingSeries = {
         path: "models/towers/cyerpunk-light-show-skyscraper.glb",
         emissiveBase: 2.0,
       },
+      rotation: { y: Math.PI / 2 },
     },
     {
       key: "tower_05",
@@ -471,6 +474,24 @@ function getAllVariants(): BuildingVariant[] {
     ...SKYSCRAPER_SERIES.variants,
     ...NEW_TOWER_SERIES.variants,
   ];
+}
+
+/** Default rotation offsets per model key (only includes models with rotation defined) */
+export function getModelRotations(): Map<
+  string,
+  { x: number; y: number; z: number }
+> {
+  const map = new Map<string, { x: number; y: number; z: number }>();
+  for (const v of getAllVariants()) {
+    if (v.rotation) {
+      map.set(v.key, {
+        x: v.rotation.x ?? 0,
+        y: v.rotation.y ?? 0,
+        z: v.rotation.z ?? 0,
+      });
+    }
+  }
+  return map;
 }
 
 /** All building model keys (replaces BUILDING_MODEL_KEYS) */
