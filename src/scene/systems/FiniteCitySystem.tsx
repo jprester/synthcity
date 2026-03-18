@@ -210,7 +210,7 @@ function FiniteCityGround({
   return (
     <group>
       {groundMeshes.map((mesh) => (
-        <primitive key={mesh.uuid} object={mesh} />
+        <primitive key={mesh.uuid} object={mesh} receiveShadow />
       ))}
       {storefrontMeshes.map((mesh) => (
         <primitive key={mesh.uuid} object={mesh} />

@@ -99,6 +99,8 @@ export function useBuildingInstances(assets: AssetGetter | null) {
         );
         instancedMesh.count = 0;
         instancedMesh.frustumCulled = false;
+        instancedMesh.castShadow = true;
+        instancedMesh.receiveShadow = true;
         instancedMeshesRef.current.set(comboKey, instancedMesh);
         continue;
       }
@@ -117,6 +119,8 @@ export function useBuildingInstances(assets: AssetGetter | null) {
         );
         instancedMesh.count = 0; // Start with no visible instances
         instancedMesh.frustumCulled = false; // We manage visibility ourselves
+        instancedMesh.castShadow = true;
+        instancedMesh.receiveShadow = true;
         instancedMeshesRef.current.set(comboKey, instancedMesh);
       }
     }

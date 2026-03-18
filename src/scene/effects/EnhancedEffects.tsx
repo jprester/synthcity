@@ -10,6 +10,8 @@ import {
   HueSaturation,
   SMAA,
   FXAA,
+  N8AO,
+  DepthOfField,
 } from "@react-three/postprocessing";
 import { ToneMappingMode, BlendFunction, KernelSize } from "postprocessing";
 import { Vector2 } from "three";
@@ -37,6 +39,8 @@ const QUALITY_SETTINGS = {
     enableColorGrading: false,
     enableVignette: false,
     enableNoise: false,
+    enableAO: false,
+    enableDOF: false,
     useSmaa: false, // Use faster FXAA
     bloomResolutionScale: 0.25,
     bloomKernelSize: KernelSize.VERY_SMALL,
@@ -47,6 +51,8 @@ const QUALITY_SETTINGS = {
     enableColorGrading: false,
     enableVignette: true,
     enableNoise: false,
+    enableAO: true,
+    enableDOF: false,
     useSmaa: false, // Use faster FXAA
     bloomResolutionScale: 0.5,
     bloomKernelSize: KernelSize.SMALL,
@@ -57,6 +63,8 @@ const QUALITY_SETTINGS = {
     enableColorGrading: true,
     enableVignette: true,
     enableNoise: true,
+    enableAO: true,
+    enableDOF: true,
     useSmaa: false, // FXAA is much cheaper, SMAA rarely worth the cost
     bloomResolutionScale: 0.5, // Half resolution bloom - big GPU savings, minimal visual difference
     bloomKernelSize: KernelSize.MEDIUM, // Medium kernel - good balance of quality/performance
@@ -112,6 +120,16 @@ export function EnhancedEffects({
       {/* Antialiasing - SMAA for high quality, FXAA for medium */}
       {quality.useSmaa ? <SMAA /> : <FXAA />}
 
+      {/* Ambient Occlusion - darkens crevices and contact areas */}
+      {quality.enableAO && (
+        <N8AO
+          aoRadius={8}
+          intensity={25}
+          distanceFalloff={0.5}
+          halfRes={qualityLevel === "medium"}
+        />
+      )}
+
       {/* Bloom - glow effect on bright areas */}
       {quality.enableBloom && (
         <Bloom
@@ -153,6 +171,15 @@ export function EnhancedEffects({
         <Vignette
           darkness={preset.vignette.darkness}
           offset={preset.vignette.offset}
+        />
+      )}
+
+      {/* Depth of Field - subtle background blur for cinematic look */}
+      {quality.enableDOF && (
+        <DepthOfField
+          focusDistance={0.01}
+          focalLength={0.05}
+          bokehScale={0.6}
         />
       )}
 

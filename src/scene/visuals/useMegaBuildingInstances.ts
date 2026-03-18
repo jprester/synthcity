@@ -68,6 +68,8 @@ export function useMegaBuildingInstances(assets: AssetGetter | null) {
       );
       instancedMesh.count = 0; // Start with no visible instances
       instancedMesh.frustumCulled = false; // We manage visibility ourselves
+      instancedMesh.castShadow = true;
+      instancedMesh.receiveShadow = true;
       instancedMeshesRef.current.set(modelKey, instancedMesh);
       instanceCountsRef.current.set(modelKey, 0);
     }

@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { Fog, NoToneMapping, SRGBColorSpace } from "three";
+import {
+  FogExp2,
+  NoToneMapping,
+  PCFSoftShadowMap,
+  SRGBColorSpace,
+} from "three";
 import { Game } from "../../classes/Game.js";
 import { useGameStore } from "../../context/GameContext";
 import { usePlayerController } from "../../controllers/usePlayerController";
@@ -20,7 +25,9 @@ export function GameBridge() {
     setShowCrash,
   } = useGameStore();
   const controller = usePlayerController();
-  const [environment, setEnvironment] = useState<EnvironmentConfig | null>(null);
+  const [environment, setEnvironment] = useState<EnvironmentConfig | null>(
+    null,
+  );
 
   useEffect(() => {
     if (gameRef.current) {
@@ -42,6 +49,8 @@ export function GameBridge() {
     gl.toneMapping = NoToneMapping;
     gl.toneMappingExposure = 1.0;
     gl.outputColorSpace = SRGBColorSpace;
+    gl.shadowMap.enabled = true;
+    gl.shadowMap.type = PCFSoftShadowMap;
 
     // In quickstart mode, start loading assets immediately (no terminal boot delay)
     if (quickstart) {
@@ -91,11 +100,7 @@ export function GameBridge() {
       return;
     }
 
-    scene.fog = new Fog(
-      environment.fog.color,
-      environment.fog.start,
-      environment.fog.end,
-    );
+    scene.fog = new FogExp2(environment.fog.color, environment.fog.density);
   }, [environment, scene, gameRef]);
 
   useEffect(() => {
@@ -111,6 +116,11 @@ export function GameBridge() {
     const skyTexture = game.assets.getTexture(environment.sky);
     if (skyTexture) {
       scene.background = skyTexture;
+    }
+
+    const envMap = game.assets.getTexture(environment.environmentMap);
+    if (envMap) {
+      scene.environment = envMap;
     }
   }, [environment, launchReady, scene, gameRef]);
 
@@ -134,10 +144,19 @@ export function GameBridge() {
             color={environment.ambient.color}
           />
           <directionalLight
-            castShadow={false}
+            castShadow={true}
             intensity={environment.sun.intensity}
             color={environment.sun.color}
             position={[environment.sun.x, environment.sun.y, environment.sun.z]}
+            shadow-mapSize-width={2048}
+            shadow-mapSize-height={2048}
+            shadow-camera-near={0.5}
+            shadow-camera-far={1500}
+            shadow-camera-left={-500}
+            shadow-camera-right={500}
+            shadow-camera-top={500}
+            shadow-camera-bottom={-500}
+            shadow-bias={-0.0005}
           />
         </>
       )}

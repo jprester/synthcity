@@ -15,8 +15,7 @@ export type EnvironmentConfig = {
   streetLights: boolean;
   fog: {
     color: number;
-    start: number;
-    end: number;
+    density: number;
   };
   sun: {
     color: number;
@@ -41,19 +40,18 @@ export const ENVIRONMENT_NIGHT: EnvironmentConfig = {
   streetLights: true,
   fog: {
     color: COLORS.night.fog,
-    start: 0,
-    end: 2000,
+    density: 0.00065,
   },
   sun: {
     color: COLORS.night.sun,
-    intensity: 0.1,
+    intensity: 0.4,
     x: 1,
     y: 0.5,
     z: 0.25,
   },
   ambient: {
     color: COLORS.night.ambient,
-    intensity: 0.5,
+    intensity: 0.7,
   },
 };
 
@@ -67,8 +65,7 @@ export const ENVIRONMENT_DAY: EnvironmentConfig = {
   streetLights: false,
   fog: {
     color: COLORS.day.fog,
-    start: -500,
-    end: 2700,
+    density: 0.00035,
   },
   sun: {
     color: COLORS.day.sun,

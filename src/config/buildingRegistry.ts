@@ -259,7 +259,7 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
         // path: "models/skyscrapers/quality-skyscraper-office.glb",
         path: "models/skyscrapers/ny-office-building.glb",
         emissiveBase: 1.5,
-        scale: 1.6,
+        scale: 1.2,
       },
     },
     {
@@ -349,7 +349,7 @@ export const NEW_TOWER_SERIES: BuildingSeries = {
       source: {
         format: "glb",
         path: "models/towers/cyberpunk-hightower-big.glb",
-        emissiveBase: 2.0,
+        emissiveBase: 3.0,
       },
     },
     {
@@ -376,7 +376,7 @@ export const NEW_TOWER_SERIES: BuildingSeries = {
       source: {
         format: "glb",
         path: "models/towers/cyerpunk-light-show-skyscraper.glb",
-        emissiveBase: 2.0,
+        emissiveBase: 4.0,
       },
       rotation: { y: Math.PI / 2 },
     },
@@ -398,6 +398,7 @@ export const NEW_TOWER_SERIES: BuildingSeries = {
         path: "models/towers/lz-tower-4.glb",
         emissiveBase: 2.0,
       },
+      rotation: { y: Math.PI / 2 },
     },
     {
       key: "tower_07",
@@ -454,8 +455,8 @@ export const NEW_TOWER_SERIES: BuildingSeries = {
       source: {
         format: "glb",
         path: "models/towers/hero-skyscraper.glb",
-        emissiveBase: 2.0,
-        scale: 1.6,
+        emissiveBase: 1.0,
+        scale: 1.4,
       },
     },
   ],

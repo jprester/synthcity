@@ -155,6 +155,7 @@ export type GameRuntime = {
   cityBlockNoise?: NoiseRuntime;
   cityBlockNoiseFactor?: number;
   cityLights?: CityLightDescriptor[];
+  groundLights?: CityLightDescriptor[];
   canvas?: HTMLElement | null;
   pointerLockElement?: Element | null;
   uiOnUnfocus?: boolean;

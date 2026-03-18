@@ -3,6 +3,7 @@ import { useFrame } from "@react-three/fiber";
 import { useGameStore } from "../../context/GameContext";
 import { GeneratorItem_CityBlock } from "../../classes/GeneratorItem_CityBlock.js";
 import { GeneratorItem_CityLight } from "../../classes/GeneratorItem_CityLight.js";
+import { GeneratorItem_GroundLight } from "../../classes/GeneratorItem_GroundLight.js";
 import { GeneratorItem_Traffic } from "../../classes/GeneratorItem_Traffic.js";
 import { CityBlockVisuals } from "../visuals/CityBlockVisuals";
 import { CityBlockUpdateableVisuals } from "../visuals/CityBlockUpdateableVisuals";
@@ -41,12 +42,18 @@ export function GeneratorSystem() {
     WithGenId<TrafficItemState>[]
   >([]);
   const [cityLights, setCityLights] = useState<CityLightDescriptor[]>([]);
+  const [groundLights, setGroundLights] = useState<CityLightDescriptor[]>([]);
   const trafficStateRef = useRef<GridState<WithGenId<TrafficItemState>>>({
     gridX: 0,
     gridZ: 0,
     items: new Map(),
   });
   const cityLightStateRef = useRef<GridState<WithGenId<CityLightItemState>>>({
+    gridX: 0,
+    gridZ: 0,
+    items: new Map(),
+  });
+  const groundLightStateRef = useRef<GridState<WithGenId<CityLightItemState>>>({
     gridX: 0,
     gridZ: 0,
     items: new Map(),
@@ -77,6 +84,7 @@ export function GeneratorSystem() {
     updateCityBlocks(game);
     updateTraffic(game);
     updateCityLights(game);
+    updateGroundLights(game);
   }, 2);
 
   function initializeGenerators(game: GameRuntime) {
@@ -97,6 +105,18 @@ export function GeneratorSystem() {
     game.generatorsInitialized = true;
 
     setCityLights([...game.cityLights]);
+
+    game.groundLights = [];
+    if (game.environment.cityLights) {
+      for (let i = 0; i < 8; i++) {
+        game.groundLights.push({
+          free: true,
+          position: { x: 0, y: 0, z: 0 },
+          color: { h: 0, s: 1, l: 0.55 },
+        });
+      }
+    }
+    setGroundLights([...game.groundLights]);
   }
 
   function updateCityBlocks(game: GameRuntime) {
@@ -324,6 +344,61 @@ export function GeneratorSystem() {
     }
   }
 
+  function updateGroundLights(game: GameRuntime) {
+    const cellSize = (game.cityBlockSize + game.roadWidth) * 3;
+    const cellCount = 6;
+    const rad = Math.ceil(cellCount / 2);
+    const camera = game.player.camera;
+    const gridX = Math.floor(camera.position.x / cellSize);
+    const gridZ = Math.floor(camera.position.z / cellSize);
+    const state = groundLightStateRef.current;
+
+    if (
+      state.gridX !== gridX ||
+      state.gridZ !== gridZ ||
+      state.items.size === 0
+    ) {
+      state.gridX = gridX;
+      state.gridZ = gridZ;
+
+      const nextKeys = new Set();
+      const half = Math.floor((cellCount * cellSize) / 2);
+      for (let i = 0; i < cellCount; i++) {
+        for (let j = 0; j < cellCount; j++) {
+          const dx = j - rad;
+          const dz = i - rad;
+          if (Math.sqrt(dx * dx + dz * dz) > rad) {
+            continue;
+          }
+          const worldX = gridX * cellSize + j * cellSize - half;
+          const worldZ = gridZ * cellSize + i * cellSize - half;
+          const key = `gl-${worldX}:${worldZ}`;
+          nextKeys.add(key);
+          if (!state.items.has(key)) {
+            const item = new GeneratorItem_GroundLight(
+              worldX,
+              worldZ,
+              game,
+            ) as unknown as WithGenId<CityLightItemState>;
+            item.__genId = key;
+            state.items.set(key, item);
+          }
+        }
+      }
+
+      for (const [key, item] of state.items.entries()) {
+        if (!nextKeys.has(key)) {
+          if (typeof item.remove === "function") {
+            item.remove();
+          }
+          state.items.delete(key);
+        }
+      }
+
+      setGroundLights([...game.groundLights!]);
+    }
+  }
+
   return (
     <>
       <group>
@@ -356,10 +431,7 @@ export function GeneratorSystem() {
         />
       )}
       {visibility.buildings && (
-        <InstancedBuildings
-          buildings={buildings}
-          game={gameRef.current}
-        />
+        <InstancedBuildings buildings={buildings} game={gameRef.current} />
       )}
       {visibility.trafficCars && (
         <PooledTrafficVisuals
@@ -377,7 +449,27 @@ export function GeneratorSystem() {
                 distance={500}
                 decay={2}
                 color={`hsl(${light.color.h * 360}, ${light.color.s * 100}%, ${light.color.l * 100}%)`}
-                position={[light.position.x, light.position.y, light.position.z]}
+                position={[
+                  light.position.x,
+                  light.position.y,
+                  light.position.z,
+                ]}
+              />
+            ),
+          )}
+          {groundLights.map((light, index) =>
+            light.free ? null : (
+              <pointLight
+                key={`gl-${index}`}
+                intensity={40}
+                distance={300}
+                decay={1.5}
+                color={`hsl(${light.color.h * 360}, ${light.color.s * 100}%, ${light.color.l * 100}%)`}
+                position={[
+                  light.position.x,
+                  light.position.y,
+                  light.position.z,
+                ]}
               />
             ),
           )}
