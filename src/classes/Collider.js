@@ -57,8 +57,9 @@ class Collider {
         .multiply(obj.matrixWorld);
       let sphere = new Sphere(undefined, rad);
       sphere.applyMatrix4(transformMatrix);
-      let hit =
-        this.meshesInRange[i].geometry.boundsTree.intersectsSphere(sphere);
+      const boundsTree = this.meshesInRange[i].geometry.boundsTree;
+      if (!boundsTree) continue;
+      let hit = boundsTree.intersectsSphere(sphere);
       if (hit) return true;
     }
 

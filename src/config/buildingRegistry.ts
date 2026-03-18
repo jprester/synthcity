@@ -201,8 +201,8 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       weight: 1,
       source: {
         format: "glb",
-        path: "models/skyscrapers/brutalist-skyscraper.glb",
-        emissiveBase: 2.0,
+        path: "models/skyscrapers/2-cali-plaza-skyscraper.glb",
+        emissiveBase: 0.8,
       },
     },
     {
@@ -211,7 +211,7 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       source: {
         format: "glb",
         path: "models/skyscrapers/cylinder-building.glb",
-        emissiveBase: 2.0,
+        emissiveBase: 1.0,
       },
     },
     {
@@ -220,7 +220,7 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       source: {
         format: "glb",
         path: "models/skyscrapers/dark-skyscraper.glb",
-        emissiveBase: 2.0,
+        emissiveBase: 1.0,
         scale: 1,
       },
     },
@@ -230,7 +230,7 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       source: {
         format: "glb",
         path: "models/skyscrapers/Frankfurt_Eurotheum_LOD0.glb",
-        emissiveBase: 2.0,
+        emissiveBase: 1.0,
       },
     },
     {
@@ -239,7 +239,7 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       source: {
         format: "glb",
         path: "models/skyscrapers/Frankfurt_Skyper_LOD0.glb",
-        emissiveBase: 2.0,
+        emissiveBase: 1.0,
       },
     },
     {
@@ -247,7 +247,7 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       weight: 1,
       source: {
         format: "glb",
-        path: "models/skyscrapers/dark-skyscraper.glb",
+        path: "models/skyscrapers/AON_Center-skyscraper.glb",
         emissiveBase: 1.5,
       },
     },
@@ -268,7 +268,7 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       source: {
         format: "glb",
         path: "models/skyscrapers/lz-skyscraper-2.glb",
-        emissiveBase: 2.0,
+        emissiveBase: 1.0,
       },
     },
     {
@@ -277,7 +277,7 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       source: {
         format: "glb",
         path: "models/skyscrapers/quality-skyscraper-rounded.glb",
-        emissiveBase: 2.0,
+        emissiveBase: 1.0,
       },
     },
     {
@@ -286,7 +286,7 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       source: {
         format: "glb",
         path: "models/skyscrapers/quality-skyscraper-dual.glb",
-        emissiveBase: 2.0,
+        emissiveBase: 1.0,
       },
     },
     {
@@ -295,7 +295,7 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       source: {
         format: "glb",
         path: "models/skyscrapers/quality-skyscraper-rounded.glb",
-        emissiveBase: 2.0,
+        emissiveBase: 1.0,
       },
     },
     {
@@ -304,7 +304,7 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       source: {
         format: "glb",
         path: "models/skyscrapers/dark-skyscraper.glb",
-        emissiveBase: 2.0,
+        emissiveBase: 1.0,
       },
     },
     {
@@ -312,8 +312,8 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       weight: 1,
       source: {
         format: "glb",
-        path: "models/skyscrapers/quality-skyscraper-curved.glb",
-        emissiveBase: 2.0,
+        path: "models/skyscrapers/dark-skyscraper.glb",
+        emissiveBase: 1.0,
       },
     },
     {
@@ -322,7 +322,7 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       source: {
         format: "glb",
         path: "models/skyscrapers/cylinder-building.glb",
-        emissiveBase: 2.0,
+        emissiveBase: 1.0,
       },
     },
     {
@@ -331,7 +331,7 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       source: {
         format: "glb",
         path: "models/skyscrapers/triangular-high-rise.glb",
-        emissiveBase: 2.0,
+        emissiveBase: 1.0,
       },
     },
   ],
@@ -386,7 +386,6 @@ export const NEW_TOWER_SERIES: BuildingSeries = {
       source: {
         format: "glb",
         path: "models/towers/quality-skyscraper-rectangular-big.glb",
-
         emissiveBase: 1.0,
         scale: 1,
       },
@@ -425,9 +424,11 @@ export const NEW_TOWER_SERIES: BuildingSeries = {
       weight: 1,
       source: {
         format: "glb",
-        path: "models/towers/rounded-scifi-tower.glb",
+        // path: "models/towers/rounded-scifi-tower.glb",
+        path: "models/skyscrapers/quality-skyscraper-curved.glb",
         emissiveBase: 2.0,
       },
+      rotation: { y: Math.PI / 2 },
     },
     {
       key: "tower_10",

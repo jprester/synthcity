@@ -42,7 +42,7 @@ export const ENVIRONMENT_NIGHT: EnvironmentConfig = {
   fog: {
     color: COLORS.night.fog,
     start: 0,
-    end: 2700,
+    end: 2000,
   },
   sun: {
     color: COLORS.night.sun,
@@ -53,7 +53,7 @@ export const ENVIRONMENT_NIGHT: EnvironmentConfig = {
   },
   ambient: {
     color: COLORS.night.ambient,
-    intensity: 0.3,
+    intensity: 0.5,
   },
 };
 
