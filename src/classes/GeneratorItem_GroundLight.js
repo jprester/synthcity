@@ -18,31 +18,28 @@ class GeneratorItem_GroundLight {
       this.noise.noise(this.x * this.noiseFactor * 2, this.z * this.noiseFactor * 2),
     );
 
-    // Only place ground lights at rare locations (roughly 1 in 5 cells)
-    if (typeNoise > 0.6 && typeNoise < 0.8) {
-      for (var i = 0; i < this.groundLights.length; i++) {
-        if (this.groundLights[i].free) {
-          // Use a different noise sample for color
-          let colorNoise = this.utils.fixNoise(
-            this.noise.noise(this.x * 3, this.z * 3),
-          );
+    // DEBUG: always spawn to verify system works
+    for (var i = 0; i < this.groundLights.length; i++) {
+      if (this.groundLights[i].free) {
+        let colorNoise = this.utils.fixNoise(
+          this.noise.noise(this.x * 3, this.z * 3),
+        );
 
-          // Cyberpunk palette: magentas, cyans, warm ambers
-          let hue;
-          if (colorNoise < 0.3) {
-            hue = 0.83 + colorNoise * 0.1; // magenta/pink (300-330 deg)
-          } else if (colorNoise < 0.6) {
-            hue = 0.5 + (colorNoise - 0.3) * 0.15; // cyan/teal (180-210 deg)
-          } else {
-            hue = 0.08 + (colorNoise - 0.6) * 0.1; // warm amber (30-65 deg)
-          }
-
-          this.groundLights[i].position = { x: this.x, y: 5, z: this.z };
-          this.groundLights[i].color = { h: hue, s: 1, l: 0.55 };
-          this.groundLights[i].free = false;
-          this.lightIndex = i;
-          i = this.groundLights.length;
+        // Cyberpunk palette: magentas, cyans, warm ambers
+        let hue;
+        if (colorNoise < 0.3) {
+          hue = 0.83 + colorNoise * 0.1;
+        } else if (colorNoise < 0.6) {
+          hue = 0.5 + (colorNoise - 0.3) * 0.15;
+        } else {
+          hue = 0.08 + (colorNoise - 0.6) * 0.1;
         }
+
+        this.groundLights[i].position = { x: this.x, y: 5, z: this.z };
+        this.groundLights[i].color = { h: hue, s: 1, l: 0.55 };
+        this.groundLights[i].free = false;
+        this.lightIndex = i;
+        i = this.groundLights.length;
       }
     }
   }

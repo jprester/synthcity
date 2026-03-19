@@ -456,7 +456,7 @@ export const NEW_TOWER_SERIES: BuildingSeries = {
         format: "glb",
         path: "models/towers/hero-skyscraper.glb",
         emissiveBase: 1.0,
-        scale: 1.4,
+        scale: 1.2,
       },
     },
   ],

@@ -461,7 +461,7 @@ export function GeneratorSystem() {
             light.free ? null : (
               <pointLight
                 key={`gl-${index}`}
-                intensity={40}
+                intensity={100}
                 distance={300}
                 decay={1.5}
                 color={`hsl(${light.color.h * 360}, ${light.color.s * 100}%, ${light.color.l * 100}%)`}

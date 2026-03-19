@@ -12,6 +12,12 @@ import {
 import { CityBlockUpdateableVisuals } from "../visuals/CityBlockUpdateableVisuals";
 import type { GameRuntime, UpdateableVisualState } from "../../types/game";
 
+type GroundLight = {
+  x: number;
+  z: number;
+  hue: number;
+};
+
 export function FiniteCitySystem() {
   const { gameRef, settings } = useGameStore();
   const { visibility } = settings;
@@ -102,6 +108,32 @@ export function FiniteCitySystem() {
     return smokes;
   }, [layout, settings.worldSeed]);
 
+  // Generate ground uplights at a subset of building positions
+  const groundLights: GroundLight[] = useMemo(() => {
+    if (!layout) return [];
+    const lights: GroundLight[] = [];
+    let seed = settings.worldSeed ^ 0xbeef;
+    const seededRandom = () => {
+      seed = (seed * 16807 + 0) % 2147483647;
+      return (seed - 1) / 2147483646;
+    };
+    for (const b of layout.buildings) {
+      if (seededRandom() < 0.06) {
+        const r = seededRandom();
+        let hue: number;
+        if (r < 0.3) {
+          hue = 300 + r * 100; // magenta/pink
+        } else if (r < 0.6) {
+          hue = 180 + (r - 0.3) * 100; // cyan/teal
+        } else {
+          hue = 30 + (r - 0.6) * 80; // warm amber
+        }
+        lights.push({ x: b.x, z: b.z, hue });
+      }
+    }
+    return lights;
+  }, [layout, settings.worldSeed]);
+
   if (!layout) return null;
 
   return (
@@ -119,6 +151,17 @@ export function FiniteCitySystem() {
         game={gameRef.current}
         visibility={visibility}
       />
+      {/* Set to true to enable ground uplights */}
+      {false && groundLights.map((gl, i) => (
+        <group key={`gl-${i}`} position={[gl.x, 5, gl.z]}>
+          <pointLight
+            intensity={4000}
+            distance={300}
+            decay={1.5}
+            color={`hsl(${gl.hue}, 100%, 55%)`}
+          />
+        </group>
+      ))}
       <FiniteCityCollision
         layout={layout}
         game={gameRef.current}
