@@ -31,7 +31,10 @@ export function FiniteCitySystem() {
       loadLayoutFromURL(`/layouts/${settings.finiteLayout}`)
         .then(setLayout)
         .catch((err) => {
-          console.warn("Failed to load layout, falling back to generated:", err);
+          console.warn(
+            "Failed to load layout, falling back to generated:",
+            err,
+          );
           setLayout(generateLayout(settings.worldSeed));
         });
     } else {
@@ -152,24 +155,19 @@ export function FiniteCitySystem() {
         visibility={visibility}
       />
       {/* Set to true to enable ground uplights */}
-      {false && groundLights.map((gl, i) => (
-        <group key={`gl-${i}`} position={[gl.x, 5, gl.z]}>
-          <pointLight
-            intensity={4000}
-            distance={300}
-            decay={1.5}
-            color={`hsl(${gl.hue}, 100%, 55%)`}
-          />
-        </group>
-      ))}
-      <FiniteCityCollision
-        layout={layout}
-        game={gameRef.current}
-      />
-      <FiniteCityBoundary
-        layout={layout}
-        game={gameRef.current}
-      />
+      {false &&
+        groundLights.map((gl, i) => (
+          <group key={`gl-${i}`} position={[gl.x, 5, gl.z]}>
+            <pointLight
+              intensity={4000}
+              distance={300}
+              decay={1.5}
+              color={`hsl(${gl.hue}, 100%, 55%)`}
+            />
+          </group>
+        ))}
+      <FiniteCityCollision layout={layout} game={gameRef.current} />
+      <FiniteCityBoundary layout={layout} game={gameRef.current} />
     </>
   );
 }

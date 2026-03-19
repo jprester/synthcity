@@ -1,84 +1,32 @@
-import type { ZoneBias, ZoneType } from "./types";
-
-// Zone definitions ordered from center outward.
-// Distance is normalized [0, 1] from grid center to corner.
-type ZoneDef = {
-  type: ZoneType;
-  maxDistance: number;
-  bias: ZoneBias;
-};
-
-// Downtown tower bias — used for explicit block positions instead of distance
-const DOWNTOWN_BIAS: ZoneBias = {
-  emptyProbability: 0,
-  smallProbability: 0,
-  skyscraperProbability: 0,
-  towerProbability: 1.0,
-  smallWeights: { residential: 0, commercial: 1, industrial: 0 },
-};
+import type { ZoneBias } from "./types";
 
 /**
- * Downtown blocks: two parallel rows of 6 towers each, centered on the grid.
- * On a 17×17 grid (center=8): row 1 at gj=7 gi=5..10, row 2 at gj=9 gi=5..10.
- * Scales with grid size.
+ * Organic city layout — smooth center-to-edge gradient.
+ *
+ * Small buildings (residential / commercial / industrial) form the bulk of
+ * the city. Towers are placed explicitly by generateLayout (not zone-driven).
+ * Skyscrapers disabled for Phase 1.
+ *
+ * Distance is normalized [0, 1] from grid center to corner.
  */
-function isDowntownBlock(gi: number, gj: number, gridSize: number): boolean {
-  const center = Math.floor(gridSize / 2);
-  const halfRow = 3; // 6 blocks per row
-  const inRow = gi >= center - halfRow && gi < center + halfRow;
-  return inRow && (gj === center - 1 || gj === center + 1);
-}
 
-const ZONE_DEFS: ZoneDef[] = [
-  // Downtown is handled by isDowntownBlock() — skip distance-based entry
-  {
-    type: "financial",
-    maxDistance: 0.40,
-    bias: {
-      emptyProbability: 0,
-      smallProbability: 0,
-      skyscraperProbability: 0.85,
-      towerProbability: 0.15,
-      smallWeights: { residential: 0, commercial: 0.9, industrial: 0.1 },
-    },
-  },
-  {
-    type: "business",
-    maxDistance: 0.58,
-    bias: {
-      emptyProbability: 0.05,
-      smallProbability: 0.1,
-      skyscraperProbability: 0.85,
-      towerProbability: 0,
-      smallWeights: { residential: 0.1, commercial: 0.6, industrial: 0.3 },
-    },
-  },
-  {
-    type: "urban",
-    maxDistance: 0.75,
-    bias: {
-      emptyProbability: 0.05,
-      smallProbability: 0.35,
-      skyscraperProbability: 0.6,
-      towerProbability: 0,
-      smallWeights: { residential: 0.3, commercial: 0.4, industrial: 0.3 },
-    },
-  },
-  {
-    type: "suburbs",
-    maxDistance: 1.0,
-    bias: {
-      emptyProbability: 0.15,
-      smallProbability: 0.6,
-      skyscraperProbability: 0.25,
-      towerProbability: 0,
-      smallWeights: { residential: 0.7, commercial: 0.2, industrial: 0.1 },
-    },
-  },
-];
+// ── Bias at the very center (d = 0) ────────────────────────────────────────
+const CENTER_BIAS: ZoneBias = {
+  emptyProbability: 0,
+  smallProbability: 1.0,
+  skyscraperProbability: 0,
+  towerProbability: 0,
+  smallWeights: { residential: 0.15, commercial: 0.6, industrial: 0.25 },
+};
 
-// Transition half-width for smooth zone blending
-const TRANSITION_BAND = 0.05;
+// ── Bias at the edge (d = 1) ────────────────────────────────────────────────
+const EDGE_BIAS: ZoneBias = {
+  emptyProbability: 0.1,
+  smallProbability: 0.9,
+  skyscraperProbability: 0,
+  towerProbability: 0,
+  smallWeights: { residential: 0.6, commercial: 0.25, industrial: 0.15 },
+};
 
 function lerp(a: number, b: number, t: number): number {
   return a + (b - a) * t;
@@ -99,49 +47,18 @@ function interpolateZoneBias(a: ZoneBias, b: ZoneBias, t: number): ZoneBias {
 }
 
 /**
- * Returns the zone bias for a block at grid position (gi, gj) in a grid of
- * size `gridSize`. Uses Euclidean distance from center, normalized by the
- * corner distance, with smooth interpolation at zone boundaries.
+ * Returns the zone bias for a block at grid position (gi, gj).
+ * Uses a smooth gradient from center to edge — no hard zone boundaries.
+ * Controls small building mix and empty block probability only;
+ * tower placement is handled separately by explicit positions.
  */
 export function getZoneBias(gi: number, gj: number, gridSize: number): ZoneBias {
-  // Downtown: two parallel rows of towers, checked before distance-based zones
-  if (isDowntownBlock(gi, gj, gridSize)) {
-    return DOWNTOWN_BIAS;
-  }
-
   const center = (gridSize - 1) / 2;
   const dx = gi - center;
   const dz = gj - center;
   const dist = Math.sqrt(dx * dx + dz * dz);
   const cornerDist = Math.sqrt(center * center + center * center);
-  const normalizedDist = dist / cornerDist;
+  const t = Math.min(dist / cornerDist, 1);
 
-  // Find which zone this distance falls in
-  for (let i = 0; i < ZONE_DEFS.length; i++) {
-    const zone = ZONE_DEFS[i];
-    if (normalizedDist <= zone.maxDistance) {
-      // Check if we're in a transition band with the next zone
-      if (i < ZONE_DEFS.length - 1) {
-        const boundary = zone.maxDistance;
-        const distFromBoundary = boundary - normalizedDist;
-        if (distFromBoundary < TRANSITION_BAND) {
-          const t = 1 - distFromBoundary / TRANSITION_BAND;
-          return interpolateZoneBias(zone.bias, ZONE_DEFS[i + 1].bias, t * 0.5);
-        }
-      }
-      // Check if we're in a transition band with the previous zone
-      if (i > 0) {
-        const prevBoundary = ZONE_DEFS[i - 1].maxDistance;
-        const distFromPrevBoundary = normalizedDist - prevBoundary;
-        if (distFromPrevBoundary < TRANSITION_BAND) {
-          const t = 1 - distFromPrevBoundary / TRANSITION_BAND;
-          return interpolateZoneBias(zone.bias, ZONE_DEFS[i - 1].bias, t * 0.5);
-        }
-      }
-      return zone.bias;
-    }
-  }
-
-  // Beyond all zones — use suburbs
-  return ZONE_DEFS[ZONE_DEFS.length - 1].bias;
+  return interpolateZoneBias(CENTER_BIAS, EDGE_BIAS, t);
 }
