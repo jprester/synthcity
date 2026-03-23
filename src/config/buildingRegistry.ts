@@ -348,7 +348,7 @@ export const NEW_TOWER_SERIES: BuildingSeries = {
       weight: 1,
       source: {
         format: "glb",
-        path: "models/towers/cyberpunk-hightower-big.glb",
+        path: "models/towers/cyberpunk-hightower-big-with-logo.glb",
         emissiveBase: 3.0,
       },
     },
