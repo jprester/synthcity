@@ -64,6 +64,33 @@ const SMALL_SERIES: BuildingSeries[] = [
       { key: "s_03_01", weight: 1 },
       { key: "s_03_02", weight: 1 },
       { key: "s_03_03", weight: 1 },
+      {
+        key: "s_03_04",
+        weight: 1,
+        source: {
+          format: "glb",
+          path: "models/s_03_04-new-building.glb",
+          emissiveBase: 0.5,
+        },
+      },
+      {
+        key: "s_03_05",
+        weight: 1,
+        source: {
+          format: "glb",
+          path: "models/s_03_05-new-building.glb",
+          emissiveBase: 0.5,
+        },
+      },
+      {
+        key: "s_03_06",
+        weight: 1,
+        source: {
+          format: "glb",
+          path: "models/s_03_06-new-building.glb",
+          emissiveBase: 0.5,
+        },
+      },
     ],
   },
 ];
@@ -248,7 +275,7 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       source: {
         format: "glb",
         path: "models/skyscrapers/AON_Center-skyscraper.glb",
-        emissiveBase: 1.5,
+        emissiveBase: 1,
       },
     },
     {
