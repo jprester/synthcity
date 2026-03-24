@@ -91,6 +91,15 @@ const SMALL_SERIES: BuildingSeries[] = [
           emissiveBase: 0.5,
         },
       },
+      {
+        key: "s_03_07",
+        weight: 1,
+        source: {
+          format: "glb",
+          path: "models/s_03_07-new-building.glb",
+          emissiveBase: 0.5,
+        },
+      },
     ],
   },
 ];

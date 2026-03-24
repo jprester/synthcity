@@ -128,12 +128,13 @@ class GeneratorItem_CityBlock {
                 ? "ads_s_02_01"
                 : "ads_s_02_02";
           } else {
-            if (subtypeNoise < 0.167) type = "s_03_01";
-            else if (subtypeNoise < 0.333) type = "s_03_02";
-            else if (subtypeNoise < 0.5) type = "s_03_03";
-            else if (subtypeNoise < 0.667) type = "s_03_04";
-            else if (subtypeNoise < 0.833) type = "s_03_05";
-            else type = "s_03_06";
+            if (subtypeNoise < 0.143) type = "s_03_01";
+            else if (subtypeNoise < 0.286) type = "s_03_02";
+            else if (subtypeNoise < 0.429) type = "s_03_03";
+            else if (subtypeNoise < 0.571) type = "s_03_04";
+            else if (subtypeNoise < 0.714) type = "s_03_05";
+            else if (subtypeNoise < 0.857) type = "s_03_06";
+            else type = "s_03_07";
             adsType =
               Math.round(typeNoise * 100) % 2 == 0
                 ? "ads_s_03_01"

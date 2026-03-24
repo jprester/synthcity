@@ -338,11 +338,12 @@ function selectSmallBuilding(
       if (subtypeNoise < 0.66) return "s_02_02";
       return "s_02_03";
     case "industrial":
-      if (subtypeNoise < 0.167) return "s_03_01";
-      if (subtypeNoise < 0.333) return "s_03_02";
-      if (subtypeNoise < 0.5) return "s_03_03";
-      if (subtypeNoise < 0.667) return "s_03_04";
-      if (subtypeNoise < 0.833) return "s_03_05";
-      return "s_03_06";
+      if (subtypeNoise < 0.143) return "s_03_01";
+      if (subtypeNoise < 0.286) return "s_03_02";
+      if (subtypeNoise < 0.429) return "s_03_03";
+      if (subtypeNoise < 0.571) return "s_03_04";
+      if (subtypeNoise < 0.714) return "s_03_05";
+      if (subtypeNoise < 0.857) return "s_03_06";
+      return "s_03_07";
   }
 }
