@@ -19,10 +19,10 @@ function fixNoise(noise: number): number {
 
 function getBuildingMatKey(noise: number): string {
   const mats = [
-    "building_01",
+    // "building_01", // temporarily removed
     "building_02",
     "building_03",
-    "building_04",
+    // "building_04",
     "building_05",
   ];
   return pickFromNoise(mats, noise);
@@ -54,6 +54,7 @@ const UNIQUE_SKYSCRAPERS = [
   "skyscraper_09",
   "skyscraper_10",
   "skyscraper_11",
+  "skyscraper_08",
 ];
 
 const CITY_TEMPLATE = `
@@ -223,22 +224,22 @@ export function generateLayout(
         placeSmallBuildings(block.type, blockX, blockZ, noise, buildings);
       }
 
-      // Storefronts — every 2nd block in each direction
-      const subtypeNoise = fixNoise(noise.noise(blockX * 5, blockZ * 5));
-      if (blockX % (CELL_SIZE * 2) === 0 && blockZ % (CELL_SIZE * 2) === 0) {
-        const sfMats = [
-          "storefronts",
-          "building_02",
-          "building_03",
-          "building_07",
-        ];
-        const mat = pickFromNoise(sfMats, subtypeNoise) ?? "storefronts";
-        storefronts.push({
-          x: blockX + CITY_BLOCK_SIZE + ROAD_WIDTH / 2,
-          z: blockZ + CITY_BLOCK_SIZE + ROAD_WIDTH / 2,
-          materialKey: mat,
-        });
-      }
+      // Storefronts — temporarily disabled
+      // const subtypeNoise = fixNoise(noise.noise(blockX * 5, blockZ * 5));
+      // if (blockX % (CELL_SIZE * 2) === 0 && blockZ % (CELL_SIZE * 2) === 0) {
+      //   const sfMats = [
+      //     "storefronts",
+      //     "building_02",
+      //     "building_03",
+      //     "building_07",
+      //   ];
+      //   const mat = pickFromNoise(sfMats, subtypeNoise) ?? "storefronts";
+      //   storefronts.push({
+      //     x: blockX + CITY_BLOCK_SIZE + ROAD_WIDTH / 2,
+      //     z: blockZ + CITY_BLOCK_SIZE + ROAD_WIDTH / 2,
+      //     materialKey: mat,
+      //   });
+      // }
     }
   }
 

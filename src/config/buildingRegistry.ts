@@ -70,7 +70,7 @@ const SMALL_SERIES: BuildingSeries[] = [
         source: {
           format: "glb",
           path: "models/s_03_04-new-building.glb",
-          emissiveBase: 0.5,
+          emissiveBase: 0.4,
         },
       },
       {
@@ -284,7 +284,7 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       source: {
         format: "glb",
         path: "models/skyscrapers/AON_Center-skyscraper.glb",
-        emissiveBase: 1,
+        emissiveBase: 0.6,
       },
     },
     {
@@ -305,6 +305,7 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
         format: "glb",
         path: "models/skyscrapers/lz-skyscraper-2.glb",
         emissiveBase: 1.0,
+        scale: 1.5,
       },
     },
     {
@@ -312,8 +313,8 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       weight: 1,
       source: {
         format: "glb",
-        path: "models/skyscrapers/quality-skyscraper-rounded.glb",
-        emissiveBase: 1.0,
+        path: "models/skyscrapers/cylinder-building-2.glb",
+        emissiveBase: 0.5,
       },
     },
     {
@@ -330,8 +331,8 @@ export const SKYSCRAPER_SERIES: BuildingSeries = {
       weight: 1,
       source: {
         format: "glb",
-        path: "models/skyscrapers/quality-skyscraper-rounded.glb",
-        emissiveBase: 1.0,
+        path: "models/skyscrapers/quality-skyscraper-thick.glb",
+        emissiveBase: 0.7,
       },
     },
     {
@@ -443,7 +444,7 @@ export const NEW_TOWER_SERIES: BuildingSeries = {
         format: "glb",
         path: "models/towers/sci-fi-building-9_1.glb",
         scale: 1.5,
-        emissiveBase: 2.0,
+        emissiveBase: 1.0,
       },
     },
     {
@@ -472,7 +473,7 @@ export const NEW_TOWER_SERIES: BuildingSeries = {
       weight: 1,
       source: {
         format: "glb",
-        path: "models/towers/sci-fi-brutalist-tower.glb",
+        path: "models/towers/sci-fi-brutalist-tower-with-ads.glb",
         emissiveBase: 2.0,
       },
     },

@@ -8,7 +8,7 @@ class GeneratorUtils {
 
   getBuildingMatKey(noise) {
     const mats = [
-      "building_01",
+      "building_01", // temporarily removed
       "building_02",
       "building_03",
       "building_04",
@@ -23,7 +23,7 @@ class GeneratorUtils {
 
   getBigBuildingMatKey(noise, rare) {
     const mats = [
-      "building_01",
+      "building_01", // temporarily removed
       "building_02",
       "building_03",
       "building_04",
