@@ -1,13 +1,7 @@
 import { Mesh } from "three";
 
 import { GeneratorUtils } from "./GeneratorUtils.js";
-import {
-  LARGE_THRESHOLDS,
-  TOWER_THRESHOLDS,
-  LARGE_SERIES,
-  TOWER_SERIES,
-  selectVariantFromNoise,
-} from "../config/buildingRegistry";
+
 
 class GeneratorItem_CityBlock {
   constructor(x, z, game) {
@@ -128,13 +122,9 @@ class GeneratorItem_CityBlock {
                 ? "ads_s_02_01"
                 : "ads_s_02_02";
           } else {
-            if (subtypeNoise < 0.143) type = "s_03_01";
-            else if (subtypeNoise < 0.286) type = "s_03_02";
-            else if (subtypeNoise < 0.429) type = "s_03_03";
-            else if (subtypeNoise < 0.571) type = "s_03_04";
-            else if (subtypeNoise < 0.714) type = "s_03_05";
-            else if (subtypeNoise < 0.857) type = "s_03_06";
-            else type = "s_03_07";
+            if (subtypeNoise < 0.33) type = "s_03_01";
+            else if (subtypeNoise < 0.66) type = "s_03_02";
+            else type = "s_03_03";
             adsType =
               Math.round(typeNoise * 100) % 2 == 0
                 ? "ads_s_03_01"
@@ -221,9 +211,9 @@ class GeneratorItem_CityBlock {
       let type = null;
 
       if (isTower) {
-        type = selectVariantFromNoise(TOWER_THRESHOLDS, subtypeNoise);
+        type = subtypeNoise < 0.5 ? "s_05_01" : "s_05_03";
       } else {
-        type = selectVariantFromNoise(LARGE_THRESHOLDS, subtypeNoise);
+        type = subtypeNoise < 0.5 ? "s_04_01" : "s_04_02";
       }
 
       let matNoise = this.utils.fixNoise(
