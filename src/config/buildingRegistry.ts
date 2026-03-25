@@ -61,7 +61,10 @@ const SMALL_SERIES: BuildingSeries[] = [
     id: "03",
     ads: ["ads_s_03_01", "ads_s_03_02"],
     variants: [
-      { key: "s_03_01", weight: 1 },
+      {
+        key: "s_03_01",
+        weight: 1,
+      },
       { key: "s_03_02", weight: 1 },
       { key: "s_03_03", weight: 1 },
       {
@@ -70,7 +73,7 @@ const SMALL_SERIES: BuildingSeries[] = [
         source: {
           format: "glb",
           path: "models/s_03_04-new-building.glb",
-          emissiveBase: 0.4,
+          emissiveBase: 0.5,
         },
       },
       {
@@ -79,7 +82,7 @@ const SMALL_SERIES: BuildingSeries[] = [
         source: {
           format: "glb",
           path: "models/s_03_05-new-building.glb",
-          emissiveBase: 0.5,
+          emissiveBase: 0.7,
         },
       },
       {
@@ -88,7 +91,7 @@ const SMALL_SERIES: BuildingSeries[] = [
         source: {
           format: "glb",
           path: "models/s_03_06-new-building.glb",
-          emissiveBase: 0.5,
+          emissiveBase: 0.7,
         },
       },
       {
@@ -97,7 +100,7 @@ const SMALL_SERIES: BuildingSeries[] = [
         source: {
           format: "glb",
           path: "models/s_03_07-new-building.glb",
-          emissiveBase: 0.5,
+          emissiveBase: 0.7,
         },
       },
     ],
@@ -413,7 +416,7 @@ export const NEW_TOWER_SERIES: BuildingSeries = {
       source: {
         format: "glb",
         path: "models/towers/cyerpunk-light-show-skyscraper.glb",
-        emissiveBase: 4.0,
+        emissiveBase: 2.0,
       },
       rotation: { y: Math.PI / 2 },
     },
@@ -453,7 +456,7 @@ export const NEW_TOWER_SERIES: BuildingSeries = {
       source: {
         format: "glb",
         path: "models/towers/sci-fi-corporate-building.glb",
-        emissiveBase: 2.0,
+        emissiveBase: 1,
         scale: 1.7,
       },
     },

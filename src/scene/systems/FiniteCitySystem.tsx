@@ -111,6 +111,160 @@ export function FiniteCitySystem() {
     return smokes;
   }, [layout, settings.worldSeed]);
 
+  // Generate ad visual states for small buildings
+  const adStates = useMemo(() => {
+    if (!layout) return [];
+    const ads: UpdateableVisualState[] = [];
+    const adsMats = [
+      "ads_01",
+      "ads_02",
+      "ads_03",
+      "ads_04",
+      "ads_05",
+      "ads_06",
+      "ads_07",
+      "ads_08",
+    ];
+    const seriesAds: Record<string, string[]> = {
+      "01": ["ads_s_01_01", "ads_s_01_02"],
+      "02": ["ads_s_02_01", "ads_s_02_02"],
+      "03": ["ads_s_03_01", "ads_s_03_02"],
+    };
+    let seed = settings.worldSeed ^ 0xad;
+    const seededRandom = () => {
+      seed = (seed * 16807 + 0) % 2147483647;
+      return (seed - 1) / 2147483646;
+    };
+    for (const b of layout.buildings) {
+      const match = b.modelKey.match(/^s_(0[123])_/);
+      if (!match) continue;
+      const adModels = seriesAds[match[1]];
+      if (!adModels) continue;
+      // ~66% of small buildings get ads
+      if (seededRandom() > 0.66) continue;
+      const adModelKey = adModels[Math.floor(seededRandom() * adModels.length)];
+      const matKey = adsMats[Math.floor(seededRandom() * adsMats.length)];
+      const ad: UpdateableVisualState = {
+        isVisual: true,
+        kind: "advert",
+        modelKey: adModelKey,
+        currentMatKey: matKey,
+        position: { x: b.x, y: 0, z: b.z },
+        scale: { x: b.scaleX, y: b.scaleY, z: b.scaleZ },
+        rotationY: -b.rotationY,
+      };
+      // 50% of ads cycle textures
+      if (seededRandom() < 0.5) {
+        let counter = Math.floor(seededRandom() * 800);
+        const interval = 200 + Math.floor(seededRandom() * 800);
+        ad.update = () => {
+          counter++;
+          if (counter > interval) {
+            counter = 0;
+            ad.currentMatKey =
+              adsMats[Math.floor(Math.random() * adsMats.length)];
+          }
+        };
+      }
+      ads.push(ad);
+    }
+    return ads;
+  }, [layout, settings.worldSeed]);
+
+  // Generate topper visual states for industrial buildings (s_03)
+  const topperStates = useMemo(() => {
+    if (!layout) return [];
+    const toppers: UpdateableVisualState[] = [];
+    const topperGeos = [
+      "topper_01",
+      "topper_02",
+      "topper_03",
+      "topper_04",
+      "topper_05",
+      "topper_06",
+      "topper_07",
+      "topper_08",
+      "topper_09",
+      "topper_10",
+      "topper_11",
+      "topper_12",
+    ];
+    const topperMats = [
+      "ads_large_01",
+      "ads_large_02",
+      "ads_large_03",
+      "ads_large_04",
+      "ads_large_05",
+    ];
+    let seed = settings.worldSeed ^ 0xd0d0;
+    const seededRandom = () => {
+      seed = (seed * 16807 + 0) % 2147483647;
+      return (seed - 1) / 2147483646;
+    };
+    for (const b of layout.buildings) {
+      if (!b.modelKey.startsWith("s_03_")) continue;
+      // ~5% of industrial buildings
+      if (seededRandom() > 0.05) continue;
+      const geoKey = topperGeos[Math.floor(seededRandom() * topperGeos.length)];
+      const matKey = topperMats[Math.floor(seededRandom() * topperMats.length)];
+      const s = 0.8 + seededRandom();
+      const rdir =
+        seededRandom() <= 0.5 ? seededRandom() * 0.01 : -seededRandom() * 0.01;
+      const topper: UpdateableVisualState = {
+        isVisual: true,
+        kind: "topper",
+        modelKey: geoKey,
+        matKey,
+        position: { x: b.x, y: 190 * b.scaleY, z: b.z },
+        scale: { x: s, y: s, z: s },
+        rotationY: 0,
+      };
+      topper.update = () => {
+        topper.rotationY = (topper.rotationY ?? 0) + rdir;
+      };
+      toppers.push(topper);
+    }
+    return toppers;
+  }, [layout, settings.worldSeed]);
+
+  // Generate spotlight/hologram visual states for industrial buildings (s_03)
+  const spotlightStates = useMemo(() => {
+    if (!layout) return [];
+    const spots: UpdateableVisualState[] = [];
+    const spotMats = [
+      "spotlight_01",
+      "spotlight_02",
+      "spotlight_03",
+      "spotlight_04",
+    ];
+    let seed = settings.worldSeed ^ 0x5b;
+    const seededRandom = () => {
+      seed = (seed * 16807 + 0) % 2147483647;
+      return (seed - 1) / 2147483646;
+    };
+    for (const b of layout.buildings) {
+      if (!b.modelKey.startsWith("s_03_")) continue;
+      // ~25% of industrial buildings
+      if (seededRandom() > 0.25) continue;
+      const matKey = spotMats[Math.floor(seededRandom() * spotMats.length)];
+      const s = 10 + seededRandom() * 10;
+      const spot: UpdateableVisualState = {
+        isVisual: true,
+        kind: "spotlight",
+        modelKey: "spotlight",
+        matKey,
+        position: { x: b.x, y: 160 * b.scaleY, z: b.z },
+        scale: { x: s, y: s, z: s },
+        rstep: seededRandom() * 7,
+      };
+      spot.update = () => {
+        spot.rstep = (spot.rstep ?? 0) + 0.01;
+      };
+      spots.push(spot);
+    }
+    return spots;
+  }, [layout, settings.worldSeed]);
+
   // Generate ground uplights at a subset of building positions
   const groundLights: GroundLight[] = useMemo(() => {
     if (!layout) return [];
@@ -151,6 +305,21 @@ export function FiniteCitySystem() {
       )}
       <FiniteCitySmoke
         smokeStates={smokeStates}
+        game={gameRef.current}
+        visibility={visibility}
+      />
+      {/* <FiniteCityAds
+        adStates={adStates}
+        game={gameRef.current}
+        visibility={visibility}
+      /> */}
+      <FiniteCityToppers
+        topperStates={topperStates}
+        game={gameRef.current}
+        visibility={visibility}
+      />
+      <FiniteCitySpotlights
+        spotlightStates={spotlightStates}
         game={gameRef.current}
         visibility={visibility}
       />
@@ -199,6 +368,106 @@ function FiniteCitySmoke({
   return (
     <>
       {smokeStates.map((s, i) => (
+        <CityBlockUpdateableVisuals
+          key={i}
+          updateable={s}
+          game={game}
+          visibility={visibility as any}
+        />
+      ))}
+    </>
+  );
+}
+
+// ─── Ads ──────────────────────────────────────────────────────────────────────
+
+function FiniteCityAds({
+  adStates,
+  game,
+  visibility,
+}: {
+  adStates: UpdateableVisualState[];
+  game: GameRuntime | null;
+  visibility: { ads: boolean };
+}) {
+  // Tick ad cycling counters each frame
+  useFrame(() => {
+    for (const ad of adStates) {
+      ad.update?.();
+    }
+  });
+
+  if (!game?.assets?.loaded || !visibility.ads) return null;
+
+  return (
+    <>
+      {adStates.map((ad, i) => (
+        <CityBlockUpdateableVisuals
+          key={i}
+          updateable={ad}
+          game={game}
+          visibility={visibility as any}
+        />
+      ))}
+    </>
+  );
+}
+
+// ─── Toppers ──────────────────────────────────────────────────────────────────
+
+function FiniteCityToppers({
+  topperStates,
+  game,
+  visibility,
+}: {
+  topperStates: UpdateableVisualState[];
+  game: GameRuntime | null;
+  visibility: { toppers: boolean };
+}) {
+  useFrame(() => {
+    for (const t of topperStates) {
+      t.update?.();
+    }
+  });
+
+  if (!game?.assets?.loaded || !visibility.toppers) return null;
+
+  return (
+    <>
+      {topperStates.map((t, i) => (
+        <CityBlockUpdateableVisuals
+          key={i}
+          updateable={t}
+          game={game}
+          visibility={visibility as any}
+        />
+      ))}
+    </>
+  );
+}
+
+// ─── Spotlights / Holograms ──────────────────────────────────────────────────
+
+function FiniteCitySpotlights({
+  spotlightStates,
+  game,
+  visibility,
+}: {
+  spotlightStates: UpdateableVisualState[];
+  game: GameRuntime | null;
+  visibility: { spotlights: boolean };
+}) {
+  useFrame(() => {
+    for (const s of spotlightStates) {
+      s.update?.();
+    }
+  });
+
+  if (!game?.assets?.loaded || !visibility.spotlights) return null;
+
+  return (
+    <>
+      {spotlightStates.map((s, i) => (
         <CityBlockUpdateableVisuals
           key={i}
           updateable={s}
