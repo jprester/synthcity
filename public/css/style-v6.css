@@ -1,3 +1,11 @@
+@font-face {
+  font-family: 'Share Tech Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/ShareTechMono-Regular.ttf') format('truetype');
+}
+
 :root {
   --terminalbg: #26004b;
   --terminalprimary: #00fff7;
