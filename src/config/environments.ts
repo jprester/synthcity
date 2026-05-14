@@ -40,7 +40,7 @@ export const ENVIRONMENT_NIGHT: EnvironmentConfig = {
   streetLights: true,
   fog: {
     color: COLORS.night.fog,
-    density: 0.00065,
+    density: 0.0011,
   },
   sun: {
     color: COLORS.night.sun,
@@ -51,7 +51,7 @@ export const ENVIRONMENT_NIGHT: EnvironmentConfig = {
   },
   ambient: {
     color: COLORS.night.ambient,
-    intensity: 0.5,
+    intensity: 1.2,
   },
 };
 
@@ -76,7 +76,7 @@ export const ENVIRONMENT_DAY: EnvironmentConfig = {
   },
   ambient: {
     color: COLORS.day.ambient,
-    intensity: 0.65,
+    intensity: 0.5,
   },
 };
 

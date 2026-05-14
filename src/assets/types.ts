@@ -133,19 +133,23 @@ export const BASE_EMISSIVE_INTENSITIES: Record<
   { category: keyof EmissiveMultipliers; base: number }
 > = {
   // Ads
-  ads_01: { category: "ads", base: 0.5 },
-  ads_02: { category: "ads", base: 0.5 },
-  ads_03: { category: "ads", base: 0.5 },
-  ads_04: { category: "ads", base: 0.5 },
-  ads_05: { category: "ads", base: 0.5 },
-  ads_06: { category: "ads", base: 0.5 },
-  ads_07: { category: "ads", base: 0.5 },
-  ads_08: { category: "ads", base: 0.5 },
   ads_large_01: { category: "ads", base: 0.5 },
   ads_large_02: { category: "ads", base: 0.5 },
   ads_large_03: { category: "ads", base: 0.5 },
   ads_large_04: { category: "ads", base: 0.5 },
   ads_large_05: { category: "ads", base: 0.5 },
+  // Holographic ads — slightly brighter base so the see-through hologram
+  // still reads clearly when its opacity is < 1.
+  ads_holo_01: { category: "ads", base: 0.7 },
+  ads_holo_02: { category: "ads", base: 0.7 },
+  ads_holo_03: { category: "ads", base: 0.7 },
+  ads_holo_04: { category: "ads", base: 0.7 },
+  ads_holo_05: { category: "ads", base: 0.7 },
+  ads_holo_06: { category: "ads", base: 0.7 },
+  ads_holo_07: { category: "ads", base: 0.7 },
+  ads_holo_08: { category: "ads", base: 0.7 },
+  ads_holo_09: { category: "ads", base: 0.7 },
+  ads_holo_10: { category: "ads", base: 0.7 },
   // Buildings (base when windowLightsEnabled)
   building_01: { category: "buildings", base: 2.0 },
   building_02: { category: "buildings", base: 2.0 },

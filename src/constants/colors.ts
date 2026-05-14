@@ -10,9 +10,9 @@
 export const COLORS = {
   // Night environment
   night: {
-    fog: 0x0a1628,
+    fog: 0x0f2530,
     sun: 0x8b79ff,
-    ambient: 0x1a3060,
+    ambient: 0x1c384a,
   },
 
   // Day environment

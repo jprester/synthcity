@@ -152,16 +152,19 @@ export function createTextureManifest(anisotropy: number): TextureManifest {
     };
   }
 
-  // Small ads (7 variants)
-  for (let i = 1; i <= 8; i++) {
-    const id = i.toString().padStart(2, "0");
-    manifest[`ads_${id}`] = { path: `textures/ads_${id}.jpg` };
-  }
-
   // Large ads (5 variants)
   for (let i = 1; i <= 5; i++) {
     const id = i.toString().padStart(2, "0");
     manifest[`ads_large_${id}`] = { path: `textures/ads_large_${id}.jpg` };
+  }
+
+  // Holographic ads (10 variants) — square-padded high-res posters that
+  // ride on the existing s_04 / s_05 ad UVs. Black padding goes invisible
+  // under AdditiveBlending, so portrait / landscape compositions keep
+  // their aspect ratio.
+  for (let i = 1; i <= 10; i++) {
+    const id = i.toString().padStart(2, "0");
+    manifest[`ads_holo_${id}`] = { path: `textures/ads_holo_${id}.jpg` };
   }
 
   // Smoke (3 variants)

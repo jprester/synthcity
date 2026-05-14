@@ -11,6 +11,30 @@ import type { MaterialContext } from "../types";
 
 type GetTexture = (key: string) => Texture | undefined;
 
+// Weighted palette for building window emissive tints — predominantly cool
+// teal/white with occasional warm amber and rare magenta accents, matching
+// the neon-noir reference look rather than a uniform-random rainbow.
+function pickWindowEmissive(): Color {
+  const r = Math.random();
+  if (r < 0.55) {
+    // Cool teal/cyan
+    const h = 185 + Math.random() * 25;
+    return new Color(`hsl(${h}, 70%, 78%)`);
+  }
+  if (r < 0.8) {
+    // Neutral white / very pale cyan
+    return new Color(`hsl(${200 + Math.random() * 20}, 15%, 92%)`);
+  }
+  if (r < 0.95) {
+    // Warm amber
+    const h = 35 + Math.random() * 20;
+    return new Color(`hsl(${h}, 85%, 75%)`);
+  }
+  // Magenta / pink accent
+  const h = 300 + Math.random() * 25;
+  return new Color(`hsl(${h}, 85%, 78%)`);
+}
+
 /**
  * Material definitions using factory functions
  * This allows textures to be resolved at creation time
@@ -117,7 +141,7 @@ export function createMaterialFactories(): MaterialFactoryMap {
       bumpScale: 10,
     });
 
-  // Building materials (10 variants with random emissive colors)
+  // Building materials (10 variants with weighted-palette emissive colors)
   for (let i = 1; i <= 10; i++) {
     const id = i.toString().padStart(2, "0");
     const key = `building_${id}`;
@@ -127,25 +151,11 @@ export function createMaterialFactories(): MaterialFactoryMap {
         specular: 0xffffff,
         specularMap: getTexture(`${key}_rough`),
         envMap: getTexture("env_night"),
-        emissive: new Color(`hsl(${Math.random() * 360}, 100%, 95%)`),
+        emissive: pickWindowEmissive(),
         emissiveMap: getTexture(`${key}_em`),
         emissiveIntensity: ctx.windowLightsEnabled ? 2.0 : 0, // Legacy: overwritten by preset
         bumpMap: getTexture(key),
         bumpScale: 5,
-      });
-  }
-
-  // Small ads (7 variants) - bright emissive for neon glow
-  for (let i = 1; i <= 8; i++) {
-    const id = i.toString().padStart(2, "0");
-    factories[`ads_${id}`] = (getTexture) =>
-      new MeshPhongMaterial({
-        emissive: 0xffffff,
-        emissiveMap: getTexture(`ads_${id}`),
-        emissiveIntensity: 0.25, // Legacy: overwritten by BASE_EMISSIVE_INTENSITIES × preset multiplier
-        blending: AdditiveBlending,
-        fog: false,
-        side: DoubleSide,
       });
   }
 
@@ -158,6 +168,25 @@ export function createMaterialFactories(): MaterialFactoryMap {
         emissiveMap: getTexture(`ads_large_${id}`),
         emissiveIntensity: 0.25, // Legacy: overwritten by BASE_EMISSIVE_INTENSITIES × preset multiplier
         blending: AdditiveBlending,
+        fog: false,
+        side: DoubleSide,
+      });
+  }
+
+  // Holographic ads (10 variants) — additive blend + transparency for a
+  // see-through hologram look. depthWrite=false stops them from masking
+  // far-away buildings; faint cyan emissive tint pushes the cyberpunk feel.
+  for (let i = 1; i <= 10; i++) {
+    const id = i.toString().padStart(2, "0");
+    factories[`ads_holo_${id}`] = (getTexture) =>
+      new MeshPhongMaterial({
+        emissive: 0xddf6ff,
+        emissiveMap: getTexture(`ads_holo_${id}`),
+        emissiveIntensity: 0.25, // Legacy: overwritten by BASE_EMISSIVE_INTENSITIES × preset multiplier
+        blending: AdditiveBlending,
+        transparent: true,
+        opacity: 0.82,
+        depthWrite: false,
         fog: false,
         side: DoubleSide,
       });

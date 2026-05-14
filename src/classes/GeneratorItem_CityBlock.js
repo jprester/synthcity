@@ -184,19 +184,10 @@ class GeneratorItem_CityBlock {
             rotationY: (rotate * Math.PI) / 180,
           });
 
-          if (adsType != null) {
-            let ad = new Advert(
-              this.x + xOff,
-              0,
-              this.z + zOff,
-              adsType,
-              false,
-              this.game,
-            );
-            ad.scale = { x: 1, y: scale, z: 1 };
-            ad.rotationY = (-rotate * Math.PI) / 180;
-            this.updateables.push(ad);
-          }
+          // Small-building ads (ads_01..08) were removed; only the holographic
+          // wall ads on towers/skyscrapers remain. adsType is computed but
+          // intentionally unused now to keep the noise stream stable.
+          void adsType;
         }
       }
     } else {
@@ -354,7 +345,7 @@ class GeneratorItem_CityBlock {
 // building decorations
 
 class Advert {
-  constructor(x, y, z, geo, is_tower, game) {
+  constructor(x, y, z, geo, _isTower, game) {
     this.game = game;
     this.isVisual = true;
     this.kind = "advert";
@@ -363,26 +354,15 @@ class Advert {
     this.scale = { x: 1, y: 1, z: 1 };
     this.rotationY = 0;
 
-    if (is_tower) {
-      this.adsMats = [
-        "ads_large_01",
-        "ads_large_02",
-        "ads_large_03",
-        "ads_large_04",
-        "ads_large_05",
-      ];
-    } else {
-      this.adsMats = [
-        "ads_01",
-        "ads_02",
-        "ads_03",
-        "ads_04",
-        "ads_05",
-        "ads_06",
-        "ads_07",
-        "ads_08",
-      ];
-    }
+    // Small ads (ads_01..08) were removed; both s_04 large and s_05 tower
+    // buildings now share the same ads_large_* pool in legacy infinite mode.
+    this.adsMats = [
+      "ads_large_01",
+      "ads_large_02",
+      "ads_large_03",
+      "ads_large_04",
+      "ads_large_05",
+    ];
     this.currentMatKey =
       this.adsMats[Math.floor(Math.random() * this.adsMats.length)];
 
