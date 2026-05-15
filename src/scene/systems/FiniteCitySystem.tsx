@@ -98,6 +98,19 @@ type WallAdManualEntry = {
   tilt?: number;
   /** Extra rotation around Y in radians (e.g. to angle the billboard). */
   rotationOffset?: number;
+
+  // ── Material overrides ─────────────────────────────────────────────────
+  // When any of these is set, the ad gets its own cloned material so the
+  // tweak doesn't leak to other ads using the same matKey. Cloning costs
+  // a small amount of memory per overridden ad — negligible for ~20 entries.
+  //
+  /** Multiplier on the base emissive intensity (1 = default, 2 = double). */
+  emissiveIntensity?: number;
+  /** Override the emissive tint. Accepts a hex number (0x44ccff) or a CSS
+   *  string ("#44ccff", "hsl(...)"). Default is the faint cyan 0xddf6ff. */
+  emissiveColor?: number | string;
+  /** Override the material opacity. Default is 0.82. */
+  opacity?: number;
 };
 
 const WALL_ADS_MANUAL: WallAdManualEntry[] = [
@@ -110,6 +123,7 @@ const WALL_ADS_MANUAL: WallAdManualEntry[] = [
     face: 1,
     height: 42,
     offsetOut: 74,
+    emissiveIntensity: 0.92,
   }, // landscape: cyberpunk energy drink
   {
     gi: 5,
@@ -119,6 +133,7 @@ const WALL_ADS_MANUAL: WallAdManualEntry[] = [
     face: 2,
     height: 42,
     offsetOut: 74,
+    emissiveIntensity: 0.92,
   }, // landscape: cyberpunk energy drink
   {
     gi: 5,
@@ -128,6 +143,7 @@ const WALL_ADS_MANUAL: WallAdManualEntry[] = [
     face: 3,
     height: 42,
     offsetOut: 74,
+    emissiveIntensity: 0.92,
   }, // landscape: cyberpunk energy drink
   {
     gi: 5,
@@ -137,42 +153,121 @@ const WALL_ADS_MANUAL: WallAdManualEntry[] = [
     face: 0,
     height: 42,
     offsetOut: 74,
+    emissiveIntensity: 0.92,
   }, // landscape: cyberpunk energy drink
   {
     gi: 10,
     gj: 5,
     matKey: "ads_holo_01",
     face: 1,
-    height: 120,
-    offsetOut: 62,
-    y: 500,
+    height: 80,
+    offsetSide: -70,
+    offsetOut: 25,
+    y: 100,
+    emissiveIntensity: 0.6,
   }, // portrait: ninja
 
-  // Mid-upper tower row (gj=5)
-  { gi: 5, gj: 5, matKey: "ads_holo_16", face: 2, height: 75 }, // landscape: holographic letters
-  { gi: 13, gj: 5, matKey: "ads_holo_12", face: 2, height: 110 }, // tall banner: neon Japanese
+  // Cyberdine tower (gi=7, gj=4) — prime real estate in the upper skyline, visible from spawn
+  {
+    gi: 7,
+    gj: 4,
+    matKey: "ads_holo_16",
+    face: 3,
+    height: 125,
+    offsetOut: 80,
+    y: 220,
+  }, // landscape: holographic letters
+  { gi: 13, gj: 5, matKey: "ads_holo_12", face: 2, height: 70 }, // Middle left commercial area - tall banner: neon Japanese
 
-  // Skyscraper row near the top (gj=3) — narrower mid-rise buildings
-  { gi: 7, gj: 3, matKey: "ads_holo_04", face: 2, height: 55 }, // portrait: calligraphy
-  { gi: 10, gj: 3, matKey: "ads_holo_10", face: 2, height: 50 }, // square: dragon logo
+  // Skyscraper row in the mid-upper section — narrower high-rise buildings good for portrait ads. Ad is slightly inside the building as a stylistic choice to make them feel more embedded and less like floating billboards.
+  {
+    gi: 11,
+    gj: 4,
+    matKey: "ads_holo_04",
+    face: 2,
+    height: 155,
+    offsetOut: 52,
+    offsetSide: 10,
+    y: 240,
+    emissiveIntensity: 4,
+  }, // portrait: calligraphy
+  { gi: 11, gj: 7, matKey: "ads_holo_11", face: 3, height: 80, y: 180 }, // square: dragon logo
 
   // Center towers (gj=7) — left/right of dead center
-  { gi: 4, gj: 7, matKey: "ads_holo_05", face: 2, height: 60, offsetOut: 22 }, // landscape: cdbj
-  { gi: 12, gj: 7, matKey: "ads_holo_07", face: 3, height: 65 }, // square: cyberpunk girl
+  {
+    gi: 4,
+    gj: 7,
+    matKey: "ads_holo_05",
+    face: 0,
+    height: 65,
+    offsetOut: 26,
+    y: 160,
+  }, // landscape: cdbj
 
-  // Lower towers (gj=9)
-  { gi: 5, gj: 9, matKey: "ads_holo_08", face: 2, height: 75 }, // landscape: retrowave
-  { gi: 11, gj: 9, matKey: "ads_holo_03", face: 0, height: 80 }, // portrait: pixel koi
+  {
+    gi: 12,
+    gj: 7,
+    matKey: "ads_holo_07",
+    face: 3,
+    height: 85,
+    y: 150,
+    emissiveIntensity: 0.8,
+  }, // square: cyberpunk girl
+
+  // Lower buildings in the dead center (gj=8) — good for visibility from the street-level view
+  { gi: 9, gj: 9, matKey: "ads_holo_08", face: 2, height: 100, y: 200 }, // landscape: retrowave
+  { gi: 12, gj: 6, matKey: "ads_holo_03", face: 0, height: 200, y: 300 }, // portrait: pixel koi
 
   // Southern skyscrapers (gj=10) and tower row (gj=11)
-  { gi: 4, gj: 10, matKey: "ads_holo_15", face: 0, height: 55 }, // landscape: R&B
-  { gi: 13, gj: 10, matKey: "ads_holo_09", face: 0, height: 50 }, // square: ramen
-  { gi: 5, gj: 11, matKey: "ads_holo_14", face: 0, height: 75 }, // landscape: 0_1
-  { gi: 13, gj: 11, matKey: "ads_holo_13", face: 0, height: 80 }, // portrait: Geisha
+  { gi: 4, gj: 12, matKey: "ads_holo_15", face: 1, height: 105, y: 200 }, // landscape: R&B
+  {
+    gi: 11,
+    gj: 12,
+    matKey: "ads_holo_09",
+    face: 2,
+    height: 140,
+    y: 150,
+    offsetOut: 76,
+  }, // square: ramen
+  {
+    gi: 5,
+    gj: 11,
+    matKey: "ads_holo_14",
+    face: 3,
+    height: 125,
+    y: 180,
+    offsetOut: 27,
+  }, // landscape: 0_1
+  {
+    gi: 13,
+    gj: 5,
+    matKey: "ads_holo_13",
+    face: 1,
+    height: 130,
+    y: 60,
+    offsetOut: 37,
+    emissiveIntensity: 1.1,
+  }, // portrait: Geisha
 
   // Bottom tower row (gj=12)
-  { gi: 7, gj: 12, matKey: "ads_holo_06", face: 0, height: 75 }, // landscape: teal gradient
-  { gi: 11, gj: 12, matKey: "ads_holo_02", face: 0, height: 60 }, // square: Sengoku icon
+  {
+    gi: 7,
+    gj: 12,
+    matKey: "ads_holo_06",
+    face: 1,
+    height: 75,
+    y: 100,
+    offsetOut: 50,
+  }, // landscape: teal gradient
+  {
+    gi: 7,
+    gj: 6,
+    matKey: "ads_holo_02",
+    face: 1,
+    height: 80,
+    y: 240,
+    offsetOut: 0,
+  }, // square: Sengoku icon
 ];
 
 // Defaults applied when an entry leaves a field unset.
@@ -197,6 +292,11 @@ type WallAd = {
   rotationY: number;
   /** X rotation (pitch) applied after Y rotation — use YXZ Euler order */
   rotationX: number;
+  /** Per-ad material overrides — when any are set, the renderer clones
+   *  the shared material so this ad can diverge from the others. */
+  emissiveIntensityMul?: number;
+  emissiveColor?: number | string;
+  opacity?: number;
   /** Optional periodic texture cycling among same-orientation candidates */
   update?: () => void;
 };
@@ -433,6 +533,9 @@ export function FiniteCitySystem() {
         height,
         rotationY: totalAngle,
         rotationX: entry.tilt ?? 0,
+        emissiveIntensityMul: entry.emissiveIntensity,
+        emissiveColor: entry.emissiveColor,
+        opacity: entry.opacity,
       });
     }
 
@@ -659,8 +762,38 @@ function FiniteCityWallAds({
   const meshes = useMemo(() => {
     if (!game?.assets?.loaded) return [];
     return wallAdStates.map((ad) => {
-      const mat = game.assets!.getMaterial(ad.matKey) as Material | undefined;
-      if (mat) mat.name = ad.matKey;
+      const shared = game.assets!.getMaterial(ad.matKey) as
+        | Material
+        | undefined;
+      if (shared) shared.name = ad.matKey;
+
+      // If this ad has any material override, clone so we don't mutate the
+      // shared material. Otherwise reuse the shared instance.
+      const hasOverride =
+        ad.emissiveIntensityMul !== undefined ||
+        ad.emissiveColor !== undefined ||
+        ad.opacity !== undefined;
+      let mat: Material | undefined = shared;
+      if (shared && hasOverride) {
+        const cloned = shared.clone() as Material & {
+          emissiveIntensity?: number;
+          emissive?: { set: (c: number | string) => void };
+        };
+        if (
+          ad.emissiveIntensityMul !== undefined &&
+          typeof cloned.emissiveIntensity === "number"
+        ) {
+          cloned.emissiveIntensity *= ad.emissiveIntensityMul;
+        }
+        if (ad.emissiveColor !== undefined && cloned.emissive) {
+          cloned.emissive.set(ad.emissiveColor);
+        }
+        if (ad.opacity !== undefined) {
+          cloned.opacity = ad.opacity;
+        }
+        mat = cloned;
+      }
+
       const mesh = new Mesh(planeGeom, mat ?? new MeshBasicMaterial());
       mesh.position.set(ad.x, ad.y, ad.z);
       // YXZ order so the X tilt happens around the ad's local horizontal
