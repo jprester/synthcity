@@ -218,10 +218,12 @@ export function generateLayout(
           scaleY: 1,
           scaleZ: 1,
           rotationY: (rotate * Math.PI) / 180,
+          gi,
+          gj,
         });
       } else {
         // ── Small buildings — 2×2 grid per block ─────────────────────────
-        placeSmallBuildings(block.type, blockX, blockZ, noise, buildings);
+        placeSmallBuildings(block.type, blockX, blockZ, gi, gj, noise, buildings);
       }
 
       // Storefronts — temporarily disabled
@@ -274,6 +276,8 @@ function placeSmallBuildings(
   blockType: BlockType,
   blockX: number,
   blockZ: number,
+  gi: number,
+  gj: number,
   noise: NoiseGen,
   buildings: FiniteBuildingPlacement[],
 ): void {
@@ -307,6 +311,8 @@ function placeSmallBuildings(
         scaleY: scale,
         scaleZ: 1,
         rotationY: (rotate * Math.PI) / 180,
+        gi,
+        gj,
       });
     }
   }

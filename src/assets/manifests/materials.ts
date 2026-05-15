@@ -159,24 +159,10 @@ export function createMaterialFactories(): MaterialFactoryMap {
       });
   }
 
-  // Large ads (5 variants) - bright emissive for neon glow
-  for (let i = 1; i <= 5; i++) {
-    const id = i.toString().padStart(2, "0");
-    factories[`ads_large_${id}`] = (getTexture) =>
-      new MeshPhongMaterial({
-        emissive: 0xffffff,
-        emissiveMap: getTexture(`ads_large_${id}`),
-        emissiveIntensity: 0.25, // Legacy: overwritten by BASE_EMISSIVE_INTENSITIES × preset multiplier
-        blending: AdditiveBlending,
-        fog: false,
-        side: DoubleSide,
-      });
-  }
-
-  // Holographic ads (10 variants) — additive blend + transparency for a
-  // see-through hologram look. depthWrite=false stops them from masking
-  // far-away buildings; faint cyan emissive tint pushes the cyberpunk feel.
-  for (let i = 1; i <= 10; i++) {
+  // Holographic ads — additive blend + transparency for a see-through
+  // hologram look. depthWrite=false stops them from masking far-away
+  // buildings; faint cyan emissive tint pushes the cyberpunk feel.
+  for (let i = 1; i <= 17; i++) {
     const id = i.toString().padStart(2, "0");
     factories[`ads_holo_${id}`] = (getTexture) =>
       new MeshPhongMaterial({

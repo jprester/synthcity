@@ -152,17 +152,11 @@ export function createTextureManifest(anisotropy: number): TextureManifest {
     };
   }
 
-  // Large ads (5 variants)
-  for (let i = 1; i <= 5; i++) {
-    const id = i.toString().padStart(2, "0");
-    manifest[`ads_large_${id}`] = { path: `textures/ads_large_${id}.jpg` };
-  }
-
-  // Holographic ads (10 variants) — square-padded high-res posters that
-  // ride on the existing s_04 / s_05 ad UVs. Black padding goes invisible
-  // under AdditiveBlending, so portrait / landscape compositions keep
-  // their aspect ratio.
-  for (let i = 1; i <= 10; i++) {
+  // Holographic ads — high-res posters at native aspect ratio. Used by the
+  // procedural wall-ad system in FiniteCitySystem, which sizes each plane
+  // to match the texture so portrait / landscape compositions read as
+  // intended. Add a new one = drop the JPG here + bump this loop.
+  for (let i = 1; i <= 17; i++) {
     const id = i.toString().padStart(2, "0");
     manifest[`ads_holo_${id}`] = { path: `textures/ads_holo_${id}.jpg` };
   }

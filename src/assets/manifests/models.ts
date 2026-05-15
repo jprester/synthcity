@@ -69,7 +69,8 @@ export function createModelManifest(
     manifest[key] = { path: `models/${key}.obj` };
   }
 
-  // Toppers (12 variants)
+  // Toppers (12 variants) — kept available for future hand-placed toppers,
+  // even though procedural spawning has been removed from the scene.
   for (let i = 1; i <= 12; i++) {
     const id = i.toString().padStart(2, "0");
     manifest[`topper_${id}`] = { path: `models/topper_${id}.obj` };

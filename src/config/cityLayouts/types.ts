@@ -7,6 +7,10 @@ export type FiniteBuildingPlacement = {
   scaleY: number;
   scaleZ: number;
   rotationY: number;
+  /** Grid coordinates from CITY_TEMPLATE (gi=col, gj=row). Optional so
+   *  externally-loaded layouts without this field still parse. */
+  gi?: number;
+  gj?: number;
 };
 
 export type FiniteMegaPlacement = {

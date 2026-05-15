@@ -157,11 +157,10 @@ class GeneratorItem_CityBlock {
           let matKey = this.utils.getBuildingMatKey(matNoise);
           let mat = this.game.assets.getMaterial(matKey);
 
-          // topper
-          if (topper && adsType != null)
-            this.updateables.push(
-              new Topper(this.x + xOff, 190 * scale, this.z + zOff, this.game),
-            );
+          // Toppers used to spawn procedurally here on s_03 industrial
+          // buildings. The procedural spawning is removed; the Topper class
+          // and topper_NN models are kept for future hand-placement.
+          void topper;
 
           // smoke
           if (Math.random() < 0.05)
@@ -354,14 +353,27 @@ class Advert {
     this.scale = { x: 1, y: 1, z: 1 };
     this.rotationY = 0;
 
-    // Small ads (ads_01..08) were removed; both s_04 large and s_05 tower
-    // buildings now share the same ads_large_* pool in legacy infinite mode.
+    // Small ads (ads_01..08) and large ads (ads_large_*) were removed; the
+    // legacy Advert system in infinite mode now picks from the holographic
+    // ad pool used by the finite-city wall-ad system.
     this.adsMats = [
-      "ads_large_01",
-      "ads_large_02",
-      "ads_large_03",
-      "ads_large_04",
-      "ads_large_05",
+      "ads_holo_01",
+      "ads_holo_02",
+      "ads_holo_03",
+      "ads_holo_04",
+      "ads_holo_05",
+      "ads_holo_06",
+      "ads_holo_07",
+      "ads_holo_08",
+      "ads_holo_09",
+      "ads_holo_10",
+      "ads_holo_11",
+      "ads_holo_12",
+      "ads_holo_13",
+      "ads_holo_14",
+      "ads_holo_15",
+      "ads_holo_16",
+      "ads_holo_17",
     ];
     this.currentMatKey =
       this.adsMats[Math.floor(Math.random() * this.adsMats.length)];
@@ -404,12 +416,14 @@ class Topper {
       "topper_12",
     ];
 
+    // ads_large_* were removed — fall back to the holographic ad pool.
     let mats = [
-      "ads_large_01",
-      "ads_large_02",
-      "ads_large_03",
-      "ads_large_04",
-      "ads_large_05",
+      "ads_holo_01",
+      "ads_holo_02",
+      "ads_holo_07",
+      "ads_holo_09",
+      "ads_holo_10",
+      "ads_holo_11",
     ];
     let matKey = mats[Math.floor(Math.random() * mats.length)];
 
