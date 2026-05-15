@@ -11,28 +11,18 @@ import type { MaterialContext } from "../types";
 
 type GetTexture = (key: string) => Texture | undefined;
 
-// Weighted palette for building window emissive tints — predominantly cool
-// teal/white with occasional warm amber and rare magenta accents, matching
-// the neon-noir reference look rather than a uniform-random rainbow.
+// Fixed neon blue used for every `building_NN` material's window emissive.
+// Previously a weighted random palette (teal / white / amber / magenta) gave
+// each material a different tint, which made the small procedural buildings
+// look stylistically detached from the GLB skyscrapers. Locking to a single
+// cool blue keeps the small-building skyline coherent with the rest of the
+// scene. Change the constant below to retint everything in one place.
+const h = 185 + Math.random() * 25;
+const BUILDING_WINDOW_EMISSIVE = new Color(`hsl(${h}, 70%, 78%)`);
+
 function pickWindowEmissive(): Color {
-  const r = Math.random();
-  if (r < 0.55) {
-    // Cool teal/cyan
-    const h = 185 + Math.random() * 25;
-    return new Color(`hsl(${h}, 70%, 78%)`);
-  }
-  if (r < 0.8) {
-    // Neutral white / very pale cyan
-    return new Color(`hsl(${200 + Math.random() * 20}, 15%, 92%)`);
-  }
-  if (r < 0.95) {
-    // Warm amber
-    const h = 35 + Math.random() * 20;
-    return new Color(`hsl(${h}, 85%, 75%)`);
-  }
-  // Magenta / pink accent
-  const h = 300 + Math.random() * 25;
-  return new Color(`hsl(${h}, 85%, 78%)`);
+  // Clone so callers can mutate without affecting the shared template.
+  return BUILDING_WINDOW_EMISSIVE.clone();
 }
 
 /**
