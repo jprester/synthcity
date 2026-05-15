@@ -168,6 +168,21 @@ export function createMaterialFactories(): MaterialFactoryMap {
       });
   }
 
+  // Billboard ads — opaque, self-illuminated LED-panel look. Same textures
+  // as ads_holo_*, different material setup: normal blending, no
+  // transparency, writes depth so it occludes things behind it. Used by
+  // wall-ad entries with `style: "billboard"`.
+  for (let i = 1; i <= 17; i++) {
+    const id = i.toString().padStart(2, "0");
+    factories[`ads_billboard_${id}`] = (getTexture) =>
+      new MeshPhongMaterial({
+        emissive: 0xffffff,
+        emissiveMap: getTexture(`ads_holo_${id}`),
+        emissiveIntensity: 0.7, // Legacy: overwritten by BASE_EMISSIVE_INTENSITIES × preset multiplier
+        side: DoubleSide,
+      });
+  }
+
   // Smoke (3 variants)
   for (let i = 1; i <= 3; i++) {
     const id = i.toString().padStart(2, "0");

@@ -80,8 +80,15 @@ type WallAdManualEntry = {
   gi: number;
   /** Grid row from CITY_TEMPLATE */
   gj: number;
-  /** Material key — usually `ads_holo_NN` */
+  /** Material key — usually `ads_holo_NN`. When `style: "billboard"`, the
+   *  renderer auto-resolves the matching `ads_billboard_NN` material so you
+   *  don't need to write the billboard key explicitly. */
   matKey: string;
+  /** Visual style:
+   *   - "holo"      (default) → semi-transparent additive hologram
+   *   - "billboard" → opaque self-illuminated LED panel
+   *  cutBackground / alphaTest / opacity overrides only apply to holo. */
+  style?: "holo" | "billboard";
   /** Cardinal face of the building (0=N, 1=E, 2=S, 3=W), pre-rotation */
   face?: 0 | 1 | 2 | 3;
   /** Distance out from the wall — depth axis. */
@@ -111,6 +118,21 @@ type WallAdManualEntry = {
   emissiveColor?: number | string;
   /** Override the material opacity. Default is 0.82. */
   opacity?: number;
+  /** Make dark pixels transparent — uses the texture's green channel as
+   *  alpha. Best for ads where the subject is bright (neon icon, glowing
+   *  text) on a near-black background. Strongly red/blue subjects on
+   *  dark backgrounds may get partially clipped; for those, prefer
+   *  pre-processing the texture to a PNG with a real alpha channel. */
+  cutBackground?: boolean;
+  /** Alpha cutoff threshold when cutBackground is on. Default 0.05 — pixels
+   *  with green-channel alpha below this are discarded entirely.
+   *
+   *  • Lower (0.01–0.03) → keeps more of the subject (good for red / magenta
+   *    ads that have low green) at the cost of a faint halo around the edges.
+   *  • Higher (0.1–0.2) → cleaner cutout, but may eat into colored subjects.
+   *
+   *  Ignored unless `cutBackground: true`. */
+  alphaTest?: number;
 };
 
 const WALL_ADS_MANUAL: WallAdManualEntry[] = [
@@ -123,6 +145,7 @@ const WALL_ADS_MANUAL: WallAdManualEntry[] = [
     face: 1,
     height: 42,
     offsetOut: 74,
+    style: "billboard",
     emissiveIntensity: 0.92,
   }, // landscape: cyberpunk energy drink
   {
@@ -133,6 +156,7 @@ const WALL_ADS_MANUAL: WallAdManualEntry[] = [
     face: 2,
     height: 42,
     offsetOut: 74,
+    style: "billboard",
     emissiveIntensity: 0.92,
   }, // landscape: cyberpunk energy drink
   {
@@ -143,6 +167,7 @@ const WALL_ADS_MANUAL: WallAdManualEntry[] = [
     face: 3,
     height: 42,
     offsetOut: 74,
+    style: "billboard",
     emissiveIntensity: 0.92,
   }, // landscape: cyberpunk energy drink
   {
@@ -153,6 +178,7 @@ const WALL_ADS_MANUAL: WallAdManualEntry[] = [
     face: 0,
     height: 42,
     offsetOut: 74,
+    style: "billboard",
     emissiveIntensity: 0.92,
   }, // landscape: cyberpunk energy drink
   {
@@ -185,11 +211,12 @@ const WALL_ADS_MANUAL: WallAdManualEntry[] = [
     gj: 4,
     matKey: "ads_holo_04",
     face: 2,
-    height: 155,
-    offsetOut: 52,
+    height: 135,
+    offsetOut: 56,
     offsetSide: 10,
     y: 240,
-    emissiveIntensity: 4,
+    emissiveIntensity: 3,
+    cutBackground: false,
   }, // portrait: calligraphy
   { gi: 11, gj: 7, matKey: "ads_holo_11", face: 3, height: 80, y: 180 }, // square: dragon logo
 
@@ -199,9 +226,11 @@ const WALL_ADS_MANUAL: WallAdManualEntry[] = [
     gj: 7,
     matKey: "ads_holo_05",
     face: 0,
-    height: 65,
-    offsetOut: 26,
-    y: 160,
+    height: 62,
+    offsetOut: 21,
+    style: "billboard",
+    emissiveIntensity: 0.7,
+    y: 140,
   }, // landscape: cdbj
 
   {
@@ -211,6 +240,8 @@ const WALL_ADS_MANUAL: WallAdManualEntry[] = [
     face: 3,
     height: 85,
     y: 150,
+    offsetOut: 34,
+    style: "billboard",
     emissiveIntensity: 0.8,
   }, // square: cyberpunk girl
 
@@ -219,7 +250,7 @@ const WALL_ADS_MANUAL: WallAdManualEntry[] = [
   { gi: 12, gj: 6, matKey: "ads_holo_03", face: 0, height: 200, y: 300 }, // portrait: pixel koi
 
   // Southern skyscrapers (gj=10) and tower row (gj=11)
-  { gi: 4, gj: 12, matKey: "ads_holo_15", face: 1, height: 105, y: 200 }, // landscape: R&B
+  { gi: 4, gj: 12, matKey: "ads_holo_15", face: 1, height: 65, y: 140 }, // landscape: R&B
   {
     gi: 11,
     gj: 12,
@@ -267,6 +298,8 @@ const WALL_ADS_MANUAL: WallAdManualEntry[] = [
     height: 80,
     y: 240,
     offsetOut: 0,
+    cutBackground: true,
+    emissiveIntensity: 5,
   }, // square: Sengoku icon
 ];
 
@@ -297,6 +330,8 @@ type WallAd = {
   emissiveIntensityMul?: number;
   emissiveColor?: number | string;
   opacity?: number;
+  cutBackground?: boolean;
+  alphaTestOverride?: number;
   /** Optional periodic texture cycling among same-orientation candidates */
   update?: () => void;
 };
@@ -523,8 +558,16 @@ export function FiniteCitySystem() {
       const tangentX = Math.cos(totalAngle);
       const tangentZ = -Math.sin(totalAngle);
 
+      // Resolve the actual material key from style. matKey points at the
+      // holo material by convention; for billboard mode we swap the prefix
+      // so the renderer picks up the opaque LED-panel variant.
+      const resolvedMatKey =
+        entry.style === "billboard"
+          ? entry.matKey.replace(/^ads_holo_/, "ads_billboard_")
+          : entry.matKey;
+
       ads.push({
-        matKey: entry.matKey,
+        matKey: resolvedMatKey,
         aspect,
         x: b.x + outX * offsetOut + tangentX * offsetSide,
         y,
@@ -535,7 +578,12 @@ export function FiniteCitySystem() {
         rotationX: entry.tilt ?? 0,
         emissiveIntensityMul: entry.emissiveIntensity,
         emissiveColor: entry.emissiveColor,
-        opacity: entry.opacity,
+        // Transparency / cutout overrides only apply to the holo style.
+        opacity: entry.style === "billboard" ? undefined : entry.opacity,
+        cutBackground:
+          entry.style === "billboard" ? undefined : entry.cutBackground,
+        alphaTestOverride:
+          entry.style === "billboard" ? undefined : entry.alphaTest,
       });
     }
 
@@ -772,12 +820,16 @@ function FiniteCityWallAds({
       const hasOverride =
         ad.emissiveIntensityMul !== undefined ||
         ad.emissiveColor !== undefined ||
-        ad.opacity !== undefined;
+        ad.opacity !== undefined ||
+        ad.cutBackground === true;
       let mat: Material | undefined = shared;
       if (shared && hasOverride) {
         const cloned = shared.clone() as Material & {
           emissiveIntensity?: number;
           emissive?: { set: (c: number | string) => void };
+          emissiveMap?: unknown;
+          alphaMap?: unknown;
+          alphaTest?: number;
         };
         if (
           ad.emissiveIntensityMul !== undefined &&
@@ -790,6 +842,16 @@ function FiniteCityWallAds({
         }
         if (ad.opacity !== undefined) {
           cloned.opacity = ad.opacity;
+        }
+        if (ad.cutBackground && cloned.emissiveMap) {
+          // Reuse the ad texture as the alpha map — dark pixels become
+          // transparent (green channel approximates luminance). alphaTest
+          // discards near-black entirely so there's no faint halo.
+          // The cutoff is tunable per-ad: lower it for red / magenta-heavy
+          // subjects whose green channel is naturally low.
+          cloned.alphaMap = cloned.emissiveMap;
+          cloned.alphaTest = ad.alphaTestOverride ?? 0.05;
+          cloned.needsUpdate = true;
         }
         mat = cloned;
       }
