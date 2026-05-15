@@ -8,6 +8,7 @@ import {
 } from "three";
 import type { Texture, Material } from "three";
 import type { MaterialContext } from "../types";
+import { ADS_META, adTextureKey, adMatKey } from "../../config/ads";
 
 type GetTexture = (key: string) => Texture | undefined;
 
@@ -149,16 +150,23 @@ export function createMaterialFactories(): MaterialFactoryMap {
       });
   }
 
-  // Holographic ads — additive blend + transparency for a see-through
-  // hologram look. depthWrite=false stops them from masking far-away
-  // buildings; faint cyan emissive tint pushes the cyberpunk feel.
-  for (let i = 1; i <= 17; i++) {
-    const id = i.toString().padStart(2, "0");
-    factories[`ads_holo_${id}`] = (getTexture) =>
+  // Ads — one texture per id (ADS_META), two material variants per id:
+  //
+  //   • ad_holo_NN      — semi-transparent additive hologram. depthWrite
+  //                       off so it doesn't mask buildings behind it.
+  //   • ad_billboard_NN — opaque self-illuminated LED panel. Writes depth
+  //                       so it acts like a real surface.
+  //
+  // Both variants reuse the same `ad_NN` texture; only the material setup
+  // changes. Adding a new ad → just add it to ADS_META.
+  for (const ad of ADS_META) {
+    const texKey = adTextureKey(ad.id);
+
+    factories[adMatKey(ad.id, "holo")] = (getTexture) =>
       new MeshPhongMaterial({
         emissive: 0xddf6ff,
-        emissiveMap: getTexture(`ads_holo_${id}`),
-        emissiveIntensity: 0.25, // Legacy: overwritten by BASE_EMISSIVE_INTENSITIES × preset multiplier
+        emissiveMap: getTexture(texKey),
+        emissiveIntensity: 0.25, // Overwritten by BASE_EMISSIVE_INTENSITIES × preset
         blending: AdditiveBlending,
         transparent: true,
         opacity: 0.82,
@@ -166,19 +174,12 @@ export function createMaterialFactories(): MaterialFactoryMap {
         fog: false,
         side: DoubleSide,
       });
-  }
 
-  // Billboard ads — opaque, self-illuminated LED-panel look. Same textures
-  // as ads_holo_*, different material setup: normal blending, no
-  // transparency, writes depth so it occludes things behind it. Used by
-  // wall-ad entries with `style: "billboard"`.
-  for (let i = 1; i <= 17; i++) {
-    const id = i.toString().padStart(2, "0");
-    factories[`ads_billboard_${id}`] = (getTexture) =>
+    factories[adMatKey(ad.id, "billboard")] = (getTexture) =>
       new MeshPhongMaterial({
         emissive: 0xffffff,
-        emissiveMap: getTexture(`ads_holo_${id}`),
-        emissiveIntensity: 0.7, // Legacy: overwritten by BASE_EMISSIVE_INTENSITIES × preset multiplier
+        emissiveMap: getTexture(texKey),
+        emissiveIntensity: 0.7, // Overwritten by BASE_EMISSIVE_INTENSITIES × preset
         side: DoubleSide,
       });
   }

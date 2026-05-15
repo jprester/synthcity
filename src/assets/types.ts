@@ -8,6 +8,7 @@ import type {
   ColorSpace,
 } from "three";
 import { getEmbeddedEmissiveEntries } from "../config/buildingRegistry";
+import { ADS_META, adMatKey } from "../config/ads";
 
 // ============================================================================
 // Texture Types
@@ -128,49 +129,31 @@ export type EmissiveMultipliers = {
  * Base emissive intensities for each material category
  * These are multiplied by the preset multipliers
  */
+// Build the ad emissive-intensity rows from ADS_META so adding a new ad
+// only requires editing src/config/ads.ts.
+//   • holo      base 0.7 — slightly brighter to compensate for opacity
+//   • billboard base 0.6 — lower since the image is fully opaque
+function buildAdEmissiveEntries(): Record<
+  string,
+  { category: keyof EmissiveMultipliers; base: number }
+> {
+  const entries: Record<
+    string,
+    { category: keyof EmissiveMultipliers; base: number }
+  > = {};
+  for (const ad of ADS_META) {
+    entries[adMatKey(ad.id, "holo")] = { category: "ads", base: 0.7 };
+    entries[adMatKey(ad.id, "billboard")] = { category: "ads", base: 0.6 };
+  }
+  return entries;
+}
+
 export const BASE_EMISSIVE_INTENSITIES: Record<
   string,
   { category: keyof EmissiveMultipliers; base: number }
 > = {
-  // Ads
-  // Holographic ads — slightly brighter base so the see-through hologram
-  // still reads clearly when its opacity is < 1.
-  ads_holo_01: { category: "ads", base: 0.7 },
-  ads_holo_02: { category: "ads", base: 0.7 },
-  ads_holo_03: { category: "ads", base: 0.7 },
-  ads_holo_04: { category: "ads", base: 0.7 },
-  ads_holo_05: { category: "ads", base: 0.7 },
-  ads_holo_06: { category: "ads", base: 0.7 },
-  ads_holo_07: { category: "ads", base: 0.7 },
-  ads_holo_08: { category: "ads", base: 0.7 },
-  ads_holo_09: { category: "ads", base: 0.7 },
-  ads_holo_10: { category: "ads", base: 0.7 },
-  ads_holo_11: { category: "ads", base: 0.7 },
-  ads_holo_12: { category: "ads", base: 0.7 },
-  ads_holo_13: { category: "ads", base: 0.7 },
-  ads_holo_14: { category: "ads", base: 0.7 },
-  ads_holo_15: { category: "ads", base: 0.7 },
-  ads_holo_16: { category: "ads", base: 0.7 },
-  ads_holo_17: { category: "ads", base: 0.7 },
-  // Billboard ads — opaque LED-panel variant of the same textures. Lower
-  // base than holo since the image is fully opaque (no alpha attenuation).
-  ads_billboard_01: { category: "ads", base: 0.6 },
-  ads_billboard_02: { category: "ads", base: 0.6 },
-  ads_billboard_03: { category: "ads", base: 0.6 },
-  ads_billboard_04: { category: "ads", base: 0.6 },
-  ads_billboard_05: { category: "ads", base: 0.6 },
-  ads_billboard_06: { category: "ads", base: 0.6 },
-  ads_billboard_07: { category: "ads", base: 0.6 },
-  ads_billboard_08: { category: "ads", base: 0.6 },
-  ads_billboard_09: { category: "ads", base: 0.6 },
-  ads_billboard_10: { category: "ads", base: 0.6 },
-  ads_billboard_11: { category: "ads", base: 0.6 },
-  ads_billboard_12: { category: "ads", base: 0.6 },
-  ads_billboard_13: { category: "ads", base: 0.6 },
-  ads_billboard_14: { category: "ads", base: 0.6 },
-  ads_billboard_15: { category: "ads", base: 0.6 },
-  ads_billboard_16: { category: "ads", base: 0.6 },
-  ads_billboard_17: { category: "ads", base: 0.6 },
+  // Ads — holo + billboard variants for every entry in ADS_META.
+  ...buildAdEmissiveEntries(),
   // Buildings (base when windowLightsEnabled)
   building_01: { category: "buildings", base: 2.0 },
   building_02: { category: "buildings", base: 2.0 },

@@ -5,6 +5,7 @@ import {
   RepeatWrapping,
 } from "three";
 import type { TextureManifest } from "../types";
+import { ADS_META, adTextureKey } from "../../config/ads";
 
 /**
  * Texture manifest - defines all textures to be loaded
@@ -152,13 +153,13 @@ export function createTextureManifest(anisotropy: number): TextureManifest {
     };
   }
 
-  // Holographic ads — high-res posters at native aspect ratio. Used by the
-  // procedural wall-ad system in FiniteCitySystem, which sizes each plane
-  // to match the texture so portrait / landscape compositions read as
-  // intended. Add a new one = drop the JPG here + bump this loop.
-  for (let i = 1; i <= 17; i++) {
-    const id = i.toString().padStart(2, "0");
-    manifest[`ads_holo_${id}`] = { path: `textures/ads_holo_${id}.jpg` };
+  // Ad textures — high-res posters at native aspect ratio. Each image is
+  // loaded once and reused by every style variant (holo / billboard / …).
+  // Add a new one by dropping ad_NN.jpg into textures/ads/ and registering
+  // the metadata in src/config/ads.ts — no edit here required.
+  for (const ad of ADS_META) {
+    const key = adTextureKey(ad.id);
+    manifest[key] = { path: `textures/ads/${key}.jpg` };
   }
 
   // Smoke (3 variants)
