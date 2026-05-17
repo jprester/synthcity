@@ -1,8 +1,12 @@
 /**
  * Parse game settings from URL query parameters.
  *
+ * Quickstart is the default (auto-launch into finite/freeroam). To see the
+ * original procedural setup terminal, append `?setup` or `?quickstart=0`.
+ *
  * Supported params:
- *   quickstart     - skip splash screen, auto-launch (presence is enough)
+ *   setup          - show the procedural setup terminal (disables quickstart)
+ *   quickstart     - "0" disables quickstart; any other value (or absent) keeps it on
  *   mode           - "drive" | "freeroam"
  *   city           - "procedural" | "finite"
  *   layout         - filename from public/layouts/ (e.g. "my_city.json"), implies city=finite
@@ -16,7 +20,7 @@
  *   sfx            - "0" or "1"
  *
  * Example:
- *   ?quickstart&mode=freeroam&city=finite&seed=1234&quality=high&fps=0
+ *   ?setup&mode=drive&city=procedural   (show splash, drive procedural city)
  */
 
 import { DEFAULT_GAME_SETTINGS } from "./settings";
@@ -37,7 +41,9 @@ export function parseQuerySettings(search: string = window.location.search): Que
   const params = new URLSearchParams(search);
   const settings: Partial<GameSettings> = {};
 
-  const quickstart = params.has("quickstart");
+  // Quickstart defaults to true; ?setup or ?quickstart=0 opts out.
+  const quickstart =
+    !params.has("setup") && params.get("quickstart") !== "0";
 
   const mode = params.get("mode");
   if (mode && VALID_MODES.has(mode)) {

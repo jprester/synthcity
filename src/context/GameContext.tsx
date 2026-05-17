@@ -22,7 +22,10 @@ type GameStore = {
 
 const GameContext = createContext<GameStore | null>(null);
 
-const quickstart = new URLSearchParams(window.location.search).has("quickstart");
+// Quickstart is on by default; opt out with ?setup or ?quickstart=0
+const _qsParams = new URLSearchParams(window.location.search);
+const quickstart =
+  !_qsParams.has("setup") && _qsParams.get("quickstart") !== "0";
 
 export function GameProvider({ children }) {
   const [settings, setSettings] = useState(getInitialSettings);

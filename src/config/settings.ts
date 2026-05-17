@@ -33,15 +33,15 @@ export const DEFAULT_VISIBILITY: VisibilitySettings = {
  * Default game settings used on initial load
  */
 export const DEFAULT_GAME_SETTINGS: GameSettings = {
-  mode: "drive",
-  cityMode: "procedural" as CityMode,
+  mode: "freeroam",
+  cityMode: "finite" as CityMode,
   worldSeed: CURATED_WORLD_SEEDS[0],
-  music: true,
+  music: false,
   soundFx: true,
   windshieldShader: "simple",
   renderScaling: 1.0,
   visualPreset: "default",
-  qualityLevel: "low" as QualityLevel,
-  frameRateLimit: 60 as FrameRateLimit,
+  qualityLevel: "medium" as QualityLevel,
+  frameRateLimit: 30 as FrameRateLimit,
   visibility: DEFAULT_VISIBILITY,
 };
