@@ -9,6 +9,11 @@ import {
 import type { Texture, Material } from "three";
 import type { MaterialContext } from "../types";
 import { ADS_META, adTextureKey, adMatKey } from "../../config/ads";
+import {
+  SMALL_ADS_META,
+  smallAdMatKey,
+  smallAdTextureKey,
+} from "../../config/smallAds";
 
 type GetTexture = (key: string) => Texture | undefined;
 
@@ -181,6 +186,29 @@ export function createMaterialFactories(): MaterialFactoryMap {
         emissiveMap: getTexture(texKey),
         emissiveIntensity: 0.7, // Overwritten by BASE_EMISSIVE_INTENSITIES × preset
         side: DoubleSide,
+      });
+  }
+
+  // Small ads / neon signs — one billboard-style material per PNG. The PNGs
+  // are alpha-cut posters with neon foreground on transparent (or near-
+  // transparent) backgrounds, so we want:
+  //   • transparent: true + alphaTest      — discard transparent pixels
+  //   • DoubleSide                          — vertical signs hanging out from
+  //                                           walls render the same on both sides
+  //   • map + emissiveMap                   — sign reads in daylight, glows at night
+  for (const ad of SMALL_ADS_META) {
+    const texKey = smallAdTextureKey(ad.id);
+    factories[smallAdMatKey(ad.id)] = (getTexture) =>
+      new MeshPhongMaterial({
+        map: getTexture(texKey),
+        emissive: 0xffffff,
+        emissiveMap: getTexture(texKey),
+        emissiveIntensity: 0.9, // Overwritten by BASE_EMISSIVE_INTENSITIES × preset
+        transparent: true,
+        alphaTest: 0.1,
+        side: DoubleSide,
+        depthWrite: true,
+        fog: true,
       });
   }
 

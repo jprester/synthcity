@@ -51,23 +51,6 @@ export const ADS_META: readonly AdMeta[] = [
   { id: 17, aspect: 1280 / 717, label: "energy drink (16:9 landscape)" },
 ] as const;
 
-// ── Aspect buckets ─────────────────────────────────────────────────────────
-// Used by the procedural small-building ad placement; not used by the manual
-// wall-ad list (which targets specific ads by id).
-
-export const ADS_TALL_PORTRAIT: readonly AdMeta[] = ADS_META.filter(
-  (a) => a.aspect <= 0.45,
-);
-export const ADS_PORTRAIT: readonly AdMeta[] = ADS_META.filter(
-  (a) => a.aspect > 0.45 && a.aspect <= 0.95,
-);
-export const ADS_SQUARE: readonly AdMeta[] = ADS_META.filter(
-  (a) => a.aspect > 0.95 && a.aspect < 1.2,
-);
-export const ADS_LANDSCAPE: readonly AdMeta[] = ADS_META.filter(
-  (a) => a.aspect >= 1.2,
-);
-
 // ── Key helpers ────────────────────────────────────────────────────────────
 // Centralizing the naming convention here means manifests, factories, and the
 // wall-ad renderer all agree on how a numeric id maps to a string key.

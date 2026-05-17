@@ -9,6 +9,7 @@ import type {
 } from "three";
 import { getEmbeddedEmissiveEntries } from "../config/buildingRegistry";
 import { ADS_META, adMatKey } from "../config/ads";
+import { SMALL_ADS_META, smallAdMatKey } from "../config/smallAds";
 
 // ============================================================================
 // Texture Types
@@ -144,6 +145,11 @@ function buildAdEmissiveEntries(): Record<
   for (const ad of ADS_META) {
     entries[adMatKey(ad.id, "holo")] = { category: "ads", base: 0.7 };
     entries[adMatKey(ad.id, "billboard")] = { category: "ads", base: 0.6 };
+  }
+  // Small ads / neon signs — same category as billboards, slightly brighter
+  // since the alpha-cut around the sign means less surface area is glowing.
+  for (const ad of SMALL_ADS_META) {
+    entries[smallAdMatKey(ad.id)] = { category: "ads", base: 0.9 };
   }
   return entries;
 }
