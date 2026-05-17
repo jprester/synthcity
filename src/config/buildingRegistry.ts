@@ -446,7 +446,7 @@ export const NEW_TOWER_SERIES: BuildingSeries = {
       source: {
         format: "glb",
         path: "models/towers/sci-fi-building-9_1.glb",
-        scale: 1.5,
+        scale: 1.4,
         emissiveBase: 1.0,
       },
     },

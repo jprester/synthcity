@@ -27,7 +27,7 @@ export const WALL_ADS_MANUAL: WallAdManualEntry[] = [
     offsetOut: 74,
     y: 645,
     style: "billboard",
-    emissiveIntensity: 0.92,
+    emissiveIntensity: 1.2,
   }, // energy drink — N
   {
     gi: 5,
@@ -38,7 +38,7 @@ export const WALL_ADS_MANUAL: WallAdManualEntry[] = [
     offsetOut: 74,
     y: 645,
     style: "billboard",
-    emissiveIntensity: 0.92,
+    emissiveIntensity: 1.2,
   }, // energy drink — E
   {
     gi: 5,
@@ -49,7 +49,7 @@ export const WALL_ADS_MANUAL: WallAdManualEntry[] = [
     offsetOut: 74,
     y: 645,
     style: "billboard",
-    emissiveIntensity: 0.92,
+    emissiveIntensity: 1.2,
   }, // energy drink — S
   {
     gi: 5,
@@ -60,7 +60,7 @@ export const WALL_ADS_MANUAL: WallAdManualEntry[] = [
     offsetOut: 74,
     y: 645,
     style: "billboard",
-    emissiveIntensity: 0.92,
+    emissiveIntensity: 1.2,
   }, // energy drink — W
 
   // Skyscraper at (10, 5) — side-mounted ninja portrait
@@ -73,7 +73,7 @@ export const WALL_ADS_MANUAL: WallAdManualEntry[] = [
     offsetOut: 25,
     offsetSide: -70,
     y: 100,
-    emissiveIntensity: 0.6,
+    emissiveIntensity: 0.9,
   }, // ninja
 
   // Cyberdine tower (7, 4) — hero billboard on the west face, visible from spawn
@@ -123,7 +123,7 @@ export const WALL_ADS_MANUAL: WallAdManualEntry[] = [
   }, // cyberpunk girl
 
   // Lower buildings in the dead center
-  { gi: 9, gj: 9, adId: 8, face: 2, height: 100, y: 200 }, // retrowave
+  { gi: 9, gj: 9, adId: 8, face: 2, height: 50, y: 180 }, // retrowave
   { gi: 12, gj: 6, adId: 3, face: 0, height: 200, y: 300 }, // pixel koi
 
   // Southern skyscrapers / tower row
@@ -139,7 +139,7 @@ export const WALL_ADS_MANUAL: WallAdManualEntry[] = [
     offsetOut: 38,
     offsetSide: 4,
     y: 60,
-    emissiveIntensity: 1.5,
+    emissiveIntensity: 1.6,
   }, // Geisha
 
   // Bottom tower row

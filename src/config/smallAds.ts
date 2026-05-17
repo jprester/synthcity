@@ -65,6 +65,16 @@ export const SMALL_ADS_META: readonly SmallAdMeta[] = [
   entry("2-3", 1, "thenightocean_beautiful_cyberpunk_samurai_girl_pink_neon_kata_cdf17ad6-63db-4bc1-bf15-a1dbe6b26c20_2.png"),
   entry("2-3", 2, "thenightocean_beautiful_cyberpunk_samurai_girl_pink_neon_kata_cdf17ad6-63db-4bc1-bf15-a1dbe6b26c20_3.png"),
   entry("2-3", 3, "thenightocean_cyberpunk_advertisment_holographic_lettering_sy_2be55c6a-f82b-459d-bb56-0ec858b5d1d7_1.png"),
+  entry("2-3", 4, "coinone_contents_close_up_futuristic_Japanese_anime_poster_back_312d03a0-5376-40c7-be21-2c4760fb9f3c.png"),
+  entry("2-3", 5, "disagiovanile_Sony_A7R_IV_DSLR_digital_camera_24mm_lens_f16_Fas_4ac87bab-404c-4b7d-8b60-34b293a6aa99.png"),
+  entry("2-3", 6, "g0crazyg0stupid_A_2000s_Japanese_Y2K_street_magazine_style_post_af2fc279-3fb1-46b6-8f0c-2572df9d8444.png"),
+  entry("2-3", 7, "thenightocean_cyberpunk_advertisment_holographic_lettering_de_afa560f4-a505-4503-869c-e326e47b4779_2.png"),
+  entry("2-3", 8, "thenightocean_cyberpunk_poster_Japanese_woman_holographic_let_14bef8de-a2b0-4ae2-808b-a8b3ed5b9023_0.png"),
+  entry("2-3", 9, "thenightocean_cyberpunk_poster_Japanese_woman_holographic_let_1ab4c8fe-0865-408e-8f93-ba16828c41e9_2.png"),
+  entry("2-3", 10, "thenightocean_cyberpunk_poster_Japanese_woman_holographic_let_27ad2a37-f86a-42cd-b068-38a4ca9e55ae_1.png"),
+  entry("2-3", 11, "thenightocean_cyberpunk_poster_Japanese_woman_holographic_let_31d93d3e-f265-43e9-b27e-726b18bc8078_0.png"),
+  entry("2-3", 12, "thenightocean_cyberpunk_poster_Japanese_woman_holographic_let_73aed7cf-a8de-4f7e-af17-ff2cde779e95_2.png"),
+  entry("2-3", 13, "thenightocean_cyberpunk_poster_Japanese_woman_holographic_let_b93e72a2-b196-49fe-bacc-3a13e89c4971_0.png"),
 
   // Landscape posters (3:2)
   entry("3-2", 1, "thenightocean_cyberpunk_japanese_advertisment_holographic_let_e1694664-bd93-40ca-8c71-77be5b3af8de_0.png"),
@@ -77,6 +87,7 @@ export const SMALL_ADS_META: readonly SmallAdMeta[] = [
   entry("3-2", 8, "thenightocean_cyberpunk_poster_Japanese_woman_holographic_let_de8d1ad1-e914-4e37-879b-5fb115d14f50_1.png"),
   entry("3-2", 9, "thenightocean_cyberpunk_poster_Japanese_woman_holographic_let_de8d1ad1-e914-4e37-879b-5fb115d14f50_2.png"),
   entry("3-2", 10, "thenightocean_cyberpunk_poster_Japanese_woman_holographic_let_de8d1ad1-e914-4e37-879b-5fb115d14f50_3.png"),
+  entry("3-2", 11, "joan12404_A_poster_for_an_advertising_campaign_featuring_two_Ja_3f8b65b0-2278-4780-aef5-e996409ac565.png"),
 
   // Wide horizontal neon signs (4:1)
   entry("4-1", 1, "thenightocean_horizontal_neon_sign_in_Japanese_cyberpunk_styl_cb2aec4c-9264-4ac1-87e2-0d589515038c_0.png"),

@@ -43,15 +43,15 @@ type SignTier = {
 
 const SIGN_TIERS: Record<string, SignTier> = {
   residential: {
-    spawn: 0.3,
+    spawn: 0.5,
     bucketWeights: { "1-4": 3, "2-3": 2, "3-2": 1, "4-1": 1 },
   },
   commercial: {
-    spawn: 0.42,
+    spawn: 0.7,
     bucketWeights: { "1-4": 3, "2-3": 1.5, "3-2": 1.5, "4-1": 2 },
   },
   industrial: {
-    spawn: 0.22,
+    spawn: 0.4,
     bucketWeights: { "1-4": 2, "2-3": 0.5, "3-2": 1, "4-1": 1.5 },
   },
 };
