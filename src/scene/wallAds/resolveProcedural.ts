@@ -56,7 +56,12 @@ const SIGN_TIERS: Record<string, SignTier> = {
   },
 };
 
+// Models that skip the procedural small-ads pass entirely — e.g. round
+// or unusually-shaped buildings where flat planes read wrong.
+const SMALL_AD_SKIP: ReadonlySet<string> = new Set(["s_03_06"]);
+
 function classifySignTier(modelKey: string): SignTier | null {
+  if (SMALL_AD_SKIP.has(modelKey)) return null;
   if (modelKey.startsWith("s_01_")) return SIGN_TIERS.residential;
   if (modelKey.startsWith("s_02_")) return SIGN_TIERS.commercial;
   if (modelKey.startsWith("s_03_")) return SIGN_TIERS.industrial;
@@ -158,7 +163,8 @@ function signWallRadius(
   // After rotating by buildingRotationY, the local x-axis aligns with world
   // x when rotation is ~0/π and with world z when ~±π/2.
   const swap =
-    Math.abs(Math.sin(buildingRotationY)) > Math.abs(Math.cos(buildingRotationY));
+    Math.abs(Math.sin(buildingRotationY)) >
+    Math.abs(Math.cos(buildingRotationY));
   const worldHalfX = swap ? ext.halfZ : ext.halfX;
   const worldHalfZ = swap ? ext.halfX : ext.halfZ;
   // Sign plane's outward unit vector = (sin(rotY), cos(rotY)). For axis-
@@ -288,8 +294,9 @@ export function resolveSmallSignsProcedural(
         break;
       }
       case "4-1": {
-        // Wide horizontal — signage band over the storefront.
-        height = (4 + rand() * 3) * b.scaleY; // 4-7
+        // Wide horizontal — signage band over the storefront. 2× the size
+        // of other buckets — these read as the dominant storefront sign.
+        height = (5 + rand() * 3) * b.scaleY; // 4-7
         width = height * meta.aspect;
         // Cap width to wall extent (~58 units). If the picked height makes
         // the sign too wide, shrink it proportionally.

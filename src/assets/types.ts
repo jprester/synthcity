@@ -146,10 +146,10 @@ function buildAdEmissiveEntries(): Record<
     entries[adMatKey(ad.id, "holo")] = { category: "ads", base: 0.7 };
     entries[adMatKey(ad.id, "billboard")] = { category: "ads", base: 0.6 };
   }
-  // Small ads / neon signs — same category as billboards, slightly brighter
+  // Small ads / neon signs — same category as billboards, brighter still
   // since the alpha-cut around the sign means less surface area is glowing.
   for (const ad of SMALL_ADS_META) {
-    entries[smallAdMatKey(ad.id)] = { category: "ads", base: 0.9 };
+    entries[smallAdMatKey(ad.id)] = { category: "ads", base: 1.35 };
   }
   return entries;
 }
