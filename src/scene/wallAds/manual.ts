@@ -136,9 +136,10 @@ export const WALL_ADS_MANUAL: WallAdManualEntry[] = [
     adId: 13,
     face: 1,
     height: 130,
-    offsetOut: 37,
+    offsetOut: 38,
+    offsetSide: 4,
     y: 60,
-    emissiveIntensity: 1.1,
+    emissiveIntensity: 1.5,
   }, // Geisha
 
   // Bottom tower row
