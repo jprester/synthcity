@@ -87,6 +87,86 @@ function getRoadFacingDirs(x: number, z: number): number[] {
   return dirs;
 }
 
+/**
+ * Per-model half-extents of small buildings, measured from their OBJ/GLB
+ * geometry in the model's local space. Buildings vary 50–60 units wide,
+ * and some are rectangular (different x vs z), so a single global wall
+ * radius makes signs float on narrow buildings or clip into wide ones.
+ *
+ * Values are in MODEL-local space. Building runtime rotation (0/90/180/
+ * 270°) swaps which axis maps to world x vs z — see signWallRadius below.
+ */
+const SMALL_BUILDING_HALF_EXTENTS: Record<
+  string,
+  { halfX: number; halfZ: number }
+> = {
+  s_01_01: { halfX: 29.5, halfZ: 29.6 },
+  s_01_02: { halfX: 29.7, halfZ: 29.4 },
+  s_01_03: { halfX: 28.6, halfZ: 29.3 },
+  s_02_01: { halfX: 25.3, halfZ: 29.8 },
+  s_02_02: { halfX: 27.7, halfZ: 25.6 },
+  s_02_03: { halfX: 28.7, halfZ: 28.2 },
+  s_03_01: { halfX: 29.8, halfZ: 28.6 },
+  s_03_02: { halfX: 28.8, halfZ: 30.1 },
+  s_03_03: { halfX: 30.7, halfZ: 26.5 },
+  // GLB variants — computed from each model's node transform (90° X
+  // rotation + non-uniform scale baked into the geometry). These differ
+  // significantly from the OBJ-building defaults, which is what was
+  // causing visible ad-float on s_03_04/06/07 in particular.
+  s_03_04: { halfX: 22.6, halfZ: 26.0 },
+  s_03_05: { halfX: 29.7, halfZ: 37.3 },
+  s_03_06: { halfX: 23.7, halfZ: 24.0 },
+  s_03_07: { halfX: 19.7, halfZ: 25.2 },
+};
+
+/**
+ * Optional per-model override that forces ads onto a specific section of
+ * the building. Use this for stepped / wedding-cake GLBs where the lower
+ * floors are split (e.g. s_03_04's legs) or where the visually attachable
+ * wall isn't at the base. When present, the ad's y placement and the
+ * wall radius are taken from here, bypassing the bucket y-rule and the
+ * SMALL_BUILDING_HALF_EXTENTS lookup for that ad.
+ *
+ *   y      — world Y for the ad center (pre-scaleY; gets multiplied by
+ *            b.scaleY at runtime)
+ *   halfX  — half-extent of the wall at this y, along the model's local X
+ *   halfZ  — half-extent at this y, along the model's local Z
+ */
+const SMALL_BUILDING_AD_ATTACH: Partial<
+  Record<string, { y: number; halfX: number; halfZ: number }>
+> = {
+  // s_03_04 — split-leg base, attach to the wider middle "bulge" section.
+  // Initial estimate; tweak if the ad reads as floating above/below the
+  // visible bulge.
+  s_03_04: { y: 45, halfX: 22, halfZ: 24 },
+};
+
+/**
+ * Distance from the building's center to the wall whose outward normal
+ * points along the given world rotation. Accounts for the building's own
+ * Y rotation (0/90/180/270 deg) swapping which local axis aligns with
+ * which world axis.
+ */
+function signWallRadius(
+  modelKey: string,
+  buildingRotationY: number,
+  signRotationY: number,
+): number {
+  const attach = SMALL_BUILDING_AD_ATTACH[modelKey];
+  const ext = attach ?? SMALL_BUILDING_HALF_EXTENTS[modelKey];
+  if (!ext) return 29.5; // fallback for unknown models
+  // After rotating by buildingRotationY, the local x-axis aligns with world
+  // x when rotation is ~0/π and with world z when ~±π/2.
+  const swap =
+    Math.abs(Math.sin(buildingRotationY)) > Math.abs(Math.cos(buildingRotationY));
+  const worldHalfX = swap ? ext.halfZ : ext.halfX;
+  const worldHalfZ = swap ? ext.halfX : ext.halfZ;
+  // Sign plane's outward unit vector = (sin(rotY), cos(rotY)). For axis-
+  // aligned faces (±π/2 or 0/π) one of sin/cos is ~1, the other ~0.
+  const dx = Math.abs(Math.sin(signRotationY));
+  return dx > 0.5 ? worldHalfX : worldHalfZ;
+}
+
 function weightedPick<T extends string>(
   weights: Record<T, number>,
   r: number,
@@ -118,13 +198,11 @@ export function resolveSmallSignsProcedural(
   const pickFrom = <T>(arr: readonly T[]): T =>
     arr[Math.floor(rand() * arr.length)];
 
-  // Small building OBJs measure ~58-60 units wide along both ground axes
-  // (s_01/s_02/s_03 are all roughly square in plan, with half-width ~29-30).
-  // Plane needs to sit just outside the wall, plus a small clearance so it
-  // doesn't z-fight with the wall surface.
-  const WALL_RADIUS = 30;
-  // Max lateral slide along a 60-unit-wide wall before the plane corner
-  // pokes past the building edge.
+  // Tiny clearance to keep the plane just off the wall — avoids z-fighting
+  // without leaving a visible gap.
+  const WALL_CLEARANCE = 0.4;
+  // Max lateral slide along the wall before the plane corner pokes past the
+  // building edge. ~24 leaves a small margin even on the narrower models.
   const MAX_SIDE_OFFSET = 24;
 
   for (const b of layout.buildings) {
@@ -141,36 +219,72 @@ export function resolveSmallSignsProcedural(
     const roadDirs = getRoadFacingDirs(b.x, b.z);
     const rotationY = roadDirs[Math.floor(rand() * roadDirs.length)];
 
+    // Per-face wall radius — varies by model (some are rectangular) and by
+    // building rotation (90°/270° swaps the x/z extents). Plus a tiny
+    // clearance to keep the plane just off the wall surface.
+    const wallRadius =
+      signWallRadius(b.modelKey, b.rotationY, rotationY) + WALL_CLEARANCE;
+
+    // Models with a manual attach point force the ad to a specific y level
+    // (e.g. onto a wider mid-building bulge), overriding the bucket's
+    // lower-floor rule.
+    const attach = SMALL_BUILDING_AD_ATTACH[b.modelKey];
+
     // Per-bucket sizing + placement.
     let height: number;
     let width: number;
     let y: number;
-    let offsetOut = WALL_RADIUS;
+    let offsetOut = wallRadius;
     let offsetSide = 0;
 
     switch (bucket) {
       case "1-4": {
-        // Tall vertical neon — building edge, sometimes hanging out.
-        // Heights span lower floors; width stays narrow (4-6.5 units).
+        // Tall vertical neon — building edge, sometimes a perpendicular
+        // blade. Heights span lower floors; width stays narrow (4-6.5 units).
         height = (18 + rand() * 14) * b.scaleY; // 18-32
         width = height * meta.aspect;
         // Mid-point puts the bottom near street level; cap so top stays
         // within the lower portion of the building (~40 units up).
         y = (4 + rand() * 6) * b.scaleY + height / 2;
-        // Push toward a wall edge — half-width is ~29; leave the sign's
-        // own half-width as margin so it doesn't poke past the corner.
+        // ~35% chance to mount as a true perpendicular blade sign rather
+        // than flush against the wall. Blades use a different rotation +
+        // anchoring, so push them as their own ad and skip the shared
+        // flush placement below.
+        if (rand() < 0.35) {
+          // Blade hangs from a wall corner, sign face oriented along the
+          // road (90° from the wall normal). Plane's width axis extends
+          // outward from the wall surface.
+          const sideAnchor = (rand() < 0.5 ? -1 : 1) * MAX_SIDE_OFFSET;
+          const outSin = Math.sin(rotationY);
+          const outCos = Math.cos(rotationY);
+          const alongSin = Math.cos(rotationY);
+          const alongCos = -Math.sin(rotationY);
+          // Wall point at the corner, then push the plane's center out by
+          // width/2 so the inner edge meets the wall.
+          const wallPx = b.x + outSin * wallRadius + alongSin * sideAnchor;
+          const wallPz = b.z + outCos * wallRadius + alongCos * sideAnchor;
+          // Buildings with an attach override pin blades to that y too.
+          const bladeY = attach ? attach.y * b.scaleY : y;
+          ads.push({
+            matKey: smallAdMatKey(meta.id),
+            aspect: meta.aspect,
+            x: wallPx + outSin * (width / 2),
+            y: bladeY,
+            z: wallPz + outCos * (width / 2),
+            width,
+            height,
+            // Plane normal points along the wall — face is visible from
+            // road traffic on either side (DoubleSide).
+            rotationY: rotationY + Math.PI / 2,
+            rotationX: 0,
+          });
+          continue;
+        }
+        // Flush variant — push toward a wall edge; leave the sign's own
+        // half-width as margin so it doesn't poke past the corner.
         const sideRoom = Math.max(0, MAX_SIDE_OFFSET - width / 2);
         offsetSide =
           (rand() < 0.5 ? -1 : 1) * (sideRoom * (0.6 + rand() * 0.4));
-        // ~35% chance to hang outside the wall — pull the plane out so
-        // most of its width sits beyond the wall, like a perpendicular
-        // blade sign. DoubleSide renders the same texture both ways.
-        if (rand() < 0.35) {
-          offsetOut = WALL_RADIUS + width * 0.55;
-          // Anchor close to the corner when hanging, so it reads as
-          // mounted to the building edge.
-          offsetSide = (offsetSide < 0 ? -1 : 1) * sideRoom;
-        }
         break;
       }
       case "4-1": {
@@ -226,12 +340,14 @@ export function resolveSmallSignsProcedural(
     const cos = Math.cos(rotationY);
     const dx = sin * offsetOut + cos * offsetSide;
     const dz = cos * offsetOut - sin * offsetSide;
+    // Attach overrides the bucket-driven y for this model.
+    const finalY = attach ? attach.y * b.scaleY : y;
 
     ads.push({
       matKey: smallAdMatKey(meta.id),
       aspect: meta.aspect,
       x: b.x + dx,
-      y,
+      y: finalY,
       z: b.z + dz,
       width,
       height,
