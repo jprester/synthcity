@@ -84,8 +84,8 @@ export const PRESET_DEFAULT: VisualPreset = {
     opacity: 0.02,
   },
   emissive: {
-    ads: 1.0,
-    buildings: 1.0,
+    ads: 1.2,
+    buildings: 1.6,
     neons: 1.0,
     ambient: 1.0,
     smoke: 1.0,

@@ -73,7 +73,8 @@ export const WALL_ADS_MANUAL: WallAdManualEntry[] = [
     offsetOut: 25,
     offsetSide: -70,
     y: 100,
-    emissiveIntensity: 0.9,
+    cutBackground: true,
+    emissiveIntensity: 1,
   }, // ninja
 
   // Cyberdine tower (7, 4) — hero billboard on the west face, visible from spawn
@@ -93,7 +94,7 @@ export const WALL_ADS_MANUAL: WallAdManualEntry[] = [
     offsetOut: 56,
     offsetSide: 10,
     y: 240,
-    emissiveIntensity: 4,
+    // emissiveIntensity: 4,
     cutBackground: false,
   }, // calligraphy
   { gi: 11, gj: 7, adId: 11, face: 3, height: 80, y: 180 }, // square: image-1812
@@ -139,7 +140,7 @@ export const WALL_ADS_MANUAL: WallAdManualEntry[] = [
     offsetOut: 38,
     offsetSide: 4,
     y: 60,
-    emissiveIntensity: 1.6,
+    // emissiveIntensity: 1.3,
   }, // Geisha
 
   // Bottom tower row
@@ -153,7 +154,7 @@ export const WALL_ADS_MANUAL: WallAdManualEntry[] = [
     offsetOut: 0,
     y: 240,
     cutBackground: true,
-    emissiveIntensity: 5,
+    emissiveIntensity: 10,
   }, // Sengoku icon
 ];
 

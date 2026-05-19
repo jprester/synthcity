@@ -44,14 +44,14 @@ export const ENVIRONMENT_NIGHT: EnvironmentConfig = {
   },
   sun: {
     color: COLORS.night.sun,
-    intensity: 0.4,
+    intensity: 0.6,
     x: 1,
     y: 0.5,
     z: 0.25,
   },
   ambient: {
     color: COLORS.night.ambient,
-    intensity: 0.2,
+    intensity: 0.4,
   },
 };
 
