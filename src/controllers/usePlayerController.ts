@@ -203,14 +203,15 @@ export function usePlayerController(): PlayerController {
       },
       on_mouse_down(event: MouseEvent) {
         if (this.enabled) {
-          switch (event.which) {
-            case 1:
+          // event.button: 0 = left, 1 = middle, 2 = right (event.which is deprecated)
+          switch (event.button) {
+            case 0:
               this.mb_left = true;
               break;
-            case 2:
+            case 1:
               this.mb_middle = true;
               break;
-            case 3:
+            case 2:
               this.mb_right = true;
               break;
             default:
@@ -220,15 +221,15 @@ export function usePlayerController(): PlayerController {
       },
       on_mouse_up(event: MouseEvent) {
         if (this.enabled) {
-          switch (event.which) {
-            case 1:
+          switch (event.button) {
+            case 0:
               this.mb_left = false;
               this.mb_left_released = true;
               break;
-            case 2:
+            case 1:
               this.mb_middle = false;
               break;
-            case 3:
+            case 2:
               this.mb_right = false;
               break;
             default:
@@ -253,7 +254,9 @@ export function usePlayerController(): PlayerController {
     document.addEventListener('mouseup', onMouseUp, false);
     document.addEventListener('keydown', onKeyDown, false);
     document.addEventListener('keyup', onKeyUp, false);
-    document.addEventListener('mousewheel', onMouseWheel, false);
+    // Standard 'wheel' event ('mousewheel' is legacy/non-standard and never
+    // fired in Firefox). on_mouse_wheel reads event.deltaY, which 'wheel' provides.
+    document.addEventListener('wheel', onMouseWheel, { passive: true });
 
     return () => {
       document.removeEventListener('mousemove', onMouseMove, false);
@@ -261,7 +264,7 @@ export function usePlayerController(): PlayerController {
       document.removeEventListener('mouseup', onMouseUp, false);
       document.removeEventListener('keydown', onKeyDown, false);
       document.removeEventListener('keyup', onKeyUp, false);
-      document.removeEventListener('mousewheel', onMouseWheel, false);
+      document.removeEventListener('wheel', onMouseWheel);
     };
   }, [controller]);
 

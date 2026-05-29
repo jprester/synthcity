@@ -41,6 +41,31 @@ export function PointerLockSystem() {
     };
   }, [handlePointerLockChange]);
 
+  // After the player drops pointer lock (Escape / window blur), the cursor is
+  // free and the scene stays visible. Clicking back on the canvas re-acquires
+  // pointer lock so mouse-look resumes — without bringing back the splash.
+  // Restricted to canvas clicks so it never fires while the user is interacting
+  // with the splash/settings overlay (which sits above the canvas).
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      const game = gameRef.current;
+      if (!game || !game.initialized) {
+        return;
+      }
+      if (event.target !== game.canvas) {
+        return;
+      }
+      const target = game.pointerLockElement || game.canvas || document.body;
+      if (document.pointerLockElement === target) {
+        return;
+      }
+      target.requestPointerLock?.();
+    };
+
+    window.addEventListener("click", handleClick);
+    return () => window.removeEventListener("click", handleClick);
+  }, [gameRef]);
+
   useEffect(() => {
     syncPointerLockState();
   }, [syncPointerLockState]);

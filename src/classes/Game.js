@@ -29,7 +29,12 @@ class Game {
 
     const urlParams = new URLSearchParams(window.location.search);
 
-    this.uiOnUnfocus = true;
+    // When pointer lock is lost (Escape / window blur), the browser releases
+    // the cursor. By default we keep the scene visible and let a click on the
+    // canvas re-acquire pointer lock (see PointerLockSystem) instead of slamming
+    // the full splash/terminal overlay back over the view. Opt back into the
+    // old behaviour with ?uiOnUnfocus=1.
+    this.uiOnUnfocus = false;
     if (urlParams.has("uiOnUnfocus"))
       this.uiOnUnfocus = urlParams.get("uiOnUnfocus") == 1 ? true : false;
 
@@ -159,7 +164,7 @@ class Game {
   }
 
   updatePlayer(delta) {
-    this.player.update();
+    this.player.update(delta);
     this.playerController.update();
   }
 

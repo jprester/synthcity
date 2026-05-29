@@ -1,4 +1,5 @@
 import { PerspectiveCamera, Object3D, Vector3 } from "three";
+import { frameFactor, smoothingFactor } from "../utils";
 
 class Player {
   constructor(params) {
@@ -63,7 +64,12 @@ class Player {
     this.move_max_speed_current = 0;
   }
 
-  update() {
+  update(delta = 1 / 60) {
+    // Normalized frame factor: 1.0 at 60fps. Linear per-frame increments are
+    // multiplied by `f`; exponential smoothing uses smoothingFactor(rate, f).
+    // Mouse-look is driven by physical mouse deltas, so it stays unscaled.
+    const f = frameFactor(delta);
+
     /*--- UPDATE CAMERA ---*/
 
     var movementX = this.controller.mouse_move_x;
@@ -88,7 +94,8 @@ class Player {
       this.camera_fov_to += mouse_wheel_delta * 0.05;
       this.camera_fov_to = Math.max(Math.min(this.camera_fov_to, 90), 30);
     }
-    this.camera.fov += (this.camera_fov_to - this.camera.fov) * 0.1;
+    this.camera.fov +=
+      (this.camera_fov_to - this.camera.fov) * smoothingFactor(0.1, f);
     this.camera.updateProjectionMatrix();
 
     // set camera postion to body position
@@ -104,7 +111,7 @@ class Player {
     // smooth look
     this.camera.quaternion.slerp(
       this.camera_target.quaternion,
-      this.look_smooth,
+      smoothingFactor(this.look_smooth, f),
     );
 
     /*--- UPDATE VELOCITY ---*/
@@ -117,31 +124,36 @@ class Player {
       this.controller.key_right
     ) {
       if (this.controller.key_up) {
-        this.velocity.z -= Math.cos(-this.camera.rotation.y) * this.move_accel;
-        this.velocity.x += Math.sin(-this.camera.rotation.y) * this.move_accel;
+        this.velocity.z -=
+          Math.cos(-this.camera.rotation.y) * this.move_accel * f;
+        this.velocity.x +=
+          Math.sin(-this.camera.rotation.y) * this.move_accel * f;
       }
       if (this.controller.key_down) {
         this.velocity.z -=
-          Math.cos(-this.camera.rotation.y + Math.PI) * this.move_accel;
+          Math.cos(-this.camera.rotation.y + Math.PI) * this.move_accel * f;
         this.velocity.x +=
-          Math.sin(-this.camera.rotation.y + Math.PI) * this.move_accel;
+          Math.sin(-this.camera.rotation.y + Math.PI) * this.move_accel * f;
       }
       if (this.controller.key_left) {
         this.velocity.z -=
-          Math.cos(-this.camera.rotation.y - Math.PI / 2) * this.move_accel;
+          Math.cos(-this.camera.rotation.y - Math.PI / 2) * this.move_accel * f;
         this.velocity.x +=
-          Math.sin(-this.camera.rotation.y - Math.PI / 2) * this.move_accel;
+          Math.sin(-this.camera.rotation.y - Math.PI / 2) * this.move_accel * f;
       }
       if (this.controller.key_right) {
         this.velocity.z -=
-          Math.cos(-this.camera.rotation.y + Math.PI / 2) * this.move_accel;
+          Math.cos(-this.camera.rotation.y + Math.PI / 2) * this.move_accel * f;
         this.velocity.x +=
-          Math.sin(-this.camera.rotation.y + Math.PI / 2) * this.move_accel;
+          Math.sin(-this.camera.rotation.y + Math.PI / 2) * this.move_accel * f;
       }
     }
     // decelerate
     else {
-      this.velocity.clampLength(0, this.velocity.length() - this.move_accel);
+      this.velocity.clampLength(
+        0,
+        this.velocity.length() - this.move_accel * f,
+      );
     }
 
     // max speed
@@ -151,21 +163,21 @@ class Player {
     if (this.move_max_speed_current < this.move_max_speed)
       this.move_max_speed_current = this.move_max_speed;
     if (this.move_max_speed_current > this.move_max_speed)
-      this.move_max_speed_current -= this.move_accel;
+      this.move_max_speed_current -= this.move_accel * f;
     this.velocity.clampLength(0, this.move_max_speed_current);
 
     /*--- UPDATE POSITION ---*/
 
     // x, z
-    this.body.position.x += this.velocity.x * (this.body.position.y * 0.01);
-    this.body.position.z += this.velocity.z * (this.body.position.y * 0.01);
+    this.body.position.x += this.velocity.x * (this.body.position.y * 0.01) * f;
+    this.body.position.z += this.velocity.z * (this.body.position.y * 0.01) * f;
 
-    // y
+    // y (altitude change is multiplicative per frame -> raise to the f power)
     if (this.controller.key_r) {
-      this.body.position.y = this.body.position.y * 1.02;
+      this.body.position.y *= Math.pow(1.02, f);
     }
     if (this.controller.key_f) {
-      this.body.position.y = this.body.position.y / 1.02;
+      this.body.position.y /= Math.pow(1.02, f);
     }
     if (this.body.position.y < 15) this.body.position.y = 15;
     if (this.body.position.y > 800) this.body.position.y = 800;
