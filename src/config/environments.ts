@@ -13,6 +13,12 @@ export type EnvironmentConfig = {
   windowLights: boolean;
   spotLights: boolean;
   streetLights: boolean;
+  /**
+   * Whether the directional (sun) light casts real-time shadows. At night the
+   * shadow is imperceptible against the dark, emissive-driven scene, so we skip
+   * the entire shadow render pass — a significant frame-time saving.
+   */
+  shadows: boolean;
   fog: {
     color: number;
     density: number;
@@ -38,6 +44,7 @@ export const ENVIRONMENT_NIGHT: EnvironmentConfig = {
   windowLights: true,
   spotLights: true,
   streetLights: true,
+  shadows: false,
   fog: {
     color: COLORS.night.fog,
     density: 0.0011,
@@ -63,6 +70,7 @@ export const ENVIRONMENT_DAY: EnvironmentConfig = {
   windowLights: false,
   spotLights: false,
   streetLights: false,
+  shadows: true,
   fog: {
     color: COLORS.day.fog,
     density: 0.00035,

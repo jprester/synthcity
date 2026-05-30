@@ -1,5 +1,11 @@
 import { PerspectiveCamera, Object3D, Vector3 } from "three";
 import { frameFactor, smoothingFactor } from "../utils";
+import {
+  HUMAN_EYE_HEIGHT_UNITS,
+  MIN_EYE_HEIGHT_METERS,
+  MAX_EYE_HEIGHT_METERS,
+  meters,
+} from "../config/scale";
 
 class Player {
   constructor(params) {
@@ -9,7 +15,9 @@ class Player {
 
     // settings
 
-    this.player_height = 250; // 1.67
+    // Real-scale eye height: ~1.70 m above the ground for a ~180 cm human
+    // (see config/scale.ts — 1 m = 1.6 world units, anchored to the block size).
+    this.player_height = HUMAN_EYE_HEIGHT_UNITS;
     this.mouse_sensitivity = 0.00125; //0.002;
     this.look_smooth = 0.15; //0.075;
     this.look_roll_factor = 0.1;
@@ -27,7 +35,9 @@ class Player {
 
     // init
 
-    this.camera_fov = 80;
+    // Vertical FOV. ~58° reads as a natural human perspective (80° was
+    // ~112° horizontal — fisheye-wide, which shrank the buildings/windows).
+    this.camera_fov = 58;
     this.camera_fov_to = this.camera_fov;
 
     this.camera =
@@ -168,9 +178,12 @@ class Player {
 
     /*--- UPDATE POSITION ---*/
 
-    // x, z
-    this.body.position.x += this.velocity.x * (this.body.position.y * 0.01) * f;
-    this.body.position.z += this.velocity.z * (this.body.position.y * 0.01) * f;
+    // x, z — movement speed scales with altitude (fly faster up high), but is
+    // floored at 1x so street-level walking stays a normal pace instead of
+    // crawling (the raw height factor is ~0.03 at human eye height).
+    const heightSpeedFactor = Math.max(this.body.position.y * 0.01, 1.0);
+    this.body.position.x += this.velocity.x * heightSpeedFactor * f;
+    this.body.position.z += this.velocity.z * heightSpeedFactor * f;
 
     // y (altitude change is multiplicative per frame -> raise to the f power)
     if (this.controller.key_r) {
@@ -179,8 +192,11 @@ class Player {
     if (this.controller.key_f) {
       this.body.position.y /= Math.pow(1.02, f);
     }
-    if (this.body.position.y < 15) this.body.position.y = 15;
-    if (this.body.position.y > 800) this.body.position.y = 800;
+    // Altitude limits in real meters: ~0.9 m (crouch) up to ~500 m (flight).
+    const minY = meters(MIN_EYE_HEIGHT_METERS);
+    const maxY = meters(MAX_EYE_HEIGHT_METERS);
+    if (this.body.position.y < minY) this.body.position.y = minY;
+    if (this.body.position.y > maxY) this.body.position.y = maxY;
 
     /*--- UPDATE AUDIO ---*/
 

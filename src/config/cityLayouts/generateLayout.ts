@@ -31,6 +31,11 @@ function getBuildingMatKey(noise: number): string {
 const NOISEFACTOR = 0.0017;
 const CELL_SIZE = CITY_BLOCK_SIZE + ROAD_WIDTH;
 
+// Residential (s_01) and commercial (s_02) windows read slightly small at human
+// scale, so enlarge those buildings uniformly a touch. Windows are baked into
+// the model UVs, so a uniform scale enlarges the windows proportionally.
+const SMALL_BUILDING_WINDOW_SCALE = 1.08;
+
 // ── City template ────────────────────────────────────────────────────────────
 //
 // Each character defines what occupies a city block:
@@ -299,6 +304,12 @@ function placeSmallBuildings(
 
       const type = selectSmallBuilding(blockType, typeNoise, subtypeNoise);
 
+      // Enlarge residential/commercial uniformly so their windows read larger.
+      const windowScale =
+        type.startsWith("s_01_") || type.startsWith("s_02_")
+          ? SMALL_BUILDING_WINDOW_SCALE
+          : 1;
+
       const matNoise = fixNoise(noise.noise(wx * -3, wz * -3));
       const matKey = getBuildingMatKey(matNoise);
 
@@ -307,9 +318,9 @@ function placeSmallBuildings(
         materialKey: matKey,
         x: wx,
         z: wz,
-        scaleX: 1,
-        scaleY: scale,
-        scaleZ: 1,
+        scaleX: windowScale,
+        scaleY: scale * windowScale,
+        scaleZ: windowScale,
         rotationY: (rotate * Math.PI) / 180,
         gi,
         gj,

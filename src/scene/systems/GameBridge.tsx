@@ -49,7 +49,9 @@ export function GameBridge() {
     gl.toneMapping = NoToneMapping;
     gl.toneMappingExposure = 1.0;
     gl.outputColorSpace = SRGBColorSpace;
-    gl.shadowMap.enabled = true;
+    // Only enable the shadow map (and its per-material shader cost) when the
+    // active environment actually casts shadows. Night skips it entirely.
+    gl.shadowMap.enabled = game.environment.shadows;
     gl.shadowMap.type = PCFSoftShadowMap;
 
     // In quickstart mode, start loading assets immediately (no terminal boot delay)
@@ -135,6 +137,9 @@ export function GameBridge() {
     }
   }, 1);
 
+  // Smaller shadow map on lower quality tiers (only used when shadows are on).
+  const shadowMapSize = settings.qualityLevel === "high" ? 2048 : 1024;
+
   return (
     <>
       {environment && (
@@ -144,12 +149,12 @@ export function GameBridge() {
             color={environment.ambient.color}
           />
           <directionalLight
-            castShadow={true}
+            castShadow={environment.shadows}
             intensity={environment.sun.intensity}
             color={environment.sun.color}
             position={[environment.sun.x, environment.sun.y, environment.sun.z]}
-            shadow-mapSize-width={2048}
-            shadow-mapSize-height={2048}
+            shadow-mapSize-width={shadowMapSize}
+            shadow-mapSize-height={shadowMapSize}
             shadow-camera-near={0.5}
             shadow-camera-far={1500}
             shadow-camera-left={-500}

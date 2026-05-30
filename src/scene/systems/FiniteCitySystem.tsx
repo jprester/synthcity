@@ -1,8 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Mesh, PlaneGeometry, MeshBasicMaterial, DoubleSide } from "three";
+import {
+  Mesh,
+  PlaneGeometry,
+  MeshBasicMaterial,
+  DoubleSide,
+  RepeatWrapping,
+} from "three";
+import type { Texture } from "three";
 import { useFrame } from "@react-three/fiber";
+import { MeshReflectorMaterial } from "@react-three/drei";
 import { useGameStore } from "../../context/GameContext";
+import type { QualityLevel } from "../../types/settings";
 import { generateLayout, loadLayoutFromURL } from "../../config/cityLayouts";
+import { CITY_BLOCK_SIZE, ROAD_WIDTH } from "../../config/world";
+import { unitsToMeters, UNITS_PER_METER } from "../../config/scale";
 import { createPerlin } from "../../utils";
 import type { FiniteCityLayout } from "../../config/cityLayouts";
 import {
@@ -25,7 +36,7 @@ type GroundLight = {
 };
 
 export function FiniteCitySystem() {
-  const { gameRef, settings } = useGameStore();
+  const { gameRef, settings, launchReady } = useGameStore();
   const { visibility } = settings;
   const initRef = useRef(false);
   const spawnAppliedRef = useRef(false);
@@ -47,6 +58,39 @@ export function FiniteCitySystem() {
       setLayout(generateLayout(settings.worldSeed));
     }
   }, [settings.finiteLayout, settings.worldSeed]);
+
+  // DEV: audit unique building model heights against the real-meter scale, so
+  // we can verify proportions are realistic now that the camera is real-scale.
+  // Floors assume ~3.5 m floor-to-floor; scaleNote flags per-instance Y scaling.
+  useEffect(() => {
+    if (!import.meta.env.DEV) return;
+    const game = gameRef.current;
+    if (!layout || !launchReady || !game?.assets?.loaded) return;
+    const seen = new Set<string>();
+    const rows: Array<Record<string, number | string>> = [];
+    for (const b of layout.buildings) {
+      if (seen.has(b.modelKey)) continue;
+      const geom = game.assets.getModel(b.modelKey);
+      if (!geom) continue;
+      seen.add(b.modelKey);
+      if (!geom.boundingBox) geom.computeBoundingBox();
+      const bbox = geom.boundingBox;
+      if (!bbox) continue;
+      const heightUnits = bbox.max.y - bbox.min.y;
+      const heightMeters = unitsToMeters(heightUnits);
+      rows.push({
+        model: b.modelKey,
+        heightUnits: Math.round(heightUnits),
+        heightMeters: Math.round(heightMeters),
+        floors: Math.round(heightMeters / 3.5),
+      });
+    }
+    rows.sort((a, b) => (a.heightMeters as number) - (b.heightMeters as number));
+    // eslint-disable-next-line no-console
+    console.log(`[scale audit] ${UNITS_PER_METER} units = 1 m`);
+    // eslint-disable-next-line no-console
+    console.table(rows);
+  }, [layout, launchReady, gameRef]);
 
   // One-time log of every tower/skyscraper with its (gi, gj) cell coords,
   // so you can author WALL_ADS_MANUAL entries by reading off the table.
@@ -225,6 +269,7 @@ export function FiniteCitySystem() {
         layout={layout}
         game={gameRef.current}
         visibility={visibility}
+        qualityLevel={settings.qualityLevel}
       />
       {visibility.buildings && (
         <InstancedBuildings buildings={buildings} game={gameRef.current} />
@@ -339,14 +384,83 @@ function FiniteCityGround({
   layout,
   game,
   visibility,
+  qualityLevel,
 }: {
   layout: FiniteCityLayout;
   game: GameRuntime | null;
   visibility: { ground: boolean; storefronts: boolean };
+  qualityLevel: QualityLevel;
 }) {
+  // Wet-street reflections are GPU-heavy (an extra scene pass), so they're
+  // gated to medium/high quality; low quality keeps the cheap tiled ground.
+  const reflectionsEnabled = visibility.ground && qualityLevel !== "low";
+
+  // A single reflector plane covering the whole city — never one per tile, as
+  // each MeshReflectorMaterial drives its own reflection render. The ground
+  // texture is cloned and tiled across it so we keep the asphalt detail while
+  // adding reflections (drop-in point for proper road textures later).
+  const reflectivePlane = useMemo(() => {
+    if (!reflectionsEnabled || !game?.assets?.loaded) return null;
+    const { minX, maxX, minZ, maxZ } = layout.bounds;
+
+    // Original ground tiles were one cell (block+road) centered on each block,
+    // so the texture's cell boundaries sit at `blockX - ROAD_WIDTH/2` — i.e.
+    // every tile boundary is congruent to -ROAD_WIDTH/2 (mod CELL_SIZE). To
+    // keep the texture aligned with the block grid we snap the big plane's
+    // edges to that same lattice and use an integer repeat count, so each
+    // texture cell lands exactly on a block (no fractional phase offset).
+    const tileSize = CITY_BLOCK_SIZE + ROAD_WIDTH;
+    const phase = -ROAD_WIDTH / 2;
+    const snapDown = (v: number) =>
+      Math.floor((v - phase) / tileSize) * tileSize + phase;
+    const snapUp = (v: number) =>
+      Math.ceil((v - phase) / tileSize) * tileSize + phase;
+
+    const margin = CITY_BLOCK_SIZE;
+    const leftEdge = snapDown(minX - margin);
+    const rightEdge = snapUp(maxX + margin);
+    const bottomEdge = snapDown(minZ - margin);
+    const topEdge = snapUp(maxZ + margin);
+
+    const width = rightEdge - leftEdge;
+    const depth = topEdge - bottomEdge;
+    const repeatX = Math.round(width / tileSize);
+    const repeatY = Math.round(depth / tileSize);
+
+    // Edges land on tile boundaries and repeat is integer, so uv=0 at each edge
+    // already coincides with a texture-cell boundary → no offset needed.
+    const cloneTiled = (tex: Texture | undefined): Texture | null => {
+      if (!tex) return null;
+      const t = tex.clone();
+      t.wrapS = RepeatWrapping;
+      t.wrapT = RepeatWrapping;
+      t.repeat.set(repeatX, repeatY);
+      t.needsUpdate = true;
+      return t;
+    };
+
+    return {
+      width,
+      depth,
+      centerX: (leftEdge + rightEdge) / 2,
+      centerZ: (bottomEdge + topEdge) / 2,
+      map: cloneTiled(game.assets.getTexture("ground")),
+      emissiveMap: cloneTiled(game.assets.getTexture("ground_em")),
+    };
+  }, [reflectionsEnabled, layout.bounds, game?.assets, game?.assets?.loaded]);
+
+  // Dispose the cloned textures when the plane is rebuilt/unmounted.
+  useEffect(() => {
+    return () => {
+      reflectivePlane?.map?.dispose();
+      reflectivePlane?.emissiveMap?.dispose();
+    };
+  }, [reflectivePlane]);
+
   const groundMeshes = useMemo(() => {
     if (!game?.assets?.loaded) return [];
-    if (!visibility.ground) return [];
+    // Skip the tiled ground when the reflective plane replaces it.
+    if (!visibility.ground || reflectionsEnabled) return [];
 
     return layout.groundTiles.map((tile) => {
       const geometry = game.assets!.getModel("ground");
@@ -356,7 +470,7 @@ function FiniteCityGround({
       mesh.rotation.x = -Math.PI / 2;
       return mesh;
     });
-  }, [layout, game?.assets?.loaded, visibility.ground]);
+  }, [layout, game?.assets?.loaded, visibility.ground, reflectionsEnabled]);
 
   const storefrontMeshes = useMemo(() => {
     if (!game?.assets?.loaded) return [];
@@ -373,6 +487,36 @@ function FiniteCityGround({
 
   return (
     <group>
+      {reflectivePlane && (
+        <mesh
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={[reflectivePlane.centerX, 0, reflectivePlane.centerZ]}>
+          <planeGeometry
+            args={[reflectivePlane.width, reflectivePlane.depth]}
+          />
+          <MeshReflectorMaterial
+            resolution={qualityLevel === "high" ? 512 : 256}
+            blur={[300, 100]}
+            mixBlur={1}
+            // Reflection MULTIPLIES the lit base color, so the ground texture
+            // (map) provides the asphalt detail the reflection modulates. A
+            // high mixStrength compensates for the dark night lighting; the
+            // emissive map keeps the subtle blue ground glow.
+            mixStrength={20}
+            mirror={0.7}
+            depthScale={1}
+            minDepthThreshold={0.4}
+            maxDepthThreshold={1.2}
+            roughness={0.8}
+            metalness={0}
+            color="#3a3a48"
+            map={reflectivePlane.map ?? undefined}
+            emissiveMap={reflectivePlane.emissiveMap ?? undefined}
+            emissive="#0090ff"
+            emissiveIntensity={0.2}
+          />
+        </mesh>
+      )}
       {groundMeshes.map((mesh) => (
         <primitive key={mesh.uuid} object={mesh} receiveShadow />
       ))}
