@@ -1,3 +1,26 @@
+# Unreleased - Collapse to standalone Finite City
+
+- Removed the infinite procedural pipeline: `GeneratorSystem`, the
+  `GeneratorItem_CityBlock` / `GeneratorItem_CityLight` / `GeneratorItem_GroundLight`
+  generators, `GeneratorUtils`, and `CityBlockVisuals`.
+- Removed the `procedural` / `finite` city-mode switch (`cityMode`, `?city=`).
+  The finite, template-driven city is now the only path.
+- Removed the layout district/zone helpers (`cityLayouts/districts.ts`,
+  `cityLayouts/zones.ts`) and their types (`DistrictType`, `FiniteDistrict`,
+  `ZoneType`, `ZoneBias`). The city shape now comes from `CITY_TEMPLATE` in
+  `generateLayout.ts`.
+- Removed the unused building-registry threshold-selection helpers
+  (`buildVariantThresholds`, `selectVariantFromNoise`, `*_THRESHOLDS`).
+- Removed the `cityLights` visibility toggle and the now-unused `cityLights` /
+  `spotLights` environment flags, plus orphaned procedural constants in
+  `config/world.ts`.
+- Rebranded project metadata (package name `finite-city`, README, ARCHITECTURE,
+  AGENTS) for the standalone fork.
+- Kept intact but currently unwired into the finite scene (orphaned, retained
+  for future use): flying-car traffic (`GeneratorItem_Traffic`,
+  `PooledTrafficVisuals`) and mega-building instancing (`InstancedMegaBuildings`).
+  The player car and the smoke / spotlight visuals remain in active use.
+
 # 0.6.0 - Landmark & Slim Tower Systems
 
 - Added `LANDMARK_SERIES` to building registry — unique high-quality buildings guaranteed to appear once per city

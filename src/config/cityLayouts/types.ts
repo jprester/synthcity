@@ -29,17 +29,6 @@ export type FiniteStorefrontPlacement = {
   materialKey: string;
 };
 
-export type DistrictType = "default" | "downtown" | "industrial" | "residential" | "outskirts";
-
-export type FiniteDistrict = {
-  type: DistrictType;
-  /** Block-grid indices (gi, gj), 0-based from top-left of the grid */
-  minGi: number;
-  maxGi: number;
-  minGj: number;
-  maxGj: number;
-};
-
 export type FiniteCityLayout = {
   name: string;
   bounds: { minX: number; maxX: number; minZ: number; maxZ: number };
@@ -48,16 +37,4 @@ export type FiniteCityLayout = {
   megaBuildings?: FiniteMegaPlacement[];
   groundTiles: { x: number; z: number }[];
   storefronts: FiniteStorefrontPlacement[];
-};
-
-// ── Concentric zone system ──────────────────────────────────────────────────
-
-export type ZoneType = "suburbs" | "urban" | "business" | "financial" | "downtown";
-
-export type ZoneBias = {
-  emptyProbability: number;
-  smallProbability: number;
-  skyscraperProbability: number;
-  towerProbability: number;
-  smallWeights: { residential: number; commercial: number; industrial: number };
 };

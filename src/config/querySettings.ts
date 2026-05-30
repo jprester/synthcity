@@ -1,15 +1,15 @@
 /**
  * Parse game settings from URL query parameters.
  *
- * Quickstart is the default (auto-launch into finite/freeroam). To see the
- * original procedural setup terminal, append `?setup` or `?quickstart=0`.
+ * Quickstart is the default (auto-launch into the city). To see the boot
+ * terminal/splash, append `?setup` or `?quickstart=0`.
  *
  * Supported params:
- *   setup          - show the procedural setup terminal (disables quickstart)
+ *   setup          - show the boot terminal/splash (disables quickstart)
  *   quickstart     - "0" disables quickstart; any other value (or absent) keeps it on
  *   mode           - "drive" | "freeroam"
- *   city           - "procedural" | "finite"
- *   layout         - filename from public/layouts/ (e.g. "my_city.json"), implies city=finite
+ *   layout         - filename from public/layouts/ (e.g. "my_city.json") to load
+ *                    instead of generating from the built-in template
  *   seed           - world seed number
  *   quality        - "low" | "medium" | "high"
  *   fps            - 0 | 30 | 60 | 120
@@ -20,14 +20,13 @@
  *   sfx            - "0" or "1"
  *
  * Example:
- *   ?setup&mode=drive&city=procedural   (show splash, drive procedural city)
+ *   ?setup&mode=drive   (show splash, drive through the city)
  */
 
 import { DEFAULT_GAME_SETTINGS } from "./settings";
-import type { GameSettings, CityMode, QualityLevel, FrameRateLimit } from "../types/settings";
+import type { GameSettings, QualityLevel, FrameRateLimit } from "../types/settings";
 
 const VALID_MODES = new Set(["drive", "freeroam"]);
-const VALID_CITY_MODES = new Set<string>(["procedural", "finite"]);
 const VALID_QUALITY: Set<string> = new Set(["low", "medium", "high"]);
 const VALID_FPS = new Set([0, 30, 60, 120]);
 const VALID_RESOLUTIONS = new Set([0.5, 0.75, 1, 1.5]);
@@ -50,16 +49,9 @@ export function parseQuerySettings(search: string = window.location.search): Que
     settings.mode = mode;
   }
 
-  const cityMode = params.get("city");
-  if (cityMode && VALID_CITY_MODES.has(cityMode)) {
-    settings.cityMode = cityMode as CityMode;
-  }
-
   const layout = params.get("layout");
   if (layout) {
     settings.finiteLayout = layout;
-    // ?layout= implies finite city mode
-    if (!settings.cityMode) settings.cityMode = "finite";
   }
 
   const seed = params.get("seed");

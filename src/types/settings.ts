@@ -16,14 +16,10 @@ export type VisibilitySettings = {
   playerCar: boolean;
   ground: boolean;
   storefronts: boolean;
-  cityLights: boolean;
 };
-
-export type CityMode = "procedural" | "finite";
 
 export type GameSettings = {
   mode: string;
-  cityMode: CityMode;
   /** Filename in public/layouts/ to load instead of generating. e.g. "my_city.json" */
   finiteLayout?: string;
   worldSeed: number;

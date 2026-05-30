@@ -75,23 +75,6 @@ export type RuntimeRadio = {
   update: () => void;
 };
 
-export type CityLightDescriptor = {
-  free: boolean;
-  position: Vector3Like;
-  color: { h: number; s: number; l: number };
-};
-
-export type CityBlockVisualDescriptor = {
-  modelKey: string;
-  material?: Material;
-  materialKey?: string;
-  position: Vector3Like;
-  scale?: Vector3Like;
-  rotationX?: number;
-  rotationY?: number;
-  rotationZ?: number;
-};
-
 export type UpdateableKind = "advert" | "smoke" | "spotlight" | "topper";
 
 export type UpdateableVisualState = {
@@ -117,20 +100,8 @@ export type TrafficCarState = {
 
 export type WithGenId<T> = T & { __genId?: string };
 
-export type CityBlockItemState = {
-  visuals?: CityBlockVisualDescriptor[];
-  updateables?: UpdateableVisualState[];
-  update?: () => void;
-  remove?: () => void;
-};
-
 export type TrafficItemState = {
   cars?: TrafficCarState[];
-  update?: () => void;
-  remove?: () => void;
-};
-
-export type CityLightItemState = {
   update?: () => void;
   remove?: () => void;
 };
@@ -154,8 +125,6 @@ export type GameRuntime = {
   roadWidth: number;
   cityBlockNoise?: NoiseRuntime;
   cityBlockNoiseFactor?: number;
-  cityLights?: CityLightDescriptor[];
-  groundLights?: CityLightDescriptor[];
   canvas?: HTMLElement | null;
   pointerLockElement?: Element | null;
   uiOnUnfocus?: boolean;

@@ -34,7 +34,7 @@ export type BuildingSeries = {
 // ============================================================================
 
 // Small buildings — used for asset pipeline derivation ONLY.
-// Runtime selection in GeneratorItem_CityBlock.js stays hardcoded for these.
+// Runtime placement is driven by the city template in generateLayout.ts.
 const SMALL_SERIES: BuildingSeries[] = [
   {
     // Residential series
@@ -615,46 +615,3 @@ export function getAllAdModelKeys(): string[] {
     ...TOWER_SERIES.ads,
   ];
 }
-
-// ============================================================================
-// Runtime Selection Helpers (for s_04/s_05 in GeneratorItem_CityBlock.js)
-// ============================================================================
-
-type VariantThreshold = { key: string; threshold: number };
-
-/** Build cumulative thresholds from weights, normalized to [0, 1] */
-export function buildVariantThresholds(
-  variants: BuildingVariant[],
-): VariantThreshold[] {
-  const totalWeight = variants.reduce((sum, v) => sum + v.weight, 0);
-  let cumulative = 0;
-  return variants.map((v) => {
-    cumulative += v.weight / totalWeight;
-    return { key: v.key, threshold: cumulative };
-  });
-}
-
-/** Select variant key from thresholds using a noise value. Deterministic. */
-export function selectVariantFromNoise(
-  thresholds: VariantThreshold[],
-  noise: number,
-): string {
-  for (const entry of thresholds) {
-    if (noise < entry.threshold) return entry.key;
-  }
-  return thresholds[thresholds.length - 1].key;
-}
-
-// Pre-computed thresholds (computed once at module load)
-export const LARGE_THRESHOLDS = buildVariantThresholds(LARGE_SERIES.variants);
-export const TOWER_THRESHOLDS = buildVariantThresholds(TOWER_SERIES.variants);
-export const SLIM_TOWER_THRESHOLDS = buildVariantThresholds(SLIM_TOWER_SERIES);
-export const LANDMARK_THRESHOLDS = buildVariantThresholds(LANDMARK_SERIES);
-
-// Concentric-city thresholds
-export const SKYSCRAPER_THRESHOLDS = buildVariantThresholds(
-  SKYSCRAPER_SERIES.variants,
-);
-export const NEW_TOWER_THRESHOLDS = buildVariantThresholds(
-  NEW_TOWER_SERIES.variants,
-);

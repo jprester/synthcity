@@ -1,8 +1,7 @@
 {
-  "name": "synthcity",
+  "name": "finite-city",
   "version": "1.0.6",
-  "description": "Infinite procedural city in three.js",
-  "author": "Jeff Beene",
+  "description": "Finite, hand-authored cyberpunk city in three.js",
   "license": "ISC",
   "main": "index.js",
   "private": true,

@@ -567,7 +567,6 @@ export default function UiShell() {
                         ["playerCar", "Player Car"],
                         ["ground", "Ground"],
                         ["storefronts", "Storefronts"],
-                        ["cityLights", "City Lights"],
                       ] as const
                     ).map(([key, label]) => (
                       <label
