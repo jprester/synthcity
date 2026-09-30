@@ -7,6 +7,13 @@
 // values on the clipboard (and the console) to carry over into the code.
 
 import GUI from 'lil-gui';
+import {
+  ACESFilmicToneMapping,
+  CineonToneMapping,
+  LinearToneMapping,
+  NoToneMapping,
+  ReinhardToneMapping,
+} from 'three';
 import type { Fog, Material, MeshPhongMaterial, PointLight } from 'three';
 import type { AssetManager } from '../classes/AssetManager.ts';
 import type { Game } from '../Game.ts';
@@ -30,7 +37,7 @@ function groupProxy<T>(objects: T[], get: (o: T) => number, set: (o: T, v: numbe
 
 export function createDevPanel(game: Game): GUI {
   const gui = new GUI({ title: 'SynthCity dev' });
-  const { scene, assets } = game;
+  const { renderer, scene, assets } = game;
 
   /*----- launch (reloads the page) -----*/
 
@@ -73,9 +80,25 @@ export function createDevPanel(game: Game): GUI {
   post.add(game.bloomPass, 'radius', 0, 2, 0.01).name('bloom radius');
   post.add(game.bloomPass, 'enabled').name('bloom');
   post.add(game.fxaa, 'enabled').name('FXAA');
-  // No tone mapping or exposure controls: three r159 only tone maps when
-  // rendering straight to the screen, and here everything goes through the
-  // composer, so renderer.toneMapping has no effect.
+  // Tone mapping and exposure apply to the scene image only: the bloom pass
+  // draws it to the screen with a MeshBasicMaterial (tone mapped, sRGB), then
+  // adds the bloom on top untouched. Materials need recompiling on a change.
+  post.add(renderer, 'toneMappingExposure', 0, 3, 0.01).name('exposure');
+  post
+    .add(renderer, 'toneMapping', {
+      ACESFilmic: ACESFilmicToneMapping,
+      Reinhard: ReinhardToneMapping,
+      Cineon: CineonToneMapping,
+      Linear: LinearToneMapping,
+      None: NoToneMapping,
+    })
+    .name('tone mapping')
+    .onChange(() =>
+      scene.traverse((o) => {
+        const material = (o as { material?: Material | Material[] }).material;
+        for (const m of Array.isArray(material) ? material : material ? [material] : []) m.needsUpdate = true;
+      }),
+    );
 
   /*----- sky and fog -----*/
 
