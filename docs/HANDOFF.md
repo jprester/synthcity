@@ -206,6 +206,21 @@ The repo carries about 105 MB of assets. The two biggest cuts:
   - Close-up ads still blow out. The default seed's drive spawn (downtown) has one filling the windshield; that's the ad-art task.
 - Review tools: `?at=x,z&alt=&yaw=&pitch=` starts the camera anywhere, and the stats overlay shows the district kind under the camera.
 
+## Next: higher-quality ads (planned, not started in code)
+
+- **Today:** each small ad texture is a 256² atlas holding a 3×3 grid of pixel-art panels (~85 px per ad). The `ads_s_*` models map each panel to arbitrary cuts of that grid.
+- **Source art** (the user's own generated images): `~/Projects/software_dev/my_projects/future-cityscape/code/three-agent-template/art/external/textures/`
+  - `signs/catalog.json` has 271 entries with `rect = [u, v, w, h]` in UV space (origin bottom-left) across four atlases (neon_v, neon_h, posters_p, posters_l);
+  - `ads-v2/` has 13 designed ads (`PROMPTS.md`);
+  - `signs-src/exclude.txt` lists rejected images.
+- **Plan:**
+  1. Build tool: pack two 4096² atlases, "neon" (141 sign entries) and "ads" (130 posters + 13 ads-v2). All 284 don't fit one atlas at a useful resolution; aim for a ~384–512 px long side with 8 px black gutters. Write the UV rectangles to JSON.
+  2. At load, split each `ads_s_*` model into panels (triangles sharing a UV bounding box). There are 202 panels: mostly square (64), 0.45–0.7 (53) and 0.7–0.85 (30), plus 34 non-quad panels. Keep each vertex's relative (s, t) within its panel.
+  3. Per ad: its own UV attribute (shared position/normal). Each panel shows one whole art entry of matching aspect (small centre crop), picked from the seed. A switch re-picks and rewrites the UVs.
+  4. The district picks the atlas (neon districts → signs, downtown → posters). The generation data carries the atlas material.
+  5. Toppers keep the old `ads_large_*` hologram textures. Drop `ads_01..05` once unused.
+  6. Tune the ads' `emissiveIntensity` in the dev panel, and check the default seed's drive spawn, where a close ad currently blows out to white.
+
 ## Procedural feature ideas (after 1–5)
 
 These fit the original vision and become cheap once generation returns plain data:
