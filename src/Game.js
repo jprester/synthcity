@@ -613,8 +613,10 @@ export class Game {
     this.blocker.style.backgroundColor = '#25004bb9';
     this.blocker.classList.add('hide');
     if (userSettings.skip) {
+      // no fade-in; the master volume normally fades in with the canvas
       this.canvasOpacity = 1;
       this.canvas.style.opacity = 1;
+      this.masterVolume = 1;
     }
   }
 
