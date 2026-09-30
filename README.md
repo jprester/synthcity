@@ -6,17 +6,22 @@ SynthCity is an interactive WebGL experience built with [Three.js](https://three
 
 ## Setup
 
-- Requirements: [node.js](https://nodejs.org/en) and [webpack.js](https://webpack.js.org/). Try to use the latest versions of both.
-- Pull the repo
-- Run `npm install` to install dependencies
-- Setup your local server if you don't already have one. For Node, you can use [http-server](https://www.npmjs.com/package/http-server)
-- Run the local server in the root directory of the repo `http-server`.
-- Enjoy!
+Requires [Node.js](https://nodejs.org/) 20.19+.
 
-## Modifications
+```bash
+npm install
+npm run dev
+```
 
-- When making modifications to `src`, run `npm run build`
-- Update `index.html` to include the appropriate `main.[hash].js` file
+Then open http://localhost:5173. `npm run build` produces a static site in `dist/` that can be hosted from any path.
+
+Launch settings can be preset with query params, e.g. `?seed=9746&mode=freeroam`.
+
+## Development
+
+- `npm run check` runs lint, format check, tests and a production build.
+- `npm run visual:compare` renders a fixed set of frames and diffs them against `screenshots/visual/baseline`. The first time, run `npx playwright install chromium`.
+- See [AGENTS.md](AGENTS.md) for architecture, project rules and the verification workflow (it is also the guide for coding agents).
 
 ## Credits
 

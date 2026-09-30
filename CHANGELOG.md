@@ -1,3 +1,13 @@
+# Unreleased
+
+- Build with Vite instead of webpack (`npm run dev`, `npm run build`); built output is no longer committed
+- ES modules throughout; jQuery and CDN dependencies removed, font self-hosted
+- Launch settings via query params (`seed`, `mode`, `music`, `sfx`, `scale`, `windshield`)
+- ESLint, Prettier, Vitest (noise, generator grid, city layout snapshots)
+- Deterministic visual regression harness (`npm run visual:compare`)
+- Agent guide (AGENTS.md, CLAUDE.md)
+- Removed unused assets and code (music.wav, Shaders.js, unused CSS)
+
 # 1.0.6
 
 - Collision detection
