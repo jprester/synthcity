@@ -1,5 +1,6 @@
 import { Raycaster, Matrix4, Vector2, Sphere, MeshBasicMaterial } from 'three';
 import type { Intersection, Mesh, Vector3 } from 'three';
+import type { MeshBVH } from 'three-mesh-bvh';
 
 const _inverse = new Matrix4();
 const _sphere = new Sphere();
@@ -44,7 +45,8 @@ class Collider {
       _inverse.copy(this.meshesInRange[i].matrixWorld).invert();
       _sphere.center.set(pos.x, pos.y, pos.z).applyMatrix4(_inverse);
       _sphere.radius = rad * _inverse.getMaxScaleOnAxis();
-      const hit = this.meshesInRange[i].geometry.boundsTree!.intersectsSphere(_sphere);
+      // mesh geometry builds a MeshBVH (computeBoundsTree)
+      const hit = (this.meshesInRange[i].geometry.boundsTree as MeshBVH).intersectsSphere(_sphere);
       if (hit) return true;
     }
 

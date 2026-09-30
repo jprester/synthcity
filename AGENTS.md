@@ -8,7 +8,7 @@ These hold for every change:
 
 - **The city is procedural and infinite.** Everything in the world is generated from the world seed and the cell coordinates. Never hand-place content or add fixed maps.
 - **Same seed, same city.** For a given seed, generating a cell must give the same result every time, whatever else happened before. World content must never use `Math.random()`; derive it from the seed and position with `src/hash.ts` (`hashFloat(seed, x, z, 'purpose')`, or `hashRandom(...)` for a stream). Use a distinct purpose salt for each new use.
-- **The look is intentional.** The night palette, strong bloom (threshold 0, strength 7), fog, emissive windows, ads and spotlights are the original art direction. Don't retune them as a side effect of other work.
+- **The look is intentional.** The night palette, strong bloom (threshold 0, strength 7, with the r159 bloom pass), fog, emissive windows, ads and spotlights are the original art direction. Don't retune them as a side effect of other work.
 - **Refactors are pixel-neutral.** Anything that isn't meant to change the look must pass `npm run visual:compare` unchanged.
 
 ## Commands
@@ -58,7 +58,7 @@ src/Game.ts             renderer, post-processing (FXAA + UnrealBloom), environm
 src/settings.ts         launch settings (terminal form + query params)
 src/hash.ts             deterministic hash of (seed, position, purpose) for world content
 src/ui/terminal.ts      boot terminal, settings form, loading readout
-src/lib/                vendored Alea PRNG and Perlin noise (plain JS with .d.ts types; not linted or formatted)
+src/lib/                vendored Alea PRNG, Perlin noise and the r159 bloom/FXAA passes (plain JS with .d.ts types; not linted or formatted)
 src/types/              type augmentations (three-mesh-bvh on BufferGeometry)
 src/generation/         pure world generation: plain data from (seed, position), no three.js
   world.ts              world constants, district noise
@@ -89,7 +89,7 @@ Generation and rendering are separate. New world content goes into `src/generati
 
 - Per-frame motion takes `k` (frame time in 60 Hz frames, `src/classes/frameRate.ts`): scale increments by `k`, use `decay(f, k)` for damping and `ease(a, k)` for easing. Never assume 60 Hz.
 - TypeScript (strict) and three.js; no framework. Vite runs `.ts` directly; `tsc` only type-checks. Import local modules with their `.ts` extension. Type data contracts explicitly (e.g. `BlockObject`, `WorldContext`) rather than reaching for `any`. Match the surrounding code; Prettier handles formatting.
-- three.js is pinned at 0.159.0. Don't upgrade as a side effect; it's a separate, visually verified task.
+- three.js is pinned at 0.186.1 (with `@types/three` 0.186.0). The bloom and FXAA passes are vendored from r159 in `src/lib/three-r159/` to keep the tuned look; don't swap them for the current addons as a side effect. Upgrades are separate, visually verified tasks.
 - Keep commits focused: one concern per commit, with the verification you ran mentioned in the message.
 - Put large binary assets in `public/assets/` only when they are actually referenced.
 

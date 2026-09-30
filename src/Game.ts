@@ -16,13 +16,13 @@ import {
   AudioListener,
 } from 'three';
 
-import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
+import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
-import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from './lib/three-r159/UnrealBloomPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { FXAAShader } from './lib/three-r159/FXAAShader.js';
 
 import { AssetManager } from './classes/AssetManager.ts';
 

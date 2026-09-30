@@ -6,8 +6,8 @@ export default defineConfig({
   build: {
     // keep bundled files apart from the game assets copied from public/assets
     assetsDir: 'bundle',
-    // three.js alone is ~560 kB minified
-    chunkSizeWarningLimit: 600,
+    // three.js alone is ~660 kB minified
+    chunkSizeWarningLimit: 700,
     rolldownOptions: {
       output: {
         manualChunks(id) {

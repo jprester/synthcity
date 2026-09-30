@@ -68,14 +68,14 @@ Knowing this helps you tell whether a diff is real.
 - `npm run typecheck` (`tsc -p .`) is part of `npm run check`.
 - The vendored `src/lib/*.js` keep hand-written `.d.ts` files.
 - three-mesh-bvh's own type augmentation targets a module path `@types/three` doesn't expose, so `src/types/three-mesh-bvh.d.ts` repeats it.
-- `@types/three` is pinned to the same version as `three`; bump both together.
+- `@types/three` is pinned to match `three`; bump both together.
 - `package.json` `overrides` pins `ignore` to 7.0.10: the registry lists 7.0.11 but its tarball 404s. Remove the pin once installs work without it.
 
 ## Decisions
 
 1. **Keep or re-roll the curated cities.** Decided: 1b was accepted, so seeds 9746, 6362, 4217 and 5794 now produce different (still district-identical) cities. Re-curating the seed list in `src/settings.ts` is optional.
 2. **Building hue source.** Decided and done: `AssetManager.setBuildingHues(seed)`, called from `Game.init()`, sets each building material's pale emissive hue from the world seed.
-3. **Stay on three.js r159 or upgrade.** An upgrade is best done after instancing, with the visual harness as the check. Expect UnrealBloom and colour differences that need a deliberate re-tune against the baseline.
+3. **three.js version.** Decided: upgraded to r186, keeping the r159 bloom and FXAA passes so the look doesn't change (task 8).
 
 ## Tasks
 
@@ -174,12 +174,14 @@ The repo carries about 105 MB of assets. The two biggest cuts:
 - **Textures:** optionally convert to KTX2/Basis. Compression artefacts are a visual change, so review them.
 - **`AssetManager.ts`** is hundreds of lines of repeated load calls. Replace it with a manifest; `epic/2026-rework` has one in `src/assets/manifests/` to use as a reference.
 
-### 8. three.js upgrade (after 4)
+### 8. three.js upgrade — done (r159 → r186)
 
-- **How the image is composed today (keep it when upgrading).** Scene → FXAA (linear render targets) → UnrealBloom. As the last pass, UnrealBloom first draws the scene image to the screen with a `MeshBasicMaterial`, which applies ACES tone mapping, exposure and sRGB conversion. It then adds the bloom on top with a plain copy shader: no tone mapping, no colour conversion. So the base image is tone mapped but the bloom is added raw, and that is a large part of the look. Newer three.js recommends ending with `OutputPass`, which tone maps after bloom. That changes the look, so either reproduce today's order or re-tune deliberately. (Verified: exposure 2.0 changes ~4.6% of pixels.)
-
-- Pinned at 0.159.0. Upgrade in one dedicated commit, re-tune bloom and exposure against the baseline, then accept the new baseline deliberately.
-- The postprocessing and examples import paths (`three/examples/jsm/...`) became `three/addons/...`.
+- `three` 0.186.1, `@types/three` 0.186.0 and `three-mesh-bvh` 0.9.15, all pinned exactly. Imports use `three/addons/...`.
+- **Look preserved.** r186 changed UnrealBloom's blur kernel (roughly double the bloom at strength 7), the bloom's luminance weights and the FXAA implementation. Unmodified, the city came out washed out, with 90% of pixels different. Those three files are vendored from r159 in `src/lib/three-r159/` (see its README). With them, r186 renders within 0.008% of r159, and the baseline was re-recorded on r186.
+- Moving to the current bloom/FXAA is an intentional look change: drop the vendored files and re-tune bloom strength/radius.
+- The image is still composed as before: the base is tone mapped, and the bloom is added raw on top (see below).
+- three-mesh-bvh 0.9 types `boundsTree` as the generic `GeometryBVH`; `Collider` casts it to `MeshBVH`, which mesh geometry builds. Its type augmentation now works, so the local one was removed.
+- **How the image is composed today (keep it when upgrading).** Scene → FXAA (linear render targets) → UnrealBloom. As the last pass, UnrealBloom first draws the scene image to the screen with a `MeshBasicMaterial`, which applies ACES tone mapping, exposure and sRGB conversion. It then adds the bloom on top with a plain copy shader: no tone mapping, no colour conversion. So the base image is tone mapped but the bloom is added raw, and that is a large part of the look. `OutputPass` would tone map after bloom instead, which is a different look.
 
 ### 9. Optional
 

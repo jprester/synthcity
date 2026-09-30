@@ -13,7 +13,7 @@ import {
   DoubleSide,
 } from 'three';
 
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 
 import { writeAsset } from '../ui/terminal.ts';
 import { hashFloat } from '../hash.ts';

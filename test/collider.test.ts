@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { BoxGeometry, BufferGeometry, Matrix4, Mesh, Object3D, Sphere, Vector3 } from 'three';
 import { computeBoundsTree } from 'three-mesh-bvh';
+import type { MeshBVH } from 'three-mesh-bvh';
 import { Collider } from '../src/classes/Collider.ts';
 
 BufferGeometry.prototype.computeBoundsTree = computeBoundsTree;
@@ -23,7 +24,7 @@ function originalHit(mesh: Mesh, pos: Vector3, rad: number) {
   obj.updateMatrixWorld();
   const m = new Matrix4().copy(mesh.matrixWorld).invert().multiply(obj.matrixWorld);
   const sphere = new Sphere(undefined, rad).applyMatrix4(m);
-  return mesh.geometry.boundsTree!.intersectsSphere(sphere);
+  return (mesh.geometry.boundsTree as MeshBVH).intersectsSphere(sphere);
 }
 
 describe('Collider', () => {
