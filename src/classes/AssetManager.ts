@@ -86,7 +86,7 @@ class AssetManager {
     this.createMaterials();
   }
 
-  loadTexture({ key, file, srgb, equirect, tiled, repeat }: TextureEntry): void {
+  loadTexture({ key, file, srgb, equirect, tiled, repeat, anisotropic }: TextureEntry): void {
     const texture = (this.textures[key] = this.textureLoader.load(this.path + file));
     if (srgb) texture.colorSpace = SRGBColorSpace;
     if (equirect) {
@@ -97,7 +97,7 @@ class AssetManager {
       texture.wrapS = RepeatWrapping;
       texture.wrapT = RepeatWrapping;
     }
-    if (tiled) texture.anisotropy = this.textureAnisotropy;
+    if (tiled || anisotropic) texture.anisotropy = this.textureAnisotropy;
     if (repeat) texture.repeat.set(repeat, repeat);
   }
 
@@ -205,13 +205,15 @@ class AssetManager {
       bumpScale: 10,
     });
 
-    // ads small
-    for (let i = 0; i < 5; i++) {
-      const id = this.padNumber(i + 1);
-      this.materials['ads_' + id] = new MeshPhongMaterial({
-        // map: this.getTexture('ads_'+id),
+    // ads: one material per art atlas; the ads map their panels into it
+    // (src/rendering/adArt.ts). Emission only: a black diffuse colour keeps the
+    // district lights from washing every panel in their colour.
+    for (const key of ['ads_neon', 'ads_posters']) {
+      this.materials[key] = new MeshPhongMaterial({
+        color: 0x000000,
+        specular: 0x000000,
         emissive: 0xffffff,
-        emissiveMap: this.getTexture('ads_' + id),
+        emissiveMap: this.getTexture(key),
         emissiveIntensity: this.adsEmissiveIntensity,
         blending: AdditiveBlending,
         fog: false,

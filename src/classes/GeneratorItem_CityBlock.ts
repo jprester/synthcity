@@ -1,14 +1,16 @@
-import { Mesh } from 'three';
+import { BufferAttribute, BufferGeometry, Mesh } from 'three';
 
 import { hashRandom } from '../hash.ts';
 import type { Random } from '../hash.ts';
+import { AD_ATLASES, adPanels, fillAdUVs } from '../rendering/adArt.ts';
+import type { AdAtlas, AdPanel } from '../rendering/adArt.ts';
 import { generateBlock } from '../generation/cityBlock.ts';
 import { windowBrightness } from '../generation/buildingDetails.ts';
 import { districtKindAt } from '../generation/districts.ts';
 import type { AdvertObject, SmokeObject, SpotlightObject, TopperObject } from '../generation/cityBlock.ts';
 import type { GeneratorItem } from './Generator.ts';
 import type { InstanceHandle, WorldContext } from './WorldContext.ts';
-import type { BufferGeometry, Material } from 'three';
+import type { Material } from 'three';
 
 // a mesh with one material
 type SingleMesh = Mesh<BufferGeometry, Material>;
@@ -141,20 +143,42 @@ abstract class Decoration {
 }
 
 class Advert extends Decoration {
-  materials: readonly string[];
   interval: number;
   counter: number;
   switches: boolean;
   switchRandom: Random;
+  atlas: AdAtlas;
+  panels: AdPanel[];
+  uv: BufferAttribute;
 
   constructor(o: AdvertObject, context: WorldContext) {
-    const mesh = new Mesh(context.assets.getModel(o.model), context.assets.getMaterial(o.material));
+    // the model's positions and normals are shared; each ad has its own UVs
+    const model = context.assets.getModel(o.model);
+    const geometry = new BufferGeometry();
+    geometry.name = model.name;
+    geometry.setAttribute('position', model.attributes.position);
+    geometry.setAttribute('normal', model.attributes.normal);
+    const uv = new BufferAttribute(new Float32Array(model.attributes.position.count * 2), 2);
+    geometry.setAttribute('uv', uv);
+    if (model.boundingSphere === null) model.computeBoundingSphere();
+    geometry.boundingSphere = model.boundingSphere;
+
+    const mesh = new Mesh(geometry, context.assets.getMaterial(o.material));
     mesh.position.set(o.x, 0, o.z);
     super(context, mesh);
     mesh.scale.set(1, o.scaleY, 1);
     mesh.rotateY((-o.rotation * Math.PI) / 180);
 
-    this.materials = o.materials;
+    this.uv = uv;
+    this.atlas = AD_ATLASES[o.material == 'ads_neon' ? 'neon' : 'posters'];
+    this.panels = adPanels(model);
+    fillAdUVs(
+      uv.array as Float32Array,
+      this.panels,
+      this.atlas,
+      hashRandom(context.seed, o.x, o.z, 'advert-art'),
+    );
+
     this.interval = o.interval;
     this.counter = o.counter;
     this.switches = o.switches;
@@ -165,11 +189,19 @@ class Advert extends Decoration {
       this.counter += k;
       if (this.counter > this.interval) {
         this.counter = 0;
-        this.mesh.material = this.context.assets.getMaterial(
-          this.materials[Math.floor(this.switchRandom() * this.materials.length)],
-        );
+        fillAdUVs(this.uv.array as Float32Array, this.panels, this.atlas, this.switchRandom);
+        this.uv.needsUpdate = true;
       }
     }
+  }
+  override remove(): void {
+    super.remove();
+    // Free the ad's own UV buffer. dispose() frees the GPU buffers of every
+    // attribute still attached, so detach the shared model buffers first.
+    const geometry = this.mesh.geometry;
+    geometry.deleteAttribute('position');
+    geometry.deleteAttribute('normal');
+    geometry.dispose();
   }
 }
 

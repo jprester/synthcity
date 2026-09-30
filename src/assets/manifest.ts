@@ -11,6 +11,7 @@ export interface TextureEntry {
   equirect?: boolean; // equirectangular sky or environment map, sampled with linear magnification
   tiled?: boolean; // repeats across the surface (RepeatWrapping) with anisotropic filtering
   repeat?: number; // repeats this many times per UV unit (RepeatWrapping, no anisotropy)
+  anisotropic?: boolean; // anisotropic filtering without repeating (atlases seen at an angle)
 }
 
 export interface ModelEntry {
@@ -59,7 +60,9 @@ export const TEXTURES: TextureEntry[] = [
     { key: `building_${id}_rough`, file: `textures/building_${id}_spec.jpg`, tiled: true },
   ]),
 
-  ...ids(5).map((id) => ({ key: `ads_${id}`, file: `textures/ads_${id}.jpg` })),
+  // ad art atlases, built by scripts/assets/build_ad_atlases.py (entries in src/assets/adAtlases.json)
+  { key: 'ads_neon', file: 'textures/ads_neon.webp', anisotropic: true, srgb: true },
+  { key: 'ads_posters', file: 'textures/ads_posters.webp', anisotropic: true, srgb: true },
   ...ids(5).map((id) => ({ key: `ads_large_${id}`, file: `textures/ads_large_${id}.jpg` })),
   ...ids(3).map((id) => ({ key: `smoke_${id}`, file: `textures/smoke_${id}.jpg` })),
   ...ids(4).map((id) => ({ key: `spotlight_${id}`, file: `textures/spotlight_${id}.jpg` })),

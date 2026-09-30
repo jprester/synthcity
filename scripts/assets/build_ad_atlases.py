@@ -1,0 +1,118 @@
+#!/usr/bin/env python3
+"""Pack the ad and neon-sign artwork into the game's two ad atlases.
+
+Source art lives outside this repo (the user's generated images):
+  <src>/signs/catalog.json   entries with rect = [u, v, w, h] in UV space
+                             (origin bottom-left) in one of the sign atlases
+  <src>/signs/*.webp         those atlases
+  <src>/ads-v2/*.png         designed ads, one per file
+
+Output:
+  public/assets/textures/ads_neon.webp     kind 'neon' catalog entries
+  public/assets/textures/ads_posters.webp  kind 'ad' catalog entries + ads-v2
+  src/assets/adAtlases.json                 per atlas: entries with id, kind,
+                                            aspect (w/h) and uv [u0, v0, u1, v1]
+
+Every entry keeps its aspect ratio; the long side is the largest that lets all
+entries of an atlas fit (shelf packing with black gutters; black is invisible
+under the additive ad material).
+
+  python3 scripts/assets/build_ad_atlases.py <src>
+"""
+
+import json
+import sys
+from pathlib import Path
+
+from PIL import Image
+
+SIZE = 4096
+GUTTER = 8
+REPO = Path(__file__).resolve().parents[2]
+
+
+def load_entries(src: Path):
+    catalog = json.loads((src / 'signs' / 'catalog.json').read_text())
+    sheets = {}
+    groups = {'neon': [], 'posters': []}
+    for e in catalog['entries']:
+        sheet = sheets.get(e['atlas'])
+        if sheet is None:
+            sheet = sheets[e['atlas']] = Image.open(src / 'signs' / f"{e['atlas']}.webp").convert('RGB')
+        u, v, w, h = e['rect']
+        W, H = sheet.size
+        box = (round(u * W), round((1 - v - h) * H), round((u + w) * W), round((1 - v) * H))
+        groups['neon' if e['kind'] == 'neon' else 'posters'].append((e['id'], e['kind'], sheet.crop(box)))
+    for f in sorted((src / 'ads-v2').glob('*.png')):
+        groups['posters'].append((f.stem, 'design', Image.open(f).convert('RGB')))
+    return groups
+
+
+def pack(images, long_side):
+    """Shelf-pack images scaled to long_side; placements by index, or None if they don't fit."""
+    sized = []
+    for i, (_, _, im) in enumerate(images):
+        a = im.width / im.height
+        w, h = (round(long_side * a), long_side) if a < 1 else (long_side, round(long_side / a))
+        sized.append((i, max(w, 1), max(h, 1)))
+    sized.sort(key=lambda s: -s[2])
+    x = y = GUTTER
+    shelf_h = 0
+    places = {}
+    for i, w, h in sized:
+        if x + w + GUTTER > SIZE:
+            y += shelf_h + GUTTER
+            x, shelf_h = GUTTER, 0
+        if y + h + GUTTER > SIZE:
+            return None
+        places[i] = (x, y, w, h)
+        x += w + GUTTER
+        shelf_h = max(shelf_h, h)
+    return places
+
+
+def build(name, images, out_json):
+    lo, hi = 64, 2048
+    while lo < hi:  # the largest long side that fits
+        mid = (lo + hi + 1) // 2
+        if pack(images, mid):
+            lo = mid
+        else:
+            hi = mid - 1
+    places = pack(images, lo)
+    atlas = Image.new('RGB', (SIZE, SIZE), (0, 0, 0))
+    entries = []
+    for i, (entry_id, kind, im) in enumerate(images):
+        x, y, w, h = places[i]
+        atlas.paste(im.resize((w, h), Image.LANCZOS), (x, y))
+        # UVs with a half-texel inset; v runs up (TextureLoader flips Y)
+        entries.append({
+            'id': entry_id,
+            'kind': kind,
+            'aspect': round(w / h, 4),
+            'uv': [
+                round((x + 0.5) / SIZE, 6),
+                round(1 - (y + h - 0.5) / SIZE, 6),
+                round((x + w - 0.5) / SIZE, 6),
+                round(1 - (y + 0.5) / SIZE, 6),
+            ],
+        })
+    file = f'textures/ads_{name}.webp'
+    atlas.save(REPO / 'public' / 'assets' / file, 'WEBP', quality=88, method=6)
+    out_json[name] = {'file': file, 'size': SIZE, 'longSide': lo, 'entries': entries}
+    print(f'{name}: {len(entries)} entries, long side {lo}px -> public/assets/{file}')
+
+
+def main():
+    src = Path(sys.argv[1]).expanduser()
+    groups = load_entries(src)
+    out = {}
+    for name in ('neon', 'posters'):
+        build(name, groups[name], out)
+    path = REPO / 'src' / 'assets' / 'adAtlases.json'
+    path.write_text(json.dumps(out, indent=1) + '\n')
+    print(f'-> {path.relative_to(REPO)}')
+
+
+if __name__ == '__main__':
+    main()

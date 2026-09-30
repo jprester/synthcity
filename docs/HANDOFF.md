@@ -206,20 +206,25 @@ The repo carries about 105 MB of assets. The two biggest cuts:
   - Close-up ads still blow out. The default seed's drive spawn (downtown) has one filling the windshield; that's the ad-art task.
 - Review tools: `?at=x,z&alt=&yaw=&pitch=` starts the camera anywhere, and the stats overlay shows the district kind under the camera.
 
-## Next: higher-quality ads (planned, not started in code)
+## Higher-quality ads — done
 
-- **Today:** each small ad texture is a 256² atlas holding a 3×3 grid of pixel-art panels (~85 px per ad). The `ads_s_*` models map each panel to arbitrary cuts of that grid.
-- **Source art** (the user's own generated images): `~/Projects/software_dev/my_projects/future-cityscape/code/three-agent-template/art/external/textures/`
-  - `signs/catalog.json` has 271 entries with `rect = [u, v, w, h]` in UV space (origin bottom-left) across four atlases (neon_v, neon_h, posters_p, posters_l);
-  - `ads-v2/` has 13 designed ads (`PROMPTS.md`);
-  - `signs-src/exclude.txt` lists rejected images.
-- **Plan:**
-  1. Build tool: pack two 4096² atlases, "neon" (141 sign entries) and "ads" (130 posters + 13 ads-v2). All 284 don't fit one atlas at a useful resolution; aim for a ~384–512 px long side with 8 px black gutters. Write the UV rectangles to JSON.
-  2. At load, split each `ads_s_*` model into panels (triangles sharing a UV bounding box). There are 202 panels: mostly square (64), 0.45–0.7 (53) and 0.7–0.85 (30), plus 34 non-quad panels. Keep each vertex's relative (s, t) within its panel.
-  3. Per ad: its own UV attribute (shared position/normal). Each panel shows one whole art entry of matching aspect (small centre crop), picked from the seed. A switch re-picks and rewrites the UVs.
-  4. The district picks the atlas (neon districts → signs, downtown → posters). The generation data carries the atlas material.
-  5. Toppers keep the old `ads_large_*` hologram textures. Drop `ads_01..05` once unused.
-  6. Tune the ads' `emissiveIntensity` in the dev panel, and check the default seed's drive spawn, where a close ad currently blows out to white.
+- **Art:** the user's generated neon signs and posters (source: `~/Projects/software_dev/my_projects/future-cityscape/code/three-agent-template/art/external/textures/`, see its `signs/catalog.json`, `ads-v2/PROMPTS.md` and `signs-src/exclude.txt`).
+  - `scripts/assets/build_ad_atlases.py <src>` packs them into two 4096² atlases: `ads_neon.webp` (141 signs, up to 529 px on the long side) and `ads_posters.webp` (143 posters and designs, up to 446 px). The old ads were ~85 px.
+  - It writes their UV rectangles to `src/assets/adAtlases.json`. Re-run it after changing the source art.
+- **Mapping** (`src/rendering/adArt.ts`):
+  - Ad models are split into panels by the UV rectangle each triangle sampled in the old 3×3 layout: 202 panels.
+  - Each panel shows one whole artwork of matching shape (within ×1.35), centre-cropped to the exact aspect.
+  - The 13 light strips on `ads_s_05_01` (1:200) stretch the closest sign instead.
+  - Each ad has its own UV buffer and shares the model's position and normal buffers. `remove()` detaches the shared buffers before `dispose()`, because dispose frees every attached attribute's GPU buffer.
+  - A switch re-picks the art from the ad's switch stream.
+- **Districts pick the atlas** (`neonAdShare`): neon 0.8, industrial 0.7, residential 0.55, mixed 0.5, downtown 0.15 (mostly posters).
+- **Materials `ads_neon` and `ads_posters`:**
+  - Emission only: black diffuse and specular, otherwise district lights wash every panel in their colour, the main cause of the old pale close-ups.
+  - Atlases are sRGB, so dark backgrounds stay dark.
+  - Otherwise as before: additive, no fog, emissive intensity 0.1.
+  - The old `ads_01..05` textures are gone. Rooftop holograms keep `ads_large_*`; the dev panel has separate "ads" and "holograms" glow sliders.
+- **Cost:** about 5 MB more download and ~180 MB of GPU memory for the two atlases with mipmaps. No measurable fps change on the M5 (~190 fps at 1080p). If memory matters on weaker devices, rebuild at 2048² (about half the resolution per ad, still ~3× the old one).
+- **Tests:** `test/adArt.test.ts` covers panel coverage, exact-aspect crops inside one artwork, determinism, and art available for every panel shape.
 
 ## Procedural feature ideas (after 1–5)
 

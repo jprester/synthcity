@@ -40,13 +40,14 @@ export interface GroundObject extends Placed {
   kind: 'ground';
 }
 
-// an ad wrapping its building; switches material over time
+// An ad wrapping its building. material is one of the ad atlases (neon signs
+// or posters); the builder picks art for each panel and re-picks on a switch.
 export interface AdvertObject extends Placed {
   kind: 'advert';
-  materials: readonly string[]; // pool it switches between
+  material: 'ads_neon' | 'ads_posters';
   rotation: number; // degrees about y (applied negated, like the original)
   scaleY: number;
-  interval: number; // frames between switches
+  interval: number; // frames between art switches
   counter: number; // initial frame counter
   switches: boolean;
 }
@@ -106,7 +107,6 @@ const STOREFRONT_MATERIALS = ['storefronts', 'building_02', 'building_03', 'buil
 const ROTATIONS = [0, 90, 180, 270];
 const MEGA_MODELS = ['mega_01', 'mega_02', 'mega_03', 'mega_04', 'mega_05', 'mega_06'];
 
-export const ADVERT_MATERIALS = ['ads_01', 'ads_02', 'ads_03', 'ads_04', 'ads_05'];
 export const ADVERT_MATERIALS_LARGE = [
   'ads_large_01',
   'ads_large_02',
@@ -257,9 +257,7 @@ function smallLot(
   });
 
   if (hasAds) {
-    objects.push(
-      advert('ads_s_0' + group + '_0' + adsVariant, ADVERT_MATERIALS, lotX, lotZ, rotation, scale, seed),
-    );
+    objects.push(advert('ads_s_0' + group + '_0' + adsVariant, lotX, lotZ, rotation, scale, seed, district));
   }
 }
 
@@ -292,8 +290,7 @@ function bigLot(
   // maybe have ads (the old parity test came out true for about 55%)
   if (h('ads') < district.bigAdChance) {
     const model = pick(isTower ? TOWER_ADVERT_MODELS : BIG_ADVERT_MODELS, h('ads-variant'));
-    const materials = isTower ? ADVERT_MATERIALS_LARGE : ADVERT_MATERIALS;
-    objects.push(advert(model, materials, lotX, lotZ, rotation, scale, seed));
+    objects.push(advert(model, lotX, lotZ, rotation, scale, seed, district));
   }
 }
 
@@ -301,19 +298,19 @@ function bigLot(
 // 'advert-switch' stream at the same position (see GeneratorItem_CityBlock).
 function advert(
   model: string,
-  materials: readonly string[],
   x: number,
   z: number,
   rotation: number,
   scaleY: number,
   seed: Seed,
+  district: DistrictStyle,
 ): AdvertObject {
+  const material = hashFloat(seed, x, z, 'advert-atlas') < district.neonAdShare ? 'ads_neon' : 'ads_posters';
   const random = hashRandom(seed, x, z, 'advert');
-  const material = pick(materials, random());
   const interval = 200 + random() * 800;
   const counter = random() * interval;
   const switches = random() < 0.5;
-  return { kind: 'advert', model, materials, material, x, z, rotation, scaleY, interval, counter, switches };
+  return { kind: 'advert', model, material, x, z, rotation, scaleY, interval, counter, switches };
 }
 
 function topperAt(x: number, y: number, z: number, random: Random): TopperObject {
