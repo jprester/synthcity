@@ -1,0 +1,43 @@
+# Lint, format, typecheck, tests and build on every push and pull request,
+# then the deterministic visual comparison (SwiftShader, so identical to local
+# runs). Diff images are uploaded when frames differ.
+name: check
+
+on:
+  push:
+    branches: [epic/2026-agent-rework]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+
+  visual:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: check
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run visual:compare
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-diff
+          path: |
+            screenshots/visual/diff/
+            screenshots/visual/current/

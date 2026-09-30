@@ -185,8 +185,8 @@ The repo carries about 105 MB of assets. The two biggest cuts:
 
 ### 9. Optional
 
-- **CI.** A GitHub Actions workflow on pushes to this branch running `npm run check`. `visual:compare` also runs in CI with Playwright's Chromium (about 3 min).
-- **Type checking.** `// @ts-check` plus JSDoc, or `checkJs` in a `jsconfig.json`, gives agents type errors without a TypeScript migration.
+- **CI — done.** `.github/workflows/check.yml` runs `npm run check` on pushes to this branch and on pull requests, then `visual:compare` with Playwright's Chromium, uploading diff images when frames differ. It hasn't run yet (nothing pushed).
+- **Type checking — done** (see TypeScript above).
 - **UI.** The terminal UI works but is hand-rolled; leave it unless you want to change it. If you do, keep the DOM ids the harness uses.
 
 ## Procedural feature ideas (after 1–5)
