@@ -115,19 +115,18 @@ const HIDE_OVERLAYS = `
   #blocker, #crashMessage { display: none !important; }
 `;
 
-export async function captureShots({ url, out, only = null, jquery = null }) {
-  mkdirSync(out, { recursive: true });
-  const files = [];
-  const browser = await chromium.launch({
-    args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--mute-audio'],
-  });
-
-  for (const shot of SHOTS) {
-    if (only && !only.includes(shot.name)) continue;
-    const t0 = Date.now();
+// Opens the app for a shot and waits until assets have loaded (Launch button
+// shown). A load occasionally stalls; then it reports the requests still
+// pending and tries once more on a fresh page.
+async function openShot(browser, url, shot, jquery, attempts = 2) {
+  for (let attempt = 1; ; attempt++) {
     const page = await browser.newPage({ viewport: VIEWPORT, deviceScaleFactor: 1 });
     const errors = [];
+    const pending = new Set();
     page.on('pageerror', (e) => errors.push(e.message));
+    page.on('request', (r) => pending.add(r.url()));
+    page.on('requestfinished', (r) => pending.delete(r.url()));
+    page.on('requestfailed', (r) => pending.delete(r.url()));
     await page.addInitScript(determinismShim, shot.seed);
     // legacy builds pull jQuery from a CDN; serve a local copy when given
     if (jquery) {
@@ -139,7 +138,30 @@ export async function captureShots({ url, out, only = null, jquery = null }) {
 
     const q = new URLSearchParams({ seed: shot.seed, mode: shot.mode, music: '0', sfx: '0' });
     await page.goto(`${url}?${q}`);
-    await page.waitForSelector('#enterBtn', { state: 'visible', timeout: 180_000 });
+    try {
+      await page.waitForSelector('#enterBtn', { state: 'visible', timeout: 90_000 });
+      return { page, errors };
+    } catch (e) {
+      console.log(`  ${shot.name}: assets did not finish loading (attempt ${attempt})`);
+      console.log(`  pending requests: ${[...pending].join(', ') || 'none'}`);
+      if (errors.length) console.log(`  page errors: ${errors.join('; ')}`);
+      await page.close();
+      if (attempt >= attempts) throw e;
+    }
+  }
+}
+
+export async function captureShots({ url, out, only = null, jquery = null }) {
+  mkdirSync(out, { recursive: true });
+  const files = [];
+  const browser = await chromium.launch({
+    args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--mute-audio'],
+  });
+
+  for (const shot of SHOTS) {
+    if (only && !only.includes(shot.name)) continue;
+    const t0 = Date.now();
+    const { page, errors } = await openShot(browser, url, shot, jquery);
 
     // legacy builds read settings from window.userSettings
     await page.evaluate((shot) => {

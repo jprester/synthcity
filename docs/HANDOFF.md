@@ -10,9 +10,9 @@ The tooling pass is complete, and tasks 1a (seed-driven decorations, traffic and
 
 - **Build:**
   - Vite replaces webpack; built output is no longer committed.
-  - The app uses ES modules throughout: Alea/Perlin are in `src/lib/`, and the terminal UI is `src/ui/terminal.js` without jQuery.
+  - The app uses ES modules throughout: Alea/Perlin are in `src/lib/`, and the terminal UI is `src/ui/terminal.ts` without jQuery.
   - The font is self-hosted.
-  - Launch settings can be preset with query params (`src/settings.js`).
+  - Launch settings can be preset with query params (`src/settings.ts`).
 - **Checks:**
   - ESLint and Prettier. The one-time reformat commit is listed in `.git-blame-ignore-revs`; enable it locally with `git config blame.ignoreRevsFile .git-blame-ignore-revs`.
   - Vitest: noise, the streaming grid, and golden layout snapshots.
@@ -38,8 +38,8 @@ Knowing this helps you tell whether a diff is real.
 
 **Layout snapshots.**
 
-- `test/generation.test.js` snapshots the plain data from `generateBlock` for a 13×13 block area (seed 9746), with no stubs. It also checks determinism, independence from `Math.random`, and distributions.
-- `test/cityLayout.test.js` runs the three.js builders (`GeneratorItem_CityBlock`, `GeneratorItem_Traffic`) with a fake context from `test/helpers.js`. It records every building, ground tile and decoration mesh (model/material, position, rotation, scale) for seeds 9746 and 6362.
+- `test/generation.test.ts` snapshots the plain data from `generateBlock` for a 13×13 block area (seed 9746), with no stubs. It also checks determinism, independence from `Math.random`, and distributions.
+- `test/cityLayout.test.ts` runs the three.js builders (`GeneratorItem_CityBlock`, `GeneratorItem_Traffic`) with a fake context from `test/helpers.ts`. It records every building, ground tile and decoration mesh (model/material, position, rotation, scale) for seeds 9746 and 6362.
 - If only the builder changes, the data snapshot must stay put; if only generation changes, both move.
 
 **Visual harness** (`scripts/visual/capture.mjs`):
@@ -62,9 +62,18 @@ Knowing this helps you tell whether a diff is real.
 
 **Intentional changes.** Update in the same commit (`npx vitest run -u`, `npm run visual:baseline`), look at the new frames, and describe the visual change in the commit message.
 
+## TypeScript — done
+
+- All of `src/` and `test/` are strict TypeScript.
+- `npm run typecheck` (`tsc -p .`) is part of `npm run check`.
+- The vendored `src/lib/*.js` keep hand-written `.d.ts` files.
+- three-mesh-bvh's own type augmentation targets a module path `@types/three` doesn't expose, so `src/types/three-mesh-bvh.d.ts` repeats it.
+- `@types/three` is pinned to the same version as `three`; bump both together.
+- `package.json` `overrides` pins `ignore` to 7.0.10: the registry lists 7.0.11 but its tarball 404s. Remove the pin once installs work without it.
+
 ## Decisions
 
-1. **Keep or re-roll the curated cities.** Decided: 1b was accepted, so seeds 9746, 6362, 4217 and 5794 now produce different (still district-identical) cities. Re-curating the seed list in `src/settings.js` is optional.
+1. **Keep or re-roll the curated cities.** Decided: 1b was accepted, so seeds 9746, 6362, 4217 and 5794 now produce different (still district-identical) cities. Re-curating the seed list in `src/settings.ts` is optional.
 2. **Building hue source.** Decided and done: `AssetManager.setBuildingHues(seed)`, called from `Game.init()`, sets each building material's pale emissive hue from the world seed.
 3. **Stay on three.js r159 or upgrade.** An upgrade is best done after instancing, with the visual harness as the check. Expect UnrealBloom and colour differences that need a deliberate re-tune against the baseline.
 
@@ -74,12 +83,12 @@ Suggested order. Each task lists what "done" looks like and the traps I know abo
 
 ### 1a. Seed-driven decorations and traffic — done
 
-`src/hash.js` provides `hashFloat`/`hashRandom` keyed by (seed, position, purpose salt).
+`src/hash.ts` provides `hashFloat`/`hashRandom` keyed by (seed, position, purpose salt).
 
 - Decorations get a stream per lot, and traffic gets a stream per cell.
 - Each car has a fixed turn-around distance. The traffic count distribution (re-rolled per loop iteration) is unchanged.
 - Building emissive hues come from the seed (decision 2).
-- The only `Math.random` left is in `Radio.js`, `ui/terminal.js` and `settings.js`, none of which is world content. three.js `generateUUID` also calls it, which the determinism tests show doesn't leak into the world.
+- The only `Math.random` left is in `Radio.ts`, `ui/terminal.ts` and `settings.ts`, none of which is world content. three.js `generateUUID` also calls it, which the determinism tests show doesn't leak into the world.
 
 ### 1b. Decorrelate per-lot choices — done
 
@@ -89,13 +98,13 @@ Suggested order. Each task lists what "done" looks like and the traps I know abo
   - big-block ads 55%;
   - rare big-building materials 10%.
 - Spotlights stay restricted to `s_03_03`, whose roof their 160 × scale height fits. They are placed at 5% of those lots, the same overall rate as before.
-- `test/generation.test.js` asserts variant, rotation and height are independent. If you ever read rotations back from meshes, use the quaternion: three.js's Euler for a 180° `rotateY` comes back as y = 0 with x = z = π.
+- `test/generation.test.ts` asserts variant, rotation and height are independent. If you ever read rotations back from meshes, use the quaternion: three.js's Euler for a 180° `rotateY` comes back as y = 0 with x = z = π.
 
 ### 2. Split generation from rendering — done
 
 - `src/generation/` holds pure functions that return plain data: `generateBlock`, `generateTrafficCell` and `cityLightHue`.
 - The `GeneratorItem_*` classes are thin builders that take a context object (seed, noise, assets, scene, collider, player, city light pool). `Game.init()` passes it through `Generator`.
-- `window.game` is gone. `PlayerCar` and `AssetManager` take their dependencies as parameters, and `GeneratorUtils.js` was folded into `src/generation/`.
+- `window.game` is gone. `PlayerCar` and `AssetManager` take their dependencies as parameters, and `GeneratorUtils.ts` was folded into `src/generation/`.
 - **Trap:** `generateBlock` returns one ordered list. Mesh creation order decides ties in three.js render sorting, so the builder creates meshes in that order: decorations enter the scene as they are created, ground and buildings afterwards. Regrouping the list by kind breaks pixel neutrality.
 - Advert material switches use their own `'advert-switch'` stream at the advert's position, so the data only carries the initial state.
 - Next step if wanted: move `generateBlock` into a worker. It already depends only on the seed, the Perlin instance and the position.
@@ -109,12 +118,12 @@ Suggested order. Each task lists what "done" looks like and the traps I know abo
 
 ### 4. Performance
 
-- **Measure first — done.** `?stats=1` shows an overlay (`src/ui/stats.js`), and `npm run perf` flies drive mode in Chromium on the real GPU and prints it every second.
+- **Measure first — done.** `?stats=1` shows an overlay (`src/ui/stats.ts`), and `npm run perf` flies drive mode in Chromium on the real GPU and prints it every second.
   - Baseline (2026-09-30, Apple M5, 1920×1080, seed 9746): 175–220 fps, about 2,000 draw calls (all passes), about 1.05 M triangles and about 8,600 scene objects.
   - CPU: update about 0.3 ms, render about 5.3 ms. The frame is CPU-bound in three.js traversal and draw submission, which is what instancing cuts.
   - The worst frame per half second stayed under 9 ms, so row construction isn't a visible hitch on this machine.
 - **Instancing — buildings and ground done.**
-  - `src/classes/InstancePool.js` keeps one `InstancedMesh` per (geometry, material). Slots are allocated and freed as blocks stream, and freed slots are refilled by swapping in the last instance.
+  - `src/classes/InstancePool.ts` keeps one `InstancedMesh` per (geometry, material). Slots are allocated and freed as blocks stream, and freed slots are refilled by swapping in the last instance.
   - It frustum culls per instance each frame (`Game.animate` calls `cull(camera)`), with the same bounding-sphere test three.js uses per mesh. Without that, triangles went from 1.05 M to 4.2 M and fps dropped by a third.
   - Result: about 650 draw calls instead of 2,000, and about 2,700 scene objects instead of 8,600. At 960×540 that's about 370 fps instead of about 275. At 1080p the M5 is GPU-bound (bloom and fill rate), so it's a wash there.
   - Collision uses the off-scene `Mesh` each building still has as a proxy, with its world matrix computed once.
@@ -123,18 +132,18 @@ Suggested order. Each task lists what "done" looks like and the traps I know abo
 - **Spread construction over frames.** Crossing a cell boundary builds a whole row of about 40 blocks in one frame. Queue new blocks and build a few per frame, nearest first.
 - **Smaller costs.**
   - `Smoke` and `Spotlight` call `lookAt` every frame for every instance.
-  - `Collider.intersectsSphere` allocates an `Object3D`, a `Matrix4` and a `Sphere` per mesh per frame (`Collider.js:41–50`).
+  - `Collider.intersectsSphere` allocates an `Object3D`, a `Matrix4` and a `Sphere` per mesh per frame (`Collider.ts:41–50`).
 
 ### 5. Frame-rate independence — done
 
-- `Game.animate` takes the rAF timestamp and computes `k`, the frame time in 60 Hz frames (`src/classes/frameRate.js`). The first frame counts as one nominal frame, `k` is capped at 4, and float noise around 60 Hz snaps to exactly 1.
+- `Game.animate` takes the rAF timestamp and computes `k`, the frame time in 60 Hz frames (`src/classes/frameRate.ts`). The first frame counts as one nominal frame, `k` is capped at 4, and float noise around 60 Hz snaps to exactly 1.
 - `k` is passed through `Generator.update(k)` to every item and decoration, and to `Player`/`PlayerCar`.
 - The maths:
   - increments: `x += v * k`
   - per-frame damping: `decay(f, k) = f^k`
   - easing (camera slerp, FOV): `ease(a, k) = 1 − (1 − a)^k`
 - At `k = 1` everything reduces to the original maths bit for bit, so the 60 Hz harness stays at 0.000%.
-- `test/frameRate.test.js` simulates the same wall-clock time at 30/60/144 Hz. The car, freeroam flight and traffic end up within 2% of the same place.
+- `test/frameRate.test.ts` simulates the same wall-clock time at 30/60/144 Hz. The car, freeroam flight and traffic end up within 2% of the same place.
 - The fade-in used accumulated time. It now follows the same ~2.6 s ease-in curve by elapsed time, and master volume follows it.
 - Not scaled: mouse look. `PlayerController` keeps only the last `mousemove` of a frame rather than summing them, so look speed still depends on mouse polling and frame rate. Summing the movement would fix it but makes look much more sensitive, so it needs re-tuning `mouse_sensitivity` by feel.
 - Still open from task 6: collision is enabled after the first frame via a flag.
@@ -143,16 +152,16 @@ Suggested order. Each task lists what "done" looks like and the traps I know abo
 
 Done:
 
-- `Collider.remove` ignores unknown uuids (it used to `splice(-1, 1)`) and also drops the mesh from `meshesInRange`. `intersectsSphere` no longer allocates per mesh. `test/collider.test.js` checks it against the original maths.
+- `Collider.remove` ignores unknown uuids (it used to `splice(-1, 1)`) and also drops the mesh from `meshesInRange`. `intersectsSphere` no longer allocates per mesh. `test/collider.test.ts` checks it against the original maths.
 - The FXAA resolution uniform is updated on resize.
 - Input uses the `wheel` event (Firefox line deltas scaled to pixels) and `event.button`.
-- `Player` and `PlayerCar` share the camera-look code, `angleDist` and `clamp` (`src/classes/cameraLook.js`).
-- Crash handling runs in the frame loop: a 2 s `crashTimer` scaled by `k` and a `respawn()` method. The UI is told through an `onCrash` callback (`src/ui/hud.js`) instead of `PlayerCar` touching the DOM with `setTimeout`.
+- `Player` and `PlayerCar` share the camera-look code, `angleDist` and `clamp` (`src/classes/cameraLook.ts`).
+- Crash handling runs in the frame loop: a 2 s `crashTimer` scaled by `k` and a `respawn()` method. The UI is told through an `onCrash` callback (`src/ui/hud.ts`) instead of `PlayerCar` touching the DOM with `setTimeout`.
 - `?env=day` selects the original's unused day environment: an orange haze, with no window lights, city lights or spotlights. Night stays the default.
 
 Open:
 
-- **FXAA runs before bloom** (`Game.js`). Moving it after bloom changes the look slightly, so it's an art-direction decision, not a fix.
+- **FXAA runs before bloom** (`Game.ts`). Moving it after bloom changes the look slightly, so it's an art-direction decision, not a fix.
 - Collision is enabled after the first frame via a flag (`Game.animate`); it could start enabled once the first frame's matrices exist.
 - The day environment isn't in the settings form or the visual shot list yet.
 
@@ -163,7 +172,7 @@ The repo carries about 105 MB of assets. The two biggest cuts:
 - **Audio:** WAV to Opus or MP3. `city_ambient.wav` is 14 MB, `traffic_ambient.wav` 10.5 MB, `car_ambient.wav` 3.3 MB, `car_wind.wav` 3.1 MB. This is lossy, so listen before committing.
 - **Models:** OBJ to glTF with meshopt or Draco compression, then switch `AssetManager` to `GLTFLoader`. Geometry must stay identical: vertex order, and the `rotateY(-π/2)` applied to the spinner models. Run `visual:compare`.
 - **Textures:** optionally convert to KTX2/Basis. Compression artefacts are a visual change, so review them.
-- **`AssetManager.js`** is hundreds of lines of repeated load calls. Replace it with a manifest; `epic/2026-rework` has one in `src/assets/manifests/` to use as a reference.
+- **`AssetManager.ts`** is hundreds of lines of repeated load calls. Replace it with a manifest; `epic/2026-rework` has one in `src/assets/manifests/` to use as a reference.
 
 ### 8. three.js upgrade (after 4)
 
