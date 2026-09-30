@@ -40,7 +40,8 @@ Query params preset the launch settings, e.g. `/?seed=9746&mode=freeroam&music=0
 
 Test layout:
 
-- `test/cityLayout.test.js` snapshots the full layout of a 13×13 block area for two seeds, run headless. It is the main safety net for generator refactors.
+- `test/generation.test.js` covers the pure generators (`src/generation/`): a data snapshot of a 13×13 block area, determinism, and distribution checks. No stubs.
+- `test/cityLayout.test.js` runs the three.js builders over that data and snapshots every mesh for two seeds. It is the main safety net for builder and rendering refactors.
 - `test/generator.test.js` covers the streaming grid.
 - Tests marked `it.fails` document known bugs. When you fix one, change it to `it`.
 
@@ -48,19 +49,23 @@ Test layout:
 
 ```
 index.html              terminal UI markup + canvas
-src/main.js             entry: styles, query params, creates window.game, starts terminal
+src/main.js             entry: styles, query params, creates the Game, starts terminal
 src/Game.js             renderer, post-processing (FXAA + UnrealBloom), environment, generators, frame loop, audio
 src/settings.js         launch settings (terminal form + query params)
 src/hash.js             deterministic hash of (seed, position, purpose) for world content
 src/ui/terminal.js      boot terminal, settings form, loading readout
 src/lib/                vendored Alea PRNG and Perlin noise (not linted or formatted)
+src/generation/         pure world generation: plain data from (seed, position), no three.js
+  world.js              world constants, district noise
+  cityBlock.js          generateBlock: buildings, ads, toppers, smoke, spotlights, ground, storefronts
+  traffic.js            generateTrafficCell: starting state of the cars in a cell
+  cityLight.js          cityLightHue: district edge lights
 src/classes/
   AssetManager.js       loads textures, OBJ models, creates materials
   Generator.js          streaming grid: spawns/removes items in a disc of cells around the camera
-  GeneratorItem_CityBlock.js   one city block: buildings, ads, toppers, smoke, spotlights, ground, storefronts
-  GeneratorItem_CityLight.js   assigns pooled PointLights to districts
-  GeneratorItem_Traffic.js     flying traffic lanes
-  GeneratorUtils.js     noise remap + material/rotation pickers
+  GeneratorItem_CityBlock.js   builds a block's meshes and decorations from generateBlock
+  GeneratorItem_CityLight.js   assigns pooled PointLights to district edges
+  GeneratorItem_Traffic.js     spawns and moves the cars of a traffic cell
   Collider.js           three-mesh-bvh sphere collision against nearby building meshes
   Player.js / PlayerCar.js / PlayerController.js   freeroam camera, flying car, input
   Radio.js              music playlist
@@ -69,9 +74,9 @@ scripts/visual/         deterministic capture + pixel compare
 test/                   Vitest
 ```
 
-World constants: city block 128 units, road 24, so a cell is 152. District types come from low-frequency Perlin noise (`cityBlockNoiseFactor` 0.0017); every per-lot choice is a hash of (seed, lot position, purpose) from `src/hash.js`.
+World constants: city block 128 units, road 24, so a cell is 152. District types come from low-frequency Perlin noise (`DISTRICT_NOISE_FACTOR` 0.0017); every per-lot choice is a hash of (seed, lot position, purpose) from `src/hash.js`.
 
-Generator items and decorations reach shared state through `window.game`. It is legacy; don't add new uses. Pass dependencies explicitly in new code.
+Generation and rendering are separate. New world content goes into `src/generation/` as plain data, and the builder in `src/classes/GeneratorItem_*` turns it into three.js objects. Builders get their dependencies (seed, noise, assets, scene, collider, player) from the context object `Game.init()` passes through `Generator`. There is no global game object; pass dependencies explicitly.
 
 ## Conventions
 
@@ -86,13 +91,12 @@ Detailed task notes, open decisions and known traps: [docs/HANDOFF.md](docs/HAND
 
 Roughly in priority order:
 
-1. **Split generation from rendering.** A pure `generateBlock(seed, cellX, cellZ)` that returns plain data, plus a separate step that builds three.js objects. Lets layout tests run without stubs and allows moving generation into a worker.
-2. **Performance.** InstancedMesh/BatchedMesh per model+material (thousands of draw calls today); spread block construction over several frames instead of building a full row in one frame.
-3. **Frame-rate independence.** Movement, traffic and animations are per-frame, so everything runs about 2.4× faster at 144 Hz. The fade-in multiplies by accumulated rather than per-frame delta.
-4. **Generator bugs** captured in `test/generator.test.js`.
-5. **Smaller fixes.**
+1. **Performance.** InstancedMesh/BatchedMesh per model+material (thousands of draw calls today); spread block construction over several frames instead of building a full row in one frame.
+2. **Frame-rate independence.** Movement, traffic and animations are per-frame, so everything runs about 2.4× faster at 144 Hz. The fade-in multiplies by accumulated rather than per-frame delta.
+3. **Generator bugs** captured in `test/generator.test.js`.
+4. **Smaller fixes.**
    - `Collider.remove` splices index -1 when the uuid is missing.
    - `Collider.intersectsSphere` allocates per mesh per frame.
    - The FXAA resolution uniform is not updated on resize, and FXAA runs before bloom.
    - The `mousewheel` event doesn't fire in Firefox.
-6. **Assets.** OBJ → glTF (meshopt), WAV → Opus, textures → KTX2.
+5. **Assets.** OBJ → glTF (meshopt), WAV → Opus, textures → KTX2.

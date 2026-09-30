@@ -41,7 +41,7 @@ import { GeneratorItem_Traffic } from './classes/GeneratorItem_Traffic.js';
 import { computeBoundsTree, disposeBoundsTree, acceleratedRaycast } from 'three-mesh-bvh';
 import { Collider } from './classes/Collider.js';
 
-import { Perlin } from './lib/perlin.js';
+import { CITY_BLOCK_SIZE, ROAD_WIDTH, CELL_SIZE, createDistrictNoise } from './generation/world.js';
 import { userSettings } from './settings.js';
 import { setColor, newLine, write, showCredits } from './ui/terminal.js';
 
@@ -76,8 +76,8 @@ export class Game {
 
     // world settings (do not change)
 
-    this.cityBlockSize = 128;
-    this.roadWidth = 24;
+    this.cityBlockSize = CITY_BLOCK_SIZE;
+    this.roadWidth = ROAD_WIDTH;
 
     // collision
 
@@ -89,7 +89,7 @@ export class Game {
   }
 
   load() {
-    this.assets = new AssetManager();
+    this.assets = new AssetManager({ environment: this.environment, onLoad: () => this.onLoad() });
     this.assets.setPath('assets/');
     this.assets.load();
   }
@@ -171,6 +171,10 @@ export class Game {
     if (this.settings.mode == 'drive') {
       this.player = new PlayerCar({
         scene: this.scene,
+        assets: this.assets,
+        collider: this.collider,
+        windshieldShader: this.settings.windshieldShader,
+        respawnX: -this.roadWidth / 2,
         renderer: this.renderer,
         controller: this.playerController,
         x: -this.roadWidth / 2,
@@ -251,18 +255,28 @@ export class Game {
 
     /*----- generators -----*/
 
-    this.cityBlockNoise = new Perlin(this.settings.worldSeed);
-    this.cityBlockNoise.noiseDetail(8, 0.5);
-    this.cityBlockNoiseFactor = 0.0017; //0.0017;
+    this.cityLights = [];
+
+    // what generator items need from the game
+    const world = {
+      seed: this.settings.worldSeed,
+      noise: createDistrictNoise(this.settings.worldSeed),
+      spotLights: this.environment.spotLights,
+      assets: this.assets,
+      scene: this.scene,
+      collider: this.collider,
+      player: this.player,
+      cityLights: this.cityLights,
+    };
 
     this.generatorCityBlock = new Generator({
       camera: this.player.camera,
-      cell_size: this.cityBlockSize + this.roadWidth,
+      cell_size: CELL_SIZE,
       cell_count: 40,
       spawn_obj: GeneratorItem_CityBlock,
+      context: world,
     });
 
-    this.cityLights = [];
     this.generatorCityLights = null;
     if (this.environment.cityLights) {
       // create lights
@@ -279,18 +293,20 @@ export class Game {
       // create generator
       this.generatorCityLights = new Generator({
         camera: this.player.camera,
-        cell_size: (this.cityBlockSize + this.roadWidth) * 4,
+        cell_size: CELL_SIZE * 4,
         cell_count: 8,
         spawn_obj: GeneratorItem_CityLight,
+        context: world,
       });
     }
 
     this.generatorTraffic = new Generator({
       camera: this.player.camera,
-      cell_size: this.cityBlockSize + this.roadWidth,
+      cell_size: CELL_SIZE,
       cell_count: 12,
       debug: false,
       spawn_obj: GeneratorItem_Traffic,
+      context: world,
     });
 
     /*----- animate -----*/

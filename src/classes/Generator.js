@@ -1,5 +1,6 @@
-// "spawn_obj" must have methods: constructor(x, y)
+// "spawn_obj" must have methods: constructor(x, z, context)
 // "spawn_obj" optional methods: remove(), and update()
+// "context" is passed through to every spawned item unchanged.
 
 class Generator {
   constructor(options) {
@@ -10,6 +11,7 @@ class Generator {
       cell_count: 10,
       debug: false,
       spawn_obj: false,
+      context: null,
     };
 
     // init vars
@@ -22,10 +24,8 @@ class Generator {
     this.debug_canvas = false;
     this.debug_canvas_ctx = false;
 
-    this.noise = options.noise || defaults.noise;
-    this.noise_scale = options.noise_scale || defaults.noise_scale;
-
     this.spawn_obj = options.spawn_obj || defaults.spawn_obj;
+    this.context = options.context || defaults.context;
 
     // init position
     this.x = Math.floor(this.camera.position.x / this.cell_size);
@@ -154,7 +154,7 @@ class Generator {
               Math.floor(this.camera.position.z / this.cell_size) * this.cell_size +
               i * this.cell_size -
               Math.floor((this.cell_count * this.cell_size) / 2);
-            this.grid[i][j] = new this.spawn_obj(xx, zz);
+            this.grid[i][j] = new this.spawn_obj(xx, zz, this.context);
           }
         }
       }

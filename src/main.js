@@ -7,7 +7,6 @@ import { Game } from './Game.js';
 
 applyQueryParams();
 
-// City generator items still reach the game through this global.
-window.game = new Game();
+const game = new Game();
 
-startTerminal(() => window.game.load());
+startTerminal(() => game.load());

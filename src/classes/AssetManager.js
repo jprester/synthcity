@@ -17,13 +17,17 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 
 import { writeAsset } from '../ui/terminal.js';
 import { hashFloat } from '../hash.js';
+import { CELL_SIZE } from '../generation/world.js';
 
 class AssetManager {
-  constructor() {
+  // environment: see Game.getEnvironment; onLoad: called when everything loaded
+  constructor({ environment, onLoad }) {
     this.path = '';
+    this.environment = environment;
+    this.onLoad = onLoad;
 
     this.textureAnisotropy = 8;
-    this.buildingWindowsEmissiveIntensity = window.game.environment.windowLights ? 1.5 : 0;
+    this.buildingWindowsEmissiveIntensity = environment.windowLights ? 1.5 : 0;
     this.adsEmissiveIntensity = 0.1;
 
     this.textures = {};
@@ -48,7 +52,7 @@ class AssetManager {
     };
     this.loadingManager.onLoad = function () {
       console.log('AssetManager: Assets loaded');
-      window.game.onLoad();
+      self.onLoad();
     };
     this.loadingManager.onError = function (url) {
       console.error('AssetManager: Failed to load ' + url);
@@ -204,10 +208,7 @@ class AssetManager {
     });
 
     // ground plane
-    this.models['ground'] = new PlaneGeometry(
-      window.game.cityBlockSize + window.game.roadWidth,
-      window.game.cityBlockSize + window.game.roadWidth,
-    );
+    this.models['ground'] = new PlaneGeometry(CELL_SIZE, CELL_SIZE);
 
     // storefronts
     this.objLoader.load(this.path + 'models/storefronts.obj', function (obj) {
@@ -360,7 +361,7 @@ class AssetManager {
       map: this.getTexture('ground'),
       emissive: 0x0090ff,
       emissiveMap: this.getTexture('ground_em'),
-      emissiveIntensity: window.game.environment.name == 'night' ? 0.2 : 0,
+      emissiveIntensity: this.environment.name == 'night' ? 0.2 : 0,
       shininess: 0,
     });
 

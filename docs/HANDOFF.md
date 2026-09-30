@@ -36,7 +36,11 @@ The visual harness forces SwiftShader (software GL), so your local results are i
 
 Knowing this helps you tell whether a diff is real.
 
-**Layout snapshots.** `test/cityLayout.test.js` runs `GeneratorItem_CityBlock` headless against a stub `window.game` (`test/helpers.js`). It records every building, ground tile and decoration (model/material, position, rotation, scale) for a 13×13 block area at seeds 9746 and 6362. It also checks that decorations and traffic don't change when `Math.random` is seeded differently.
+**Layout snapshots.**
+
+- `test/generation.test.js` snapshots the plain data from `generateBlock` for a 13×13 block area (seed 9746), with no stubs. It also checks determinism, independence from `Math.random`, and distributions.
+- `test/cityLayout.test.js` runs the three.js builders (`GeneratorItem_CityBlock`, `GeneratorItem_Traffic`) with a fake context from `test/helpers.js`. It records every building, ground tile and decoration mesh (model/material, position, rotation, scale) for seeds 9746 and 6362.
+- If only the builder changes, the data snapshot must stay put; if only generation changes, both move.
 
 **Visual harness** (`scripts/visual/capture.mjs`):
 
@@ -85,19 +89,16 @@ Suggested order. Each task lists what "done" looks like and the traps I know abo
   - big-block ads 55%;
   - rare big-building materials 10%.
 - Spotlights stay restricted to `s_03_03`, whose roof their 160 × scale height fits. They are placed at 5% of those lots, the same overall rate as before.
-- `test/cityLayout.test.js` asserts variant, rotation and height are independent. Read rotations from the quaternion there: three.js's Euler for a 180° `rotateY` comes back as y = 0 with x = z = π.
+- `test/generation.test.js` asserts variant, rotation and height are independent. If you ever read rotations back from meshes, use the quaternion: three.js's Euler for a 180° `rotateY` comes back as y = 0 with x = z = π.
 
-### 2. Split generation from rendering
+### 2. Split generation from rendering — done
 
-- Create `generateBlock({ seed, noise, x, z })` returning plain data, e.g. `{ buildings: [{ model, material, position, rotationY, scaleY, collide }], decorations: [...], ground, storefronts }`.
-- Make `GeneratorItem_CityBlock` a thin builder that turns that data into meshes and colliders.
-- Do the same for city lights and traffic spawn parameters.
-- Remove `window.game` from generators by passing a context object (assets, scene, collider, noise, constants) into the `Generator` and items. `src/main.js` still sets `window.game`; delete it when nothing reads it.
-- **Done when:**
-  - The layout test calls `generateBlock` directly with no stubs.
-  - Snapshots are unchanged.
-  - `visual:compare` shows 0.000%.
-- This is a refactor, so it must be pixel-neutral.
+- `src/generation/` holds pure functions that return plain data: `generateBlock`, `generateTrafficCell` and `cityLightHue`.
+- The `GeneratorItem_*` classes are thin builders that take a context object (seed, noise, assets, scene, collider, player, city light pool). `Game.init()` passes it through `Generator`.
+- `window.game` is gone. `PlayerCar` and `AssetManager` take their dependencies as parameters, and `GeneratorUtils.js` was folded into `src/generation/`.
+- **Trap:** `generateBlock` returns one ordered list. Mesh creation order decides ties in three.js render sorting, so the builder creates meshes in that order: decorations enter the scene as they are created, ground and buildings afterwards. Regrouping the list by kind breaks pixel neutrality.
+- Advert material switches use their own `'advert-switch'` stream at the advert's position, so the data only carries the initial state.
+- Next step if wanted: move `generateBlock` into a worker. It already depends only on the seed, the Perlin instance and the position.
 
 ### 3. Generator bugs (tests already exist)
 

@@ -9,6 +9,9 @@ class PlayerCar {
     this.scene = params.scene;
     this.renderer = params.renderer;
     this.controller = params.controller;
+    this.collider = params.collider;
+    this.respawnX = params.respawnX;
+    const assets = params.assets;
 
     // settings
 
@@ -42,15 +45,15 @@ class PlayerCar {
 
     this.car = null;
     this.car_windows = null;
-    this.car = new Mesh(window.game.assets.getModel('spinner'), [
-      window.game.assets.getMaterial('spinner_interior'),
-      window.game.assets.getMaterial('spinner_exterior'),
+    this.car = new Mesh(assets.getModel('spinner'), [
+      assets.getMaterial('spinner_interior'),
+      assets.getMaterial('spinner_exterior'),
     ]);
     const windowsMat =
-      window.game.settings.windshieldShader == 'advanced'
-        ? window.game.assets.getMaterial('spinner_windows_advanced')
-        : window.game.assets.getMaterial('spinner_windows_simple');
-    this.car_windows = new Mesh(window.game.assets.getModel('spinner_windows'), windowsMat);
+      params.windshieldShader == 'advanced'
+        ? assets.getMaterial('spinner_windows_advanced')
+        : assets.getMaterial('spinner_windows_simple');
+    this.car_windows = new Mesh(assets.getModel('spinner_windows'), windowsMat);
     if (this.car) this.scene.add(this.car);
     if (this.car_windows) this.scene.add(this.car_windows);
 
@@ -248,7 +251,7 @@ class PlayerCar {
     /*--- COLLISION ---*/
 
     if (!this.crashed) {
-      if (window.game.collider.intersectsSphere(this.body.position, 1)) {
+      if (this.collider.intersectsSphere(this.body.position, 1)) {
         this.crashed = true;
         document.getElementById('crashMessage').style.display = 'flex';
 
@@ -272,8 +275,7 @@ class PlayerCar {
           this.camera_target.rotation.x = this.camera.rotation.x;
           this.camera_target.rotation.y = this.camera.rotation.y;
 
-          // this.body.position.x = ( Math.round(this.body.position.x / window.game.cityBlockSize) * window.game.cityBlockSize ) - window.game.roadWidth/2;
-          this.body.position.x = -window.game.roadWidth / 2;
+          this.body.position.x = this.respawnX;
           this.body.position.z = 0;
           if (this.body.position.y < 150) this.body.position.y = 150;
         }, 2000);

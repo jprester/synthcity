@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 import { BufferGeometry, MeshBasicMaterial, Vector3 } from 'three';
-import { Perlin } from '../src/lib/perlin.js';
+import { createDistrictNoise } from '../src/generation/world.js';
 
 // Seeded stand-in for Math.random (mulberry32).
 export function seedMathRandom(seed) {
@@ -13,35 +13,28 @@ export function seedMathRandom(seed) {
   });
 }
 
-// Minimal `window.game` for running the city generators headless. Models and
-// materials are placeholders named after their asset key.
-export function installFakeGame({ worldSeed = 9746, environment = 'night' } = {}) {
+// Generator context (see Game.init) for building city items headless. Models
+// and materials are placeholders named after their asset key.
+export function makeWorld({ worldSeed = 9746, environment = 'night' } = {}) {
   const geometries = new Map();
   const materials = new Map();
   const cached = (map, key, make) => {
     if (!map.has(key)) map.set(key, make(key));
     return map.get(key);
   };
-  const noise = new Perlin(worldSeed);
-  noise.noiseDetail(8, 0.5);
-
-  const game = {
-    settings: { worldSeed },
-    cityBlockSize: 128,
-    roadWidth: 24,
-    cityBlockNoise: noise,
-    cityBlockNoiseFactor: 0.0017,
-    environment: { name: environment, spotLights: environment === 'night' },
+  return {
+    seed: worldSeed,
+    noise: createDistrictNoise(worldSeed),
+    spotLights: environment === 'night',
     assets: {
       getModel: (key) => cached(geometries, key, (k) => Object.assign(new BufferGeometry(), { name: k })),
       getMaterial: (key) => cached(materials, key, (k) => new MeshBasicMaterial({ name: k })),
     },
     scene: { add() {}, remove() {} },
     collider: { add() {}, remove() {} },
-    player: { camera: { position: { x: 0, y: 0, z: 0 } }, body: { position: new Vector3() } },
+    player: { camera: { position: new Vector3() }, body: { position: new Vector3() } },
+    cityLights: [],
   };
-  globalThis.window = { game };
-  return game;
 }
 
 const r = (n) => Math.round(n * 1000) / 1000;
