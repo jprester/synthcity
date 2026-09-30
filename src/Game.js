@@ -44,6 +44,7 @@ import { Collider } from './classes/Collider.js';
 import { CITY_BLOCK_SIZE, ROAD_WIDTH, CELL_SIZE, createDistrictNoise } from './generation/world.js';
 import { userSettings } from './settings.js';
 import { setColor, newLine, write, showCredits } from './ui/terminal.js';
+import { StatsOverlay } from './ui/stats.js';
 
 export class Game {
   constructor() {
@@ -122,6 +123,7 @@ export class Game {
       soundFx: true,
       windshieldShader: 'simple',
       renderScaling: 1.0,
+      stats: false,
     };
 
     if (Object.hasOwn(userSettings, 'mode')) this.settings.mode = userSettings.mode;
@@ -132,6 +134,7 @@ export class Game {
       this.settings.renderScaling = parseFloat(userSettings.renderScaling);
     if (Object.hasOwn(userSettings, 'windshieldShader'))
       this.settings.windshieldShader = userSettings.windshieldShader;
+    if (Object.hasOwn(userSettings, 'stats')) this.settings.stats = userSettings.stats;
 
     console.log('Game: World seed: ' + this.settings.worldSeed);
 
@@ -311,6 +314,10 @@ export class Game {
 
     /*----- animate -----*/
 
+    // performance overlay
+
+    this.stats = this.settings.stats ? new StatsOverlay(this.renderer, this.scene) : null;
+
     // time
 
     this.clock = new Clock();
@@ -456,6 +463,7 @@ export class Game {
 
     // update
 
+    if (this.stats) this.stats.beginUpdate();
     this.player.update();
     if (this.radio) this.radio.update();
     this.playerController.update();
@@ -466,7 +474,9 @@ export class Game {
 
     // render
 
+    if (this.stats) this.stats.begin();
     this.composer.render();
+    if (this.stats) this.stats.end(delta);
     // this.renderer.render(this.scene, this.player.camera);
 
     // start collision checking

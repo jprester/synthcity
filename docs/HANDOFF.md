@@ -109,7 +109,10 @@ Suggested order. Each task lists what "done" looks like and the traps I know abo
 
 ### 4. Performance
 
-- **Measure first.** Add a `?stats=1` overlay showing FPS, `renderer.info.render.calls` and triangles. The visual harness can't measure performance; use your real browser and GPU.
+- **Measure first — done.** `?stats=1` shows an overlay (`src/ui/stats.js`), and `npm run perf` flies drive mode in Chromium on the real GPU and prints it every second.
+  - Baseline (2026-09-30, Apple M5, 1920×1080, seed 9746): 175–220 fps, about 2,000 draw calls (all passes), about 1.05 M triangles and about 8,600 scene objects.
+  - CPU: update about 0.3 ms, render about 5.3 ms. The frame is CPU-bound in three.js traversal and draw submission, which is what instancing cuts.
+  - The worst frame per half second stayed under 9 ms, so row construction isn't a visible hitch on this machine.
 - **Instancing.** Every building, ad and ground tile is its own `Mesh`, which means thousands of draw calls. Geometry is already shared per model, so an `InstancedMesh` (or `BatchedMesh`) per model+material pair, with slots allocated and freed as blocks stream in and out, is the big win.
   - Colliders currently use per-mesh BVH (`Collider.js`, `three-mesh-bvh`). Keep invisible per-building proxies for collision, or test spheres against instance transforms plus the shared geometry BVH.
   - Transparent and additive decorations (smoke, spotlights) may sort differently when instanced. Expect to review small diffs there, while opaque buildings should be pixel-identical.

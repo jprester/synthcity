@@ -133,6 +133,18 @@ body {
   animation-timing-function: steps(5, end);
 }
 
+#stats {
+  z-index: 400;
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 4px 8px;
+  white-space: pre;
+  font-size: 0.75rem;
+  pointer-events: none;
+  background-color: #000000a0;
+}
+
 #crashMessage {
   z-index: 500;
   width: 100%;

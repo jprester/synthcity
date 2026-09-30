@@ -23,9 +23,10 @@ npm run lint            # ESLint
 npm run format          # Prettier (format:check to verify)
 npm run check           # lint + format:check + test + build
 npm run visual:compare  # render reference frames and diff them against the baseline (~2.5 min)
+npm run perf            # fly drive mode on the real GPU and print the ?stats=1 readout
 ```
 
-Query params preset the launch settings, e.g. `/?seed=9746&mode=freeroam&music=0&sfx=0`. See `src/settings.js`.
+Query params preset the launch settings, e.g. `/?seed=9746&mode=freeroam&music=0&sfx=0`. See `src/settings.js`. `stats=1` shows a performance overlay (fps, CPU update/render time, draw calls, triangles, objects).
 
 ## Verifying a change
 
