@@ -6,7 +6,7 @@ Status and next steps for continuing this rework in a local Claude Code session.
 
 ## Where things stand
 
-The tooling pass is complete, and task 1a (seed-driven decorations, traffic and building hues) is done. Apart from 1a the game is the original code; before 1a it rendered pixel-for-pixel the same as the original webpack build at `5a4ee0d`.
+The tooling pass is complete, and tasks 1a (seed-driven decorations, traffic and building hues) and 1b (hashed per-lot choices) are done. Before those two deliberate visual changes, the game rendered pixel-for-pixel the same as the original webpack build at `5a4ee0d`.
 
 - **Build:**
   - Vite replaces webpack; built output is no longer committed.
@@ -58,13 +58,9 @@ Knowing this helps you tell whether a diff is real.
 
 **Intentional changes.** Update in the same commit (`npx vitest run -u`, `npm run visual:baseline`), look at the new frames, and describe the visual change in the commit message.
 
-## Decisions for you before the city-changing work
+## Decisions
 
-1. **Keep or re-roll the curated cities.** Seeds 9746, 6362, 4217 and 5794 were picked by the original author because they look good.
-   - Replacing decoration randomness (task 1a) keeps every building where it is.
-   - Fixing the variant/rotation/height correlation (task 1b) changes which building stands on each lot, so those cities will look different.
-   - Options: accept that and re-curate seeds; or put the new per-lot hash behind a generator version (`?gen=2`) and keep v1 for the curated seeds; or skip 1b.
-   - Recommendation: do 1a now, then look at 1b frames side by side before deciding.
+1. **Keep or re-roll the curated cities.** Decided: 1b was accepted, so seeds 9746, 6362, 4217 and 5794 now produce different (still district-identical) cities. Re-curating the seed list in `src/settings.js` is optional.
 2. **Building hue source.** Decided and done: `AssetManager.setBuildingHues(seed)`, called from `Game.init()`, sets each building material's pale emissive hue from the world seed.
 3. **Stay on three.js r159 or upgrade.** An upgrade is best done after instancing, with the visual harness as the check. Expect UnrealBloom and colour differences that need a deliberate re-tune against the baseline.
 
@@ -74,36 +70,22 @@ Suggested order. Each task lists what "done" looks like and the traps I know abo
 
 ### 1a. Seed-driven decorations and traffic — done
 
-Kept for reference. `src/hash.js` provides `hashFloat`/`hashRandom` keyed by (seed, position, purpose salt). Decorations get a stream per lot, and traffic gets a stream per cell. Each car now has a fixed turn-around distance, and the traffic count distribution (re-rolled per loop iteration) is unchanged. The only `Math.random` left is in `Radio.js`, `ui/terminal.js` and `settings.js`, none of which is world content.
+`src/hash.js` provides `hashFloat`/`hashRandom` keyed by (seed, position, purpose salt).
 
-Replace `Math.random()` for world content with a deterministic hash of (world seed, world position or cell, purpose).
+- Decorations get a stream per lot, and traffic gets a stream per cell.
+- Each car has a fixed turn-around distance. The traffic count distribution (re-rolled per loop iteration) is unchanged.
+- Building emissive hues come from the seed (decision 2).
+- The only `Math.random` left is in `Radio.js`, `ui/terminal.js` and `settings.js`, none of which is world content. three.js `generateUUID` also calls it, which the determinism tests show doesn't leak into the world.
 
-- Add a small hash module, e.g. `src/lib/hash.js`: a 32-bit integer hash such as a murmur3 finaliser or splitmix32 over (seed, x, z, salt), returning floats in [0, 1). Write unit tests for it.
-- **Uses in `src/classes/GeneratorItem_CityBlock.js`:**
-  - Spotlight chance: line 105.
-  - Smoke chance: line 121.
-  - `Advert`: material, switch interval, counter, whether it switches (lines 258–277). The periodic switch at line 277 can stay random over time, but its initial state should be seeded.
-  - `Topper`: model, material, scale, spin (lines 302–312).
-  - `Smoke`: material, scale, phase (lines 325–332).
-  - `Spotlight`: material, scale, phase (lines 347–353).
-- **Uses in `src/classes/GeneratorItem_Traffic.js`:**
-  - Car count per lane (line 13), model (47), offsets (59–81), altitude band and speed (85–86).
-  - Line 102 draws a new random reverse distance every frame. Give each car a fixed threshold instead.
-  - Motion itself stays time-based.
-- **Hues:** `src/classes/AssetManager.js:432` (building emissive hue); see decision 2.
-- **Leave alone:** `Radio.js:139` (playlist shuffle is not world content) and `ui/terminal.js` (cosmetic loading names).
-- **Done when:**
-  - The `it.todo` in `test/cityLayout.test.js` becomes a real test: decorations are identical for two different `Math.random` seeds.
-  - The building part of the layout snapshots is unchanged.
-  - Snapshots and the visual baseline are updated in the same commit, with before/after frames reviewed.
-- **Trap:** three.js `generateUUID` also calls `Math.random`. That's fine and must not affect world content, which is exactly what the new test checks.
+### 1b. Decorrelate per-lot choices — done
 
-### 1b. Decorrelate per-lot choices (see decision 1)
-
-- For small buildings, `subtypeNoise` and `rotateNoise` sample identical coordinates (`GeneratorItem_CityBlock.js:72` and `:82`), so variant, rotation and height scale are the same number.
-- More generally, per-lot values sample Processing-style value noise at integer lattice points (coordinates × 5), which acts as a weak hash. I measured only 512 distinct values over 40,000 lots, with about 10% of samples clamped by `fixNoise`.
-- Keep Perlin only for the low-frequency district map (`typeNoise`, factor 0.0017) and use the hash from 1a for per-lot choices with distinct salts.
-- **Done when:** a test asserts that variant and rotation are not perfectly correlated. Update snapshots and the baseline deliberately.
+- Perlin now only decides districts (`typeNoise`, factor 0.0017). Every per-lot choice (variant, rotation, height, material, ad model, topper, rare material, big-block ads, storefront material, city light hue) is an independent hash with its own salt.
+- Rates were matched to what the old clamped noise actually produced, not its nominal thresholds:
+  - toppers on 6% of eligible lots (the old `> 0.998` hit about 6.6%);
+  - big-block ads 55%;
+  - rare big-building materials 10%.
+- Spotlights stay restricted to `s_03_03`, whose roof their 160 × scale height fits. They are placed at 5% of those lots, the same overall rate as before.
+- `test/cityLayout.test.js` asserts variant, rotation and height are independent. Read rotations from the quaternion there: three.js's Euler for a 180° `rotateY` comes back as y = 0 with x = z = π.
 
 ### 2. Split generation from rendering
 

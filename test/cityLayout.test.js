@@ -1,4 +1,5 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
+import { Vector3 } from 'three';
 import { installFakeGame, seedMathRandom, describeMesh } from './helpers.js';
 import { GeneratorItem_CityBlock } from '../src/classes/GeneratorItem_CityBlock.js';
 import { GeneratorItem_Traffic } from '../src/classes/GeneratorItem_Traffic.js';
@@ -43,6 +44,51 @@ describe('city block layout', () => {
 
   it('places different buildings for different world seeds', () => {
     expect(buildingsOnly(layout(9746))).not.toEqual(buildingsOnly(layout(6362)));
+  });
+
+  it('picks variant, rotation and height of small buildings independently', () => {
+    installFakeGame({ worldSeed: 9746 });
+    const lots = [];
+    for (let i = -RANGE; i <= RANGE; i++) {
+      for (let j = -RANGE; j <= RANGE; j++) {
+        for (const mesh of new GeneratorItem_CityBlock(i * CELL, j * CELL).meshesCollid) {
+          const m = /^s_0[123]_0(\d)$/.exec(mesh.geometry.name);
+          if (!m) continue;
+          // Euler y is ambiguous at 180°, so read the facing from the quaternion
+          const facing = new Vector3(1, 0, 0).applyQuaternion(mesh.quaternion);
+          const rotation = (Math.round(Math.atan2(-facing.z, facing.x) / (Math.PI / 2)) + 4) % 4;
+          lots.push({ variant: Number(m[1]), rotation, height: mesh.scale.y });
+        }
+      }
+    }
+    expect(lots.length).toBeGreaterThan(300);
+
+    // every variant appears with every rotation
+    for (let v = 1; v <= 3; v++) {
+      const rotations = new Set(lots.filter((l) => l.variant == v).map((l) => l.rotation));
+      expect(rotations.size).toBe(4);
+    }
+
+    const correlation = (a, b) => {
+      const mean = (xs) => xs.reduce((s, x) => s + x, 0) / xs.length;
+      const ma = mean(a);
+      const mb = mean(b);
+      let cov = 0;
+      let va = 0;
+      let vb = 0;
+      for (let k = 0; k < a.length; k++) {
+        cov += (a[k] - ma) * (b[k] - mb);
+        va += (a[k] - ma) ** 2;
+        vb += (b[k] - mb) ** 2;
+      }
+      return cov / Math.sqrt(va * vb);
+    };
+    const variants = lots.map((l) => l.variant);
+    const rotations = lots.map((l) => l.rotation);
+    const heights = lots.map((l) => l.height);
+    expect(Math.abs(correlation(variants, rotations))).toBeLessThan(0.15);
+    expect(Math.abs(correlation(variants, heights))).toBeLessThan(0.15);
+    expect(Math.abs(correlation(rotations, heights))).toBeLessThan(0.15);
   });
 
   it('places the same decorations for a world seed regardless of Math.random', () => {

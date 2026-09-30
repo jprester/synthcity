@@ -21,11 +21,14 @@ class GeneratorItem_CityBlock {
     this.updateables = [];
 
     // buildings
+    //
+    // Perlin noise only decides the district (typeNoise, low frequency). Every
+    // per-lot choice (variant, rotation, height, material, extras) is an
+    // independent hash of (seed, lot position, purpose).
 
     let typeNoise = this.utils.fixNoise(
       this.noise.noise(this.x * this.noiseFactor, this.z * this.noiseFactor),
     );
-    let subtypeNoise = this.utils.fixNoise(this.noise.noise(this.x * 5, this.z * 5));
 
     // rare mega building
     if (typeNoise < 0.2) {
@@ -35,27 +38,21 @@ class GeneratorItem_CityBlock {
       ) {
         let xOff = this.cityBlockSize / 2;
         let zOff = this.cityBlockSize / 2;
+        let lotX = this.x + xOff;
+        let lotZ = this.z + zOff;
 
         // don't place too close to path of player car
-        if (!(this.x + xOff < 128 && this.x + xOff > -128)) {
-          let rotateNoise = this.utils.fixNoise(this.noise.noise((this.x + xOff) * 5, (this.z + zOff) * 5));
-          let rotate = this.utils.getBuildingRotation(rotateNoise);
-
-          let scale = 0.75 + rotateNoise * 0.25;
-
-          let type;
-          if (subtypeNoise < 0.16) type = 'mega_01';
-          else if (subtypeNoise < 0.32) type = 'mega_02';
-          else if (subtypeNoise < 0.48) type = 'mega_03';
-          else if (subtypeNoise < 0.64) type = 'mega_04';
-          else if (subtypeNoise < 0.8) type = 'mega_05';
-          else type = 'mega_06';
+        if (!(lotX < 128 && lotX > -128)) {
+          let rotate = this.utils.getBuildingRotation(hashFloat(this.seed, lotX, lotZ, 'mega-rotation'));
+          let scale = 0.75 + hashFloat(this.seed, lotX, lotZ, 'mega-height') * 0.25;
+          let types = ['mega_01', 'mega_02', 'mega_03', 'mega_04', 'mega_05', 'mega_06'];
+          let type = types[Math.floor(hashFloat(this.seed, lotX, lotZ, 'mega-variant') * types.length)];
 
           let mesh = new Mesh(
             window.game.assets.getModel(type),
             window.game.assets.getMaterial('mega_building_01'),
           );
-          mesh.position.set(this.x + xOff, 0, this.z + zOff);
+          mesh.position.set(lotX, 0, lotZ);
           mesh.scale.set(1, scale, 1);
           mesh.rotateY((rotate * Math.PI) / 180);
           this.meshesCollid.push(mesh);
@@ -73,40 +70,27 @@ class GeneratorItem_CityBlock {
           let lotX = this.x + xOff;
           let lotZ = this.z + zOff;
 
-          let rotateNoise = this.utils.fixNoise(this.noise.noise((this.x + xOff) * 5, (this.z + zOff) * 5));
-          let rotate = this.utils.getBuildingRotation(rotateNoise);
-
-          let scale = 0.75 + rotateNoise * 0.45;
+          let rotate = this.utils.getBuildingRotation(hashFloat(this.seed, lotX, lotZ, 'rotation'));
+          let scale = 0.75 + hashFloat(this.seed, lotX, lotZ, 'height') * 0.45;
+          let variant = Math.floor(hashFloat(this.seed, lotX, lotZ, 'variant') * 3) + 1; // 1..3
+          let adsVariant = hashFloat(this.seed, lotX, lotZ, 'ads-variant') < 0.5 ? 1 : 2;
 
           let topper = false;
 
-          typeNoise = this.utils.fixNoise(
-            this.noise.noise((this.x + xOff) * this.noiseFactor, (this.z + zOff) * this.noiseFactor),
-          ); // update to subdivided location
-          subtypeNoise = this.utils.fixNoise(this.noise.noise((this.x + xOff) * 5, (this.z + zOff) * 5));
-          let type;
-          let adsType;
-          if (typeNoise < 0.267) {
-            if (subtypeNoise < 0.33) type = 's_01_01';
-            else if (subtypeNoise < 0.66) type = 's_01_02';
-            else type = 's_01_03';
-            adsType = Math.round(typeNoise * 100) % 2 == 0 ? 'ads_s_01_01' : 'ads_s_01_02';
-          } else if (typeNoise < 0.534) {
-            if (subtypeNoise < 0.33) type = 's_02_01';
-            else if (subtypeNoise < 0.66) type = 's_02_02';
-            else type = 's_02_03';
-            adsType = Math.round(typeNoise * 100) % 2 == 0 ? 'ads_s_02_01' : 'ads_s_02_02';
-          } else {
-            if (subtypeNoise < 0.33) type = 's_03_01';
-            else if (subtypeNoise < 0.66) type = 's_03_02';
-            else type = 's_03_03';
-            adsType = Math.round(typeNoise * 100) % 2 == 0 ? 'ads_s_03_01' : 'ads_s_03_02';
-            // topper
-            let topperNoise = this.utils.fixNoise(this.noise.noise((this.x + xOff) * 6, (this.z + zOff) * 6));
-            topper = topperNoise > 0.998;
-            // spotlight
+          typeNoise = this.utils.fixNoise(this.noise.noise(lotX * this.noiseFactor, lotZ * this.noiseFactor)); // update to subdivided location
+          let group;
+          if (typeNoise < 0.267) group = 1;
+          else if (typeNoise < 0.534) group = 2;
+          else group = 3;
+          let type = 's_0' + group + '_0' + variant;
+          let adsType = 'ads_s_0' + group + '_0' + adsVariant;
+
+          if (group == 3) {
+            // topper (the old noise threshold hit about 6% of these lots)
+            topper = hashFloat(this.seed, lotX, lotZ, 'topper') < 0.06;
+            // spotlight: sized for the s_03_03 roof
             if (window.game.environment.spotLights) {
-              if (hashFloat(this.seed, lotX, lotZ, 'spotlight') < 0.1 && subtypeNoise > 0.8 && !topper)
+              if (variant == 3 && hashFloat(this.seed, lotX, lotZ, 'spotlight') < 0.05 && !topper)
                 this.updateables.push(
                   new Spotlight(lotX, 160 * scale, lotZ, hashRandom(this.seed, lotX, lotZ, 'spotlight-look')),
                 );
@@ -116,13 +100,12 @@ class GeneratorItem_CityBlock {
           // remove ads
           if (typeNoise > 0.33 && typeNoise < 0.66) adsType = null;
 
-          let matNoise = this.utils.fixNoise(this.noise.noise((this.x + xOff) * -3, (this.z + zOff) * -3));
-          let mat = this.utils.getBuildingMat(matNoise);
+          let mat = this.utils.getBuildingMat(hashFloat(this.seed, lotX, lotZ, 'material'));
 
           // topper
           if (topper && adsType != null)
             this.updateables.push(
-              new Topper(lotX, 190 * scale, lotZ, hashRandom(this.seed, lotX, lotZ, 'topper')),
+              new Topper(lotX, 190 * scale, lotZ, hashRandom(this.seed, lotX, lotZ, 'topper-look')),
             );
 
           // smoke
@@ -132,7 +115,7 @@ class GeneratorItem_CityBlock {
             );
 
           let mesh = new Mesh(window.game.assets.getModel(type), mat);
-          mesh.position.set(this.x + xOff, 0, this.z + zOff);
+          mesh.position.set(lotX, 0, lotZ);
           mesh.scale.set(1, scale, 1);
           mesh.rotateY((rotate * Math.PI) / 180);
           this.meshesCollid.push(mesh);
@@ -155,57 +138,44 @@ class GeneratorItem_CityBlock {
     } else {
       let isTower = typeNoise > 0.975;
 
-      var xOff = this.cityBlockSize / 2;
-      var zOff = this.cityBlockSize / 2;
+      let lotX = this.x + this.cityBlockSize / 2;
+      let lotZ = this.z + this.cityBlockSize / 2;
 
-      let subtypeNoise = this.utils.fixNoise(this.noise.noise(this.x * 4, this.z * 4));
-      let type;
+      let variant = Math.floor(hashFloat(this.seed, lotX, lotZ, 'variant') * 3) + 1; // 1..3
+      let type = (isTower ? 's_05_0' : 's_04_0') + variant;
 
-      if (isTower) {
-        if (subtypeNoise < 0.33) type = 's_05_01';
-        else if (subtypeNoise < 0.66) type = 's_05_02';
-        else type = 's_05_03';
-      } else {
-        if (subtypeNoise < 0.33) type = 's_04_01';
-        else if (subtypeNoise < 0.66) type = 's_04_02';
-        else type = 's_04_03';
-      }
+      let rare = hashFloat(this.seed, lotX, lotZ, 'rare-material') < 0.1;
+      let mat = this.utils.getBigBuildingMat(hashFloat(this.seed, lotX, lotZ, 'material'), rare);
 
-      let matNoise = this.utils.fixNoise(this.noise.noise((this.x + xOff) * -3, (this.z + zOff) * -3));
-      let mat = this.utils.getBigBuildingMat(matNoise, subtypeNoise > 0.9);
+      let rotate = this.utils.getBuildingRotation(hashFloat(this.seed, lotX, lotZ, 'rotation'));
+      let scale = 1 + hashFloat(this.seed, lotX, lotZ, 'height') * 0.5;
 
-      let rotateNoise = this.utils.fixNoise(this.noise.noise((this.x + xOff) * 4, (this.z + zOff) * 4));
-      let rotate = this.utils.getBuildingRotation(rotateNoise);
-
-      // maybe have ads
+      // maybe have ads (the old parity test came out true for about 55%)
       let adsType = null;
-      let adsTypes;
-      if (Math.round(rotateNoise * 100) % 2 == 0) {
-        let adsNoise = this.utils.fixNoise(this.noise.noise((this.x + xOff) * 6, (this.z + zOff) * 6));
+      if (hashFloat(this.seed, lotX, lotZ, 'ads') < 0.55) {
+        let adsTypes;
         if (isTower) {
           adsTypes = ['ads_s_05_01', 'ads_s_05_02', 'ads_s_05_03', 'ads_s_05_04'];
         } else {
           adsTypes = ['ads_s_04_01', 'ads_s_04_02', 'ads_s_04_03', 'ads_s_04_04'];
         }
-        adsType = adsTypes[Math.floor(adsNoise * adsTypes.length)];
+        adsType = adsTypes[Math.floor(hashFloat(this.seed, lotX, lotZ, 'ads-variant') * adsTypes.length)];
       }
 
-      let scale = 1 + rotateNoise * 0.5;
-
       let mesh = new Mesh(window.game.assets.getModel(type), mat);
-      mesh.position.set(this.x + xOff, 0, this.z + zOff);
+      mesh.position.set(lotX, 0, lotZ);
       mesh.scale.set(1, scale, 1);
       mesh.rotateY((rotate * Math.PI) / 180);
       this.meshesCollid.push(mesh);
 
       if (adsType != null) {
         let ad = new Advert(
-          this.x + xOff,
+          lotX,
           0,
-          this.z + zOff,
+          lotZ,
           window.game.assets.getModel(adsType),
           isTower,
-          hashRandom(this.seed, this.x + xOff, this.z + zOff, 'advert'),
+          hashRandom(this.seed, lotX, lotZ, 'advert'),
         );
         ad.mesh.scale.set(1, scale, 1);
         ad.mesh.rotateY((-rotate * Math.PI) / 180);
@@ -228,8 +198,7 @@ class GeneratorItem_CityBlock {
       z % ((this.cityBlockSize + this.roadWidth) * 2) == 0
     ) {
       let mats = ['storefronts', 'building_02', 'building_03', 'building_07'];
-      let mat = mats[Math.floor(subtypeNoise * mats.length)];
-      if (!mat) mat = 'storefronts';
+      let mat = mats[Math.floor(hashFloat(this.seed, this.x, this.z, 'storefront') * mats.length)];
       var mesh = new Mesh(window.game.assets.getModel('storefronts'), window.game.assets.getMaterial(mat));
       mesh.position.set(
         this.x + this.cityBlockSize + this.roadWidth / 2,

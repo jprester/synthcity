@@ -69,7 +69,7 @@ scripts/visual/         deterministic capture + pixel compare
 test/                   Vitest
 ```
 
-World constants: city block 128 units, road 24, so a cell is 152. Block types come from low-frequency Perlin noise (`cityBlockNoiseFactor` 0.0017) and per-lot variation from high-frequency samples of the same noise.
+World constants: city block 128 units, road 24, so a cell is 152. District types come from low-frequency Perlin noise (`cityBlockNoiseFactor` 0.0017); every per-lot choice is a hash of (seed, lot position, purpose) from `src/hash.js`.
 
 Generator items and decorations reach shared state through `window.game`. It is legacy; don't add new uses. Pass dependencies explicitly in new code.
 
@@ -86,14 +86,13 @@ Detailed task notes, open decisions and known traps: [docs/HANDOFF.md](docs/HAND
 
 Roughly in priority order:
 
-1. **Per-lot hashing.** Decorations, traffic and building hues are seeded (done). Still open: use the hash for per-lot choices instead of sampling Perlin at integer lattice points. In small buildings `subtypeNoise` and `rotateNoise` read the same coordinates, so variant, rotation and height are locked together.
-2. **Split generation from rendering.** A pure `generateBlock(seed, cellX, cellZ)` that returns plain data, plus a separate step that builds three.js objects. Lets layout tests run without stubs and allows moving generation into a worker.
-3. **Performance.** InstancedMesh/BatchedMesh per model+material (thousands of draw calls today); spread block construction over several frames instead of building a full row in one frame.
-4. **Frame-rate independence.** Movement, traffic and animations are per-frame, so everything runs about 2.4× faster at 144 Hz. The fade-in multiplies by accumulated rather than per-frame delta.
-5. **Generator bugs** captured in `test/generator.test.js`.
-6. **Smaller fixes.**
+1. **Split generation from rendering.** A pure `generateBlock(seed, cellX, cellZ)` that returns plain data, plus a separate step that builds three.js objects. Lets layout tests run without stubs and allows moving generation into a worker.
+2. **Performance.** InstancedMesh/BatchedMesh per model+material (thousands of draw calls today); spread block construction over several frames instead of building a full row in one frame.
+3. **Frame-rate independence.** Movement, traffic and animations are per-frame, so everything runs about 2.4× faster at 144 Hz. The fade-in multiplies by accumulated rather than per-frame delta.
+4. **Generator bugs** captured in `test/generator.test.js`.
+5. **Smaller fixes.**
    - `Collider.remove` splices index -1 when the uuid is missing.
    - `Collider.intersectsSphere` allocates per mesh per frame.
    - The FXAA resolution uniform is not updated on resize, and FXAA runs before bloom.
    - The `mousewheel` event doesn't fire in Firefox.
-7. **Assets.** OBJ → glTF (meshopt), WAV → Opus, textures → KTX2.
+6. **Assets.** OBJ → glTF (meshopt), WAV → Opus, textures → KTX2.
