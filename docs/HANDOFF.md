@@ -206,25 +206,32 @@ The repo carries about 105 MB of assets. The two biggest cuts:
   - Close-up ads still blow out. The default seed's drive spawn (downtown) has one filling the windshield; that's the ad-art task.
 - Review tools: `?at=x,z&alt=&yaw=&pitch=` starts the camera anywhere, and the stats overlay shows the district kind under the camera.
 
-## Higher-quality ads — done
+## Wall signs (ads) — done, step 1
 
-- **Art:** the user's generated neon signs and posters (source: `~/Projects/software_dev/my_projects/future-cityscape/code/three-agent-template/art/external/textures/`, see its `signs/catalog.json`, `ads-v2/PROMPTS.md` and `signs-src/exclude.txt`).
-  - `scripts/assets/build_ad_atlases.py <src>` packs them into two 4096² atlases: `ads_neon.webp` (141 signs, up to 529 px on the long side) and `ads_posters.webp` (143 posters and designs, up to 446 px). The old ads were ~85 px.
-  - It writes their UV rectangles to `src/assets/adAtlases.json`. Re-run it after changing the source art.
-- **Mapping** (`src/rendering/adArt.ts`):
-  - Ad models are split into panels by the UV rectangle each triangle sampled in the old 3×3 layout: 202 panels.
-  - Each panel shows one whole artwork of matching shape (within ×1.35), centre-cropped to the exact aspect.
-  - The 13 light strips on `ads_s_05_01` (1:200) stretch the closest sign instead.
-  - Each ad has its own UV buffer and shares the model's position and normal buffers. `remove()` detaches the shared buffers before `dispose()`, because dispose frees every attached attribute's GPU buffer.
-  - A switch re-picks the art from the ad's switch stream.
-- **Districts pick the atlas** (`neonAdShare`): neon 0.8, industrial 0.7, residential 0.55, mixed 0.5, downtown 0.15 (mostly posters).
-- **Materials `ads_neon` and `ads_posters`:**
-  - Emission only: black diffuse and specular, otherwise district lights wash every panel in their colour, the main cause of the old pale close-ups.
-  - Atlases are sRGB, so dark backgrounds stay dark.
-  - Otherwise as before: additive, no fog, emissive intensity 0.1.
-  - The old `ads_01..05` textures are gone. Rooftop holograms keep `ads_large_*`; the dev panel has separate "ads" and "holograms" glow sliders.
-- **Cost:** about 5 MB more download and ~180 MB of GPU memory for the two atlases with mipmaps. No measurable fps change on the M5 (~190 fps at 1080p). If memory matters on weaker devices, rebuild at 2048² (about half the resolution per ad, still ~3× the old one).
-- **Tests:** `test/adArt.test.ts` covers panel coverage, exact-aspect crops inside one artwork, determinism, and art available for every panel shape.
+Ads are signs placed on buildings' real walls, sized by their art. They are no longer art stretched onto the old ad-wrap models.
+
+- **Art atlases:** `scripts/assets/build_ad_atlases.py <src>` packs the user's generated art into `ads_neon.webp` (141 neon shop signs) and `ads_posters.webp` (143 posters and ads-v2 designs), with rectangles in `src/assets/adAtlases.json`. Source: `~/Projects/software_dev/my_projects/future-cityscape/code/three-agent-template/art/external/textures/` (`signs/catalog.json`, `ads-v2/PROMPTS.md`, `signs-src/exclude.txt`).
+- **Walls:** `node scripts/assets/extract_facades.mjs` (~25 s) finds each building model's flat vertical walls.
+  - It samples them on a 3-unit grid and keeps a cell only where the surface is really there and an outward ray leaves the building without hitting it again. That excludes courtyards, notches between wings and inner walls.
+  - It covers the usable cells with the largest rectangles (at most 60 per model) and writes `src/assets/facades.json`, in model space: normal, plane offset, extent along the wall, height range.
+  - Re-run it when building models change.
+- **Placement** (`src/generation/signs.ts`, pure data): per building that has ads (same district gates as before), per wall rectangle:
+  - Small neon signs low on the building: 14–28 units on the long side, in the lower half of the height (capped at 200 units), up to 10 per wall, density per district (`neonSigns`).
+  - Big posters and designs in the 45–85% band: 35–80 units tall, one chance per ~110 units of band, at the district's `posterChance`.
+  - Each sign keeps its art's exact aspect, stays inside an exposed rectangle with 2-unit margins, and never overlaps another. Everything is hashed from (seed, building).
+  - Measured per building with ads (sign area in units²): downtown ~2,050, neon ~2,470, mixed higher after the last tuning, industrial ~80, residential ~135.
+- **Rendering:**
+  - Every sign is one instance of a unit quad in `InstancePool`. Its art rectangle is per-instance data (`INSTANCE_DATA`, a vec4 kept on the batch's own geometry, packed through growth, removal and culling).
+  - `useInstanceArt` (`src/rendering/adArt.ts`) maps the quad's UVs into it in the material's vertex shader.
+  - Materials `ads_neon` and `ads_posters`: emission only (black diffuse and specular), sRGB atlases, additive, no fog, emissive 0.3 (`signsEmissiveIntensity`).
+  - Screens (35% of posters) switch between art of the same aspect.
+  - Result: ~240 draw calls instead of ~866, and ~800 scene objects instead of ~2,700, at ~197 fps at 1080p on the M5.
+- **Removed:** the `ads_s_*` ad-wrap models, the panel mapping, and `ads_01..05`. Rooftop holograms keep `ads_large_*`.
+- **Tests:** `test/signs.test.ts` checks the art aspect, that each sign lies inside an exposed wall rectangle (transformed back to model space), and that a ray from each sign leaves its building (against the real model). It also checks the zones (neon low, posters in the middle band), no overlaps and determinism.
+- **Next (step 2):**
+  - Tune sign size and density by eye: at typical flying distance, ads are less dominant than the old full-facade wraps.
+  - Projecting (blade) neon signs perpendicular to walls, tower banners and rooftop billboards.
+  - Per-art brightness from the catalog's `gain`.
 
 ## Procedural feature ideas (after 1–5)
 

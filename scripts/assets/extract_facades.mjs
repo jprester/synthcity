@@ -1,0 +1,174 @@
+// Finds the flat, exposed wall areas of every building model, where ads can
+// hang, and writes them as rectangles to src/assets/facades.json.
+//
+//   node scripts/assets/extract_facades.mjs
+//
+// For each model: group vertical triangles into planes (outward normal +
+// offset), sample every plane on a GRID-unit grid, and keep a cell only if the
+// model's surface is really there (not a gap in an L-shaped plane) and a ray
+// going outward leaves the building without hitting it again (not a courtyard,
+// a notch between wings or an inner wall).
+// Usable cells are then covered greedily with the largest rectangles.
+//
+// Rectangles are in model space, before the building's rotation and height
+// scale: n = outward normal [x, z], d = plane offset (n . p), s0..s1 = extent
+// along the wall's tangent t = [-n.z, n.x], y0..y1 = height range.
+
+import { readFileSync, writeFileSync } from 'node:fs';
+import { Ray, Vector3, Raycaster, Mesh, MeshBasicMaterial, DoubleSide } from 'three';
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+import { MeshBVH, acceleratedRaycast } from 'three-mesh-bvh';
+
+const GRID = 3; // world units per sample cell
+const MIN_W = 8; // smallest rectangle worth keeping (units)
+const MIN_H = 8;
+const MAX_RECTS = 60; // per model, largest first (mega buildings have hundreds of small ones)
+
+Mesh.prototype.raycast = acceleratedRaycast;
+
+const models = ['01', '02', '03', '04', '05']
+  .flatMap((g) => ['01', '02', '03'].map((v) => `s_${g}_${v}`))
+  .concat(['01', '02', '03', '04', '05', '06'].map((i) => `mega_${i}`));
+
+function planesOf(geometry) {
+  const p = geometry.attributes.position;
+  const n = geometry.attributes.normal;
+  const planes = new Map();
+  const a = new Vector3();
+  const e1 = new Vector3();
+  const e2 = new Vector3();
+  for (let t = 0; t < p.count; t += 3) {
+    a.fromBufferAttribute(p, t);
+    e1.fromBufferAttribute(p, t + 1).sub(a);
+    e2.fromBufferAttribute(p, t + 2).sub(a);
+    const normal = new Vector3().crossVectors(e1, e2);
+    const area = normal.length() / 2;
+    if (area < 1e-6) continue;
+    normal.normalize();
+    // orient like the stored vertex normal (outward)
+    if (normal.x * n.getX(t) + normal.y * n.getY(t) + normal.z * n.getZ(t) < 0) normal.negate();
+    if (Math.abs(normal.y) > 0.05) continue;
+    const len = Math.hypot(normal.x, normal.z);
+    const nx = normal.x / len;
+    const nz = normal.z / len;
+    const d = nx * a.x + nz * a.z;
+    const key = `${nx.toFixed(2)},${nz.toFixed(2)},${Math.round(d)}`;
+    const plane = planes.get(key) ?? {
+      nx,
+      nz,
+      d,
+      area: 0,
+      s0: Infinity,
+      s1: -Infinity,
+      y0: Infinity,
+      y1: -Infinity,
+    };
+    plane.area += area;
+    for (let k = t; k < t + 3; k++) {
+      const x = p.getX(k);
+      const y = p.getY(k);
+      const z = p.getZ(k);
+      const s = -nz * x + nx * z;
+      plane.s0 = Math.min(plane.s0, s);
+      plane.s1 = Math.max(plane.s1, s);
+      plane.y0 = Math.min(plane.y0, y);
+      plane.y1 = Math.max(plane.y1, y);
+    }
+    planes.set(key, plane);
+  }
+  return [...planes.values()].filter((pl) => pl.s1 - pl.s0 >= MIN_W && pl.y1 - pl.y0 >= MIN_H);
+}
+
+// largest all-true rectangle in a boolean grid (rows = y, cols = s)
+function largestRect(grid) {
+  const rows = grid.length;
+  const cols = grid[0].length;
+  const heights = new Array(cols).fill(0);
+  let best = { area: 0 };
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) heights[c] = grid[r][c] ? heights[c] + 1 : 0;
+    const stack = [];
+    for (let c = 0; c <= cols; c++) {
+      const h = c < cols ? heights[c] : 0;
+      let start = c;
+      while (stack.length && stack.at(-1)[1] >= h) {
+        const [i, sh] = stack.pop();
+        const area = sh * (c - i);
+        if (area > best.area) best = { area, r0: r - sh + 1, r1: r, c0: i, c1: c - 1 };
+        start = i;
+      }
+      stack.push([start, h]);
+    }
+  }
+  return best;
+}
+
+function facadesOf(key) {
+  const geometry = new OBJLoader().parse(readFileSync(`public/assets/models/${key}.obj`, 'utf8')).children[0]
+    .geometry;
+  geometry.boundsTree = new MeshBVH(geometry);
+  const mesh = new Mesh(geometry, new MeshBasicMaterial({ side: DoubleSide }));
+  const raycaster = new Raycaster();
+  raycaster.firstHitOnly = true;
+  geometry.computeBoundingBox();
+
+  const rects = [];
+  for (const pl of planesOf(geometry)) {
+    const cols = Math.floor((pl.s1 - pl.s0) / GRID);
+    const rows = Math.floor((pl.y1 - pl.y0) / GRID);
+    if (cols < 1 || rows < 1) continue;
+    const grid = [];
+    const point = new Vector3();
+    const target = {};
+    for (let r = 0; r < rows; r++) {
+      const row = [];
+      for (let c = 0; c < cols; c++) {
+        const s = pl.s0 + (c + 0.5) * GRID;
+        const y = pl.y0 + (r + 0.5) * GRID;
+        // point on the plane
+        point.set(pl.nx * pl.d - pl.nz * s, y, pl.nz * pl.d + pl.nx * s);
+        const hit = geometry.boundsTree.closestPointToPoint(point, target);
+        let ok = hit && hit.distance < 0.3;
+        if (ok) {
+          const origin = point.clone().addScaledVector(new Vector3(pl.nx, 0, pl.nz), 0.5);
+          raycaster.ray = new Ray(origin, new Vector3(pl.nx, 0, pl.nz));
+          ok = raycaster.intersectObject(mesh).length == 0;
+        }
+        row.push(ok);
+      }
+      grid.push(row);
+    }
+    // cover the usable cells with rectangles, largest first
+    for (;;) {
+      const best = largestRect(grid);
+      if (!best.area) break;
+      const w = (best.c1 - best.c0 + 1) * GRID;
+      const h = (best.r1 - best.r0 + 1) * GRID;
+      if (w < MIN_W || h < MIN_H) break;
+      for (let r = best.r0; r <= best.r1; r++) for (let c = best.c0; c <= best.c1; c++) grid[r][c] = false;
+      const round = (v) => Math.round(v * 100) / 100;
+      const unit = (v) => Math.round(v * 10000) / 10000;
+      rects.push({
+        n: [unit(pl.nx), unit(pl.nz)],
+        d: round(pl.d),
+        s0: round(pl.s0 + best.c0 * GRID),
+        s1: round(pl.s0 + (best.c1 + 1) * GRID),
+        y0: round(pl.y0 + best.r0 * GRID),
+        y1: round(pl.y0 + (best.r1 + 1) * GRID),
+      });
+    }
+  }
+  rects.sort((a, b) => (b.s1 - b.s0) * (b.y1 - b.y0) - (a.s1 - a.s0) * (a.y1 - a.y0));
+  return { height: Math.round(geometry.boundingBox.max.y * 100) / 100, rects: rects.slice(0, MAX_RECTS) };
+}
+
+const out = {};
+for (const key of models) {
+  out[key] = facadesOf(key);
+  const area = out[key].rects.reduce((sum, r) => sum + (r.s1 - r.s0) * (r.y1 - r.y0), 0);
+  console.log(
+    `${key}: ${out[key].rects.length} rects, ${Math.round(area)} units^2, height ${out[key].height}`,
+  );
+}
+writeFileSync('src/assets/facades.json', JSON.stringify(out) + '\n');
+console.log('-> src/assets/facades.json');

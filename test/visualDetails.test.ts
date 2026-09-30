@@ -76,6 +76,7 @@ describe('procedural visual details', () => {
         instanceCount++;
         return {};
       },
+      setData: () => {},
       remove: () => {
         instanceCount--;
       },

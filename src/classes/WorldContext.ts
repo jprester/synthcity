@@ -29,7 +29,14 @@ export interface InstanceHandle {
 }
 
 export interface InstancesLike {
-  add(geometry: BufferGeometry, material: Material, matrix: Matrix4, brightness?: number): InstanceHandle;
+  add(
+    geometry: BufferGeometry,
+    material: Material,
+    matrix: Matrix4,
+    brightness?: number,
+    data?: ArrayLike<number>, // per-instance vec4 (InstancePool INSTANCE_DATA)
+  ): InstanceHandle;
+  setData(handle: InstanceHandle, data: ArrayLike<number>): void;
   remove(handle: InstanceHandle): void;
 }
 

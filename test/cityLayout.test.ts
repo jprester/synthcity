@@ -7,6 +7,7 @@ import { makeWorld, seedMathRandom, describeMesh } from './helpers.ts';
 import { GeneratorItem_CityBlock } from '../src/classes/GeneratorItem_CityBlock.ts';
 import { GeneratorItem_Traffic } from '../src/classes/GeneratorItem_Traffic.ts';
 import { CELL_SIZE as CELL } from '../src/generation/world.ts';
+import { generateBlock } from '../src/generation/cityBlock.ts';
 
 // 13x13 blocks around the origin; includes the cells where mega buildings
 // may appear (multiples of 6 cells) and the storefront cells (multiples of 2).
@@ -22,7 +23,9 @@ function layout(worldSeed: number, randomSeed = 1) {
       blocks[`${i},${j}`] = {
         buildings: block.meshesCollid.map(describeMesh),
         ground: block.meshes.map(describeMesh),
-        decorations: block.updateables.map((u) => `${u.constructor.name} ${describeMesh(u.mesh)}`),
+        decorations: block.updateables.flatMap((u) =>
+          'mesh' in u ? [`${u.constructor.name} ${describeMesh(u.mesh as Mesh)}`] : [],
+        ),
       };
     }
   }
@@ -56,8 +59,12 @@ describe('city block layout', () => {
       expect(mesh.matrixWorld.elements).toEqual(mesh.matrix.elements);
       expect(mesh.matrixWorld.elements[12]).toBe(mesh.position.x);
     }
-    // ground + every collidable
-    expect(instanced.length).toBe(block.meshes.length + block.meshesCollid.length);
+    // ground + every collidable + wall signs
+    const signs = generateBlock({ seed: 9746, noise: world.noise, x: 0, z: 0 }).filter(
+      (o) => o.kind == 'sign',
+    );
+    expect(signs.length).toBeGreaterThan(0);
+    expect(instanced.length).toBe(block.meshes.length + block.meshesCollid.length + signs.length);
   });
 
   it('builds the same meshes for a world seed regardless of Math.random', () => {

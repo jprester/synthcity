@@ -27,7 +27,7 @@ function blocks(seed: number, style?: DistrictStyle, range = RANGE, origin = [0,
 
 const objectsOf = (b: Record<string, BlockObject[]>, kinds: BlockObject['kind'][]) =>
   Object.values(b).flatMap((objs) => objs.filter((o) => kinds.includes(o.kind)));
-const DECORATIONS: BlockObject['kind'][] = ['advert', 'topper', 'smoke', 'spotlight'];
+const DECORATIONS: BlockObject['kind'][] = ['sign', 'topper', 'smoke', 'spotlight'];
 const STRUCTURES: BlockObject['kind'][] = ['building', 'storefront', 'ground'];
 
 afterEach(() => {
@@ -173,7 +173,7 @@ describe('districts', () => {
       buildings: buildings.length,
       towers: buildings.filter((o) => o.model.startsWith('s_05')).length,
       meanHeight: buildings.reduce((sum, o) => sum + o.scaleY, 0) / buildings.length,
-      adsPerBuilding: count('advert') / buildings.length,
+      adsPerBuilding: count('sign') / buildings.length,
       smoke: count('smoke'),
       spotlights: count('spotlight') + count('topper'),
     };

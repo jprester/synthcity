@@ -13,6 +13,11 @@ const _frustum = new Frustum();
 const _projScreen = new Matrix4();
 const _sphere = new Sphere();
 
+// Optional per-instance vec4 (e.g. a sign's art rectangle in its atlas), read
+// in the material's shader as `attribute vec4 instanceData`. It is stored on the
+// geometry, so a geometry that carries data must be used by one batch only.
+export const INSTANCE_DATA = 'instanceData';
+
 // Draws many static objects that share a geometry and material with one
 // InstancedMesh per (geometry, material) pair. Slots are handed out and freed
 // as city blocks stream in and out; freeing moves the last instance into the
@@ -31,12 +36,25 @@ export class InstancePool {
   }
 
   // Adds an instance with the given world matrix; returns a handle for remove().
-  add(geometry: BufferGeometry, material: Material, matrix: Matrix4, brightness?: number): PoolHandle {
+  add(
+    geometry: BufferGeometry,
+    material: Material,
+    matrix: Matrix4,
+    brightness?: number,
+    data?: ArrayLike<number>,
+  ): PoolHandle {
     let byMaterial = this.batches.get(geometry);
     if (!byMaterial) this.batches.set(geometry, (byMaterial = new Map()));
     let batch = byMaterial.get(material);
     if (!batch) byMaterial.set(material, (batch = new Batch(this.scene, geometry, material)));
-    return batch.add(matrix, brightness);
+    return batch.add(matrix, brightness, data);
+  }
+
+  // Replaces an instance's per-instance data (takes effect at the next cull).
+  setData(handle: InstanceHandle, data: ArrayLike<number>): void {
+    const h = handle as PoolHandle;
+    if (!h.batch) throw new Error('InstancePool: instance already removed');
+    h.batch.data.set(data, h.index * 4);
   }
 
   remove(handle: InstanceHandle): void {
@@ -75,6 +93,8 @@ export class Batch {
   spheres = new Float64Array(0); // world bounding sphere, 4 per slot
   brightness = new Float32Array(0); // window emission multiplier per slot
   hasBrightness = false;
+  data = new Float32Array(0); // INSTANCE_DATA, 4 per slot
+  hasData = false;
   mesh!: InstancedMesh;
 
   constructor(scene: SceneLike, geometry: BufferGeometry, material: Material) {
@@ -95,7 +115,11 @@ export class Batch {
     const brightness = new Float32Array(capacity);
     brightness.set(this.brightness);
     this.brightness = brightness;
+    const data = new Float32Array(capacity * 4);
+    data.set(this.data);
+    this.data = data;
     this.capacity = capacity;
+    if (this.hasData) this.attachData();
 
     const mesh = new InstancedMesh(this.geometry, this.material, capacity);
     mesh.instanceMatrix.setUsage(DynamicDrawUsage);
@@ -115,8 +139,20 @@ export class Batch {
     this.mesh = mesh;
   }
 
-  add(matrix: Matrix4, brightness?: number): PoolHandle {
+  // the packed (visible) per-instance data the shader reads
+  attachData(): void {
+    const attribute = new InstancedBufferAttribute(new Float32Array(this.capacity * 4), 4);
+    attribute.setUsage(DynamicDrawUsage);
+    this.geometry.setAttribute(INSTANCE_DATA, attribute);
+  }
+
+  add(matrix: Matrix4, brightness?: number, data?: ArrayLike<number>): PoolHandle {
     if (this.handles.length == this.capacity) this.grow(this.capacity * 2);
+    if (data !== undefined && !this.hasData) {
+      this.hasData = true;
+      this.attachData();
+    }
+    if (data !== undefined) this.data.set(data, this.handles.length * 4);
     if (brightness !== undefined && !this.hasBrightness) {
       this.hasBrightness = true;
       this.mesh.instanceColor = new InstancedBufferAttribute(new Float32Array(this.capacity * 3), 3);
@@ -143,6 +179,7 @@ export class Batch {
       this.matrices.copyWithin(i * 16, j * 16, j * 16 + 16);
       this.spheres.copyWithin(i * 4, j * 4, j * 4 + 4);
       this.brightness[i] = this.brightness[j];
+      this.data.copyWithin(i * 4, j * 4, j * 4 + 4);
       last.index = i;
       this.handles[i] = last;
     }
@@ -152,6 +189,10 @@ export class Batch {
   cull(frustum: Frustum): void {
     const out = this.mesh.instanceMatrix.array;
     const colors = this.mesh.instanceColor?.array;
+    const dataAttribute = this.hasData
+      ? (this.geometry.getAttribute(INSTANCE_DATA) as InstancedBufferAttribute)
+      : null;
+    const packed = dataAttribute?.array as Float32Array | undefined;
     let count = 0;
     for (let i = 0; i < this.handles.length; i++) {
       const s = i * 4;
@@ -160,6 +201,7 @@ export class Batch {
       if (!frustum.intersectsSphere(_sphere)) continue;
       out.set(this.matrices.subarray(i * 16, i * 16 + 16), count * 16);
       if (colors) colors.fill(this.brightness[i], count * 3, count * 3 + 3);
+      if (packed) packed.set(this.data.subarray(i * 4, i * 4 + 4), count * 4);
       count++;
     }
     this.mesh.count = count;
@@ -167,6 +209,7 @@ export class Batch {
     if (count > 0) {
       this.mesh.instanceMatrix.needsUpdate = true;
       if (this.mesh.instanceColor) this.mesh.instanceColor.needsUpdate = true;
+      if (dataAttribute) dataAttribute.needsUpdate = true;
     }
   }
 }

@@ -1,13 +1,13 @@
-import { BufferAttribute, BufferGeometry, Mesh } from 'three';
+import { BufferGeometry, Matrix4, Mesh, Quaternion, Vector3 } from 'three';
 
 import { hashRandom } from '../hash.ts';
 import type { Random } from '../hash.ts';
-import { AD_ATLASES, adPanels, fillAdUVs } from '../rendering/adArt.ts';
-import type { AdAtlas, AdPanel } from '../rendering/adArt.ts';
+import { AD_ATLASES, AD_MATERIALS, SIGN_MODELS } from '../rendering/adArt.ts';
 import { generateBlock } from '../generation/cityBlock.ts';
 import { windowBrightness } from '../generation/buildingDetails.ts';
 import { districtKindAt } from '../generation/districts.ts';
-import type { AdvertObject, SmokeObject, SpotlightObject, TopperObject } from '../generation/cityBlock.ts';
+import type { SmokeObject, SpotlightObject, TopperObject } from '../generation/cityBlock.ts';
+import type { SignObject } from '../generation/signs.ts';
 import type { GeneratorItem } from './Generator.ts';
 import type { InstanceHandle, WorldContext } from './WorldContext.ts';
 import type { Material } from 'three';
@@ -17,9 +17,10 @@ type SingleMesh = Mesh<BufferGeometry, Material>;
 
 // Builds one city block from generateBlock's data.
 //
-// Buildings, storefronts and ground are drawn through the shared InstancePool.
-// Each still has an off-scene Mesh that holds its transform and serves as the
-// collision proxy. Decorations are ordinary scene meshes.
+// Buildings, storefronts, ground and wall signs are drawn through the shared
+// InstancePool. Buildings and storefronts still have an off-scene Mesh that
+// holds their transform and serves as the collision proxy. Decorations are
+// ordinary scene meshes.
 //
 class GeneratorItem_CityBlock implements GeneratorItem {
   x: number;
@@ -27,7 +28,7 @@ class GeneratorItem_CityBlock implements GeneratorItem {
   context: WorldContext;
   meshes: SingleMesh[] = []; // ground; no collision
   meshesCollid: SingleMesh[] = []; // buildings and storefronts; collision proxies
-  updateables: Decoration[] = [];
+  updateables: Updateable[] = [];
   instances: InstanceHandle[] = [];
   detailMeshes: SingleMesh[] = []; // procedural rooftop collision proxies
 
@@ -79,8 +80,8 @@ class GeneratorItem_CityBlock implements GeneratorItem {
           this.meshes.push(mesh);
           break;
         }
-        case 'advert':
-          this.updateables.push(new Advert(o, context));
+        case 'sign':
+          this.addSign(o);
           break;
         case 'topper':
           this.updateables.push(new Topper(o, context));
@@ -106,6 +107,25 @@ class GeneratorItem_CityBlock implements GeneratorItem {
       collider.add(mesh);
     }
   }
+  // a wall sign: one instance of the atlas's sign quad, its art as instance data
+  addSign(o: SignObject): void {
+    const { assets, instances } = this.context;
+    _position.set(o.x, o.y, o.z);
+    _rotation.setFromAxisAngle(_up, o.yaw);
+    _scale.set(o.width, o.height, 1);
+    _matrix.compose(_position, _rotation, _scale);
+    const art = AD_ATLASES[o.atlas].entries[o.art];
+    const handle = instances.add(
+      assets.getModel(SIGN_MODELS[o.atlas]),
+      assets.getMaterial(AD_MATERIALS[o.atlas]),
+      _matrix,
+      undefined,
+      art.uv,
+    );
+    this.instances.push(handle);
+    if (o.switches) this.updateables.push(new SignSwitcher(o, handle, this.context));
+  }
+
   remove(): void {
     const { collider, instances } = this.context;
     for (let i = 0; i < this.instances.length; i++) {
@@ -127,7 +147,18 @@ class GeneratorItem_CityBlock implements GeneratorItem {
 
 // building decorations
 
-abstract class Decoration {
+interface Updateable {
+  update(k: number): void;
+  remove(): void;
+}
+
+const _matrix = new Matrix4();
+const _position = new Vector3();
+const _rotation = new Quaternion();
+const _scale = new Vector3();
+const _up = new Vector3(0, 1, 0);
+
+abstract class Decoration implements Updateable {
   context: WorldContext;
   mesh: Mesh;
 
@@ -142,67 +173,38 @@ abstract class Decoration {
   abstract update(k: number): void;
 }
 
-class Advert extends Decoration {
+// A screen that cycles its art. It only picks art of the same shape, so the
+// sign keeps its size on the wall.
+class SignSwitcher implements Updateable {
+  handle: InstanceHandle;
+  context: WorldContext;
+  choices: number[]; // art indices with the sign's aspect
+  entries: { uv: [number, number, number, number] }[];
   interval: number;
   counter: number;
-  switches: boolean;
-  switchRandom: Random;
-  atlas: AdAtlas;
-  panels: AdPanel[];
-  uv: BufferAttribute;
+  random: Random;
 
-  constructor(o: AdvertObject, context: WorldContext) {
-    // the model's positions and normals are shared; each ad has its own UVs
-    const model = context.assets.getModel(o.model);
-    const geometry = new BufferGeometry();
-    geometry.name = model.name;
-    geometry.setAttribute('position', model.attributes.position);
-    geometry.setAttribute('normal', model.attributes.normal);
-    const uv = new BufferAttribute(new Float32Array(model.attributes.position.count * 2), 2);
-    geometry.setAttribute('uv', uv);
-    if (model.boundingSphere === null) model.computeBoundingSphere();
-    geometry.boundingSphere = model.boundingSphere;
-
-    const mesh = new Mesh(geometry, context.assets.getMaterial(o.material));
-    mesh.position.set(o.x, 0, o.z);
-    super(context, mesh);
-    mesh.scale.set(1, o.scaleY, 1);
-    mesh.rotateY((-o.rotation * Math.PI) / 180);
-
-    this.uv = uv;
-    this.atlas = AD_ATLASES[o.material == 'ads_neon' ? 'neon' : 'posters'];
-    this.panels = adPanels(model);
-    fillAdUVs(
-      uv.array as Float32Array,
-      this.panels,
-      this.atlas,
-      hashRandom(context.seed, o.x, o.z, 'advert-art'),
-    );
-
+  constructor(o: SignObject, handle: InstanceHandle, context: WorldContext) {
+    this.handle = handle;
+    this.context = context;
+    const entries = AD_ATLASES[o.atlas].entries;
+    const aspect = entries[o.art].aspect;
+    this.entries = entries;
+    this.choices = entries.flatMap((e, i) => (Math.abs(e.aspect / aspect - 1) < 0.03 ? [i] : []));
     this.interval = o.interval;
     this.counter = o.counter;
-    this.switches = o.switches;
-    this.switchRandom = hashRandom(context.seed, o.x, o.z, 'advert-switch');
+    this.random = hashRandom(context.seed, o.x, o.z, 'sign-switch');
   }
-  override update(k: number): void {
-    if (this.switches) {
-      this.counter += k;
-      if (this.counter > this.interval) {
-        this.counter = 0;
-        fillAdUVs(this.uv.array as Float32Array, this.panels, this.atlas, this.switchRandom);
-        this.uv.needsUpdate = true;
-      }
+  update(k: number): void {
+    this.counter += k;
+    if (this.counter > this.interval) {
+      this.counter = 0;
+      const art = this.choices[Math.floor(this.random() * this.choices.length)];
+      this.context.instances.setData(this.handle, this.entries[art].uv);
     }
   }
-  override remove(): void {
-    super.remove();
-    // Free the ad's own UV buffer. dispose() frees the GPU buffers of every
-    // attribute still attached, so detach the shared model buffers first.
-    const geometry = this.mesh.geometry;
-    geometry.deleteAttribute('position');
-    geometry.deleteAttribute('normal');
-    geometry.dispose();
-  }
+  // the instance itself is freed with the block's other instances
+  remove(): void {}
 }
 
 class Topper extends Decoration {

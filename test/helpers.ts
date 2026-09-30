@@ -1,8 +1,6 @@
 import { vi } from 'vitest';
 import { BufferGeometry, MeshBasicMaterial, Vector3 } from 'three';
 import type { Material, Mesh } from 'three';
-import { readFileSync } from 'node:fs';
-import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { createDistrictNoise } from '../src/generation/world.ts';
 import { PlayerController } from '../src/classes/PlayerController.ts';
 import type { WorldContext } from '../src/classes/WorldContext.ts';
@@ -18,13 +16,8 @@ export function seedMathRandom(seed: number) {
   });
 }
 
-// Placeholder geometry named after its asset key. Ads map art onto their panels,
-// so ad models are the real OBJ files.
-function fakeModel(key: string): BufferGeometry {
-  if (!key.startsWith('ads_s_')) return Object.assign(new BufferGeometry(), { name: key });
-  const obj = new OBJLoader().parse(readFileSync(`public/assets/models/${key}.obj`, 'utf8'));
-  return Object.assign((obj.children[0] as Mesh).geometry, { name: key });
-}
+// Placeholder geometry named after its asset key.
+const fakeModel = (key: string) => Object.assign(new BufferGeometry(), { name: key });
 
 // Generator context (see Game.init) for building city items headless. Models
 // and materials are placeholders named after their asset key.
@@ -47,7 +40,7 @@ export function makeWorld({ worldSeed = 9746, environment = 'night' } = {}): Wor
     collider: { add() {}, remove() {} },
     player: { camera: { position: new Vector3() }, body: { position: new Vector3() } },
     cityLights: [],
-    instances: { add: () => ({}), remove() {} },
+    instances: { add: () => ({}), setData() {}, remove() {} },
   };
 }
 

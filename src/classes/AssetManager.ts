@@ -22,6 +22,7 @@ import type { BufferGeometry, Group, Material, Mesh, Texture } from 'three';
 import type { Environment } from '../Game.ts';
 import { CELL_SIZE } from '../generation/world.ts';
 import { MODELS, TEXTURES } from '../assets/manifest.ts';
+import { useInstanceArt } from '../rendering/adArt.ts';
 import type { ModelEntry, TextureEntry } from '../assets/manifest.ts';
 
 // the geometry of an OBJ file's first mesh
@@ -35,7 +36,8 @@ class AssetManager {
 
   textureAnisotropy = 8;
   buildingWindowsEmissiveIntensity: number;
-  adsEmissiveIntensity = 0.1;
+  adsEmissiveIntensity = 0.1; // rooftop holograms
+  signsEmissiveIntensity = 0.3; // wall signs (dark-background art, emission only)
 
   textures: Record<string, Texture> = {};
   models: Record<string, BufferGeometry> = {};
@@ -82,6 +84,9 @@ class AssetManager {
     // generated geometry
     this.models['ground'] = new PlaneGeometry(CELL_SIZE, CELL_SIZE);
     this.models['smoke'] = new PlaneGeometry(64, 64);
+    // unit quads for wall signs, one per atlas (see SIGN_MODELS)
+    this.models['sign_neon'] = new PlaneGeometry(1, 1);
+    this.models['sign_posters'] = new PlaneGeometry(1, 1);
 
     this.createMaterials();
   }
@@ -205,20 +210,21 @@ class AssetManager {
       bumpScale: 10,
     });
 
-    // ads: one material per art atlas; the ads map their panels into it
-    // (src/rendering/adArt.ts). Emission only: a black diffuse colour keeps the
+    // wall signs: one material per art atlas; each sign instance samples its
+    // own art rectangle (src/rendering/adArt.ts). Emission only: a black diffuse colour keeps the
     // district lights from washing every panel in their colour.
     for (const key of ['ads_neon', 'ads_posters']) {
-      this.materials[key] = new MeshPhongMaterial({
+      const material = (this.materials[key] = new MeshPhongMaterial({
         color: 0x000000,
         specular: 0x000000,
         emissive: 0xffffff,
         emissiveMap: this.getTexture(key),
-        emissiveIntensity: this.adsEmissiveIntensity,
+        emissiveIntensity: this.signsEmissiveIntensity,
         blending: AdditiveBlending,
         fog: false,
         side: DoubleSide,
-      });
+      }));
+      useInstanceArt(material);
     }
 
     // ads large

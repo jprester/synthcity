@@ -73,12 +73,6 @@ const BUILDINGS = ['01', '02', '03', '04', '05'].flatMap((group) =>
   ids(3).map((variant) => `s_${group}_${variant}`),
 );
 
-// ad wraps per building group
-const ADS = [
-  ...['01', '02', '03'].flatMap((group) => ids(2).map((variant) => `ads_s_${group}_${variant}`)),
-  ...['04', '05'].flatMap((group) => ids(4).map((variant) => `ads_s_${group}_${variant}`)),
-];
-
 export const MODELS: ModelEntry[] = [
   // the player's car; the OBJs face +x, the game expects -z
   { key: 'spinner', file: 'models/spinner.obj', rotateY: -Math.PI / 2 },
@@ -88,7 +82,6 @@ export const MODELS: ModelEntry[] = [
   ...BUILDINGS.map((key) => ({ key, file: `models/${key}.obj`, collides: true })),
   ...ids(6).map((id) => ({ key: `mega_${id}`, file: `models/mega_${id}.obj`, collides: true })),
 
-  ...ADS.map((key) => ({ key, file: `models/${key}.obj` })),
   ...ids(12).map((id) => ({ key: `topper_${id}`, file: `models/topper_${id}.obj` })),
   ...ids(8).map((id) => ({ key: `car_${id}`, file: `models/car_${id}.obj` })),
   { key: 'spotlight', file: 'models/spotlight.obj' },

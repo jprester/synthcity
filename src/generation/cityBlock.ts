@@ -14,6 +14,8 @@ import type { Random, Seed } from '../hash.ts';
 import type { Perlin } from '../lib/perlin.js';
 import { CITY_BLOCK_SIZE, ROAD_WIDTH, CELL_SIZE, districtAt, pick } from './world.ts';
 import { districtStyleAt } from './districts.ts';
+import { placeSigns } from './signs.ts';
+import type { SignObject } from './signs.ts';
 import type { DistrictStyle } from './districts.ts';
 
 // Model and material names are asset keys (AssetManager).
@@ -38,18 +40,6 @@ export interface StorefrontObject extends Placed {
 
 export interface GroundObject extends Placed {
   kind: 'ground';
-}
-
-// An ad wrapping its building. material is one of the ad atlases (neon signs
-// or posters); the builder picks art for each panel and re-picks on a switch.
-export interface AdvertObject extends Placed {
-  kind: 'advert';
-  material: 'ads_neon' | 'ads_posters';
-  rotation: number; // degrees about y (applied negated, like the original)
-  scaleY: number;
-  interval: number; // frames between art switches
-  counter: number; // initial frame counter
-  switches: boolean;
 }
 
 // a spinning rooftop sign
@@ -79,7 +69,7 @@ export type BlockObject =
   | BuildingObject
   | StorefrontObject
   | GroundObject
-  | AdvertObject
+  | SignObject
   | TopperObject
   | SmokeObject
   | SpotlightObject;
@@ -114,8 +104,6 @@ export const ADVERT_MATERIALS_LARGE = [
   'ads_large_04',
   'ads_large_05',
 ];
-const TOWER_ADVERT_MODELS = ['ads_s_05_01', 'ads_s_05_02', 'ads_s_05_03', 'ads_s_05_04'];
-const BIG_ADVERT_MODELS = ['ads_s_04_01', 'ads_s_04_02', 'ads_s_04_03', 'ads_s_04_04'];
 const TOPPER_MODELS = [
   'topper_01',
   'topper_02',
@@ -215,7 +203,6 @@ function smallLot(
   const rotation = pick(ROTATIONS, h('rotation'));
   const scale = (0.75 + h('height') * 0.45) * district.heightScale;
   const variant = Math.floor(h('variant') * 3) + 1; // 1..3
-  const adsVariant = h('ads-variant') < 0.5 ? 1 : 2;
 
   const typeNoise = districtAt(noise, lotX, lotZ);
   let group;
@@ -246,7 +233,7 @@ function smallLot(
     objects.push(smoke(lotX, 190 * scale, lotZ, hashRandom(seed, lotX, lotZ, 'smoke-look')));
   }
 
-  objects.push({
+  const building: BuildingObject = {
     kind: 'building',
     model: 's_0' + group + '_0' + variant,
     material: pick(BUILDING_MATERIALS, h('material')),
@@ -254,11 +241,10 @@ function smallLot(
     z: lotZ,
     rotation,
     scaleY: scale,
-  });
+  };
+  objects.push(building);
 
-  if (hasAds) {
-    objects.push(advert('ads_s_0' + group + '_0' + adsVariant, lotX, lotZ, rotation, scale, seed, district));
-  }
+  if (hasAds) placeSigns(objects as SignObject[], building, seed, district);
 }
 
 function bigLot(
@@ -277,7 +263,7 @@ function bigLot(
   const rotation = pick(ROTATIONS, h('rotation'));
   const scale = (1 + h('height') * 0.5) * district.heightScale;
 
-  objects.push({
+  const building: BuildingObject = {
     kind: 'building',
     model: (isTower ? 's_05_0' : 's_04_0') + variant,
     material,
@@ -285,32 +271,11 @@ function bigLot(
     z: lotZ,
     rotation,
     scaleY: scale,
-  });
+  };
+  objects.push(building);
 
   // maybe have ads (the old parity test came out true for about 55%)
-  if (h('ads') < district.bigAdChance) {
-    const model = pick(isTower ? TOWER_ADVERT_MODELS : BIG_ADVERT_MODELS, h('ads-variant'));
-    objects.push(advert(model, lotX, lotZ, rotation, scale, seed, district));
-  }
-}
-
-// An advert wraps its building. Its material switches over time using the
-// 'advert-switch' stream at the same position (see GeneratorItem_CityBlock).
-function advert(
-  model: string,
-  x: number,
-  z: number,
-  rotation: number,
-  scaleY: number,
-  seed: Seed,
-  district: DistrictStyle,
-): AdvertObject {
-  const material = hashFloat(seed, x, z, 'advert-atlas') < district.neonAdShare ? 'ads_neon' : 'ads_posters';
-  const random = hashRandom(seed, x, z, 'advert');
-  const interval = 200 + random() * 800;
-  const counter = random() * interval;
-  const switches = random() < 0.5;
-  return { kind: 'advert', model, material, x, z, rotation, scaleY, interval, counter, switches };
+  if (h('ads') < district.bigAdChance) placeSigns(objects as SignObject[], building, seed, district);
 }
 
 function topperAt(x: number, y: number, z: number, random: Random): TopperObject {
