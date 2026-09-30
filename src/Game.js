@@ -40,6 +40,7 @@ import { GeneratorItem_Traffic } from './classes/GeneratorItem_Traffic.js';
 
 import { computeBoundsTree, disposeBoundsTree, acceleratedRaycast } from 'three-mesh-bvh';
 import { Collider } from './classes/Collider.js';
+import { InstancePool } from './classes/InstancePool.js';
 
 import { CITY_BLOCK_SIZE, ROAD_WIDTH, CELL_SIZE, createDistrictNoise } from './generation/world.js';
 import { userSettings } from './settings.js';
@@ -260,6 +261,8 @@ export class Game {
 
     this.cityLights = [];
 
+    this.instances = new InstancePool(this.scene);
+
     // what generator items need from the game
     const world = {
       seed: this.settings.worldSeed,
@@ -270,6 +273,7 @@ export class Game {
       collider: this.collider,
       player: this.player,
       cityLights: this.cityLights,
+      instances: this.instances,
     };
 
     this.generatorCityBlock = new Generator({
@@ -473,6 +477,8 @@ export class Game {
     this.generatorTraffic.update();
 
     // render
+
+    this.instances.cull(this.player.camera);
 
     if (this.stats) this.stats.begin();
     this.composer.render();

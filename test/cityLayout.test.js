@@ -37,6 +37,25 @@ describe('city block layout', () => {
     expect(layout(seed)).toMatchSnapshot();
   });
 
+  it('hands the collider proxies with world transforms, and instances everything else', () => {
+    const world = makeWorld({ worldSeed: 9746 });
+    const collided = [];
+    const instanced = [];
+    world.collider.add = (mesh) => collided.push(mesh);
+    world.instances.add = (geometry, material, matrix) => instanced.push(matrix.clone());
+    const block = new GeneratorItem_CityBlock(0, 0, world);
+    expect(collided.length).toBeGreaterThan(0);
+    expect(collided).toEqual(block.meshesCollid);
+    for (const mesh of collided) {
+      expect(mesh.parent).toBe(null);
+      mesh.updateMatrix();
+      expect(mesh.matrixWorld.elements).toEqual(mesh.matrix.elements);
+      expect(mesh.matrixWorld.elements[12]).toBe(mesh.position.x);
+    }
+    // ground + every collidable
+    expect(instanced.length).toBe(block.meshes.length + block.meshesCollid.length);
+  });
+
   it('builds the same meshes for a world seed regardless of Math.random', () => {
     expect(layout(9746, 1)).toEqual(layout(9746, 2));
   });

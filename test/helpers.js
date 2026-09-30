@@ -34,6 +34,7 @@ export function makeWorld({ worldSeed = 9746, environment = 'night' } = {}) {
     collider: { add() {}, remove() {} },
     player: { camera: { position: new Vector3() }, body: { position: new Vector3() } },
     cityLights: [],
+    instances: { add: () => ({}), remove() {} },
   };
 }
 

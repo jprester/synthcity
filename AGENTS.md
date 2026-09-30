@@ -67,7 +67,8 @@ src/classes/
   GeneratorItem_CityBlock.js   builds a block's meshes and decorations from generateBlock
   GeneratorItem_CityLight.js   assigns pooled PointLights to district edges
   GeneratorItem_Traffic.js     spawns and moves the cars of a traffic cell
-  Collider.js           three-mesh-bvh sphere collision against nearby building meshes
+  InstancePool.js       one InstancedMesh per geometry+material, per-instance frustum culling
+  Collider.js           three-mesh-bvh sphere collision against nearby building proxies
   Player.js / PlayerCar.js / PlayerController.js   freeroam camera, flying car, input
   Radio.js              music playlist
 public/assets/          models (OBJ), textures, sounds, music; served as-is
@@ -92,7 +93,7 @@ Detailed task notes, open decisions and known traps: [docs/HANDOFF.md](docs/HAND
 
 Roughly in priority order:
 
-1. **Performance.** InstancedMesh/BatchedMesh per model+material (thousands of draw calls today); spread block construction over several frames instead of building a full row in one frame.
+1. **Performance.** Buildings and ground are instanced (`InstancePool`); adverts are next. At 1080p the frame is GPU-bound on bloom and fill rate; measure with `npm run perf`.
 2. **Frame-rate independence.** Movement, traffic and animations are per-frame, so everything runs about 2.4× faster at 144 Hz. The fade-in multiplies by accumulated rather than per-frame delta.
 3. **Smaller fixes.**
    - `Collider.remove` splices index -1 when the uuid is missing.

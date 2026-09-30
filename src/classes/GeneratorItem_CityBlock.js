@@ -3,9 +3,13 @@ import { Mesh } from 'three';
 import { hashRandom } from '../hash.js';
 import { generateBlock } from '../generation/cityBlock.js';
 
-// Builds the meshes for one city block from generateBlock's data.
+// Builds one city block from generateBlock's data.
 //
-// context: { seed, noise, spotLights, assets, scene, collider, player }
+// Buildings, storefronts and ground are drawn through the shared InstancePool.
+// Each still has an off-scene Mesh that holds its transform and serves as the
+// collision proxy. Decorations are ordinary scene meshes.
+//
+// context: { seed, noise, spotLights, assets, scene, collider, player, instances }
 class GeneratorItem_CityBlock {
   constructor(x, z, context) {
     this.x = x;
@@ -15,8 +19,9 @@ class GeneratorItem_CityBlock {
     this.meshes = []; // no collision
     this.meshesCollid = [];
     this.updateables = [];
+    this.instances = [];
 
-    const { assets, scene, collider } = context;
+    const { assets, collider } = context;
     const objects = generateBlock({
       seed: context.seed,
       noise: context.noise,
@@ -25,8 +30,8 @@ class GeneratorItem_CityBlock {
       spotLights: context.spotLights,
     });
 
-    // create in the generated order (it breaks ties in render sorting);
-    // decorations go into the scene right away, blocks and ground afterwards
+    // create in the generated order (it breaks ties in render sorting for
+    // the decorations)
     for (const o of objects) {
       switch (o.kind) {
         case 'building': {
@@ -65,29 +70,26 @@ class GeneratorItem_CityBlock {
       }
     }
 
-    // add meshes to scene
-    for (let i = 0; i < this.meshes.length; i++) {
-      scene.add(this.meshes[i]);
+    // draw ground and buildings as instances
+    for (const mesh of [...this.meshes, ...this.meshesCollid]) {
+      mesh.updateMatrixWorld();
+      this.instances.push(context.instances.add(mesh.geometry, mesh.material, mesh.matrixWorld));
     }
-    // add collision meshes to scene and collider
+    // buildings collide
     for (let i = 0; i < this.meshesCollid.length; i++) {
-      scene.add(this.meshesCollid[i]);
       collider.add(this.meshesCollid[i]);
     }
   }
   remove() {
-    const { scene, collider } = this.context;
-    // remove meshes
-    for (let i = 0; i < this.meshes.length; i++) {
-      scene.remove(this.meshes[i]);
+    const { collider, instances } = this.context;
+    for (let i = 0; i < this.instances.length; i++) {
+      instances.remove(this.instances[i]);
     }
     for (let i = 0; i < this.updateables.length; i++) {
       this.updateables[i].remove();
     }
-    // remove collision meshes
     for (let i = 0; i < this.meshesCollid.length; i++) {
       collider.remove(this.meshesCollid[i].uuid);
-      scene.remove(this.meshesCollid[i]);
     }
   }
   update() {
