@@ -128,6 +128,7 @@ class GeneratorItem_CityBlock {
               window.game.assets.getModel(adsType),
               false,
               hashRandom(this.seed, lotX, lotZ, 'advert'),
+              hashRandom(this.seed, lotX, lotZ, 'advert-switch'),
             );
             ad.mesh.scale.set(1, scale, 1);
             ad.mesh.rotateY((-rotate * Math.PI) / 180);
@@ -176,6 +177,7 @@ class GeneratorItem_CityBlock {
           window.game.assets.getModel(adsType),
           isTower,
           hashRandom(this.seed, lotX, lotZ, 'advert'),
+          hashRandom(this.seed, lotX, lotZ, 'advert-switch'),
         );
         ad.mesh.scale.set(1, scale, 1);
         ad.mesh.rotateY((-rotate * Math.PI) / 180);
@@ -242,9 +244,9 @@ class GeneratorItem_CityBlock {
 // building decorations
 
 class Advert {
-  // random: seeded stream (hashRandom) for the initial state and the switches
-  constructor(x, y, z, geo, is_tower, random) {
-    this.random = random;
+  // random: seeded stream for the initial state; switchRandom: for the switches
+  constructor(x, y, z, geo, is_tower, random, switchRandom) {
+    this.switchRandom = switchRandom;
     if (is_tower) {
       this.adsMats = ['ads_large_01', 'ads_large_02', 'ads_large_03', 'ads_large_04', 'ads_large_05'];
     } else {
@@ -269,7 +271,7 @@ class Advert {
       if (this.counter > this.interval) {
         this.counter = 0;
         this.mesh.material = window.game.assets.getMaterial(
-          this.adsMats[Math.floor(this.random() * this.adsMats.length)],
+          this.adsMats[Math.floor(this.switchRandom() * this.adsMats.length)],
         );
       }
     }
