@@ -228,10 +228,23 @@ Ads are signs placed on buildings' real walls, sized by their art. They are no l
   - Result: ~240 draw calls instead of ~866, and ~800 scene objects instead of ~2,700, at ~197 fps at 1080p on the M5.
 - **Removed:** the `ads_s_*` ad-wrap models, the panel mapping, and `ads_01..05`. Rooftop holograms keep `ads_large_*`.
 - **Tests:** `test/signs.test.ts` checks the art aspect, that each sign lies inside an exposed wall rectangle (transformed back to model space), and that a ray from each sign leaves its building (against the real model). It also checks the zones (neon low, posters in the middle band), no overlaps and determinism.
-- **Next (step 2):**
-  - Tune sign size and density by eye: at typical flying distance, ads are less dominant than the old full-facade wraps.
-  - Projecting (blade) neon signs perpendicular to walls, tower banners and rooftop billboards.
+- **Step 2 — done: banners, blade signs, density.**
+  - **Banners:** tall billboards down skyscrapers (buildings of 250+ units). They use tall art from both atlases, 90–360 units high, in 25–97% of the building's height.
+    - They hang on a second, coarser wall scan (`banners` in `facades.json`) that treats ribbed facades (surfaces within 4 units) as one wall at their front, so towers whose walls are broken into strips still get them.
+    - Posters and neon avoid the areas banners take.
+    - Every skyscraper gets banner chances, even without the district's ads roll. Chances per ~70 units of wall width: downtown 0.7, neon 0.6, mixed 0.5.
+    - Two sculpted towers (s_04_03, s_05_02) have no tall flat walls and stay mostly bare.
+  - **Blade signs:** upright neon art sticking out perpendicular to walls that face a street (checked per sign against the block's footprint). Each is two back-to-back single-sided quads, so it reads from both sides. Share per district: `bladeShare`.
+  - **Density:** raised in every district. Measured sign area per building: downtown ~4,700, neon ~3,000, mixed ~1,300; industrial and residential stay quiet.
+  - **Signs sit 0.6 in front of walls:** the facade scan casts from 0.5, and ledges up to ~0.4 deep exist.
+  - **Extractor fixes along the way:**
+    - `-0.00` vs `0.00` in the plane key split one wall into two, giving duplicate overlapping rectangles.
+    - Near-coplanar layered surfaces now keep only the front-most rectangle.
+    - A test pins both.
+- **Next:**
+  - Rooftop billboards on frames (needs roof data; Codex's `RooftopKit` finds roofs).
   - Per-art brightness from the catalog's `gain`.
+  - Collision for blade signs if flying low through them matters.
 
 ## Procedural feature ideas (after 1–5)
 

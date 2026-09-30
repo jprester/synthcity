@@ -275,7 +275,8 @@ function bigLot(
   objects.push(building);
 
   // maybe have ads (the old parity test came out true for about 55%)
-  if (h('ads') < district.bigAdChance) placeSigns(objects as SignObject[], building, seed, district);
+  // skyscrapers without the ads roll still get banners
+  placeSigns(objects as SignObject[], building, seed, district, h('ads') >= district.bigAdChance);
 }
 
 function topperAt(x: number, y: number, z: number, random: Random): TopperObject {

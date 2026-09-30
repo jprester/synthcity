@@ -222,7 +222,6 @@ class AssetManager {
         emissiveIntensity: this.signsEmissiveIntensity,
         blending: AdditiveBlending,
         fog: false,
-        side: DoubleSide,
       }));
       useInstanceArt(material);
     }

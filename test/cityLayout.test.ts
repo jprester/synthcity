@@ -64,7 +64,9 @@ describe('city block layout', () => {
       (o) => o.kind == 'sign',
     );
     expect(signs.length).toBeGreaterThan(0);
-    expect(instanced.length).toBe(block.meshes.length + block.meshesCollid.length + signs.length);
+    // blade signs are two quads back to back
+    const quads = signs.reduce((n, o) => n + (o.kind == 'sign' && o.mount == 'blade' ? 2 : 1), 0);
+    expect(instanced.length).toBe(block.meshes.length + block.meshesCollid.length + quads);
   });
 
   it('builds the same meshes for a world seed regardless of Math.random', () => {

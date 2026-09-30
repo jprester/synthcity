@@ -9,6 +9,7 @@ import { FACADES, SIGN_LAYOUT, placeSigns } from '../src/generation/signs.ts';
 import type { SignObject } from '../src/generation/signs.ts';
 import { DISTRICT_STYLES } from '../src/generation/districts.ts';
 import { AD_ATLASES } from '../src/rendering/adArt.ts';
+import { CELL_SIZE, CITY_BLOCK_SIZE } from '../src/generation/world.ts';
 
 Mesh.prototype.raycast = acceleratedRaycast;
 
@@ -49,6 +50,23 @@ function onWall(sign: SignObject, b: (typeof all)[number]['building']) {
   return { px, pz };
 }
 
+// where a sign meets its wall, and the wall's outward normal (world space)
+function attachment(sign: SignObject) {
+  if (sign.mount != 'blade') {
+    const n = [Math.sin(sign.yaw), Math.cos(sign.yaw)];
+    return {
+      x: sign.x - n[0] * SIGN_LAYOUT.offset,
+      z: sign.z - n[1] * SIGN_LAYOUT.offset,
+      n,
+      widthOnWall: sign.width,
+    };
+  }
+  // a blade faces along the wall: its normal is the wall's tangent
+  const n = [Math.cos(sign.yaw), -Math.sin(sign.yaw)];
+  const out = SIGN_LAYOUT.blade.gap + sign.width / 2;
+  return { x: sign.x - n[0] * out, z: sign.z - n[1] * out, n, widthOnWall: SIGN_LAYOUT.blade.footprint };
+}
+
 describe('wall signs', () => {
   it('places plenty of signs in a neon district', () => {
     const total = all.reduce((n, c) => n + c.signs.length, 0);
@@ -62,19 +80,23 @@ describe('wall signs', () => {
       for (const sign of signs) {
         const art = AD_ATLASES[sign.atlas].entries[sign.art];
         expect(sign.width / sign.height).toBeCloseTo(art.aspect, 6);
-        const { px, pz } = onWall(sign, building);
-        const fits = facades.rects.some((r) => {
+        const a = attachment(sign);
+        const { px, pz } = onWall({ ...sign, x: a.x, z: a.z }, building);
+        const walls = sign.mount == 'banner' ? facades.banners : facades.rects;
+        const fits = walls.some((r) => {
           const along = -r.n[1] * px + r.n[0] * pz;
           const out = r.n[0] * px + r.n[1] * pz - r.d;
           return (
-            Math.abs(out - SIGN_LAYOUT.offset) < 1e-6 &&
-            along - sign.width / 2 >= r.s0 - 1e-6 &&
-            along + sign.width / 2 <= r.s1 + 1e-6 &&
+            Math.abs(out) < 1e-6 &&
+            along - a.widthOnWall / 2 >= r.s0 - 1e-6 &&
+            along + a.widthOnWall / 2 <= r.s1 + 1e-6 &&
             sign.y - sign.height / 2 >= r.y0 * building.scaleY - 1e-6 &&
             sign.y + sign.height / 2 <= r.y1 * building.scaleY + 1e-6
           );
         });
-        expect(fits, `${building.model} r${building.rotation} ${sign.atlas}#${sign.art}`).toBe(true);
+        expect(fits, `${building.model} r${building.rotation} ${sign.mount} ${sign.atlas}#${sign.art}`).toBe(
+          true,
+        );
       }
     }
   });
@@ -101,20 +123,33 @@ describe('wall signs', () => {
       mesh.rotation.set(0, (building.rotation * Math.PI) / 180, 0);
       mesh.updateMatrixWorld(true);
       for (const sign of signs) {
-        const dir = new Vector3(Math.sin(sign.yaw), 0, Math.cos(sign.yaw));
-        raycaster.set(new Vector3(sign.x, sign.y, sign.z).addScaledVector(dir, 0.2), dir);
-        expect(raycaster.intersectObject(mesh), `${building.model} r${building.rotation}`).toEqual([]);
+        const a = attachment(sign);
+        const dir = new Vector3(a.n[0], 0, a.n[1]);
+        raycaster.set(new Vector3(a.x, sign.y, a.z).addScaledVector(dir, 0.55), dir);
+        const hits = raycaster.intersectObject(mesh);
+        expect(
+          hits.length ? `${sign.mount} ${sign.atlas} hit at ${hits[0].distance.toFixed(2)}` : 'clear',
+          `${building.model} r${building.rotation}`,
+        ).toBe('clear');
       }
     }
   });
 
-  it('puts small neon signs low and big posters in the middle band', () => {
+  it('puts neon low, posters in the middle and banners down skyscrapers', () => {
     for (const { building, signs } of all) {
       const height = FACADES[building.model].height * building.scaleY;
       for (const sign of signs) {
         const top = sign.y + sign.height / 2;
         const bottom = sign.y - sign.height / 2;
-        if (sign.atlas == 'neon') {
+        if (sign.mount == 'banner') {
+          const b = SIGN_LAYOUT.banner;
+          expect(height).toBeGreaterThanOrEqual(b.minBuilding);
+          expect(sign.width / sign.height).toBeLessThanOrEqual(b.maxAspect + 1e-6);
+          expect(sign.height).toBeGreaterThanOrEqual(b.minHeight - 1e-6);
+          expect(sign.height).toBeLessThanOrEqual(b.maxHeight + 1e-6);
+          expect(bottom).toBeGreaterThanOrEqual(height * b.zone[0] - 1e-6);
+          expect(top).toBeLessThanOrEqual(height * b.zone[1] + 1e-6);
+        } else if (sign.atlas == 'neon') {
           expect(top).toBeLessThanOrEqual(
             Math.min(height * SIGN_LAYOUT.neon.zone[1], SIGN_LAYOUT.neon.zoneCap) + 1e-6,
           );
@@ -128,6 +163,36 @@ describe('wall signs', () => {
     }
   });
 
+  it('only sticks signs out over streets, never towards a neighbour on the block', () => {
+    let blades = 0;
+    for (const { building, signs } of all) {
+      const bx = Math.floor(building.x / CELL_SIZE) * CELL_SIZE;
+      const bz = Math.floor(building.z / CELL_SIZE) * CELL_SIZE;
+      for (const sign of signs) {
+        if (sign.mount != 'blade') continue;
+        blades++;
+        expect(sign.atlas).toBe('neon');
+        expect(sign.width / sign.height).toBeLessThanOrEqual(SIGN_LAYOUT.blade.maxAspect + 1e-6);
+        // a point in front of where it meets the wall is over the street, outside the block
+        const a = attachment(sign);
+        const d = SIGN_LAYOUT.blade.street;
+        const front = [a.x + a.n[0] * d, a.z + a.n[1] * d];
+        const outside =
+          front[0] < bx ||
+          front[0] > bx + CITY_BLOCK_SIZE ||
+          front[1] < bz ||
+          front[1] > bz + CITY_BLOCK_SIZE;
+        expect(outside).toBe(true);
+      }
+    }
+    expect(blades).toBeGreaterThan(0);
+  });
+
+  it('gives skyscrapers banners', () => {
+    const banners = all.flatMap((c) => c.signs).filter((s) => s.mount == 'banner');
+    expect(banners.length).toBeGreaterThan(10);
+  });
+
   it('never overlaps signs on the same wall', () => {
     for (const { signs } of all) {
       for (let i = 0; i < signs.length; i++) {
@@ -138,10 +203,36 @@ describe('wall signs', () => {
           // distance along the wall and vertically
           const along = Math.abs((a.x - b.x) * Math.cos(a.yaw) - (a.z - b.z) * Math.sin(a.yaw));
           const across = Math.abs((a.x - b.x) * Math.sin(a.yaw) + (a.z - b.z) * Math.cos(a.yaw));
-          if (across > 0.01) continue; // parallel but different walls
+          // parallel but different walls (banners hang up to a few units in front of ribbed walls)
+          const mixed = a.mount == 'banner' || b.mount == 'banner';
+          if (across > (mixed ? 5 : 0.01)) continue;
           const apartX = along >= (a.width + b.width) / 2;
           const apartY = Math.abs(a.y - b.y) >= (a.height + b.height) / 2;
-          expect(apartX || apartY).toBe(true);
+          expect(
+            apartX || apartY
+              ? 'apart'
+              : `${a.mount}/${a.atlas} ${a.width.toFixed(1)}x${a.height.toFixed(1)} y${a.y.toFixed(1)} vs ${b.mount}/${b.atlas} ${b.width.toFixed(1)}x${b.height.toFixed(1)} y${b.y.toFixed(1)} along ${along.toFixed(2)}`,
+          ).toBe('apart');
+        }
+      }
+    }
+  });
+
+  it('has no overlapping wall rectangles on one plane (each wall area appears once)', () => {
+    for (const [model, { rects, banners }] of Object.entries(FACADES)) {
+      expect(
+        banners.every((r) => r.y1 - r.y0 >= 100 - 1e-6),
+        model,
+      ).toBe(true);
+      for (let i = 0; i < rects.length; i++) {
+        for (let j = i + 1; j < rects.length; j++) {
+          const a = rects[i];
+          const b = rects[j];
+          const samePlane =
+            Math.abs(a.n[0] - b.n[0]) < 1e-3 && Math.abs(a.n[1] - b.n[1]) < 1e-3 && Math.abs(a.d - b.d) < 1;
+          if (!samePlane) continue;
+          const overlap = a.s0 < b.s1 && b.s0 < a.s1 && a.y0 < b.y1 && b.y0 < a.y1;
+          expect(overlap, `${model} rects ${i} and ${j}`).toBe(false);
         }
       }
     }

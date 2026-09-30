@@ -31,7 +31,9 @@ export interface DistrictStyle {
   smokeChance: number;
   // wall signs on buildings with ads (src/generation/signs.ts)
   neonSigns: number; // small neon signs per 100 units of wall width, low on the building
-  posterChance: number; // chance a wall gets a big poster in its middle band
+  bladeShare: number; // share of those sticking out of walls that face a street
+  posterChance: number; // chance per ~110 units of a wall's middle band of a big poster
+  bannerChance: number; // chance per ~70 units of a skyscraper's wall width of a tall banner
   // district lights (GeneratorItem_CityLight): hue range, as in HSL (0..1)
   lightHue: [number, number];
 }
@@ -52,8 +54,10 @@ export const DISTRICT_STYLES: Record<DistrictKind, DistrictStyle> = {
     topperChance: 0.06,
     spotlightChance: 0.05,
     smokeChance: 0.05,
-    neonSigns: 4,
-    posterChance: 0.6,
+    neonSigns: 5,
+    bladeShare: 0.3,
+    posterChance: 0.65,
+    bannerChance: 0.5,
     lightHue: [0.5, 1],
   },
   // dense core: more big blocks and towers, taller, big ads, cold light
@@ -71,8 +75,10 @@ export const DISTRICT_STYLES: Record<DistrictKind, DistrictStyle> = {
     topperChance: 0.06,
     spotlightChance: 0.12,
     smokeChance: 0.03,
-    neonSigns: 2,
-    posterChance: 0.7,
+    neonSigns: 3,
+    bladeShare: 0.15,
+    posterChance: 0.8,
+    bannerChance: 0.7,
     lightHue: [0.5, 0.66],
   },
   // entertainment strip: every lot lit with ads, signs and spotlights
@@ -90,8 +96,10 @@ export const DISTRICT_STYLES: Record<DistrictKind, DistrictStyle> = {
     topperChance: 0.12, // more blow out into white blobs under the bloom
     spotlightChance: 0.2,
     smokeChance: 0.04,
-    neonSigns: 7,
-    posterChance: 0.55,
+    neonSigns: 9,
+    bladeShare: 0.5,
+    posterChance: 0.6,
+    bannerChance: 0.6,
     lightHue: [0.8, 0.95],
   },
   // low, spread out, few ads, lots of smoke, sodium-amber light
@@ -109,8 +117,10 @@ export const DISTRICT_STYLES: Record<DistrictKind, DistrictStyle> = {
     topperChance: 0,
     spotlightChance: 0,
     smokeChance: 0.3,
-    neonSigns: 1.2,
-    posterChance: 0.1,
+    neonSigns: 1.5,
+    bladeShare: 0.1,
+    posterChance: 0.12,
+    bannerChance: 0.05,
     lightHue: [0.04, 0.1],
   },
   // small, quiet buildings, a few ads, violet light
@@ -128,8 +138,10 @@ export const DISTRICT_STYLES: Record<DistrictKind, DistrictStyle> = {
     topperChance: 0.02,
     spotlightChance: 0,
     smokeChance: 0.02,
-    neonSigns: 2.5,
-    posterChance: 0.15,
+    neonSigns: 3,
+    bladeShare: 0.25,
+    posterChance: 0.2,
+    bannerChance: 0.05,
     lightHue: [0.7, 0.85],
   },
 };

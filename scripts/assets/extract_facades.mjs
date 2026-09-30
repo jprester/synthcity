@@ -22,6 +22,8 @@ import { MeshBVH, acceleratedRaycast } from 'three-mesh-bvh';
 const GRID = 3; // world units per sample cell
 const MIN_W = 8; // smallest rectangle worth keeping (units)
 const MIN_H = 8;
+const BANNER_DEPTH = 4; // parallel surfaces this close count as one wall for banners
+const BANNER_MIN_H = 100;
 const MAX_RECTS = 60; // per model, largest first (mega buildings have hundreds of small ones)
 
 Mesh.prototype.raycast = acceleratedRaycast;
@@ -30,7 +32,10 @@ const models = ['01', '02', '03', '04', '05']
   .flatMap((g) => ['01', '02', '03'].map((v) => `s_${g}_${v}`))
   .concat(['01', '02', '03', '04', '05', '06'].map((i) => `mega_${i}`));
 
-function planesOf(geometry) {
+// Vertical planes by outward normal and offset. depth > 0 merges parallel
+// surfaces within ~depth units (ribbed facades) into one plane at the front-most
+// surface.
+function planesOf(geometry, depth = 0) {
   const p = geometry.attributes.position;
   const n = geometry.attributes.normal;
   const planes = new Map();
@@ -52,7 +57,9 @@ function planesOf(geometry) {
     const nx = normal.x / len;
     const nz = normal.z / len;
     const d = nx * a.x + nz * a.z;
-    const key = `${nx.toFixed(2)},${nz.toFixed(2)},${Math.round(d)}`;
+    // + 0 turns -0 into 0, so '-0.00' and '0.00' don't split one wall into two planes
+    const bucket = depth > 0 ? Math.round(d / depth) : Math.round(d);
+    const key = `${(Math.round(nx * 100) / 100 + 0).toFixed(2)},${(Math.round(nz * 100) / 100 + 0).toFixed(2)},${bucket + 0}`;
     const plane = planes.get(key) ?? {
       nx,
       nz,
@@ -63,6 +70,7 @@ function planesOf(geometry) {
       y0: Infinity,
       y1: -Infinity,
     };
+    plane.d = Math.max(plane.d, d); // the front-most surface
     plane.area += area;
     for (let k = t; k < t + 3; k++) {
       const x = p.getX(k);
@@ -103,17 +111,14 @@ function largestRect(grid) {
   return best;
 }
 
-function facadesOf(key) {
-  const geometry = new OBJLoader().parse(readFileSync(`public/assets/models/${key}.obj`, 'utf8')).children[0]
-    .geometry;
-  geometry.boundsTree = new MeshBVH(geometry);
-  const mesh = new Mesh(geometry, new MeshBasicMaterial({ side: DoubleSide }));
+// Cover each plane's usable cells with rectangles. A cell is usable when the
+// model's surface lies within `tolerance` behind the plane there and an outward
+// ray from just in front of the plane leaves the building.
+function scan(geometry, mesh, planes, { tolerance, minW, minH }) {
   const raycaster = new Raycaster();
   raycaster.firstHitOnly = true;
-  geometry.computeBoundingBox();
-
   const rects = [];
-  for (const pl of planesOf(geometry)) {
+  for (const pl of planes) {
     const cols = Math.floor((pl.s1 - pl.s0) / GRID);
     const rows = Math.floor((pl.y1 - pl.y0) / GRID);
     if (cols < 1 || rows < 1) continue;
@@ -128,7 +133,7 @@ function facadesOf(key) {
         // point on the plane
         point.set(pl.nx * pl.d - pl.nz * s, y, pl.nz * pl.d + pl.nx * s);
         const hit = geometry.boundsTree.closestPointToPoint(point, target);
-        let ok = hit && hit.distance < 0.3;
+        let ok = hit && hit.distance < tolerance;
         if (ok) {
           const origin = point.clone().addScaledVector(new Vector3(pl.nx, 0, pl.nz), 0.5);
           raycaster.ray = new Ray(origin, new Vector3(pl.nx, 0, pl.nz));
@@ -144,7 +149,7 @@ function facadesOf(key) {
       if (!best.area) break;
       const w = (best.c1 - best.c0 + 1) * GRID;
       const h = (best.r1 - best.r0 + 1) * GRID;
-      if (w < MIN_W || h < MIN_H) break;
+      if (w < minW || h < minH) break;
       for (let r = best.r0; r <= best.r1; r++) for (let c = best.c0; c <= best.c1; c++) grid[r][c] = false;
       const round = (v) => Math.round(v * 100) / 100;
       const unit = (v) => Math.round(v * 10000) / 10000;
@@ -158,16 +163,49 @@ function facadesOf(key) {
       });
     }
   }
-  rects.sort((a, b) => (b.s1 - b.s0) * (b.y1 - b.y0) - (a.s1 - a.s0) * (a.y1 - a.y0));
-  return { height: Math.round(geometry.boundingBox.max.y * 100) / 100, rects: rects.slice(0, MAX_RECTS) };
+  // Layered surfaces (cladding a fraction of a unit in front of a wall) give
+  // near-coplanar rectangles over the same area: keep the front-most one.
+  const layered = (a, b) =>
+    Math.abs(a.n[0] - b.n[0]) < 1e-3 &&
+    Math.abs(a.n[1] - b.n[1]) < 1e-3 &&
+    Math.abs(a.d - b.d) < Math.max(1.5, tolerance) &&
+    a.s0 < b.s1 &&
+    b.s0 < a.s1 &&
+    a.y0 < b.y1 &&
+    b.y0 < a.y1;
+  rects.sort((a, b) => b.d - a.d);
+  const front = [];
+  for (const r of rects) if (!front.some((f) => layered(f, r))) front.push(r);
+  front.sort((a, b) => (b.s1 - b.s0) * (b.y1 - b.y0) - (a.s1 - a.s0) * (a.y1 - a.y0));
+  return front.slice(0, MAX_RECTS);
+}
+
+function facadesOf(key) {
+  const geometry = new OBJLoader().parse(readFileSync(`public/assets/models/${key}.obj`, 'utf8')).children[0]
+    .geometry;
+  geometry.boundsTree = new MeshBVH(geometry);
+  const mesh = new Mesh(geometry, new MeshBasicMaterial({ side: DoubleSide }));
+  geometry.computeBoundingBox();
+  return {
+    height: Math.round(geometry.boundingBox.max.y * 100) / 100,
+    // flat walls for posters and neon signs
+    rects: scan(geometry, mesh, planesOf(geometry), { tolerance: 0.3, minW: MIN_W, minH: MIN_H }),
+    // tall walls for banners: ribbed facades count, measured at their front
+    banners: scan(geometry, mesh, planesOf(geometry, BANNER_DEPTH), {
+      tolerance: BANNER_DEPTH + 0.2,
+      minW: 12,
+      minH: BANNER_MIN_H,
+    }),
+  };
 }
 
 const out = {};
 for (const key of models) {
   out[key] = facadesOf(key);
   const area = out[key].rects.reduce((sum, r) => sum + (r.s1 - r.s0) * (r.y1 - r.y0), 0);
+  const tallest = Math.max(0, ...out[key].banners.map((r) => r.y1 - r.y0));
   console.log(
-    `${key}: ${out[key].rects.length} rects, ${Math.round(area)} units^2, height ${out[key].height}`,
+    `${key}: ${out[key].rects.length} rects (${Math.round(area)} units^2), ${out[key].banners.length} banner walls (tallest ${tallest}), height ${out[key].height}`,
   );
 }
 writeFileSync('src/assets/facades.json', JSON.stringify(out) + '\n');

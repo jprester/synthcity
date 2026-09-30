@@ -107,23 +107,28 @@ class GeneratorItem_CityBlock implements GeneratorItem {
       collider.add(mesh);
     }
   }
-  // a wall sign: one instance of the atlas's sign quad, its art as instance data
+  // A sign: an instance of the atlas's single-sided sign quad, its art as
+  // instance data. A blade sign (sticking out of the wall) is two quads back to
+  // back, so it reads correctly from both sides of the street.
   addSign(o: SignObject): void {
     const { assets, instances } = this.context;
-    _position.set(o.x, o.y, o.z);
-    _rotation.setFromAxisAngle(_up, o.yaw);
-    _scale.set(o.width, o.height, 1);
-    _matrix.compose(_position, _rotation, _scale);
     const art = AD_ATLASES[o.atlas].entries[o.art];
-    const handle = instances.add(
-      assets.getModel(SIGN_MODELS[o.atlas]),
-      assets.getMaterial(AD_MATERIALS[o.atlas]),
-      _matrix,
-      undefined,
-      art.uv,
-    );
-    this.instances.push(handle);
-    if (o.switches) this.updateables.push(new SignSwitcher(o, handle, this.context));
+    const faces = o.mount == 'blade' ? [o.yaw, o.yaw + Math.PI] : [o.yaw];
+    for (const yaw of faces) {
+      _position.set(o.x, o.y, o.z);
+      _rotation.setFromAxisAngle(_up, yaw);
+      _scale.set(o.width, o.height, 1);
+      _matrix.compose(_position, _rotation, _scale);
+      const handle = instances.add(
+        assets.getModel(SIGN_MODELS[o.atlas]),
+        assets.getMaterial(AD_MATERIALS[o.atlas]),
+        _matrix,
+        undefined,
+        art.uv,
+      );
+      this.instances.push(handle);
+      if (o.switches) this.updateables.push(new SignSwitcher(o, handle, this.context));
+    }
   }
 
   remove(): void {
