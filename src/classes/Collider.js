@@ -1,4 +1,7 @@
-import { Raycaster, Object3D, Matrix4, Vector2, Sphere, MeshBasicMaterial } from 'three';
+import { Raycaster, Matrix4, Vector2, Sphere, MeshBasicMaterial } from 'three';
+
+const _inverse = new Matrix4();
+const _sphere = new Sphere();
 
 class Collider {
   constructor() {
@@ -30,7 +33,9 @@ class Collider {
 
   remove(uuid) {
     const index = this.meshes.findIndex((e) => e.uuid === uuid);
-    this.meshes.splice(index, 1);
+    if (index != -1) this.meshes.splice(index, 1);
+    const inRange = this.meshesInRange.findIndex((e) => e.uuid === uuid);
+    if (inRange != -1) this.meshesInRange.splice(inRange, 1);
   }
 
   intersectsSphere(pos, rad) {
@@ -38,18 +43,12 @@ class Collider {
 
     this.updateMeshesInRange(pos);
 
-    const obj = new Object3D();
-    obj.position.set(pos.x, pos.y, pos.z);
-    obj.updateMatrixWorld();
-
     for (let i = 0; i < this.meshesInRange.length; i++) {
-      let transformMatrix = new Matrix4()
-        .copy(this.meshesInRange[i].matrixWorld)
-        .invert()
-        .multiply(obj.matrixWorld);
-      let sphere = new Sphere(undefined, rad);
-      sphere.applyMatrix4(transformMatrix);
-      let hit = this.meshesInRange[i].geometry.boundsTree.intersectsSphere(sphere);
+      // the sphere in the mesh's local space
+      _inverse.copy(this.meshesInRange[i].matrixWorld).invert();
+      _sphere.center.set(pos.x, pos.y, pos.z).applyMatrix4(_inverse);
+      _sphere.radius = rad * _inverse.getMaxScaleOnAxis();
+      let hit = this.meshesInRange[i].geometry.boundsTree.intersectsSphere(_sphere);
       if (hit) return true;
     }
 

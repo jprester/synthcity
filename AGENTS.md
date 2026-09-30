@@ -96,8 +96,7 @@ Roughly in priority order:
 1. **Performance.** Buildings and ground are instanced (`InstancePool`); adverts are next. At 1080p the frame is GPU-bound on bloom and fill rate; measure with `npm run perf`.
 2. **Frame-rate independence.** Movement, traffic and animations are per-frame, so everything runs about 2.4× faster at 144 Hz. The fade-in multiplies by accumulated rather than per-frame delta.
 3. **Smaller fixes.**
-   - `Collider.remove` splices index -1 when the uuid is missing.
-   - `Collider.intersectsSphere` allocates per mesh per frame.
-   - The FXAA resolution uniform is not updated on resize, and FXAA runs before bloom.
-   - The `mousewheel` event doesn't fire in Firefox.
+   - FXAA runs before bloom (moving it is a look decision).
+   - Crash handling in `PlayerCar` uses the DOM and `setTimeout` directly.
+   - The `day` environment can't be selected.
 4. **Assets.** OBJ → glTF (meshopt), WAV → Opus, textures → KTX2.

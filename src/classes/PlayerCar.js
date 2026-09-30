@@ -1,6 +1,7 @@
 import { Mesh, PointLight, PerspectiveCamera, Object3D, Vector3 } from 'three';
 
 import { Perlin } from '../lib/perlin.js';
+import { updateCameraLook, angleDist, clamp } from './cameraLook.js';
 
 class PlayerCar {
   constructor(params) {
@@ -96,41 +97,7 @@ class PlayerCar {
   update() {
     /*--- UPDATE CAMERA ---*/
 
-    var movementX = this.controller.mouse_move_x;
-    var movementY = this.controller.mouse_move_y;
-    // limit movement
-    if (movementX > this.max_look_speed) movementX = this.max_look_speed;
-    if (movementX < -this.max_look_speed) movementX = -this.max_look_speed;
-    if (movementY > this.max_look_speed) movementY = this.max_look_speed;
-    if (movementY < -this.max_look_speed) movementY = -this.max_look_speed;
-    // pitch
-    this.camera_target.rotation.x -= movementY * this.mouse_sensitivity;
-    if (this.camera_target.rotation.x < -Math.PI / 2 + 0.1)
-      this.camera_target.rotation.x = -Math.PI / 2 + 0.1;
-    if (this.camera_target.rotation.x > Math.PI / 2 - 0.1) this.camera_target.rotation.x = Math.PI / 2 - 0.1;
-    // yaw
-    this.camera_target.rotation.y -= movementX * this.mouse_sensitivity;
-
-    // zoom
-    let mouse_wheel_delta = this.controller.get_mouse_wheel();
-    if (mouse_wheel_delta !== 0) {
-      this.camera_fov_to += mouse_wheel_delta * 0.05;
-      this.camera_fov_to = Math.max(Math.min(this.camera_fov_to, 70), 30);
-    }
-    this.camera.fov += (this.camera_fov_to - this.camera.fov) * 0.1;
-    this.camera.updateProjectionMatrix();
-
-    // set camera postion to body position
-    this.camera.position.z = this.body.position.z;
-    this.camera.position.x = this.body.position.x;
-    this.camera.position.y = this.body.position.y;
-
-    // roll
-    this.camera_target.rotation.z =
-      -this.angle_dist(this.camera_target.rotation.y, this.camera.rotation.y) * this.look_roll_factor;
-
-    // smooth look
-    this.camera.quaternion.slerp(this.camera_target.quaternion, this.look_smooth);
+    updateCameraLook(this, { pitchMargin: 0.1, maxFov: 70 });
 
     /*--- UPDATE CAR ---*/
 
@@ -166,8 +133,8 @@ class PlayerCar {
     }
 
     // steering
-    this.car_dir_v += this.angle_dist(this.car_dir, this.car_dir_to) * 0.001;
-    this.car_pitch_v += this.angle_dist(this.car_pitch, this.car_pitch_to) * 0.004;
+    this.car_dir_v += angleDist(this.car_dir, this.car_dir_to) * 0.001;
+    this.car_pitch_v += angleDist(this.car_pitch, this.car_pitch_to) * 0.004;
     // damping
     this.car_dir_v *= 0.965;
     this.car_pitch_v *= 0.965;
@@ -198,7 +165,7 @@ class PlayerCar {
       this.noise_shake.noise(this.body.position.x * 0.005, this.body.position.z * 0.005) - 0.5;
     var speed_noise2 =
       this.noise_shake.noise(-this.body.position.x * 0.005, -this.body.position.z * 0.005) - 0.5;
-    var speed_factor = this.clamp(this.velocity.length() - this.walk_speed, 0, 1);
+    var speed_factor = clamp(this.velocity.length() - this.walk_speed, 0, 1);
     this.car.position.x = this.car.position.x + noise * 0.15 + speed_noise * speed_factor * 0.1;
     this.car.position.z = this.car.position.z + noise * 0.15 + speed_noise2 * speed_factor * 0.1;
     this.car.position.y = this.car.position.y + noise * 0.25 + speed_noise * speed_factor * 0.1;
@@ -284,10 +251,10 @@ class PlayerCar {
 
     /*--- UPDATE AUDIO ---*/
 
-    if (this.soundWind) this.soundWind.setVolume(this.clamp(this.velocity.length() - this.walk_speed, 0, 1));
+    if (this.soundWind) this.soundWind.setVolume(clamp(this.velocity.length() - this.walk_speed, 0, 1));
     if (this.soundStress) {
       this.soundStress.setVolume(
-        this.clamp(Math.max(Math.abs(this.car_dir_v), Math.abs(this.car_pitch_v)) * 40, 0, 1),
+        clamp(Math.max(Math.abs(this.car_dir_v), Math.abs(this.car_pitch_v)) * 40, 0, 1),
       );
     }
   }
@@ -296,36 +263,6 @@ class PlayerCar {
   onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
-  }
-
-  /*----- UTILS -----*/
-
-  // shortest signed distance between two angles (radians)
-  angle_dist(a, b) {
-    var posDist, negDist;
-    a = this.fix_angle(a);
-    b = this.fix_angle(b);
-    if (b > a) {
-      posDist = b - a;
-      negDist = a + (Math.PI * 2 - b);
-    } else {
-      posDist = b + (Math.PI * 2 - a);
-      negDist = a - b;
-    }
-    if (posDist < negDist) {
-      return posDist;
-    } else {
-      return -negDist;
-    }
-  }
-
-  // ensures angle is between 0 and 360 (radians)
-  fix_angle(a) {
-    return a - Math.PI * 2 * Math.floor(a / (Math.PI * 2));
-  }
-
-  clamp(num, min, max) {
-    return Math.min(Math.max(num, min), max);
   }
 }
 

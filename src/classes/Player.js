@@ -1,6 +1,6 @@
 import { PerspectiveCamera, Object3D, Vector3 } from 'three';
 
-import { Perlin } from '../lib/perlin.js';
+import { updateCameraLook } from './cameraLook.js';
 
 class Player {
   constructor(params) {
@@ -47,9 +47,6 @@ class Player {
     this.body.position.z = params.z;
     this.body.position.y = this.player_height;
 
-    this.noise_shake = new Perlin();
-    this.noise_shake.noiseDetail(8, 0.5);
-
     this.velocity = new Vector3();
     this.move_max_speed = 0;
     this.move_max_speed_current = 0;
@@ -58,42 +55,7 @@ class Player {
   update() {
     /*--- UPDATE CAMERA ---*/
 
-    var movementX = this.controller.mouse_move_x;
-    var movementY = this.controller.mouse_move_y;
-    // limit movement
-    if (movementX > this.max_look_speed) movementX = this.max_look_speed;
-    if (movementX < -this.max_look_speed) movementX = -this.max_look_speed;
-    if (movementY > this.max_look_speed) movementY = this.max_look_speed;
-    if (movementY < -this.max_look_speed) movementY = -this.max_look_speed;
-    // pitch
-    this.camera_target.rotation.x -= movementY * this.mouse_sensitivity;
-    if (this.camera_target.rotation.x < -Math.PI / 2 + 0.01)
-      this.camera_target.rotation.x = -Math.PI / 2 + 0.01;
-    if (this.camera_target.rotation.x > Math.PI / 2 - 0.01)
-      this.camera_target.rotation.x = Math.PI / 2 - 0.01;
-    // yaw
-    this.camera_target.rotation.y -= movementX * this.mouse_sensitivity;
-
-    // zoom
-    let mouse_wheel_delta = this.controller.get_mouse_wheel();
-    if (mouse_wheel_delta !== 0) {
-      this.camera_fov_to += mouse_wheel_delta * 0.05;
-      this.camera_fov_to = Math.max(Math.min(this.camera_fov_to, 90), 30);
-    }
-    this.camera.fov += (this.camera_fov_to - this.camera.fov) * 0.1;
-    this.camera.updateProjectionMatrix();
-
-    // set camera postion to body position
-    this.camera.position.z = this.body.position.z;
-    this.camera.position.x = this.body.position.x;
-    this.camera.position.y = this.body.position.y;
-
-    // roll
-    this.camera_target.rotation.z =
-      -this.angle_dist(this.camera_target.rotation.y, this.camera.rotation.y) * this.look_roll_factor;
-
-    // smooth look
-    this.camera.quaternion.slerp(this.camera_target.quaternion, this.look_smooth);
+    updateCameraLook(this, { pitchMargin: 0.01, maxFov: 90 });
 
     /*--- UPDATE VELOCITY ---*/
 
@@ -159,32 +121,6 @@ class Player {
   onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
-  }
-
-  /*----- UTILS -----*/
-
-  // shortest signed distance between two angles (radians)
-  angle_dist(a, b) {
-    var posDist, negDist;
-    a = this.fix_angle(a);
-    b = this.fix_angle(b);
-    if (b > a) {
-      posDist = b - a;
-      negDist = a + (Math.PI * 2 - b);
-    } else {
-      posDist = b + (Math.PI * 2 - a);
-      negDist = a - b;
-    }
-    if (posDist < negDist) {
-      return posDist;
-    } else {
-      return -negDist;
-    }
-  }
-
-  // ensures angle is between 0 and 360 (radians)
-  fix_angle(a) {
-    return a - Math.PI * 2 * Math.floor(a / (Math.PI * 2));
   }
 }
 

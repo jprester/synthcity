@@ -206,11 +206,9 @@ export class Game {
     this.composer.addPass(new RenderPass(this.scene, this.player.camera));
 
     // anti aliasing
-    const fxaa = new ShaderPass(FXAAShader);
-    const pixelRatio = this.renderer.getPixelRatio();
-    fxaa.material.uniforms['resolution'].value.x = 1 / (window.innerWidth * pixelRatio);
-    fxaa.material.uniforms['resolution'].value.y = 1 / (window.innerHeight * pixelRatio);
-    this.composer.addPass(fxaa);
+    this.fxaa = new ShaderPass(FXAAShader);
+    this.updateFxaaResolution();
+    this.composer.addPass(this.fxaa);
 
     // bloom
     const bloomPass = new UnrealBloomPass(new Vector2(window.innerWidth, window.innerHeight), 0, 0, 0);
@@ -552,8 +550,15 @@ export class Game {
 
     this.renderer.setSize(width, height);
     this.composer.setSize(width, height);
+    this.updateFxaaResolution();
 
     this.player.onWindowResize();
+  }
+
+  updateFxaaResolution() {
+    const pixelRatio = this.renderer.getPixelRatio();
+    this.fxaa.material.uniforms['resolution'].value.x = 1 / (window.innerWidth * pixelRatio);
+    this.fxaa.material.uniforms['resolution'].value.y = 1 / (window.innerHeight * pixelRatio);
   }
 
   onEnterClick() {

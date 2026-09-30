@@ -74,7 +74,7 @@ class PlayerController {
       false,
     );
     document.addEventListener(
-      'mousewheel',
+      'wheel',
       function (event) {
         self.on_mouse_wheel(event);
       },
@@ -98,7 +98,9 @@ class PlayerController {
   }
 
   on_mouse_wheel(event) {
-    this.mouse_scroll = event.deltaY;
+    // Firefox reports lines (deltaMode 1) where Chrome reports pixels; one
+    // notch is ~3 lines or ~100 px
+    this.mouse_scroll = event.deltaMode == 1 ? event.deltaY * 33 : event.deltaY;
   }
   get_mouse_wheel() {
     let v = this.mouse_scroll;
@@ -206,14 +208,14 @@ class PlayerController {
 
   on_mouse_down(event) {
     if (this.enabled) {
-      switch (event.which) {
-        case 1:
+      switch (event.button) {
+        case 0:
           this.mb_left = true;
           break;
-        case 2:
+        case 1:
           this.mb_middle = true;
           break;
-        case 3:
+        case 2:
           this.mb_right = true;
           break;
       }
@@ -222,15 +224,15 @@ class PlayerController {
 
   on_mouse_up(event) {
     if (this.enabled) {
-      switch (event.which) {
-        case 1:
+      switch (event.button) {
+        case 0:
           this.mb_left = false;
           this.mb_left_released = true;
           break;
-        case 2:
+        case 1:
           this.mb_middle = false;
           break;
-        case 3:
+        case 2:
           this.mb_right = false;
           break;
       }

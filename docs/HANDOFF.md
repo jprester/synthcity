@@ -134,13 +134,17 @@ Suggested order. Each task lists what "done" looks like and the traps I know abo
 
 ### 6. Smaller fixes
 
-- `Collider.remove` (`Collider.js:33`) does `splice(findIndex(...), 1)`. On a miss that's `splice(-1, 1)` and deletes the last collider. Also, `meshesInRange` keeps removed meshes until the next refresh.
-- **FXAA:** the resolution uniform isn't updated in `onWindowResize` (`Game.js:203`). FXAA also runs before bloom (`Game.js:201–218`); moving it after bloom changes the look slightly, so treat that as an intentional visual change.
-- **Input** (`PlayerController.js`):
-  - The `mousewheel` event (line 77) never fires in Firefox; use `wheel`.
-  - `event.which` (lines 209, 225) is deprecated; use `event.button`.
-- `Game.animate` drops the rAF timestamp, and collision is enabled after the first frame via a flag. Simplify both once the frame loop is being reworked.
-- `Player` and `PlayerCar` duplicate the camera-look code and `angle_dist`/`fix_angle`; move those into a shared helper.
+Done:
+
+- `Collider.remove` ignores unknown uuids (it used to `splice(-1, 1)`) and also drops the mesh from `meshesInRange`. `intersectsSphere` no longer allocates per mesh. `test/collider.test.js` checks it against the original maths.
+- The FXAA resolution uniform is updated on resize.
+- Input uses the `wheel` event (Firefox line deltas scaled to pixels) and `event.button`.
+- `Player` and `PlayerCar` share the camera-look code, `angleDist` and `clamp` (`src/classes/cameraLook.js`).
+
+Open:
+
+- **FXAA runs before bloom** (`Game.js`). Moving it after bloom changes the look slightly, so it's an art-direction decision, not a fix.
+- `Game.animate` drops the rAF timestamp, and collision is enabled after the first frame via a flag. Simplify both with task 5.
 - `PlayerCar`'s crash handling writes to the DOM directly and uses `setTimeout`. Move it to the frame loop and send UI updates through the terminal/UI module.
 - **The `day` environment** exists in `Game.getEnvironment` but can't be selected. Expose it via a query param (and optionally the settings form) if you want it; it has its own bloom and lighting values.
 
