@@ -1,5 +1,4 @@
 import {
-  Clock,
   Scene,
   WebGLRenderer,
   ACESFilmicToneMapping,
@@ -41,6 +40,7 @@ import { GeneratorItem_Traffic } from './classes/GeneratorItem_Traffic.js';
 import { computeBoundsTree, disposeBoundsTree, acceleratedRaycast } from 'three-mesh-bvh';
 import { Collider } from './classes/Collider.js';
 import { InstancePool } from './classes/InstancePool.js';
+import { frameScale } from './classes/frameRate.js';
 
 import { CITY_BLOCK_SIZE, ROAD_WIDTH, CELL_SIZE, createDistrictNoise } from './generation/world.js';
 import { userSettings } from './settings.js';
@@ -322,8 +322,8 @@ export class Game {
 
     // time
 
-    this.clock = new Clock();
-    this.clockDelta = 0;
+    this.lastFrameTime = null; // rAF timestamp of the previous frame (ms)
+    this.fadeTime = 0; // seconds since launch, for the fade-in
 
     // animate
 
@@ -433,30 +433,33 @@ export class Game {
     }
   }
 
+  // now: rAF timestamp in ms (undefined for the first, direct call)
   animate(now) {
-    // animate
+    requestAnimationFrame((t) => this.animate(t));
 
-    requestAnimationFrame(() => this.animate());
-    let delta = this.clock.getDelta(); // seconds
-    this.clockDelta += delta;
+    // frame time; the first frame counts as one nominal frame
+    let delta = null;
+    if (now !== undefined && this.lastFrameTime !== null) delta = (now - this.lastFrameTime) / 1000;
+    if (now !== undefined) this.lastFrameTime = now;
+    const k = frameScale(delta);
+    delta = k / 60;
 
-    // fade in
+    // fade in (~2.6 s, easing in like the original did at 60 Hz)
 
     if (this.canvasOpacity < 1) {
-      // canvas
-      this.canvasOpacity += this.clockDelta * 0.005;
+      this.fadeTime += delta;
+      this.canvasOpacity = Math.min(0.15 * this.fadeTime * this.fadeTime, 1);
       this.canvas.style.opacity = this.canvasOpacity;
-      // audio
-      this.masterVolume += this.clockDelta * 0.005;
+      this.masterVolume = this.canvasOpacity;
     }
 
     // master volume
 
     if (this.playerController.key_plus) {
-      this.userMasterVolume = Math.min(this.userMasterVolume + 0.02, 1);
+      this.userMasterVolume = Math.min(this.userMasterVolume + 0.02 * k, 1);
     }
     if (this.playerController.key_minus) {
-      this.userMasterVolume = Math.max(this.userMasterVolume - 0.02, 0);
+      this.userMasterVolume = Math.max(this.userMasterVolume - 0.02 * k, 0);
     }
 
     if (this.audioListener) {
@@ -466,13 +469,13 @@ export class Game {
     // update
 
     if (this.stats) this.stats.beginUpdate();
-    this.player.update();
+    this.player.update(k);
     if (this.radio) this.radio.update();
     this.playerController.update();
 
-    this.generatorCityBlock.update();
-    if (this.generatorCityLights !== null) this.generatorCityLights.update();
-    this.generatorTraffic.update();
+    this.generatorCityBlock.update(k);
+    if (this.generatorCityLights !== null) this.generatorCityLights.update(k);
+    this.generatorTraffic.update(k);
 
     // render
 

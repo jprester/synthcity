@@ -1,6 +1,7 @@
 import { PerspectiveCamera, Object3D, Vector3 } from 'three';
 
 import { updateCameraLook } from './cameraLook.js';
+import { decay } from './frameRate.js';
 
 class Player {
   constructor(params) {
@@ -52,12 +53,15 @@ class Player {
     this.move_max_speed_current = 0;
   }
 
-  update() {
+  // k: frame time in 60 Hz frames
+  update(k) {
     /*--- UPDATE CAMERA ---*/
 
-    updateCameraLook(this, { pitchMargin: 0.01, maxFov: 90 });
+    updateCameraLook(this, { pitchMargin: 0.01, maxFov: 90 }, k);
 
     /*--- UPDATE VELOCITY ---*/
+
+    let accel = this.move_accel * k;
 
     // accelerate
     if (
@@ -67,45 +71,45 @@ class Player {
       this.controller.key_right
     ) {
       if (this.controller.key_up) {
-        this.velocity.z -= Math.cos(-this.camera.rotation.y) * this.move_accel;
-        this.velocity.x += Math.sin(-this.camera.rotation.y) * this.move_accel;
+        this.velocity.z -= Math.cos(-this.camera.rotation.y) * accel;
+        this.velocity.x += Math.sin(-this.camera.rotation.y) * accel;
       }
       if (this.controller.key_down) {
-        this.velocity.z -= Math.cos(-this.camera.rotation.y + Math.PI) * this.move_accel;
-        this.velocity.x += Math.sin(-this.camera.rotation.y + Math.PI) * this.move_accel;
+        this.velocity.z -= Math.cos(-this.camera.rotation.y + Math.PI) * accel;
+        this.velocity.x += Math.sin(-this.camera.rotation.y + Math.PI) * accel;
       }
       if (this.controller.key_left) {
-        this.velocity.z -= Math.cos(-this.camera.rotation.y - Math.PI / 2) * this.move_accel;
-        this.velocity.x += Math.sin(-this.camera.rotation.y - Math.PI / 2) * this.move_accel;
+        this.velocity.z -= Math.cos(-this.camera.rotation.y - Math.PI / 2) * accel;
+        this.velocity.x += Math.sin(-this.camera.rotation.y - Math.PI / 2) * accel;
       }
       if (this.controller.key_right) {
-        this.velocity.z -= Math.cos(-this.camera.rotation.y + Math.PI / 2) * this.move_accel;
-        this.velocity.x += Math.sin(-this.camera.rotation.y + Math.PI / 2) * this.move_accel;
+        this.velocity.z -= Math.cos(-this.camera.rotation.y + Math.PI / 2) * accel;
+        this.velocity.x += Math.sin(-this.camera.rotation.y + Math.PI / 2) * accel;
       }
     }
     // decelerate
     else {
-      this.velocity.clampLength(0, this.velocity.length() - this.move_accel);
+      this.velocity.clampLength(0, this.velocity.length() - accel);
     }
 
     // max speed
     this.move_max_speed = this.controller.key_shift ? this.run_speed : this.walk_speed;
     if (this.move_max_speed_current < this.move_max_speed) this.move_max_speed_current = this.move_max_speed;
-    if (this.move_max_speed_current > this.move_max_speed) this.move_max_speed_current -= this.move_accel;
+    if (this.move_max_speed_current > this.move_max_speed) this.move_max_speed_current -= accel;
     this.velocity.clampLength(0, this.move_max_speed_current);
 
     /*--- UPDATE POSITION ---*/
 
     // x, z
-    this.body.position.x += this.velocity.x * (this.body.position.y * 0.01);
-    this.body.position.z += this.velocity.z * (this.body.position.y * 0.01);
+    this.body.position.x += this.velocity.x * (this.body.position.y * 0.01) * k;
+    this.body.position.z += this.velocity.z * (this.body.position.y * 0.01) * k;
 
     // y
     if (this.controller.key_r) {
-      this.body.position.y = this.body.position.y * 1.02;
+      this.body.position.y = this.body.position.y * decay(1.02, k);
     }
     if (this.controller.key_f) {
-      this.body.position.y = this.body.position.y / 1.02;
+      this.body.position.y = this.body.position.y / decay(1.02, k);
     }
     if (this.body.position.y < 15) this.body.position.y = 15;
     if (this.body.position.y > 800) this.body.position.y = 800;

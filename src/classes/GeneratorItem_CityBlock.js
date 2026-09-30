@@ -92,9 +92,9 @@ class GeneratorItem_CityBlock {
       collider.remove(this.meshesCollid[i].uuid);
     }
   }
-  update() {
+  update(k) {
     for (let i = 0; i < this.updateables.length; i++) {
-      this.updateables[i].update();
+      this.updateables[i].update(k);
     }
   }
 }
@@ -126,9 +126,9 @@ class Advert extends Decoration {
     this.switches = o.switches;
     this.switchRandom = hashRandom(context.seed, o.x, o.z, 'advert-switch');
   }
-  update() {
+  update(k) {
     if (this.switches) {
-      this.counter++;
+      this.counter += k;
       if (this.counter > this.interval) {
         this.counter = 0;
         this.mesh.material = this.context.assets.getMaterial(
@@ -147,8 +147,8 @@ class Topper extends Decoration {
     super(context, mesh);
     this.rdir = o.spin;
   }
-  update() {
-    this.mesh.rotation.y = this.mesh.rotation.y + this.rdir;
+  update(k) {
+    this.mesh.rotation.y = this.mesh.rotation.y + this.rdir * k;
   }
 }
 
@@ -160,8 +160,8 @@ class Smoke extends Decoration {
     super(context, mesh);
     this.rstep = o.phase;
   }
-  update() {
-    this.rstep += 0.0025;
+  update(k) {
+    this.rstep += 0.0025 * k;
     this.mesh.lookAt(this.context.player.camera.position);
     this.mesh.rotation.x += Math.cos(this.rstep) * 0.25;
   }
@@ -175,8 +175,8 @@ class Spotlight extends Decoration {
     super(context, mesh);
     this.rstep = o.phase;
   }
-  update() {
-    this.rstep += 0.01;
+  update(k) {
+    this.rstep += 0.01 * k;
     this.mesh.lookAt(this.context.player.camera.position);
     this.mesh.rotation.x += Math.cos(this.rstep) * 0.4;
   }

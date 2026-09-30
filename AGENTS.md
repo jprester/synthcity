@@ -82,6 +82,7 @@ Generation and rendering are separate. New world content goes into `src/generati
 
 ## Conventions
 
+- Per-frame motion takes `k` (frame time in 60 Hz frames, `src/classes/frameRate.js`): scale increments by `k`, use `decay(f, k)` for damping and `ease(a, k)` for easing. Never assume 60 Hz.
 - Plain ES modules and three.js; no framework. Match the surrounding code; Prettier handles formatting.
 - three.js is pinned at 0.159.0. Don't upgrade as a side effect; it's a separate, visually verified task.
 - Keep commits focused: one concern per commit, with the verification you ran mentioned in the message.
@@ -94,9 +95,8 @@ Detailed task notes, open decisions and known traps: [docs/HANDOFF.md](docs/HAND
 Roughly in priority order:
 
 1. **Performance.** Buildings and ground are instanced (`InstancePool`); adverts are next. At 1080p the frame is GPU-bound on bloom and fill rate; measure with `npm run perf`.
-2. **Frame-rate independence.** Movement, traffic and animations are per-frame, so everything runs about 2.4× faster at 144 Hz. The fade-in multiplies by accumulated rather than per-frame delta.
-3. **Smaller fixes.**
+2. **Smaller fixes.**
    - FXAA runs before bloom (moving it is a look decision).
    - Crash handling in `PlayerCar` uses the DOM and `setTimeout` directly.
    - The `day` environment can't be selected.
-4. **Assets.** OBJ → glTF (meshopt), WAV → Opus, textures → KTX2.
+3. **Assets.** OBJ → glTF (meshopt), WAV → Opus, textures → KTX2.

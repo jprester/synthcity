@@ -125,12 +125,19 @@ Suggested order. Each task lists what "done" looks like and the traps I know abo
   - `Smoke` and `Spotlight` call `lookAt` every frame for every instance.
   - `Collider.intersectsSphere` allocates an `Object3D`, a `Matrix4` and a `Sphere` per mesh per frame (`Collider.js:41–50`).
 
-### 5. Frame-rate independence
+### 5. Frame-rate independence — done
 
-- All motion is per frame: car physics in `PlayerCar.js`/`Player.js`, traffic speed, advert switch counters, topper spin, smoke and spotlight phases. At 144 Hz everything runs about 2.4× faster than at 60 Hz.
-- Scale by `delta * 60`, or use a fixed-timestep accumulator (better for the car physics and damping, which are `*= 0.965` per frame).
-- Because the harness steps at exactly 60 Hz, a correct conversion should come out pixel-identical or near it. That makes it a good check for this task.
-- **Fade-in bug:** `Game.js:420/423` adds `clockDelta` (accumulated time) rather than the per-frame delta, so the fade speeds up quadratically. The harness forces opacity to 1, so fixing it won't show in the frames.
+- `Game.animate` takes the rAF timestamp and computes `k`, the frame time in 60 Hz frames (`src/classes/frameRate.js`). The first frame counts as one nominal frame, `k` is capped at 4, and float noise around 60 Hz snaps to exactly 1.
+- `k` is passed through `Generator.update(k)` to every item and decoration, and to `Player`/`PlayerCar`.
+- The maths:
+  - increments: `x += v * k`
+  - per-frame damping: `decay(f, k) = f^k`
+  - easing (camera slerp, FOV): `ease(a, k) = 1 − (1 − a)^k`
+- At `k = 1` everything reduces to the original maths bit for bit, so the 60 Hz harness stays at 0.000%.
+- `test/frameRate.test.js` simulates the same wall-clock time at 30/60/144 Hz. The car, freeroam flight and traffic end up within 2% of the same place.
+- The fade-in used accumulated time. It now follows the same ~2.6 s ease-in curve by elapsed time, and master volume follows it.
+- Not scaled: mouse look. `PlayerController` keeps only the last `mousemove` of a frame rather than summing them, so look speed still depends on mouse polling and frame rate. Summing the movement would fix it but makes look much more sensitive, so it needs re-tuning `mouse_sensitivity` by feel.
+- Still open from task 6: collision is enabled after the first frame via a flag.
 
 ### 6. Smaller fixes
 
@@ -144,7 +151,7 @@ Done:
 Open:
 
 - **FXAA runs before bloom** (`Game.js`). Moving it after bloom changes the look slightly, so it's an art-direction decision, not a fix.
-- `Game.animate` drops the rAF timestamp, and collision is enabled after the first frame via a flag. Simplify both with task 5.
+- Collision is enabled after the first frame via a flag (`Game.animate`); it could start enabled once the first frame's matrices exist.
 - `PlayerCar`'s crash handling writes to the DOM directly and uses `setTimeout`. Move it to the frame loop and send UI updates through the terminal/UI module.
 - **The `day` environment** exists in `Game.getEnvironment` but can't be selected. Expose it via a query param (and optionally the settings form) if you want it; it has its own bloom and lighting values.
 

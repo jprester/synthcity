@@ -17,9 +17,9 @@ class GeneratorItem_Traffic {
       this.cars[i].remove();
     }
   }
-  update() {
+  update(k) {
     for (var i = 0; i < this.cars.length; i++) {
-      this.cars[i].update();
+      this.cars[i].update(k);
     }
   }
 }
@@ -44,10 +44,10 @@ class Car {
   remove() {
     this.context.scene.remove(this.mesh);
   }
-  update() {
+  update(k) {
     if (this.mesh != null) {
-      this.x += this.v.x * this.speed_factor;
-      this.z += this.v.y * this.speed_factor;
+      this.x += this.v.x * this.speed_factor * k;
+      this.z += this.v.y * this.speed_factor * k;
 
       this.mesh.position.set(this.x, this.alt + this.alt_offset, this.z);
 

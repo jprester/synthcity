@@ -2,6 +2,7 @@ import { Mesh, PointLight, PerspectiveCamera, Object3D, Vector3 } from 'three';
 
 import { Perlin } from '../lib/perlin.js';
 import { updateCameraLook, angleDist, clamp } from './cameraLook.js';
+import { decay } from './frameRate.js';
 
 class PlayerCar {
   constructor(params) {
@@ -94,10 +95,11 @@ class PlayerCar {
     this.height_step = Math.PI;
   }
 
-  update() {
+  // k: frame time in 60 Hz frames
+  update(k) {
     /*--- UPDATE CAMERA ---*/
 
-    updateCameraLook(this, { pitchMargin: 0.1, maxFov: 70 });
+    updateCameraLook(this, { pitchMargin: 0.1, maxFov: 70 }, k);
 
     /*--- UPDATE CAR ---*/
 
@@ -124,7 +126,7 @@ class PlayerCar {
     }
 
     if (this.autoaltitude) {
-      this.height_step += 0.001;
+      this.height_step += 0.001 * k;
       this.body.position.y = (Math.cos(this.height_step) + 1) * 150 + 115;
     }
     if (!this.autopilot) {
@@ -133,15 +135,15 @@ class PlayerCar {
     }
 
     // steering
-    this.car_dir_v += angleDist(this.car_dir, this.car_dir_to) * 0.001;
-    this.car_pitch_v += angleDist(this.car_pitch, this.car_pitch_to) * 0.004;
+    this.car_dir_v += angleDist(this.car_dir, this.car_dir_to) * 0.001 * k;
+    this.car_pitch_v += angleDist(this.car_pitch, this.car_pitch_to) * 0.004 * k;
     // damping
-    this.car_dir_v *= 0.965;
-    this.car_pitch_v *= 0.965;
+    this.car_dir_v *= decay(0.965, k);
+    this.car_pitch_v *= decay(0.965, k);
     // update direction
     if (!this.crashed) {
-      this.car_dir += this.car_dir_v;
-      this.car_pitch += this.car_pitch_v;
+      this.car_dir += this.car_dir_v * k;
+      this.car_pitch += this.car_pitch_v * k;
     }
 
     this.car.rotation.set(0, this.car_dir, 0);
@@ -155,8 +157,8 @@ class PlayerCar {
     // shake car direction (affects direction)
     if (!this.autopilot) {
       let n = this.noise_shake.noise(this.body.position.x * 0.01, this.body.position.z * 0.01) - 0.5;
-      this.car_dir += n * 0.0015;
-      this.car_pitch += n * 0.003;
+      this.car_dir += n * 0.0015 * k;
+      this.car_pitch += n * 0.003 * k;
     }
 
     // shake car position
@@ -181,7 +183,7 @@ class PlayerCar {
 
     /*--- UPDATE CAR POSITION ---*/
 
-    let accel = this.controller.key_shift ? this.move_accel * 2 : this.move_accel;
+    let accel = (this.controller.key_shift ? this.move_accel * 2 : this.move_accel) * k;
 
     this.velocity.z -= Math.cos(-this.car_dir + Math.PI) * Math.cos(this.car_pitch) * accel;
     this.velocity.x += Math.sin(-this.car_dir + Math.PI) * Math.cos(this.car_pitch) * accel;
@@ -194,16 +196,16 @@ class PlayerCar {
     this.move_max_speed *= 1 + (-this.car_pitch / Math.PI) * 2;
     if (this.move_max_speed_current < this.move_max_speed) this.move_max_speed_current = this.move_max_speed;
     if (this.move_max_speed_current >= this.move_max_speed)
-      this.move_max_speed_current -= this.move_accel * 2;
+      this.move_max_speed_current -= this.move_accel * 2 * k;
 
     // enforce max speed
     this.velocity.clampLength(0, this.move_max_speed_current);
 
     // update body position
     if (!this.crashed) {
-      this.body.position.x += this.velocity.x;
-      this.body.position.z += this.velocity.z;
-      this.body.position.y += this.velocity.y;
+      this.body.position.x += this.velocity.x * k;
+      this.body.position.z += this.velocity.z * k;
+      this.body.position.y += this.velocity.y * k;
     }
 
     // min max altitude

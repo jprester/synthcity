@@ -1,6 +1,7 @@
 // "spawn_obj" must have methods: constructor(x, z, context)
 // "spawn_obj" optional methods: remove(), and update()
 // "context" is passed through to every spawned item unchanged.
+// update(k) is passed on to the items (k: frame time in 60 Hz frames).
 
 class Generator {
   constructor(options) {
@@ -46,7 +47,7 @@ class Generator {
     this.add_items();
   }
 
-  update() {
+  update(k) {
     // update position
     this.px = this.x;
     this.pz = this.z;
@@ -73,7 +74,7 @@ class Generator {
     }
 
     // update items
-    this.update_items();
+    this.update_items(k);
   }
 
   remove_items(x, y) {
@@ -168,13 +169,13 @@ class Generator {
     }
   }
 
-  update_items() {
+  update_items(k) {
     var i, j;
     for (i = 0; i < this.grid.length; i++) {
       for (j = 0; j < this.grid[i].length; j++) {
         if (this.grid[i][j] != null) {
           if (typeof this.grid[i][j].update === 'function') {
-            this.grid[i][j].update();
+            this.grid[i][j].update(k);
           }
         }
       }
