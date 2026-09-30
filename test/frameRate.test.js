@@ -121,3 +121,33 @@ describe('frame-rate independence', () => {
     });
   });
 });
+
+describe('crash and respawn', () => {
+  it.each([60, 144])('respawns 2 s after a crash at %i Hz and reports both to the UI', (hz) => {
+    let hit = true;
+    const events = [];
+    const car = new PlayerCar({
+      scene: { add() {} },
+      controller: idleController(),
+      assets,
+      collider: { intersectsSphere: () => hit },
+      windshieldShader: 'simple',
+      x: 500,
+      z: 500,
+      respawnX: -12,
+      onCrash: (crashed) => events.push(crashed),
+    });
+    const k = frameScale(1 / hz);
+    car.update(k);
+    hit = false;
+    expect(car.crashed).toBe(true);
+    expect(events).toEqual([true]);
+
+    simulate((k) => car.update(k), hz, 1.9);
+    expect(car.crashed).toBe(true);
+    simulate((k) => car.update(k), hz, 0.2);
+    expect(car.crashed).toBe(false);
+    expect(events).toEqual([true, false]);
+    expect(car.body.position.x).toBeCloseTo(-12, 0);
+  });
+});

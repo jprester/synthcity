@@ -147,13 +147,14 @@ Done:
 - The FXAA resolution uniform is updated on resize.
 - Input uses the `wheel` event (Firefox line deltas scaled to pixels) and `event.button`.
 - `Player` and `PlayerCar` share the camera-look code, `angleDist` and `clamp` (`src/classes/cameraLook.js`).
+- Crash handling runs in the frame loop: a 2 s `crashTimer` scaled by `k` and a `respawn()` method. The UI is told through an `onCrash` callback (`src/ui/hud.js`) instead of `PlayerCar` touching the DOM with `setTimeout`.
+- `?env=day` selects the original's unused day environment: an orange haze, with no window lights, city lights or spotlights. Night stays the default.
 
 Open:
 
 - **FXAA runs before bloom** (`Game.js`). Moving it after bloom changes the look slightly, so it's an art-direction decision, not a fix.
 - Collision is enabled after the first frame via a flag (`Game.animate`); it could start enabled once the first frame's matrices exist.
-- `PlayerCar`'s crash handling writes to the DOM directly and uses `setTimeout`. Move it to the frame loop and send UI updates through the terminal/UI module.
-- **The `day` environment** exists in `Game.getEnvironment` but can't be selected. Expose it via a query param (and optionally the settings form) if you want it; it has its own bloom and lighting values.
+- The day environment isn't in the settings form or the visual shot list yet.
 
 ### 7. Assets
 

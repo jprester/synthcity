@@ -13,6 +13,7 @@ class PlayerCar {
     this.controller = params.controller;
     this.collider = params.collider;
     this.respawnX = params.respawnX;
+    this.onCrash = params.onCrash || (() => {}); // called with true on a crash, false on respawn
     const assets = params.assets;
 
     // settings
@@ -44,6 +45,7 @@ class PlayerCar {
     // init
 
     this.crashed = false;
+    this.crashTimer = 0;
 
     this.car = null;
     this.car_windows = null;
@@ -222,33 +224,14 @@ class PlayerCar {
     if (!this.crashed) {
       if (this.collider.intersectsSphere(this.body.position, 1)) {
         this.crashed = true;
-        document.getElementById('crashMessage').style.display = 'flex';
+        this.crashTimer = 2; // seconds until respawn
+        this.onCrash(true);
 
         if (this.soundCrash) this.soundCrash.play();
-
-        setTimeout(() => {
-          this.crashed = false;
-          document.getElementById('crashMessage').style.display = 'none';
-
-          this.car_dir = 0;
-          this.car_dir_v = 0;
-          this.car_dir_to = 0;
-          this.car_pitch = 0;
-          this.car_pitch_v = 0;
-          this.car_pitch_to = 0;
-
-          this.velocity.set(0, 0, 0);
-
-          this.camera.rotation.x = 0;
-          this.camera.rotation.y = Math.PI;
-          this.camera_target.rotation.x = this.camera.rotation.x;
-          this.camera_target.rotation.y = this.camera.rotation.y;
-
-          this.body.position.x = this.respawnX;
-          this.body.position.z = 0;
-          if (this.body.position.y < 150) this.body.position.y = 150;
-        }, 2000);
       }
+    } else {
+      this.crashTimer -= k / 60;
+      if (this.crashTimer <= 0) this.respawn();
     }
 
     /*--- UPDATE AUDIO ---*/
@@ -259,6 +242,29 @@ class PlayerCar {
         clamp(Math.max(Math.abs(this.car_dir_v), Math.abs(this.car_pitch_v)) * 40, 0, 1),
       );
     }
+  }
+
+  respawn() {
+    this.crashed = false;
+    this.onCrash(false);
+
+    this.car_dir = 0;
+    this.car_dir_v = 0;
+    this.car_dir_to = 0;
+    this.car_pitch = 0;
+    this.car_pitch_v = 0;
+    this.car_pitch_to = 0;
+
+    this.velocity.set(0, 0, 0);
+
+    this.camera.rotation.x = 0;
+    this.camera.rotation.y = Math.PI;
+    this.camera_target.rotation.x = this.camera.rotation.x;
+    this.camera_target.rotation.y = this.camera.rotation.y;
+
+    this.body.position.x = this.respawnX;
+    this.body.position.z = 0;
+    if (this.body.position.y < 150) this.body.position.y = 150;
   }
 
   // window resize callback

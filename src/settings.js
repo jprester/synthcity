@@ -7,6 +7,7 @@
 //   scale=<float>           render scaling
 //   windshield=simple|advanced
 //   stats=1                 performance overlay
+//   env=night|day           environment (day is the original's unused alternative)
 
 export const curatedWorldSeeds = [9746, 6362, 4217, 5794];
 
@@ -23,5 +24,6 @@ export function applyQueryParams(search = window.location.search) {
   if (q.has('scale')) userSettings.renderScaling = q.get('scale');
   if (q.has('windshield')) userSettings.windshieldShader = q.get('windshield');
   if (q.has('stats')) userSettings.stats = q.get('stats') == '1';
+  if (q.has('env')) userSettings.environment = q.get('env');
   return userSettings;
 }

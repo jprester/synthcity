@@ -46,12 +46,13 @@ import { CITY_BLOCK_SIZE, ROAD_WIDTH, CELL_SIZE, createDistrictNoise } from './g
 import { userSettings } from './settings.js';
 import { setColor, newLine, write, showCredits } from './ui/terminal.js';
 import { StatsOverlay } from './ui/stats.js';
+import { setCrashMessage } from './ui/hud.js';
 
 export class Game {
   constructor() {
     this.initialized = false;
 
-    this.environment = this.getEnvironment('night');
+    this.environment = this.getEnvironment(userSettings.environment == 'day' ? 'day' : 'night');
 
     // query params
 
@@ -179,6 +180,7 @@ export class Game {
         collider: this.collider,
         windshieldShader: this.settings.windshieldShader,
         respawnX: -this.roadWidth / 2,
+        onCrash: setCrashMessage,
         renderer: this.renderer,
         controller: this.playerController,
         x: -this.roadWidth / 2,

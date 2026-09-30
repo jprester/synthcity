@@ -26,7 +26,7 @@ npm run visual:compare  # render reference frames and diff them against the base
 npm run perf            # fly drive mode on the real GPU and print the ?stats=1 readout
 ```
 
-Query params preset the launch settings, e.g. `/?seed=9746&mode=freeroam&music=0&sfx=0`. See `src/settings.js`. `stats=1` shows a performance overlay (fps, CPU update/render time, draw calls, triangles, objects).
+Query params preset the launch settings, e.g. `/?seed=9746&mode=freeroam&music=0&sfx=0`. See `src/settings.js`. `env=day` selects the day environment; `stats=1` shows a performance overlay (fps, CPU update/render time, draw calls, triangles, objects).
 
 ## Verifying a change
 
@@ -97,6 +97,4 @@ Roughly in priority order:
 1. **Performance.** Buildings and ground are instanced (`InstancePool`); adverts are next. At 1080p the frame is GPU-bound on bloom and fill rate; measure with `npm run perf`.
 2. **Smaller fixes.**
    - FXAA runs before bloom (moving it is a look decision).
-   - Crash handling in `PlayerCar` uses the DOM and `setTimeout` directly.
-   - The `day` environment can't be selected.
 3. **Assets.** OBJ → glTF (meshopt), WAV → Opus, textures → KTX2.
