@@ -14,10 +14,10 @@ import {
   PointLight,
   Audio,
   AudioLoader,
-  AudioListener
+  AudioListener,
 } from 'three';
 
-import { PointerLockControls }  from 'three/examples/jsm/controls/PointerLockControls.js';
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
@@ -46,9 +46,7 @@ import { userSettings } from './settings.js';
 import { setColor, newLine, write, showCredits } from './ui/terminal.js';
 
 export class Game {
-
   constructor() {
-
     this.initialized = false;
 
     this.environment = this.getEnvironment('night');
@@ -58,12 +56,12 @@ export class Game {
     const urlParams = new URLSearchParams(window.location.search);
 
     this.uiOnUnfocus = true;
-    if (urlParams.has('uiOnUnfocus')) this.uiOnUnfocus = urlParams.get('uiOnUnfocus')==1 ? true : false;
+    if (urlParams.has('uiOnUnfocus')) this.uiOnUnfocus = urlParams.get('uiOnUnfocus') == 1 ? true : false;
 
     // elements
 
-    this.blocker = document.getElementById( 'blocker' );
-    this.enterBtn = document.getElementById( 'enterBtn' );
+    this.blocker = document.getElementById('blocker');
+    this.enterBtn = document.getElementById('enterBtn');
     this.canvas = document.getElementById('canvas');
 
     // fade in / volume
@@ -74,7 +72,7 @@ export class Game {
 
     // launch button
 
-    this.enterBtn.addEventListener( 'click', () => this.onEnterClick(), false );
+    this.enterBtn.addEventListener('click', () => this.onEnterClick(), false);
 
     // world settings (do not change)
 
@@ -88,19 +86,15 @@ export class Game {
     Mesh.prototype.raycast = acceleratedRaycast;
 
     this.collider = new Collider();
-
   }
 
   load() {
-
     this.assets = new AssetManager();
     this.assets.setPath('assets/');
     this.assets.load();
-
   }
 
   onLoad() {
-
     // terminal
     setColor('c2');
     newLine();
@@ -110,11 +104,9 @@ export class Game {
 
     // show launch button
     document.getElementById('enterBtn').style.display = 'block';
-
   }
 
   init() {
-
     if (this.initialized) return;
     this.initialized = true;
 
@@ -129,17 +121,19 @@ export class Game {
       music: true,
       soundFx: true,
       windshieldShader: 'simple',
-      renderScaling: 1.0
+      renderScaling: 1.0,
     };
 
     if (Object.hasOwn(userSettings, 'mode')) this.settings.mode = userSettings.mode;
     if (Object.hasOwn(userSettings, 'worldSeed')) this.settings.worldSeed = userSettings.worldSeed;
     if (Object.hasOwn(userSettings, 'music')) this.settings.music = userSettings.music;
     if (Object.hasOwn(userSettings, 'soundFx')) this.settings.soundFx = userSettings.soundFx;
-    if (Object.hasOwn(userSettings, 'renderScaling')) this.settings.renderScaling = parseFloat(userSettings.renderScaling);
-    if (Object.hasOwn(userSettings, 'windshieldShader')) this.settings.windshieldShader = userSettings.windshieldShader;
+    if (Object.hasOwn(userSettings, 'renderScaling'))
+      this.settings.renderScaling = parseFloat(userSettings.renderScaling);
+    if (Object.hasOwn(userSettings, 'windshieldShader'))
+      this.settings.windshieldShader = userSettings.windshieldShader;
 
-    console.log('Game: World seed: '+this.settings.worldSeed);
+    console.log('Game: World seed: ' + this.settings.worldSeed);
 
     /*----- setup -----*/
 
@@ -151,13 +145,13 @@ export class Game {
 
     // renderer
 
-    this.renderer = new WebGLRenderer({canvas: this.canvas});
-    this.renderer.setPixelRatio( window.devicePixelRatio*this.settings.renderScaling );
-    this.renderer.setSize( window.innerWidth, window.innerHeight );
+    this.renderer = new WebGLRenderer({ canvas: this.canvas });
+    this.renderer.setPixelRatio(window.devicePixelRatio * this.settings.renderScaling);
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.toneMapping = ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.0;
     this.renderer.outputColorSpace = SRGBColorSpace;
-    document.body.appendChild( this.renderer.domElement );
+    document.body.appendChild(this.renderer.domElement);
 
     // scene
 
@@ -165,31 +159,30 @@ export class Game {
 
     // camera (for pointer lock controls, player creates own camera)
 
-    this.camera = new PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000 );
+    this.camera = new PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
 
     // controls
 
-    this.controls = new PointerLockControls( this.camera, document.body );
+    this.controls = new PointerLockControls(this.camera, document.body);
     this.playerController = new PlayerController();
 
     // create player
 
-    if (this.settings.mode=='drive') {
+    if (this.settings.mode == 'drive') {
       this.player = new PlayerCar({
         scene: this.scene,
         renderer: this.renderer,
         controller: this.playerController,
-        x: -this.roadWidth/2,
-        z: 0
+        x: -this.roadWidth / 2,
+        z: 0,
       });
-    }
-    else {
+    } else {
       this.player = new Player({
         scene: this.scene,
         renderer: this.renderer,
         controller: this.playerController,
         x: 0,
-        z: 0
+        z: 0,
       });
     }
 
@@ -199,31 +192,30 @@ export class Game {
 
     /*----- post processing -----*/
 
-    this.composer = new EffectComposer( this.renderer );
+    this.composer = new EffectComposer(this.renderer);
 
     // render pass
-    this.composer.addPass(  new RenderPass( this.scene, this.player.camera ) );
+    this.composer.addPass(new RenderPass(this.scene, this.player.camera));
 
     // anti aliasing
-    const fxaa = new ShaderPass( FXAAShader );
+    const fxaa = new ShaderPass(FXAAShader);
     const pixelRatio = this.renderer.getPixelRatio();
-    fxaa.material.uniforms[ 'resolution' ].value.x = 1 / ( window.innerWidth * pixelRatio );
-    fxaa.material.uniforms[ 'resolution' ].value.y = 1 / ( window.innerHeight * pixelRatio );
-    this.composer.addPass( fxaa );
+    fxaa.material.uniforms['resolution'].value.x = 1 / (window.innerWidth * pixelRatio);
+    fxaa.material.uniforms['resolution'].value.y = 1 / (window.innerHeight * pixelRatio);
+    this.composer.addPass(fxaa);
 
     // bloom
-    const bloomPass = new UnrealBloomPass( new Vector2( window.innerWidth, window.innerHeight ), 0, 0, 0 );
-    if (this.environment.name=='night') {
+    const bloomPass = new UnrealBloomPass(new Vector2(window.innerWidth, window.innerHeight), 0, 0, 0);
+    if (this.environment.name == 'night') {
       bloomPass.threshold = 0.0;
       bloomPass.strength = 7.0;
       bloomPass.radius = 1.0;
-    }
-    else if (this.environment.name=='day') {
+    } else if (this.environment.name == 'day') {
       bloomPass.threshold = 0;
       bloomPass.strength = 0.35;
       bloomPass.radius = 1;
     }
-    this.composer.addPass( bloomPass );
+    this.composer.addPass(bloomPass);
 
     /*----- environment -----*/
 
@@ -232,64 +224,71 @@ export class Game {
     this.scene.background = this.assets.getTexture(this.environment.sky);
 
     // this.scene.environment = this.assets.getTexture(this.environment.environmentMap);
-    
-    this.scene.fog = new Fog(this.environment.fog.color, this.environment.fog.start, this.environment.fog.end);
+
+    this.scene.fog = new Fog(
+      this.environment.fog.color,
+      this.environment.fog.start,
+      this.environment.fog.end,
+    );
 
     // lights
 
-    const light_sun = new DirectionalLight( this.environment.sun.color, this.environment.sun.intensity );
+    const light_sun = new DirectionalLight(this.environment.sun.color, this.environment.sun.intensity);
     light_sun.castShadow = false;
     light_sun.position.x = this.environment.sun.x;
     light_sun.position.y = this.environment.sun.y;
     light_sun.position.z = this.environment.sun.z;
-    this.scene.add( light_sun );
-    this.scene.add( light_sun.target );
+    this.scene.add(light_sun);
+    this.scene.add(light_sun.target);
 
-    const light_ambient = new AmbientLight( this.environment.ambient.color, this.environment.ambient.intensity );
-    this.scene.add( light_ambient );
+    const light_ambient = new AmbientLight(
+      this.environment.ambient.color,
+      this.environment.ambient.intensity,
+    );
+    this.scene.add(light_ambient);
 
     /*----- generators -----*/
 
     this.cityBlockNoise = new Perlin(this.settings.worldSeed);
     this.cityBlockNoise.noiseDetail(8, 0.5);
-    this.cityBlockNoiseFactor = 0.0017;//0.0017;
+    this.cityBlockNoiseFactor = 0.0017; //0.0017;
 
     this.generatorCityBlock = new Generator({
       camera: this.player.camera,
-      cell_size: this.cityBlockSize+this.roadWidth,
+      cell_size: this.cityBlockSize + this.roadWidth,
       cell_count: 40,
-      spawn_obj: GeneratorItem_CityBlock
+      spawn_obj: GeneratorItem_CityBlock,
     });
 
     this.cityLights = [];
     this.generatorCityLights = null;
     if (this.environment.cityLights) {
       // create lights
-      for (let i=0; i<10; i++) {
-        let light = new PointLight( 0x000000, 100, 2000 );
+      for (let i = 0; i < 10; i++) {
+        let light = new PointLight(0x000000, 100, 2000);
         light.decay = 1;
         let l = {
           light: light,
-          free: true
-        }
+          free: true,
+        };
         this.scene.add(l.light);
         this.cityLights.push(l);
       }
       // create generator
       this.generatorCityLights = new Generator({
         camera: this.player.camera,
-        cell_size: (this.cityBlockSize+this.roadWidth)*4,
+        cell_size: (this.cityBlockSize + this.roadWidth) * 4,
         cell_count: 8,
-        spawn_obj: GeneratorItem_CityLight
+        spawn_obj: GeneratorItem_CityLight,
       });
     }
 
     this.generatorTraffic = new Generator({
       camera: this.player.camera,
-      cell_size: this.cityBlockSize+this.roadWidth,
+      cell_size: this.cityBlockSize + this.roadWidth,
       cell_count: 12,
       debug: false,
-      spawn_obj: GeneratorItem_Traffic
+      spawn_obj: GeneratorItem_Traffic,
     });
 
     /*----- animate -----*/
@@ -305,81 +304,78 @@ export class Game {
 
     /*----- event listeners -----*/
 
-    window.addEventListener( 'resize', () => this.onWindowResize(), false );
+    window.addEventListener('resize', () => this.onWindowResize(), false);
 
-    this.controls.addEventListener( 'lock', () => this.onControlsLock(), false );
-    this.controls.addEventListener( 'unlock', () => this.onControlsUnlock(), false );
-
+    this.controls.addEventListener('lock', () => this.onControlsLock(), false);
+    this.controls.addEventListener('unlock', () => this.onControlsUnlock(), false);
   }
 
   initAudio() {
-
     const self = this;
 
     if (!this.audioInitialized) {
-
       this.audioListener = new AudioListener();
-      this.player.camera.add( this.audioListener );
+      this.player.camera.add(this.audioListener);
 
       // music
-      if ( this.settings.music == 1 ) {
+      if (this.settings.music == 1) {
         this.radio = new Radio({
           audioListener: this.audioListener,
-          controller: this.playerController
+          controller: this.playerController,
         });
       }
       // sound effects
-      if ( this.settings.soundFx == 1 ) {
+      if (this.settings.soundFx == 1) {
         // traffic ambient
-        const soundTrafficAmbient = new Audio( this.audioListener );
-        this.audioLoader.load( 'assets/sounds/traffic_ambient.wav', function( buffer ) {
-          soundTrafficAmbient.setBuffer( buffer );
+        const soundTrafficAmbient = new Audio(this.audioListener);
+        this.audioLoader.load('assets/sounds/traffic_ambient.wav', function (buffer) {
+          soundTrafficAmbient.setBuffer(buffer);
           soundTrafficAmbient.setLoop(true);
           soundTrafficAmbient.setVolume(1);
           soundTrafficAmbient.play();
         });
         // car sounds
-        if ( this.settings.mode == 'drive' ) {
-          const soundCarAmbient = new Audio( this.audioListener );
-          this.audioLoader.load( 'assets/sounds/car_ambient.wav', function( buffer ) {
-            soundCarAmbient.setBuffer( buffer );
+        if (this.settings.mode == 'drive') {
+          const soundCarAmbient = new Audio(this.audioListener);
+          this.audioLoader.load('assets/sounds/car_ambient.wav', function (buffer) {
+            soundCarAmbient.setBuffer(buffer);
             soundCarAmbient.setLoop(true);
             soundCarAmbient.setVolume(1);
             soundCarAmbient.play();
           });
-          const soundCarWind = new Audio( this.audioListener );
-          this.audioLoader.load( 'assets/sounds/car_wind.wav', function( buffer ) {
-            soundCarWind.setBuffer( buffer );
+          const soundCarWind = new Audio(this.audioListener);
+          this.audioLoader.load('assets/sounds/car_wind.wav', function (buffer) {
+            soundCarWind.setBuffer(buffer);
             soundCarWind.setLoop(true);
             soundCarWind.setVolume(0);
             soundCarWind.play();
             self.player.soundWind = soundCarWind;
           });
-          const soundCarStress = new Audio( this.audioListener );
-          this.audioLoader.load( 'assets/sounds/car_stress.wav', function( buffer ) {
-            soundCarStress.setBuffer( buffer );
+          const soundCarStress = new Audio(this.audioListener);
+          this.audioLoader.load('assets/sounds/car_stress.wav', function (buffer) {
+            soundCarStress.setBuffer(buffer);
             soundCarStress.setLoop(true);
             soundCarStress.setVolume(0);
             soundCarStress.play();
             self.player.soundStress = soundCarStress;
           });
-          const soundCarChimeUp = new Audio( this.audioListener );
-          this.audioLoader.load( 'assets/sounds/chime_up.wav', function( buffer ) {
-            soundCarChimeUp.setBuffer( buffer );
+          const soundCarChimeUp = new Audio(this.audioListener);
+          this.audioLoader.load('assets/sounds/chime_up.wav', function (buffer) {
+            soundCarChimeUp.setBuffer(buffer);
             soundCarChimeUp.setLoop(false);
             soundCarChimeUp.setVolume(1);
             self.player.soundChimeUp = soundCarChimeUp;
           });
-          const soundCarChimeDown = new Audio( this.audioListener );
-          this.audioLoader.load( 'assets/sounds/chime_down.wav', function( buffer ) {
-            soundCarChimeDown.setBuffer( buffer );
+          const soundCarChimeDown = new Audio(this.audioListener);
+          this.audioLoader.load('assets/sounds/chime_down.wav', function (buffer) {
+            soundCarChimeDown.setBuffer(buffer);
             soundCarChimeDown.setLoop(false);
             soundCarChimeDown.setVolume(1);
             self.player.soundChimeDown = soundCarChimeDown;
           });
-          const soundCarCrash = new Audio( this.audioListener );
-          this.audioLoader.load( 'assets/sounds/crash.wav', function( buffer ) {
-            soundCarCrash.setBuffer( buffer );
+          const soundCarCrash = new Audio(this.audioListener);
+          this.audioLoader.load('assets/sounds/crash.wav', function (buffer) {
+            soundCarCrash.setBuffer(buffer);
             soundCarCrash.setLoop(false);
             soundCarCrash.setVolume(1);
             self.player.soundCrash = soundCarCrash;
@@ -387,17 +383,17 @@ export class Game {
         }
         // city sounds
         else {
-          const soundCityAmbient = new Audio( this.audioListener );
-          this.audioLoader.load( 'assets/sounds/city_ambient.wav', function( buffer ) {
-            soundCityAmbient.setBuffer( buffer );
+          const soundCityAmbient = new Audio(this.audioListener);
+          this.audioLoader.load('assets/sounds/city_ambient.wav', function (buffer) {
+            soundCityAmbient.setBuffer(buffer);
             soundCityAmbient.setLoop(true);
             soundCityAmbient.setVolume(0);
             soundCityAmbient.play();
             self.player.soundCityAmbient = soundCityAmbient;
           });
-          const soundWind = new Audio( this.audioListener );
-          this.audioLoader.load( 'assets/sounds/car_wind.wav', function( buffer ) {
-            soundWind.setBuffer( buffer );
+          const soundWind = new Audio(this.audioListener);
+          this.audioLoader.load('assets/sounds/car_wind.wav', function (buffer) {
+            soundWind.setBuffer(buffer);
             soundWind.setLoop(true);
             soundWind.setVolume(0);
             soundWind.play();
@@ -407,13 +403,10 @@ export class Game {
       }
 
       this.audioInitialized = true;
-
     }
-
   }
 
   animate(now) {
-
     // animate
 
     requestAnimationFrame(() => this.animate());
@@ -422,21 +415,21 @@ export class Game {
 
     // fade in
 
-    if (this.canvasOpacity<1) {
+    if (this.canvasOpacity < 1) {
       // canvas
-      this.canvasOpacity += this.clockDelta*0.005;
+      this.canvasOpacity += this.clockDelta * 0.005;
       this.canvas.style.opacity = this.canvasOpacity;
       // audio
-      this.masterVolume += this.clockDelta*0.005;
+      this.masterVolume += this.clockDelta * 0.005;
     }
 
     // master volume
 
     if (this.playerController.key_plus) {
-      this.userMasterVolume = Math.min( this.userMasterVolume+0.02, 1 );
+      this.userMasterVolume = Math.min(this.userMasterVolume + 0.02, 1);
     }
     if (this.playerController.key_minus) {
-      this.userMasterVolume = Math.max( this.userMasterVolume-0.02, 0 );
+      this.userMasterVolume = Math.max(this.userMasterVolume - 0.02, 0);
     }
 
     if (this.audioListener) {
@@ -450,7 +443,7 @@ export class Game {
     this.playerController.update();
 
     this.generatorCityBlock.update();
-    if (this.generatorCityLights!==null) this.generatorCityLights.update();
+    if (this.generatorCityLights !== null) this.generatorCityLights.update();
     this.generatorTraffic.update();
 
     // render
@@ -460,11 +453,9 @@ export class Game {
 
     // start collision checking
     if (!this.collider.enabled) this.collider.enabled = true;
-
   }
 
   getEnvironment(id) {
-
     const environments = {
       night: {
         name: 'night',
@@ -476,7 +467,7 @@ export class Game {
         fog: {
           color: 0x12122a,
           start: 0,
-          end: 2700
+          end: 2700,
         },
         sun: {
           color: 0x8b79ff,
@@ -488,7 +479,7 @@ export class Game {
         ambient: {
           color: 0x1b2c80,
           intensity: 0.5,
-        }
+        },
       },
       day: {
         name: 'day',
@@ -500,7 +491,7 @@ export class Game {
         fog: {
           color: 0xaf6a3b,
           start: -500,
-          end: 2700
+          end: 2700,
         },
         sun: {
           color: 0xffa25e,
@@ -512,26 +503,23 @@ export class Game {
         ambient: {
           color: 0x825233,
           intensity: 0.65,
-        }
-      }
+        },
+      },
     };
 
     return environments[id];
-
   }
 
   // event listener callbacks
 
   onWindowResize() {
-
     const width = window.innerWidth;
     const height = window.innerHeight;
-  
-    this.renderer.setSize( width, height );
-    this.composer.setSize( width, height );
+
+    this.renderer.setSize(width, height);
+    this.composer.setSize(width, height);
 
     this.player.onWindowResize();
-  
   }
 
   onEnterClick() {
@@ -550,5 +538,4 @@ export class Game {
       this.blocker.classList.remove('hide');
     }
   }
-
 }

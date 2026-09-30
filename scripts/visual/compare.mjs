@@ -9,7 +9,9 @@ import pixelmatch from 'pixelmatch';
 export function compareDirs({ baseline, current, diff, threshold = 0.1 }) {
   mkdirSync(diff, { recursive: true });
   const results = [];
-  for (const name of readdirSync(baseline).filter((f) => f.endsWith('.png')).sort()) {
+  for (const name of readdirSync(baseline)
+    .filter((f) => f.endsWith('.png'))
+    .sort()) {
     const curPath = join(current, name);
     if (!existsSync(curPath)) {
       results.push({ name, mismatch: 1, missing: true });

@@ -84,7 +84,13 @@ export function determinismShim(seed) {
   let skipDraw = false;
   for (const proto of [window.WebGLRenderingContext, window.WebGL2RenderingContext]) {
     if (!proto) continue;
-    for (const fn of ['drawArrays', 'drawElements', 'drawArraysInstanced', 'drawElementsInstanced', 'clear']) {
+    for (const fn of [
+      'drawArrays',
+      'drawElements',
+      'drawArraysInstanced',
+      'drawElementsInstanced',
+      'clear',
+    ]) {
       const orig = proto.prototype[fn];
       if (!orig) continue;
       proto.prototype[fn] = function (...a) {
@@ -125,7 +131,9 @@ export async function captureShots({ url, out, only = null, jquery = null }) {
     await page.addInitScript(determinismShim, shot.seed);
     // legacy builds pull jQuery from a CDN; serve a local copy when given
     if (jquery) {
-      await page.route('https://code.jquery.com/**', (r) => r.fulfill({ path: jquery, contentType: 'text/javascript' }));
+      await page.route('https://code.jquery.com/**', (r) =>
+        r.fulfill({ path: jquery, contentType: 'text/javascript' }),
+      );
     }
     await page.route('https://fonts.*/**', (r) => r.abort());
 
