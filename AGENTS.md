@@ -65,8 +65,9 @@ src/generation/         pure world generation: plain data from (seed, position),
   cityBlock.ts          generateBlock: buildings, ads, toppers, smoke, spotlights, ground, storefronts
   traffic.ts            generateTrafficCell: starting state of the cars in a cell
   cityLight.ts          cityLightHue: district edge lights
+src/assets/manifest.ts  every texture and model to load (key, file, options); add assets here
 src/classes/
-  AssetManager.ts       loads textures, OBJ models, creates materials
+  AssetManager.ts       loads the manifest, creates materials (in a fixed order: material ids affect render sorting)
   Generator.ts          streaming grid: spawns/removes items in a disc of cells around the camera
   GeneratorItem_CityBlock.ts   builds a block's meshes and decorations from generateBlock
   GeneratorItem_CityLight.ts   assigns pooled PointLights to district edges

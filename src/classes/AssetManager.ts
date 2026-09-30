@@ -21,6 +21,8 @@ import type { Seed } from '../hash.ts';
 import type { BufferGeometry, Group, Material, Mesh, Texture } from 'three';
 import type { Environment } from '../Game.ts';
 import { CELL_SIZE } from '../generation/world.ts';
+import { MODELS, TEXTURES } from '../assets/manifest.ts';
+import type { ModelEntry, TextureEntry } from '../assets/manifest.ts';
 
 // the geometry of an OBJ file's first mesh
 const firstGeometry = (obj: Group): BufferGeometry => (obj.children[0] as Mesh).geometry;
@@ -74,302 +76,42 @@ class AssetManager {
     this.textureLoader = new TextureLoader(this.loadingManager);
     this.objLoader = new OBJLoader(this.loadingManager);
 
-    /*----- textures -----*/
+    for (const entry of TEXTURES) this.loadTexture(entry);
+    for (const entry of MODELS) this.loadModel(entry);
 
-    this.textures['sky_night'] = this.textureLoader.load(this.path + 'textures/sky_night.jpg');
-    this.textures['sky_night'].colorSpace = SRGBColorSpace;
-    this.textures['sky_night'].mapping = EquirectangularReflectionMapping;
-    this.textures['sky_night'].magFilter = LinearFilter;
-
-    this.textures['sky_day'] = this.textureLoader.load(this.path + 'textures/sky_day.jpg');
-    this.textures['sky_day'].colorSpace = SRGBColorSpace;
-    this.textures['sky_day'].mapping = EquirectangularReflectionMapping;
-    this.textures['sky_day'].magFilter = LinearFilter;
-
-    this.textures['env_night'] = this.textureLoader.load(this.path + 'textures/environment_night.jpg');
-    this.textures['env_night'].mapping = EquirectangularReflectionMapping;
-    this.textures['env_night'].magFilter = LinearFilter;
-
-    this.textures['env_night_windshield'] = this.textureLoader.load(
-      this.path + 'textures/environment_night_windshield.jpg',
-    );
-    this.textures['env_night_windshield'].mapping = EquirectangularReflectionMapping;
-    this.textures['env_night_windshield'].magFilter = LinearFilter;
-
-    this.textures['ground'] = this.textureLoader.load(this.path + 'textures/ground.jpg');
-    this.textures['ground_em'] = this.textureLoader.load(this.path + 'textures/ground_em.jpg');
-
-    this.textures['spinner_interior'] = this.textureLoader.load(
-      this.path + 'textures/0QuazDeckardCarLowpoly_interior_BaseColor.webp',
-    );
-    this.textures['spinner_interior_norm'] = this.textureLoader.load(
-      this.path + 'textures/0QuazDeckardCarLowpoly_interior_Normal.webp',
-    );
-    this.textures['spinner_interior_em'] = this.textureLoader.load(
-      this.path + 'textures/0QuazDeckardCarLowpoly_interior_Emissive.webp',
-    );
-    this.textures['spinner_interior_ao'] = this.textureLoader.load(
-      this.path + 'textures/0QuazDeckardCarLowpoly_interior_AmbientOcclusion.webp',
-    );
-    this.textures['spinner_exterior'] = this.textureLoader.load(
-      this.path + 'textures/0QuazDeckardCarLowpoly_car_BaseColor.webp',
-    );
-
-    this.textures['spinner_windows_norm'] = this.textureLoader.load(
-      this.path + 'textures/rain_normal_1024.jpg',
-    );
-    this.textures['spinner_windows_norm'].wrapS = RepeatWrapping;
-    this.textures['spinner_windows_norm'].wrapT = RepeatWrapping;
-    this.textures['spinner_windows_norm'].repeat.set(2.5, 2.5);
-    this.textures['spinner_windows_rough'] = this.textureLoader.load(
-      this.path + 'textures/smudges2_1024.jpg',
-    );
-    this.textures['spinner_windows_rough'].wrapS = RepeatWrapping;
-    this.textures['spinner_windows_rough'].wrapT = RepeatWrapping;
-    this.textures['spinner_windows_rough'].repeat.set(2.5, 2.5);
-    this.textures['spinner_windows_trans'] = this.textureLoader.load(
-      this.path + 'textures/smudges_inverted_1024.jpg',
-    );
-    this.textures['spinner_windows_trans'].wrapS = RepeatWrapping;
-    this.textures['spinner_windows_trans'].wrapT = RepeatWrapping;
-    this.textures['spinner_windows_trans'].repeat.set(2.5, 2.5);
-
-    this.textures['cars'] = this.textureLoader.load(this.path + 'textures/cars.jpg');
-    this.textures['cars_em'] = this.textureLoader.load(this.path + 'textures/cars_em.jpg');
-
-    this.textures['storefronts'] = this.textureLoader.load(this.path + 'textures/storefronts_01.jpg');
-    this.textures['storefronts'].wrapS = RepeatWrapping;
-    this.textures['storefronts'].wrapT = RepeatWrapping;
-    this.textures['storefronts'].anisotropy = this.textureAnisotropy;
-    this.textures['storefronts_em'] = this.textureLoader.load(this.path + 'textures/storefronts_01_em.jpg');
-    this.textures['storefronts_em'].wrapS = RepeatWrapping;
-    this.textures['storefronts_em'].wrapT = RepeatWrapping;
-    this.textures['storefronts_em'].anisotropy = this.textureAnisotropy;
-
-    this.textures['mega_building_01'] = this.textureLoader.load(this.path + 'textures/mega_building_01.jpg');
-    this.textures['mega_building_01'].wrapS = RepeatWrapping;
-    this.textures['mega_building_01'].wrapT = RepeatWrapping;
-    this.textures['mega_building_01'].anisotropy = this.textureAnisotropy;
-    this.textures['mega_building_01_em'] = this.textureLoader.load(
-      this.path + 'textures/mega_building_01_em.jpg',
-    );
-    this.textures['mega_building_01_em'].wrapS = RepeatWrapping;
-    this.textures['mega_building_01_em'].wrapT = RepeatWrapping;
-    this.textures['mega_building_01_em'].anisotropy = this.textureAnisotropy;
-
-    // buildings
-    for (let i = 0; i < 10; i++) {
-      const id = this.padNumber(i + 1);
-      this.textures['building_' + id] = this.textureLoader.load(
-        this.path + 'textures/building_' + id + '.jpg',
-      );
-      this.textures['building_' + id].wrapS = RepeatWrapping;
-      this.textures['building_' + id].wrapT = RepeatWrapping;
-      this.textures['building_' + id].anisotropy = this.textureAnisotropy;
-      this.textures['building_' + id + '_em'] = this.textureLoader.load(
-        this.path + 'textures/building_' + id + '_em.jpg',
-      );
-      this.textures['building_' + id + '_em'].wrapS = RepeatWrapping;
-      this.textures['building_' + id + '_em'].wrapT = RepeatWrapping;
-      this.textures['building_' + id + '_em'].anisotropy = this.textureAnisotropy;
-      this.textures['building_' + id + '_rough'] = this.textureLoader.load(
-        this.path + 'textures/building_' + id + '_spec.jpg',
-      );
-      this.textures['building_' + id + '_rough'].wrapS = RepeatWrapping;
-      this.textures['building_' + id + '_rough'].wrapT = RepeatWrapping;
-      this.textures['building_' + id + '_rough'].anisotropy = this.textureAnisotropy;
-    }
-
-    // small ads
-    for (let i = 0; i < 5; i++) {
-      const id = this.padNumber(i + 1);
-      this.textures['ads_' + id] = this.textureLoader.load(this.path + 'textures/ads_' + id + '.jpg');
-    }
-
-    // large ads
-    for (let i = 0; i < 5; i++) {
-      const id = this.padNumber(i + 1);
-      this.textures['ads_large_' + id] = this.textureLoader.load(
-        this.path + 'textures/ads_large_' + id + '.jpg',
-      );
-    }
-
-    // smoke
-    for (let i = 0; i < 3; i++) {
-      const id = this.padNumber(i + 1);
-      this.textures['smoke_' + id] = this.textureLoader.load(this.path + 'textures/smoke_' + id + '.jpg');
-    }
-
-    // spotlights
-    for (let i = 0; i < 4; i++) {
-      const id = this.padNumber(i + 1);
-      this.textures['spotlight_' + id] = this.textureLoader.load(
-        this.path + 'textures/spotlight_' + id + '.jpg',
-      );
-    }
-
-    /*----- models -----*/
-
-    // car
-    this.objLoader.load(this.path + 'models/spinner.obj', (obj) => {
-      this.models['spinner'] = firstGeometry(obj);
-      this.models['spinner'].rotateY(-Math.PI / 2);
-    });
-    this.objLoader.load(this.path + 'models/spinner_windows.obj', (obj) => {
-      this.models['spinner_windows'] = firstGeometry(obj);
-      this.models['spinner_windows'].rotateY(-Math.PI / 2);
-    });
-
-    // ground plane
+    // generated geometry
     this.models['ground'] = new PlaneGeometry(CELL_SIZE, CELL_SIZE);
-
-    // storefronts
-    this.objLoader.load(this.path + 'models/storefronts.obj', (obj) => {
-      this.models['storefronts'] = firstGeometry(obj);
-      this.models['storefronts'].computeBoundsTree();
-    });
-
-    // buildings
-    this.objLoader.load(this.path + 'models/s_01_01.obj', (obj) => {
-      this.models['s_01_01'] = firstGeometry(obj);
-      this.models['s_01_01'].computeBoundsTree();
-    });
-    this.objLoader.load(this.path + 'models/s_01_02.obj', (obj) => {
-      this.models['s_01_02'] = firstGeometry(obj);
-      this.models['s_01_02'].computeBoundsTree();
-    });
-    this.objLoader.load(this.path + 'models/s_01_03.obj', (obj) => {
-      this.models['s_01_03'] = firstGeometry(obj);
-      this.models['s_01_03'].computeBoundsTree();
-    });
-    this.objLoader.load(this.path + 'models/s_02_01.obj', (obj) => {
-      this.models['s_02_01'] = firstGeometry(obj);
-      this.models['s_02_01'].computeBoundsTree();
-    });
-    this.objLoader.load(this.path + 'models/s_02_02.obj', (obj) => {
-      this.models['s_02_02'] = firstGeometry(obj);
-      this.models['s_02_02'].computeBoundsTree();
-    });
-    this.objLoader.load(this.path + 'models/s_02_03.obj', (obj) => {
-      this.models['s_02_03'] = firstGeometry(obj);
-      this.models['s_02_03'].computeBoundsTree();
-    });
-    this.objLoader.load(this.path + 'models/s_03_01.obj', (obj) => {
-      this.models['s_03_01'] = firstGeometry(obj);
-      this.models['s_03_01'].computeBoundsTree();
-    });
-    this.objLoader.load(this.path + 'models/s_03_02.obj', (obj) => {
-      this.models['s_03_02'] = firstGeometry(obj);
-      this.models['s_03_02'].computeBoundsTree();
-    });
-    this.objLoader.load(this.path + 'models/s_03_03.obj', (obj) => {
-      this.models['s_03_03'] = firstGeometry(obj);
-      this.models['s_03_03'].computeBoundsTree();
-    });
-    this.objLoader.load(this.path + 'models/s_04_01.obj', (obj) => {
-      this.models['s_04_01'] = firstGeometry(obj);
-      this.models['s_04_01'].computeBoundsTree();
-    });
-    this.objLoader.load(this.path + 'models/s_04_02.obj', (obj) => {
-      this.models['s_04_02'] = firstGeometry(obj);
-      this.models['s_04_02'].computeBoundsTree();
-    });
-    this.objLoader.load(this.path + 'models/s_04_03.obj', (obj) => {
-      this.models['s_04_03'] = firstGeometry(obj);
-      this.models['s_04_03'].computeBoundsTree();
-    });
-    this.objLoader.load(this.path + 'models/s_05_01.obj', (obj) => {
-      this.models['s_05_01'] = firstGeometry(obj);
-      this.models['s_05_01'].computeBoundsTree();
-    });
-    this.objLoader.load(this.path + 'models/s_05_02.obj', (obj) => {
-      this.models['s_05_02'] = firstGeometry(obj);
-      this.models['s_05_02'].computeBoundsTree();
-    });
-    this.objLoader.load(this.path + 'models/s_05_03.obj', (obj) => {
-      this.models['s_05_03'] = firstGeometry(obj);
-      this.models['s_05_03'].computeBoundsTree();
-    });
-
-    // mega buildings
-    for (let i = 0; i < 6; i++) {
-      const id = this.padNumber(i + 1);
-      this.objLoader.load(this.path + 'models/mega_' + id + '.obj', (obj) => {
-        this.models['mega_' + id] = firstGeometry(obj);
-        this.models['mega_' + id].computeBoundsTree();
-      });
-    }
-
-    // ads
-    this.objLoader.load(this.path + 'models/ads_s_01_01.obj', (obj) => {
-      this.models['ads_s_01_01'] = firstGeometry(obj);
-    });
-    this.objLoader.load(this.path + 'models/ads_s_01_02.obj', (obj) => {
-      this.models['ads_s_01_02'] = firstGeometry(obj);
-    });
-    this.objLoader.load(this.path + 'models/ads_s_02_01.obj', (obj) => {
-      this.models['ads_s_02_01'] = firstGeometry(obj);
-    });
-    this.objLoader.load(this.path + 'models/ads_s_02_02.obj', (obj) => {
-      this.models['ads_s_02_02'] = firstGeometry(obj);
-    });
-    this.objLoader.load(this.path + 'models/ads_s_03_01.obj', (obj) => {
-      this.models['ads_s_03_01'] = firstGeometry(obj);
-    });
-    this.objLoader.load(this.path + 'models/ads_s_03_02.obj', (obj) => {
-      this.models['ads_s_03_02'] = firstGeometry(obj);
-    });
-    this.objLoader.load(this.path + 'models/ads_s_04_01.obj', (obj) => {
-      this.models['ads_s_04_01'] = firstGeometry(obj);
-    });
-    this.objLoader.load(this.path + 'models/ads_s_04_02.obj', (obj) => {
-      this.models['ads_s_04_02'] = firstGeometry(obj);
-    });
-    this.objLoader.load(this.path + 'models/ads_s_04_03.obj', (obj) => {
-      this.models['ads_s_04_03'] = firstGeometry(obj);
-    });
-    this.objLoader.load(this.path + 'models/ads_s_04_04.obj', (obj) => {
-      this.models['ads_s_04_04'] = firstGeometry(obj);
-    });
-    this.objLoader.load(this.path + 'models/ads_s_05_01.obj', (obj) => {
-      this.models['ads_s_05_01'] = firstGeometry(obj);
-    });
-    this.objLoader.load(this.path + 'models/ads_s_05_02.obj', (obj) => {
-      this.models['ads_s_05_02'] = firstGeometry(obj);
-    });
-    this.objLoader.load(this.path + 'models/ads_s_05_03.obj', (obj) => {
-      this.models['ads_s_05_03'] = firstGeometry(obj);
-    });
-    this.objLoader.load(this.path + 'models/ads_s_05_04.obj', (obj) => {
-      this.models['ads_s_05_04'] = firstGeometry(obj);
-    });
-
-    // toppers
-    for (let i = 0; i < 12; i++) {
-      const id = this.padNumber(i + 1);
-      this.objLoader.load(this.path + 'models/topper_' + id + '.obj', (obj) => {
-        this.models['topper_' + id] = firstGeometry(obj);
-      });
-    }
-
-    // cars
-    for (let i = 0; i < 8; i++) {
-      const id = this.padNumber(i + 1);
-      this.objLoader.load(this.path + 'models/car_' + id + '.obj', (obj) => {
-        this.models['car_' + id] = firstGeometry(obj);
-      });
-    }
-
-    // smoke
     this.models['smoke'] = new PlaneGeometry(64, 64);
 
-    // spotlight
-    this.objLoader.load(this.path + 'models/spotlight.obj', (obj) => {
-      this.models['spotlight'] = firstGeometry(obj);
+    this.createMaterials();
+  }
+
+  loadTexture({ key, file, srgb, equirect, tiled, repeat }: TextureEntry): void {
+    const texture = (this.textures[key] = this.textureLoader.load(this.path + file));
+    if (srgb) texture.colorSpace = SRGBColorSpace;
+    if (equirect) {
+      texture.mapping = EquirectangularReflectionMapping;
+      texture.magFilter = LinearFilter;
+    }
+    if (tiled || repeat) {
+      texture.wrapS = RepeatWrapping;
+      texture.wrapT = RepeatWrapping;
+    }
+    if (tiled) texture.anisotropy = this.textureAnisotropy;
+    if (repeat) texture.repeat.set(repeat, repeat);
+  }
+
+  loadModel({ key, file, collides, rotateY }: ModelEntry): void {
+    this.objLoader.load(this.path + file, (obj) => {
+      const geometry = (this.models[key] = firstGeometry(obj));
+      if (rotateY) geometry.rotateY(rotateY);
+      if (collides) geometry.computeBoundsTree();
     });
+  }
 
-    /*----- materials -----*/
-
+  // Materials are created in a fixed order: material ids break ties in
+  // three.js render sorting, so reordering them can change the image.
+  createMaterials(): void {
     this.materials['ground'] = new MeshPhongMaterial({
       map: this.getTexture('ground'),
       emissive: 0x0090ff,

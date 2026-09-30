@@ -21,3 +21,21 @@ describe('OBJ models', () => {
     }
   });
 });
+
+describe('asset manifest', () => {
+  it('points at files that exist, with unique keys', async () => {
+    const { existsSync } = await import('node:fs');
+    const { TEXTURES, MODELS } = await import('../src/assets/manifest.ts');
+    for (const { file } of [...TEXTURES, ...MODELS]) {
+      expect(existsSync('public/assets/' + file), file).toBe(true);
+    }
+    expect(new Set(TEXTURES.map((t) => t.key)).size).toBe(TEXTURES.length);
+    expect(new Set(MODELS.map((m) => m.key)).size).toBe(MODELS.length);
+  });
+
+  it('loads every OBJ model in the folder', async () => {
+    const { MODELS } = await import('../src/assets/manifest.ts');
+    const listed = new Set(MODELS.map((m) => m.file.replace('models/', '')));
+    expect(models.filter((f) => !listed.has(f))).toEqual([]);
+  });
+});

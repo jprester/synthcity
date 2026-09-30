@@ -172,7 +172,8 @@ The repo carries about 105 MB of assets. The two biggest cuts:
 - **Audio:** WAV to Opus or MP3. `city_ambient.wav` is 14 MB, `traffic_ambient.wav` 10.5 MB, `car_ambient.wav` 3.3 MB, `car_wind.wav` 3.1 MB. This is lossy, so listen before committing.
 - **Models:** OBJ to glTF with meshopt or Draco compression, then switch `AssetManager` to `GLTFLoader`. Geometry must stay identical: vertex order, and the `rotateY(-π/2)` applied to the spinner models. Run `visual:compare`.
 - **Textures:** optionally convert to KTX2/Basis. Compression artefacts are a visual change, so review them.
-- **`AssetManager.ts`** is hundreds of lines of repeated load calls. Replace it with a manifest; `epic/2026-rework` has one in `src/assets/manifests/` to use as a reference.
+- **Asset manifest — done.** `src/assets/manifest.ts` lists every texture and model in load order, with its options. `AssetManager` loads it and only hand-writes the materials, which must keep their creation order (material ids break ties in render sorting). `test/models.test.ts` checks that manifest files exist, keys are unique, every OBJ in the folder is listed, and models have consistent attributes.
+- **Car textures** are lossless WebP (14 → 10 MB, identical pixels).
 
 ### 8. three.js upgrade — done (r159 → r186)
 
