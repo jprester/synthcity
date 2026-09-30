@@ -17,6 +17,8 @@ import {
 
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 
+import { writeAsset } from '../ui/terminal.js';
+
 class AssetManager {
 
   constructor() {
@@ -47,7 +49,7 @@ class AssetManager {
 
     this.loadingManager = new LoadingManager();
     this.loadingManager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
-      window.writeAsset(url, itemsLoaded, itemsTotal);
+      writeAsset(url, itemsLoaded, itemsTotal);
     };
     this.loadingManager.onLoad = function () {
       console.log( 'AssetManager: Assets loaded' );

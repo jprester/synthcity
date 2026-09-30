@@ -1,21 +1,43 @@
 {
   "name": "synthcity",
   "version": "1.0.6",
-  "description": "Infinite procedural city in three.js",
+  "description": "Infinite procedural cyberpunk city in three.js",
   "author": "Jeff Beene",
   "license": "ISC",
-  "main": "index.js",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --mode production"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run lint && npm run format:check && npm test && npm run build",
+    "visual:capture": "node scripts/visual/run.mjs capture",
+    "visual:compare": "node scripts/visual/run.mjs compare",
+    "visual:baseline": "node scripts/visual/run.mjs baseline"
   },
   "dependencies": {
+    "@fontsource/share-tech-mono": "^5.3.0",
     "three": "0.159.0",
     "three-mesh-bvh": "0.6.8"
   },
+  "type": "module",
+  "engines": {
+    "node": ">=20.19"
+  },
   "devDependencies": {
-    "webpack": "^5.78.0",
-    "webpack-cli": "^5.0.1"
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.11.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.12.0",
+    "pixelmatch": "^7.2.0",
+    "playwright": "1.56.1",
+    "pngjs": "^7.0.0",
+    "prettier": "^3.9.9",
+    "vite": "^8.3.1",
+    "vitest": "^5.0.3"
   }
 }

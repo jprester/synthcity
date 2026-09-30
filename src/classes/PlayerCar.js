@@ -6,6 +6,8 @@ import {
   Vector3
 } from 'three';
 
+import { Perlin } from '../lib/perlin.js';
+
 class PlayerCar {
 
 	constructor(params) {
