@@ -81,6 +81,8 @@ Generator items and decorations reach shared state through `window.game`. It is 
 
 ## Roadmap
 
+Detailed task notes, open decisions and known traps: [docs/HANDOFF.md](docs/HANDOFF.md).
+
 Roughly in priority order:
 
 1. **Seeded randomness.** Replace `Math.random()` in `GeneratorItem_CityBlock` (ads, toppers, smoke, spotlights), `GeneratorItem_Traffic` and `AssetManager` (building emissive hues) with a hash of (seed, cell, purpose). Use a proper integer hash for per-lot choices instead of sampling Perlin at integer lattice points: in small buildings `subtypeNoise` and `rotateNoise` read the same coordinates, so variant, rotation and height are locked together.
