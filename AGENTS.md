@@ -42,7 +42,7 @@ Test layout:
 
 - `test/generation.test.js` covers the pure generators (`src/generation/`): a data snapshot of a 13×13 block area, determinism, and distribution checks. No stubs.
 - `test/cityLayout.test.js` runs the three.js builders over that data and snapshots every mesh for two seeds. It is the main safety net for builder and rendering refactors.
-- `test/generator.test.js` covers the streaming grid.
+- `test/generator.test.js` covers the streaming grid, including teleports and disc coverage after moving.
 - Tests marked `it.fails` document known bugs. When you fix one, change it to `it`.
 
 ## Architecture
@@ -93,10 +93,9 @@ Roughly in priority order:
 
 1. **Performance.** InstancedMesh/BatchedMesh per model+material (thousands of draw calls today); spread block construction over several frames instead of building a full row in one frame.
 2. **Frame-rate independence.** Movement, traffic and animations are per-frame, so everything runs about 2.4× faster at 144 Hz. The fade-in multiplies by accumulated rather than per-frame delta.
-3. **Generator bugs** captured in `test/generator.test.js`.
-4. **Smaller fixes.**
+3. **Smaller fixes.**
    - `Collider.remove` splices index -1 when the uuid is missing.
    - `Collider.intersectsSphere` allocates per mesh per frame.
    - The FXAA resolution uniform is not updated on resize, and FXAA runs before bloom.
    - The `mousewheel` event doesn't fire in Firefox.
-5. **Assets.** OBJ → glTF (meshopt), WAV → Opus, textures → KTX2.
+4. **Assets.** OBJ → glTF (meshopt), WAV → Opus, textures → KTX2.

@@ -58,7 +58,7 @@ Knowing this helps you tell whether a diff is real.
 2. Run `node scripts/visual/capture.mjs --url http://localhost:8080/ --out /tmp/frames`.
 3. Add `--jquery path/to/jquery.min.js` only if the jQuery CDN isn't reachable.
 
-**Expected failures.** Tests marked `it.fails` document known bugs. When the bug is fixed the test starts failing; change it to `it`.
+**Expected failures.** Tests marked `it.fails` document known bugs (none left right now). When the bug is fixed the test starts failing; change it to `it`.
 
 **Intentional changes.** Update in the same commit (`npx vitest run -u`, `npm run visual:baseline`), look at the new frames, and describe the visual change in the commit message.
 
@@ -100,16 +100,12 @@ Suggested order. Each task lists what "done" looks like and the traps I know abo
 - Advert material switches use their own `'advert-switch'` stream at the advert's position, so the data only carries the initial state.
 - Next step if wanted: move `generateBlock` into a worker. It already depends only on the seed, the Perlin instance and the position.
 
-### 3. Generator bugs (tests already exist)
+### 3. Generator bugs — done
 
-- **Teleport crash.** `Generator.remove_items` (`src/classes/Generator.js:72`) indexes past the grid when the camera moves more than `cell_count` cells along z.
-  - Crash respawn (`PlayerCar.js:257`) teleports to the origin, so flying about 2 km in z and then crashing throws in the traffic generator's update, which has 12 cells.
-  - Fix: when |dx| or |dz| ≥ `cell_count`, remove everything and rebuild.
-- **Corner leftovers.** Items shifted into grid corners outside the disc are never removed, so after moving the generator holds about 15% more items than intended.
-  - Fix: in `add_items` (or after `shift_grid`), remove items outside the disc.
-  - For the city blocks (radius 20 cells ≈ 3 km) the corners lie beyond the far plane (2800) and fog.
-  - For traffic (radius 6 cells ≈ 900 units) and city lights, the removed items were visible or affected lighting. Expect small intentional diffs and check them.
-- **Done when:** both `it.fails` in `test/generator.test.js` become `it`.
+- **Teleport crash:** a jump of `cell_count` cells or more (crash respawn) now removes everything and rebuilds.
+- **Corner leftovers:** `add_items` removes items that end up outside the disc after a shift.
+- The effect on the frames was tiny: one distant traffic car and a slightly different city light assignment in drive-9746-f0360 (0.001%).
+- Both former `it.fails` tests are now `it`, plus teleports along x and along both axes.
 
 ### 4. Performance
 

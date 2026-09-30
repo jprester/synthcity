@@ -81,10 +81,8 @@ describe('Generator', () => {
     expect(log.created - log.removed).toBe(live.size);
   });
 
-  // Known bug: items shifted into the grid corners (outside the disc) are never
-  // removed, so after moving the generator holds more items than intended.
-  // Flip to `it` once Generator.shift_grid drops out-of-disc cells.
-  it.fails('after any walk, holds exactly what a fresh generator at the end position would', () => {
+  // Items shifted into the grid corners (outside the disc) used to linger.
+  it('after any walk, holds exactly what a fresh generator at the end position would', () => {
     walk(({ live }, fresh) => expect(keys(live)).toEqual(keys(fresh.live)));
   });
 
@@ -99,16 +97,24 @@ describe('Generator', () => {
     expect(log.removed).toBe(0);
   });
 
-  // Known bug: a jump of more than cell_count cells along z indexes past the
-  // grid in remove_items and throws. Crash respawn teleports the car to the
-  // origin, so flying ~2 km in z and crashing breaks the traffic generator
-  // (12 cells of 152 units). Flip to `it` once fixed.
-  it.fails('survives a teleport further than the grid (crash respawn)', () => {
+  // Crash respawn teleports the car to the origin. A jump of more than
+  // cell_count cells used to index past the grid in remove_items and throw.
+  it.each([
+    ['z', 0, -2000],
+    ['x', -2000, 0],
+    ['both', 5000, -5000],
+  ])('survives a teleport further than the grid along %s (crash respawn)', (_, x, z) => {
     const camera = { position: { x: -12, z: 0 } };
-    const { gen } = make(camera, 12, 152);
-    camera.position.z = -2000;
+    const { gen, live, log } = make(camera, 12, 152);
+    camera.position.x = x;
+    camera.position.z = z;
     gen.update();
+    expect(keys(live)).toEqual(keys(make({ position: { x, z } }, 12, 152).live));
+    camera.position.x = -12;
     camera.position.z = 0;
     gen.update();
+    expect(keys(live)).toEqual(keys(make({ position: { x: -12, z: 0 } }, 12, 152).live));
+    expect(gridKeys(gen)).toEqual(keys(live));
+    expect(log.doubleRemoved).toBe(0);
   });
 });

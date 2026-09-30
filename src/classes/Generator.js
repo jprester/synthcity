@@ -55,13 +55,20 @@ class Generator {
 
     // update grid
     if (this.px != this.x || this.pz != this.z) {
-      // remove items
-      this.remove_items(this.px - this.x, this.pz - this.z);
+      let dx = this.px - this.x;
+      let dz = this.pz - this.z;
+      if (Math.abs(dx) >= this.cell_count || Math.abs(dz) >= this.cell_count) {
+        // jumped further than the grid (e.g. crash respawn): nothing survives
+        this.remove_all();
+      } else {
+        // remove items
+        this.remove_items(dx, dz);
 
-      // shift array
-      this.shift_grid(this.px - this.x, this.pz - this.z);
+        // shift array
+        this.shift_grid(dx, dz);
+      }
 
-      // add items
+      // add items (and drop those shifted outside the disc)
       this.add_items();
     }
 
@@ -74,50 +81,47 @@ class Generator {
     if (x < 0) {
       for (i = 0; i < this.grid.length; i++) {
         for (j = 0; j < -x; j++) {
-          if (this.grid[i][j] != null) {
-            if (typeof this.grid[i][j].remove === 'function') {
-              this.grid[i][j].remove();
-            }
-            this.grid[i][j] = null;
-          }
+          this.remove_item(i, j);
         }
       }
     }
     if (x > 0) {
       for (i = 0; i < this.grid.length; i++) {
         for (j = this.grid[i].length - x; j < this.grid[i].length; j++) {
-          if (this.grid[i][j] != null) {
-            if (typeof this.grid[i][j].remove === 'function') {
-              this.grid[i][j].remove();
-            }
-            this.grid[i][j] = null;
-          }
+          this.remove_item(i, j);
         }
       }
     }
     if (y < 0) {
       for (i = 0; i < -y; i++) {
         for (j = 0; j < this.grid[i].length; j++) {
-          if (this.grid[i][j] != null) {
-            if (typeof this.grid[i][j].remove === 'function') {
-              this.grid[i][j].remove();
-            }
-            this.grid[i][j] = null;
-          }
+          this.remove_item(i, j);
         }
       }
     }
     if (y > 0) {
       for (i = this.grid.length - y; i < this.grid.length; i++) {
         for (j = 0; j < this.grid[i].length; j++) {
-          if (this.grid[i][j] != null) {
-            if (typeof this.grid[i][j].remove === 'function') {
-              this.grid[i][j].remove();
-            }
-            this.grid[i][j] = null;
-          }
+          this.remove_item(i, j);
         }
       }
+    }
+  }
+
+  remove_all() {
+    for (let i = 0; i < this.grid.length; i++) {
+      for (let j = 0; j < this.grid[i].length; j++) {
+        this.remove_item(i, j);
+      }
+    }
+  }
+
+  remove_item(i, j) {
+    if (this.grid[i][j] != null) {
+      if (typeof this.grid[i][j].remove === 'function') {
+        this.grid[i][j].remove();
+      }
+      this.grid[i][j] = null;
     }
   }
 
@@ -144,7 +148,10 @@ class Generator {
     var rad = Math.ceil(this.cell_count / 2);
     for (i = 0; i < this.grid.length; i++) {
       for (j = 0; j < this.grid[i].length; j++) {
-        if (this.distance({ x: rad, y: rad }, { x: i, y: j }) <= rad) {
+        if (this.distance({ x: rad, y: rad }, { x: i, y: j }) > rad) {
+          // shifted into a corner outside the disc
+          this.remove_item(i, j);
+        } else {
           if (this.grid[i][j] == null) {
             xx =
               Math.floor(this.camera.position.x / this.cell_size) * this.cell_size +
