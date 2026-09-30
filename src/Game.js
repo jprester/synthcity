@@ -132,12 +132,12 @@ export class Game {
       renderScaling: 1.0
     };
 
-    if (userSettings.hasOwnProperty('mode')) this.settings.mode = userSettings.mode;
-    if (userSettings.hasOwnProperty('worldSeed')) this.settings.worldSeed = userSettings.worldSeed;
-    if (userSettings.hasOwnProperty('music')) this.settings.music = userSettings.music;
-    if (userSettings.hasOwnProperty('soundFx')) this.settings.soundFx = userSettings.soundFx;
-    if (userSettings.hasOwnProperty('renderScaling')) this.settings.renderScaling = parseFloat(userSettings.renderScaling);
-    if (userSettings.hasOwnProperty('windshieldShader')) this.settings.windshieldShader = userSettings.windshieldShader;
+    if (Object.hasOwn(userSettings, 'mode')) this.settings.mode = userSettings.mode;
+    if (Object.hasOwn(userSettings, 'worldSeed')) this.settings.worldSeed = userSettings.worldSeed;
+    if (Object.hasOwn(userSettings, 'music')) this.settings.music = userSettings.music;
+    if (Object.hasOwn(userSettings, 'soundFx')) this.settings.soundFx = userSettings.soundFx;
+    if (Object.hasOwn(userSettings, 'renderScaling')) this.settings.renderScaling = parseFloat(userSettings.renderScaling);
+    if (Object.hasOwn(userSettings, 'windshieldShader')) this.settings.windshieldShader = userSettings.windshieldShader;
 
     console.log('Game: World seed: '+this.settings.worldSeed);
 

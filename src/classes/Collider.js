@@ -3,7 +3,6 @@ import {
   Object3D,
   Matrix4,
   Vector2,
-  Vector3,
   Sphere,
   MeshBasicMaterial
 } from 'three';

@@ -41,7 +41,7 @@ class GeneratorItem_CityBlock {
 
           let scale = 0.75+(rotateNoise*0.25);
 
-          let type = null;
+          let type;
           if (subtypeNoise<0.16) type = 'mega_01';
           else if (subtypeNoise<0.32) type = 'mega_02';
           else if (subtypeNoise<0.48) type = 'mega_03';
@@ -75,12 +75,11 @@ class GeneratorItem_CityBlock {
           let scale = 0.75+(rotateNoise*0.45);
 
           let topper = false;
-          let smoke = false;
 
           typeNoise = this.utils.fixNoise(this.noise.noise((this.x+xOff)*this.noiseFactor, (this.z+zOff)*this.noiseFactor)); // update to subdivided location
           subtypeNoise = this.utils.fixNoise(this.noise.noise((this.x+xOff)*5, (this.z+zOff)*5));
-          let type = null;
-          let adsType = null;
+          let type;
+          let adsType;
           if (typeNoise<0.267) {
             if (subtypeNoise<0.33) type = 's_01_01';
             else if (subtypeNoise<0.66) type = 's_01_02';
@@ -143,7 +142,7 @@ class GeneratorItem_CityBlock {
       var zOff = this.cityBlockSize/2;
 
       let subtypeNoise = this.utils.fixNoise(this.noise.noise((this.x)*4, (this.z)*4));
-      let type = null;
+      let type;
 
       if (isTower) {
         if (subtypeNoise<0.33) type = 's_05_01';
@@ -210,11 +209,11 @@ class GeneratorItem_CityBlock {
     }
 
     // add meshes to scene
-    for (var i=0; i<this.meshes.length; i++) {
+    for (let i=0; i<this.meshes.length; i++) {
       window.game.scene.add(this.meshes[i]);
     }
     // add collision meshes to scene and collider
-    for (var i=0; i<this.meshesCollid.length; i++) {
+    for (let i=0; i<this.meshesCollid.length; i++) {
       window.game.scene.add(this.meshesCollid[i]);
       window.game.collider.add(this.meshesCollid[i]);
     }
@@ -222,20 +221,20 @@ class GeneratorItem_CityBlock {
   }
   remove() {
     // remove meshes
-    for (var i=0; i<this.meshes.length; i++) {
+    for (let i=0; i<this.meshes.length; i++) {
       window.game.scene.remove(this.meshes[i]);
     }
-    for (var i=0; i<this.updateables.length; i++) {
+    for (let i=0; i<this.updateables.length; i++) {
       this.updateables[i].remove();
     }
     // remove collision meshes
-    for (var i=0; i<this.meshesCollid.length; i++) {
+    for (let i=0; i<this.meshesCollid.length; i++) {
       window.game.collider.remove(this.meshesCollid[i].uuid);
       window.game.scene.remove(this.meshesCollid[i]);
     }
   }
   update() {
-    for (var i=0; i<this.updateables.length; i++) {
+    for (let i=0; i<this.updateables.length; i++) {
       this.updateables[i].update();
     }
   }

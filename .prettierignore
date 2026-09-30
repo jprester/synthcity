@@ -1,0 +1,5 @@
+dist/
+public/
+screenshots/
+src/lib/
+package-lock.json

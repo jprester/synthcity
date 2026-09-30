@@ -111,8 +111,6 @@ class Radio {
 
   play() {
 
-    const self = this;
-
     const currentTrack = this.tracks[this.trackIndex];
 
     // load

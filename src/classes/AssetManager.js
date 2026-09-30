@@ -6,7 +6,6 @@ import {
   SRGBColorSpace,
   RepeatWrapping,
   PlaneGeometry,
-  MeshBasicMaterial,
   MeshPhongMaterial,
   MeshStandardMaterial,
   MeshPhysicalMaterial,
