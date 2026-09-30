@@ -280,7 +280,14 @@ export function startTerminal(onReady) {
   const start = () => {
     bindForm();
     syncForm();
-    setTimeout(() => bootSequence(onReady), 800);
+    if (userSettings.skip) {
+      // ?skip=1: no boot animation, load right away (the game launches itself)
+      setColor('c3');
+      write('>> boot skipped, loading resources...', 0, 0, null);
+      onReady();
+    } else {
+      setTimeout(() => bootSequence(onReady), 800);
+    }
   };
   if (document.readyState === 'complete') start();
   else window.addEventListener('load', start);

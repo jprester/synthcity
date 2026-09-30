@@ -167,6 +167,8 @@ The repo carries about 105 MB of assets. The two biggest cuts:
 
 ### 8. three.js upgrade (after 4)
 
+- **Tone mapping is currently inert.** three r159 applies `renderer.toneMapping` and exposure only when rendering straight to the screen. Everything here renders into the composer's targets, and the last pass is UnrealBloom's copy shader, so the `ACESFilmicToneMapping` set in `Game.init` does nothing. The same applies to the sRGB output conversion. Newer three.js adds an `OutputPass` that applies both, and switching to it will visibly change the look. Treat it as part of the re-tune: either match today's (untonemapped) look or pick a new one deliberately.
+
 - Pinned at 0.159.0. Upgrade in one dedicated commit, re-tune bloom and exposure against the baseline, then accept the new baseline deliberately.
 - The postprocessing and examples import paths (`three/examples/jsm/...`) became `three/addons/...`.
 

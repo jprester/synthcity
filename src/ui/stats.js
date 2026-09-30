@@ -22,6 +22,11 @@ export class StatsOverlay {
     this.renderTime = 0;
   }
 
+  dispose() {
+    this.el.remove();
+    this.renderer.info.autoReset = true;
+  }
+
   // call before updating the world
   beginUpdate() {
     this.t0 = performance.now();

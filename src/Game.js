@@ -58,8 +58,15 @@ export class Game {
 
     const urlParams = new URLSearchParams(window.location.search);
 
-    this.uiOnUnfocus = true;
+    // dev panel: on under `npm run dev`, ?gui=1 / ?gui=0 to force
+    this.devPanel = urlParams.has('gui') ? urlParams.get('gui') == '1' : import.meta.env.DEV;
+
+    // show the terminal again when the pointer is released (not while tweaking in the dev panel)
+    this.uiOnUnfocus = !this.devPanel;
     if (urlParams.has('uiOnUnfocus')) this.uiOnUnfocus = urlParams.get('uiOnUnfocus') == 1 ? true : false;
+
+    // world speed multiplier (dev panel; 0 pauses)
+    this.timeScale = 1;
 
     // elements
 
@@ -76,6 +83,7 @@ export class Game {
     // launch button
 
     this.enterBtn.addEventListener('click', () => this.onEnterClick(), false);
+    this.canvas.addEventListener('click', () => this.onCanvasClick(), false);
 
     // world settings (do not change)
 
@@ -98,6 +106,13 @@ export class Game {
   }
 
   onLoad() {
+    // ?skip=1: launch straight away; the first click on the canvas grabs the
+    // pointer and starts audio (browsers require a user gesture for both)
+    if (userSettings.skip) {
+      this.launch();
+      return;
+    }
+
     // terminal
     setColor('c2');
     newLine();
@@ -213,7 +228,12 @@ export class Game {
     this.composer.addPass(this.fxaa);
 
     // bloom
-    const bloomPass = new UnrealBloomPass(new Vector2(window.innerWidth, window.innerHeight), 0, 0, 0);
+    const bloomPass = (this.bloomPass = new UnrealBloomPass(
+      new Vector2(window.innerWidth, window.innerHeight),
+      0,
+      0,
+      0,
+    ));
     if (this.environment.name == 'night') {
       bloomPass.threshold = 0.0;
       bloomPass.strength = 7.0;
@@ -241,7 +261,10 @@ export class Game {
 
     // lights
 
-    const light_sun = new DirectionalLight(this.environment.sun.color, this.environment.sun.intensity);
+    const light_sun = (this.sunLight = new DirectionalLight(
+      this.environment.sun.color,
+      this.environment.sun.intensity,
+    ));
     light_sun.castShadow = false;
     light_sun.position.x = this.environment.sun.x;
     light_sun.position.y = this.environment.sun.y;
@@ -249,10 +272,10 @@ export class Game {
     this.scene.add(light_sun);
     this.scene.add(light_sun.target);
 
-    const light_ambient = new AmbientLight(
+    const light_ambient = (this.ambientLight = new AmbientLight(
       this.environment.ambient.color,
       this.environment.ambient.intensity,
-    );
+    ));
     this.scene.add(light_ambient);
 
     this.assets.setBuildingHues(this.settings.worldSeed);
@@ -331,12 +354,23 @@ export class Game {
 
     this.animate();
 
+    // dev panel (a lazy chunk, only fetched when enabled)
+    if (this.devPanel) import('./ui/devPanel.js').then(({ createDevPanel }) => createDevPanel(this));
+
     /*----- event listeners -----*/
 
     window.addEventListener('resize', () => this.onWindowResize(), false);
 
     this.controls.addEventListener('lock', () => this.onControlsLock(), false);
     this.controls.addEventListener('unlock', () => this.onControlsUnlock(), false);
+  }
+
+  setStats(on) {
+    if (on && !this.stats) this.stats = new StatsOverlay(this.renderer, this.scene);
+    if (!on && this.stats) {
+      this.stats.dispose();
+      this.stats = null;
+    }
   }
 
   initAudio() {
@@ -445,6 +479,7 @@ export class Game {
     if (now !== undefined) this.lastFrameTime = now;
     const k = frameScale(delta);
     delta = k / 60;
+    const worldK = k * this.timeScale;
 
     // fade in (~2.6 s, easing in like the original did at 60 Hz)
 
@@ -471,13 +506,13 @@ export class Game {
     // update
 
     if (this.stats) this.stats.beginUpdate();
-    this.player.update(k);
+    this.player.update(worldK);
     if (this.radio) this.radio.update();
     this.playerController.update();
 
-    this.generatorCityBlock.update(k);
-    if (this.generatorCityLights !== null) this.generatorCityLights.update(k);
-    this.generatorTraffic.update(k);
+    this.generatorCityBlock.update(worldK);
+    if (this.generatorCityLights !== null) this.generatorCityLights.update(worldK);
+    this.generatorTraffic.update(worldK);
 
     // render
 
@@ -567,11 +602,25 @@ export class Game {
   }
 
   onEnterClick() {
-    this.init();
+    this.launch();
     this.initAudio();
+    this.controls.lock();
+  }
+
+  // start the world and hide the terminal (no user gesture needed)
+  launch() {
+    this.init();
     this.blocker.style.backgroundColor = '#25004bb9';
     this.blocker.classList.add('hide');
-    this.controls.lock();
+    if (userSettings.skip) {
+      this.canvasOpacity = 1;
+      this.canvas.style.opacity = 1;
+    }
+  }
+
+  // click on the canvas while not locked (skip mode, dev panel, no terminal)
+  onCanvasClick() {
+    if (this.initialized && !this.controls.isLocked) this.onEnterClick();
   }
   onControlsLock() {
     this.playerController.enabled = true;

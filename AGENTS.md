@@ -15,7 +15,7 @@ These hold for every change:
 
 ```bash
 npm install
-npm run dev             # dev server at http://localhost:5173
+npm run dev             # dev server at http://localhost:5173 (with the lil-gui tweak panel)
 npm run build           # production build into dist/
 npm run preview         # serve the build
 npm test                # Vitest unit + snapshot tests (fast, headless)
@@ -26,7 +26,9 @@ npm run visual:compare  # render reference frames and diff them against the base
 npm run perf            # fly drive mode on the real GPU and print the ?stats=1 readout
 ```
 
-Query params preset the launch settings, e.g. `/?seed=9746&mode=freeroam&music=0&sfx=0`. See `src/settings.js`. `env=day` selects the day environment; `stats=1` shows a performance overlay (fps, CPU update/render time, draw calls, triangles, objects).
+Query params preset the launch settings, e.g. `/?seed=9746&mode=freeroam&music=0&sfx=0`. See `src/settings.js`. For manual testing, `skip=1` skips the boot terminal and launches as soon as assets load; click the canvas to grab the mouse and start audio.
+
+The dev tweak panel (`src/ui/devPanel.js`, lil-gui) is on under `npm run dev` (`gui=0` hides it, `gui=1` enables it in a build). It covers bloom, FXAA, sky and fog, lights, glow, time scale and the stats overlay, and can relaunch with another seed, mode or environment. "copy values" puts the tweaked values on the clipboard. Panel changes are temporary; move values you want to keep into the code deliberately (the look is intentional). `env=day` selects the day environment; `stats=1` shows a performance overlay (fps, CPU update/render time, draw calls, triangles, objects).
 
 ## Verifying a change
 

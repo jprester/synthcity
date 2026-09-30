@@ -7,6 +7,8 @@
 //   scale=<float>           render scaling
 //   windshield=simple|advanced
 //   stats=1                 performance overlay
+//   skip=1                  skip the boot terminal and launch as soon as assets load
+//   gui=0|1                 dev tweak panel (default: on under `npm run dev`)
 //   env=night|day           environment (day is the original's unused alternative)
 
 export const curatedWorldSeeds = [9746, 6362, 4217, 5794];
@@ -24,6 +26,7 @@ export function applyQueryParams(search = window.location.search) {
   if (q.has('scale')) userSettings.renderScaling = q.get('scale');
   if (q.has('windshield')) userSettings.windshieldShader = q.get('windshield');
   if (q.has('stats')) userSettings.stats = q.get('stats') == '1';
+  if (q.has('skip')) userSettings.skip = q.get('skip') == '1';
   if (q.has('env')) userSettings.environment = q.get('env');
   return userSettings;
 }
