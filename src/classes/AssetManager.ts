@@ -100,19 +100,19 @@ class AssetManager {
     this.textures['ground_em'] = this.textureLoader.load(this.path + 'textures/ground_em.jpg');
 
     this.textures['spinner_interior'] = this.textureLoader.load(
-      this.path + 'textures/0QuazDeckardCarLowpoly_interior_BaseColor.png',
+      this.path + 'textures/0QuazDeckardCarLowpoly_interior_BaseColor.webp',
     );
     this.textures['spinner_interior_norm'] = this.textureLoader.load(
-      this.path + 'textures/0QuazDeckardCarLowpoly_interior_Normal.png',
+      this.path + 'textures/0QuazDeckardCarLowpoly_interior_Normal.webp',
     );
     this.textures['spinner_interior_em'] = this.textureLoader.load(
-      this.path + 'textures/0QuazDeckardCarLowpoly_interior_Emissive.png',
+      this.path + 'textures/0QuazDeckardCarLowpoly_interior_Emissive.webp',
     );
     this.textures['spinner_interior_ao'] = this.textureLoader.load(
-      this.path + 'textures/0QuazDeckardCarLowpoly_interior_AmbientOcclusion.png',
+      this.path + 'textures/0QuazDeckardCarLowpoly_interior_AmbientOcclusion.webp',
     );
     this.textures['spinner_exterior'] = this.textureLoader.load(
-      this.path + 'textures/0QuazDeckardCarLowpoly_car_BaseColor.png',
+      this.path + 'textures/0QuazDeckardCarLowpoly_car_BaseColor.webp',
     );
 
     this.textures['spinner_windows_norm'] = this.textureLoader.load(
