@@ -1,6 +1,7 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { installFakeGame, seedMathRandom, describeMesh } from './helpers.js';
 import { GeneratorItem_CityBlock } from '../src/classes/GeneratorItem_CityBlock.js';
+import { GeneratorItem_Traffic } from '../src/classes/GeneratorItem_Traffic.js';
 
 const CELL = 128 + 24;
 // 13x13 blocks around the origin; includes the cells where mega buildings
@@ -44,7 +45,43 @@ describe('city block layout', () => {
     expect(buildingsOnly(layout(9746))).not.toEqual(buildingsOnly(layout(6362)));
   });
 
-  // Ads, toppers, smoke, spotlights and traffic currently use Math.random, so a
-  // revisited block can look different. Making them seed-driven is planned.
-  it.todo('decorations are the same for a world seed regardless of Math.random');
+  it('places the same decorations for a world seed regardless of Math.random', () => {
+    const a = layout(9746, 1);
+    const b = layout(9746, 2);
+    for (const key of Object.keys(a)) expect(b[key].decorations).toEqual(a[key].decorations);
+  });
+
+  it('places decorations whose parameters differ between world seeds', () => {
+    const decorations = (blocks) => Object.values(blocks).flatMap((b) => b.decorations);
+    expect(decorations(layout(9746))).not.toEqual(decorations(layout(6362)));
+  });
+});
+
+describe('traffic', () => {
+  const cars = (worldSeed, randomSeed) => {
+    installFakeGame({ worldSeed });
+    seedMathRandom(randomSeed);
+    const out = [];
+    for (let i = -3; i <= 3; i++) {
+      for (let j = -3; j <= 3; j++) {
+        const cell = new GeneratorItem_Traffic(i * CELL, j * CELL);
+        for (const car of cell.cars) {
+          out.push(
+            `${describeMesh(car.mesh)} x=${car.x} z=${car.z} alt=${car.alt + car.alt_offset} v=${car.v.x},${car.v.y} rev=${car.reverseDistance.toFixed(3)}`,
+          );
+        }
+      }
+    }
+    return out;
+  };
+
+  it('spawns the same cars for a world seed regardless of Math.random', () => {
+    const a = cars(9746, 1);
+    expect(a.length).toBeGreaterThan(0);
+    expect(cars(9746, 2)).toEqual(a);
+  });
+
+  it('spawns different cars for different world seeds', () => {
+    expect(cars(9746, 1)).not.toEqual(cars(6362, 1));
+  });
 });

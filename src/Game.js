@@ -247,6 +247,8 @@ export class Game {
     );
     this.scene.add(light_ambient);
 
+    this.assets.setBuildingHues(this.settings.worldSeed);
+
     /*----- generators -----*/
 
     this.cityBlockNoise = new Perlin(this.settings.worldSeed);

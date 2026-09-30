@@ -7,7 +7,7 @@ SynthCity is an infinite, procedurally generated cyberpunk city in three.js. You
 These hold for every change:
 
 - **The city is procedural and infinite.** Everything in the world is generated from the world seed and the cell coordinates. Never hand-place content or add fixed maps.
-- **Same seed, same city.** For a given seed, generating a cell must give the same result every time, whatever else happened before. New world content must never use `Math.random()`; derive it from the seed and position. Existing `Math.random()` use in decorations and traffic is a known gap (see Roadmap).
+- **Same seed, same city.** For a given seed, generating a cell must give the same result every time, whatever else happened before. World content must never use `Math.random()`; derive it from the seed and position with `src/hash.js` (`hashFloat(seed, x, z, 'purpose')`, or `hashRandom(...)` for a stream). Use a distinct purpose salt for each new use.
 - **The look is intentional.** The night palette, strong bloom (threshold 0, strength 7), fog, emissive windows, ads and spotlights are the original art direction. Don't retune them as a side effect of other work.
 - **Refactors are pixel-neutral.** Anything that isn't meant to change the look must pass `npm run visual:compare` unchanged.
 
@@ -51,6 +51,7 @@ index.html              terminal UI markup + canvas
 src/main.js             entry: styles, query params, creates window.game, starts terminal
 src/Game.js             renderer, post-processing (FXAA + UnrealBloom), environment, generators, frame loop, audio
 src/settings.js         launch settings (terminal form + query params)
+src/hash.js             deterministic hash of (seed, position, purpose) for world content
 src/ui/terminal.js      boot terminal, settings form, loading readout
 src/lib/                vendored Alea PRNG and Perlin noise (not linted or formatted)
 src/classes/
@@ -85,7 +86,7 @@ Detailed task notes, open decisions and known traps: [docs/HANDOFF.md](docs/HAND
 
 Roughly in priority order:
 
-1. **Seeded randomness.** Replace `Math.random()` in `GeneratorItem_CityBlock` (ads, toppers, smoke, spotlights), `GeneratorItem_Traffic` and `AssetManager` (building emissive hues) with a hash of (seed, cell, purpose). Use a proper integer hash for per-lot choices instead of sampling Perlin at integer lattice points: in small buildings `subtypeNoise` and `rotateNoise` read the same coordinates, so variant, rotation and height are locked together.
+1. **Per-lot hashing.** Decorations, traffic and building hues are seeded (done). Still open: use the hash for per-lot choices instead of sampling Perlin at integer lattice points. In small buildings `subtypeNoise` and `rotateNoise` read the same coordinates, so variant, rotation and height are locked together.
 2. **Split generation from rendering.** A pure `generateBlock(seed, cellX, cellZ)` that returns plain data, plus a separate step that builds three.js objects. Lets layout tests run without stubs and allows moving generation into a worker.
 3. **Performance.** InstancedMesh/BatchedMesh per model+material (thousands of draw calls today); spread block construction over several frames instead of building a full row in one frame.
 4. **Frame-rate independence.** Movement, traffic and animations are per-frame, so everything runs about 2.4× faster at 144 Hz. The fade-in multiplies by accumulated rather than per-frame delta.

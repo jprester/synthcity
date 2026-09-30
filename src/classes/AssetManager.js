@@ -9,7 +9,6 @@ import {
   MeshPhongMaterial,
   MeshStandardMaterial,
   MeshPhysicalMaterial,
-  Color,
   AdditiveBlending,
   DoubleSide,
 } from 'three';
@@ -17,6 +16,7 @@ import {
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 
 import { writeAsset } from '../ui/terminal.js';
+import { hashFloat } from '../hash.js';
 
 class AssetManager {
   constructor() {
@@ -429,7 +429,7 @@ class AssetManager {
         specular: 0xffffff,
         specularMap: this.getTexture('building_' + id + '_rough'),
         envMap: this.getTexture('env_night'),
-        emissive: new Color('hsl(' + Math.random() * 360 + ', 100%, 95%)'),
+        emissive: 0xffffff, // hue set per world seed in setBuildingHues
         emissiveMap: this.getTexture('building_' + id + '_em'),
         emissiveIntensity: this.buildingWindowsEmissiveIntensity,
         bumpMap: this.getTexture('building_' + id),
@@ -503,6 +503,17 @@ class AssetManager {
         depthWrite: false,
         transparent: false,
       });
+    }
+  }
+
+  // Pale emissive window tint per building material, derived from the world
+  // seed. Materials are created before the seed is final (it can still change
+  // in the settings form), so this runs at launch.
+  setBuildingHues(seed) {
+    for (let i = 0; i < 10; i++) {
+      let id = this.padNumber(i + 1);
+      let hue = hashFloat(seed, i, 'building-hue');
+      this.materials['building_' + id].emissive.setHSL(hue, 1, 0.95, SRGBColorSpace);
     }
   }
 

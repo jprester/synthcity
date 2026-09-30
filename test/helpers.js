@@ -1,5 +1,5 @@
 import { vi } from 'vitest';
-import { BufferGeometry, MeshBasicMaterial } from 'three';
+import { BufferGeometry, MeshBasicMaterial, Vector3 } from 'three';
 import { Perlin } from '../src/lib/perlin.js';
 
 // Seeded stand-in for Math.random (mulberry32).
@@ -26,6 +26,7 @@ export function installFakeGame({ worldSeed = 9746, environment = 'night' } = {}
   noise.noiseDetail(8, 0.5);
 
   const game = {
+    settings: { worldSeed },
     cityBlockSize: 128,
     roadWidth: 24,
     cityBlockNoise: noise,
@@ -37,7 +38,7 @@ export function installFakeGame({ worldSeed = 9746, environment = 'night' } = {}
     },
     scene: { add() {}, remove() {} },
     collider: { add() {}, remove() {} },
-    player: { camera: { position: { x: 0, y: 0, z: 0 } } },
+    player: { camera: { position: { x: 0, y: 0, z: 0 } }, body: { position: new Vector3() } },
   };
   globalThis.window = { game };
   return game;

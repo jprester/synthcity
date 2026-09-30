@@ -45,9 +45,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_03/building_04 @(-56,0,-576) ry=-1.571 s=(1,1.2,1)",
       "s_03_02/building_02 @(-56,0,-512) ry=0 s=(1,1.043,1)",
     ],
-    "decorations": [
-      "Smoke smoke/smoke_03 @(-120,186.685,-512) ry=0 s=(6.503,7.025,6.503)",
-    ],
+    "decorations": [],
     "ground": [
       "ground/ground @(-88,0,-544) ry=0 s=(1,1,1)",
     ],
@@ -61,6 +59,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
     ],
     "decorations": [
       "Advert ads_s_03_01/ads_03 @(-120,0,-728) ry=-1.571 s=(1,0.917,1)",
+      "Smoke smoke/smoke_03 @(-56,170.484,-728) ry=0 s=(7.702,9.354,7.702)",
     ],
     "ground": [
       "ground/ground @(-88,0,-696) ry=0 s=(1,1,1)",
@@ -97,7 +96,9 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_01/building_07 @(-56,0,184) ry=0 s=(1,0.831,1)",
       "s_03_02/building_05 @(-56,0,248) ry=0 s=(1,0.986,1)",
     ],
-    "decorations": [],
+    "decorations": [
+      "Smoke smoke/smoke_03 @(-56,157.876,184) ry=0 s=(3.789,5.08,3.789)",
+    ],
     "ground": [
       "ground/ground @(-88,0,216) ry=0 s=(1,1,1)",
     ],
@@ -110,11 +111,10 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_02/building_03 @(-56,0,400) ry=1.571 s=(1,0.926,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_05 @(-120,0,336) ry=0 s=(1,1.067,1)",
-      "Advert ads_s_03_01/ads_05 @(-120,0,400) ry=0 s=(1,1.068,1)",
-      "Smoke smoke/smoke_01 @(-56,159.855,336) ry=0 s=(5.167,7.65,5.167)",
+      "Advert ads_s_03_01/ads_02 @(-120,0,336) ry=0 s=(1,1.067,1)",
+      "Advert ads_s_03_01/ads_04 @(-120,0,400) ry=0 s=(1,1.068,1)",
       "Advert ads_s_03_02/ads_04 @(-56,0,336) ry=0 s=(1,0.841,1)",
-      "Advert ads_s_03_01/ads_01 @(-56,0,400) ry=-1.571 s=(1,0.926,1)",
+      "Advert ads_s_03_01/ads_03 @(-56,0,400) ry=-1.571 s=(1,0.926,1)",
     ],
     "ground": [
       "ground/ground @(-88,0,368) ry=0 s=(1,1,1)",
@@ -128,10 +128,10 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_01/building_07 @(-56,0,552) ry=1.571 s=(1,0.897,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_03 @(-120,0,488) ry=0 s=(1,0.995,1)",
-      "Advert ads_s_03_01/ads_05 @(-120,0,552) ry=-1.571 s=(1,0.917,1)",
-      "Advert ads_s_03_02/ads_01 @(-56,0,488) ry=-1.571 s=(1,0.911,1)",
-      "Advert ads_s_03_02/ads_03 @(-56,0,552) ry=-1.571 s=(1,0.897,1)",
+      "Advert ads_s_03_01/ads_02 @(-120,0,488) ry=0 s=(1,0.995,1)",
+      "Advert ads_s_03_01/ads_03 @(-120,0,552) ry=-1.571 s=(1,0.917,1)",
+      "Advert ads_s_03_02/ads_03 @(-56,0,488) ry=-1.571 s=(1,0.911,1)",
+      "Advert ads_s_03_02/ads_05 @(-56,0,552) ry=-1.571 s=(1,0.897,1)",
     ],
     "ground": [
       "ground/ground @(-88,0,520) ry=0 s=(1,1,1)",
@@ -145,10 +145,10 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_03/building_04 @(-56,0,704) ry=-1.571 s=(1,1.2,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_04 @(-120,0,640) ry=-1.571 s=(1,0.947,1)",
-      "Advert ads_s_03_02/ads_04 @(-120,0,704) ry=-1.571 s=(1,0.953,1)",
+      "Advert ads_s_03_01/ads_03 @(-120,0,640) ry=-1.571 s=(1,0.947,1)",
+      "Advert ads_s_03_02/ads_01 @(-120,0,704) ry=-1.571 s=(1,0.953,1)",
       "Advert ads_s_03_02/ads_01 @(-56,0,640) ry=-1.571 s=(1,0.95,1)",
-      "Advert ads_s_03_01/ads_05 @(-56,0,704) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_03_01/ads_03 @(-56,0,704) ry=1.571 s=(1,1.2,1)",
     ],
     "ground": [
       "ground/ground @(-88,0,672) ry=0 s=(1,1,1)",
@@ -171,10 +171,10 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_02/building_02 @(-56,0,1008) ry=0 s=(1,1.01,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_05 @(-120,0,944) ry=0 s=(1,1.086,1)",
-      "Advert ads_s_03_02/ads_01 @(-120,0,1008) ry=0 s=(1,0.838,1)",
+      "Advert ads_s_03_01/ads_02 @(-120,0,944) ry=0 s=(1,1.086,1)",
+      "Advert ads_s_03_02/ads_04 @(-120,0,1008) ry=0 s=(1,0.838,1)",
       "Advert ads_s_03_02/ads_02 @(-56,0,944) ry=1.571 s=(1,1.121,1)",
-      "Advert ads_s_03_02/ads_02 @(-56,0,1008) ry=0 s=(1,1.01,1)",
+      "Advert ads_s_03_02/ads_03 @(-56,0,1008) ry=0 s=(1,1.01,1)",
     ],
     "ground": [
       "ground/ground @(-88,0,976) ry=0 s=(1,1,1)",
@@ -188,8 +188,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_01/building_05 @(-208,0,-56) ry=0 s=(1,0.794,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_01 @(-272,0,-56) ry=0 s=(1,0.789,1)",
-      "Smoke smoke/smoke_02 @(-208,157.739,-120) ry=0 s=(3.759,5.258,3.759)",
+      "Advert ads_s_03_01/ads_03 @(-272,0,-56) ry=0 s=(1,0.789,1)",
     ],
     "ground": [
       "ground/ground @(-240,0,-88) ry=0 s=(1,1,1)",
@@ -213,8 +212,8 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_02/building_05 @(-208,0,-360) ry=1.571 s=(1,0.916,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_03 @(-272,0,-360) ry=-1.571 s=(1,0.898,1)",
-      "Advert ads_s_03_01/ads_02 @(-208,0,-360) ry=-1.571 s=(1,0.916,1)",
+      "Advert ads_s_03_01/ads_01 @(-272,0,-360) ry=-1.571 s=(1,0.898,1)",
+      "Advert ads_s_03_01/ads_01 @(-208,0,-360) ry=-1.571 s=(1,0.916,1)",
     ],
     "ground": [
       "ground/ground @(-240,0,-392) ry=0 s=(1,1,1)",
@@ -228,7 +227,9 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_03/building_01 @(-208,0,-512) ry=-1.571 s=(1,1.115,1)",
       "storefronts/building_07 @(-164,0,-468) ry=0 s=(1,1,1)",
     ],
-    "decorations": [],
+    "decorations": [
+      "Spotlight spotlight/spotlight_04 @(-208,187.891,-576) ry=0 s=(15.938,15.938,15.938)",
+    ],
     "ground": [
       "ground/ground @(-240,0,-544) ry=0 s=(1,1,1)",
     ],
@@ -240,9 +241,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_03/building_03 @(-208,0,-728) ry=-1.571 s=(1,1.088,1)",
       "s_02_03/building_07 @(-208,0,-664) ry=0 s=(1,1.083,1)",
     ],
-    "decorations": [
-      "Smoke smoke/smoke_01 @(-208,205.689,-664) ry=0 s=(2.916,3.195,2.916)",
-    ],
+    "decorations": [],
     "ground": [
       "ground/ground @(-240,0,-696) ry=0 s=(1,1,1)",
     ],
@@ -269,8 +268,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "storefronts/building_03 @(-164,0,140) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_04 @(-272,0,32) ry=0 s=(1,0.788,1)",
-      "Smoke smoke/smoke_02 @(-272,149.907,96) ry=0 s=(4.726,5.045,4.726)",
+      "Advert ads_s_03_02/ads_05 @(-272,0,32) ry=0 s=(1,0.788,1)",
     ],
     "ground": [
       "ground/ground @(-240,0,64) ry=0 s=(1,1,1)",
@@ -309,10 +307,10 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_03/building_03 @(-208,0,552) ry=-1.571 s=(1,1.088,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_02 @(-272,0,488) ry=-1.571 s=(1,0.937,1)",
+      "Advert ads_s_03_02/ads_05 @(-272,0,488) ry=-1.571 s=(1,0.937,1)",
       "Advert ads_s_03_01/ads_02 @(-272,0,552) ry=-1.571 s=(1,0.92,1)",
-      "Advert ads_s_03_02/ads_04 @(-208,0,488) ry=1.571 s=(1,1.179,1)",
-      "Advert ads_s_03_02/ads_03 @(-208,0,552) ry=1.571 s=(1,1.088,1)",
+      "Advert ads_s_03_02/ads_05 @(-208,0,488) ry=1.571 s=(1,1.179,1)",
+      "Advert ads_s_03_02/ads_04 @(-208,0,552) ry=1.571 s=(1,1.088,1)",
     ],
     "ground": [
       "ground/ground @(-240,0,520) ry=0 s=(1,1,1)",
@@ -327,10 +325,9 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "storefronts/building_07 @(-164,0,748) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_05 @(-272,0,640) ry=1.571 s=(1,1.189,1)",
-      "Smoke smoke/smoke_02 @(-272,144.586,704) ry=0 s=(2.959,3.446,2.959)",
-      "Advert ads_s_03_02/ads_05 @(-272,0,704) ry=0 s=(1,0.761,1)",
-      "Advert ads_s_03_01/ads_01 @(-208,0,640) ry=1.571 s=(1,1.119,1)",
+      "Advert ads_s_03_02/ads_02 @(-272,0,640) ry=1.571 s=(1,1.189,1)",
+      "Advert ads_s_03_02/ads_01 @(-272,0,704) ry=0 s=(1,0.761,1)",
+      "Advert ads_s_03_01/ads_05 @(-208,0,640) ry=1.571 s=(1,1.119,1)",
       "Advert ads_s_03_02/ads_02 @(-208,0,704) ry=1.571 s=(1,1.174,1)",
     ],
     "ground": [
@@ -345,10 +342,10 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_03/building_02 @(-208,0,856) ry=0 s=(1,1.063,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_01 @(-272,0,792) ry=1.571 s=(1,1.12,1)",
-      "Advert ads_s_03_01/ads_05 @(-272,0,856) ry=-1.571 s=(1,0.9,1)",
+      "Advert ads_s_03_02/ads_04 @(-272,0,792) ry=1.571 s=(1,1.12,1)",
+      "Advert ads_s_03_01/ads_04 @(-272,0,856) ry=-1.571 s=(1,0.9,1)",
       "Advert ads_s_03_01/ads_02 @(-208,0,792) ry=1.571 s=(1,1.088,1)",
-      "Advert ads_s_03_02/ads_01 @(-208,0,856) ry=0 s=(1,1.063,1)",
+      "Advert ads_s_03_02/ads_04 @(-208,0,856) ry=0 s=(1,1.063,1)",
     ],
     "ground": [
       "ground/ground @(-240,0,824) ry=0 s=(1,1,1)",
@@ -363,11 +360,11 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "storefronts/building_07 @(-164,0,1052) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_01 @(-272,0,944) ry=0 s=(1,0.823,1)",
-      "Advert ads_s_03_02/ads_05 @(-272,0,1008) ry=1.571 s=(1,1.177,1)",
-      "Advert ads_s_03_01/ads_05 @(-208,0,944) ry=0 s=(1,1.025,1)",
-      "Topper topper_05/ads_large_02 @(-208,227.991,1008) ry=0 s=(0.865,0.865,0.865)",
-      "Advert ads_s_03_01/ads_05 @(-208,0,1008) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_03_01/ads_05 @(-272,0,944) ry=0 s=(1,0.823,1)",
+      "Advert ads_s_03_02/ads_01 @(-272,0,1008) ry=1.571 s=(1,1.177,1)",
+      "Advert ads_s_03_01/ads_04 @(-208,0,944) ry=0 s=(1,1.025,1)",
+      "Topper topper_02/ads_large_05 @(-208,227.991,1008) ry=0 s=(1.549,1.549,1.549)",
+      "Advert ads_s_03_01/ads_02 @(-208,0,1008) ry=1.571 s=(1,1.2,1)",
     ],
     "ground": [
       "ground/ground @(-240,0,976) ry=0 s=(1,1,1)",
@@ -381,10 +378,9 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_03/building_05 @(-360,0,-56) ry=-1.571 s=(1,1.171,1)",
     ],
     "decorations": [
-      "Spotlight spotlight/spotlight_02 @(-424,188.701,-120) ry=0 s=(12.405,12.405,12.405)",
       "Advert ads_s_03_01/ads_04 @(-424,0,-120) ry=1.571 s=(1,1.179,1)",
-      "Advert ads_s_03_01/ads_02 @(-424,0,-56) ry=0 s=(1,1.051,1)",
-      "Advert ads_s_03_02/ads_04 @(-360,0,-56) ry=1.571 s=(1,1.171,1)",
+      "Advert ads_s_03_01/ads_05 @(-424,0,-56) ry=0 s=(1,1.051,1)",
+      "Advert ads_s_03_02/ads_03 @(-360,0,-56) ry=1.571 s=(1,1.171,1)",
     ],
     "ground": [
       "ground/ground @(-392,0,-88) ry=0 s=(1,1,1)",
@@ -398,9 +394,10 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_03/building_01 @(-360,0,-208) ry=0 s=(1,1.082,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_05 @(-424,0,-272) ry=1.571 s=(1,1.2,1)",
-      "Advert ads_s_03_02/ads_01 @(-424,0,-208) ry=0 s=(1,0.86,1)",
-      "Advert ads_s_03_01/ads_04 @(-360,0,-272) ry=0 s=(1,1.013,1)",
+      "Advert ads_s_03_01/ads_02 @(-424,0,-272) ry=1.571 s=(1,1.2,1)",
+      "Smoke smoke/smoke_01 @(-424,163.389,-208) ry=0 s=(4.246,5.914,4.246)",
+      "Advert ads_s_03_02/ads_05 @(-424,0,-208) ry=0 s=(1,0.86,1)",
+      "Advert ads_s_03_01/ads_05 @(-360,0,-272) ry=0 s=(1,1.013,1)",
       "Advert ads_s_03_01/ads_01 @(-360,0,-208) ry=0 s=(1,1.082,1)",
     ],
     "ground": [
@@ -415,12 +412,12 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_03/building_04 @(-360,0,-360) ry=-1.571 s=(1,1.155,1)",
     ],
     "decorations": [
-      "Topper topper_06/ads_large_03 @(-424,203.065,-424) ry=0 s=(1.039,1.039,1.039)",
-      "Advert ads_s_03_02/ads_02 @(-424,0,-424) ry=0 s=(1,1.069,1)",
-      "Topper topper_08/ads_large_03 @(-424,185.134,-360) ry=0 s=(0.979,0.979,0.979)",
-      "Advert ads_s_03_02/ads_03 @(-424,0,-360) ry=-1.571 s=(1,0.974,1)",
-      "Advert ads_s_03_01/ads_04 @(-360,0,-424) ry=0 s=(1,1.026,1)",
-      "Advert ads_s_03_01/ads_02 @(-360,0,-360) ry=1.571 s=(1,1.155,1)",
+      "Topper topper_07/ads_large_01 @(-424,203.065,-424) ry=0 s=(1.79,1.79,1.79)",
+      "Advert ads_s_03_02/ads_03 @(-424,0,-424) ry=0 s=(1,1.069,1)",
+      "Topper topper_03/ads_large_05 @(-424,185.134,-360) ry=0 s=(1.005,1.005,1.005)",
+      "Advert ads_s_03_02/ads_01 @(-424,0,-360) ry=-1.571 s=(1,0.974,1)",
+      "Advert ads_s_03_01/ads_02 @(-360,0,-424) ry=0 s=(1,1.026,1)",
+      "Advert ads_s_03_01/ads_04 @(-360,0,-360) ry=1.571 s=(1,1.155,1)",
     ],
     "ground": [
       "ground/ground @(-392,0,-392) ry=0 s=(1,1,1)",
@@ -434,7 +431,8 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_01/building_03 @(-360,0,-512) ry=1.571 s=(1,0.875,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_04 @(-424,0,-576) ry=0 s=(1,1.062,1)",
+      "Advert ads_s_03_01/ads_03 @(-424,0,-576) ry=0 s=(1,1.062,1)",
+      "Smoke smoke/smoke_02 @(-424,194.786,-512) ry=0 s=(4.649,5.801,4.649)",
       "Advert ads_s_03_02/ads_05 @(-424,0,-512) ry=0 s=(1,1.025,1)",
     ],
     "ground": [
@@ -450,7 +448,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
     ],
     "decorations": [
       "Advert ads_s_03_02/ads_05 @(-424,0,-728) ry=-1.571 s=(1,0.933,1)",
-      "Advert ads_s_03_01/ads_02 @(-424,0,-664) ry=-1.571 s=(1,0.925,1)",
+      "Advert ads_s_03_01/ads_01 @(-424,0,-664) ry=-1.571 s=(1,0.925,1)",
     ],
     "ground": [
       "ground/ground @(-392,0,-696) ry=0 s=(1,1,1)",
@@ -473,7 +471,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_04_03/building_05 @(-392,0,64) ry=0 s=(1,1.342,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_03/ads_03 @(-392,0,64) ry=0 s=(1,1.342,1)",
+      "Advert ads_s_04_03/ads_01 @(-392,0,64) ry=0 s=(1,1.342,1)",
     ],
     "ground": [
       "ground/ground @(-392,0,64) ry=0 s=(1,1,1)",
@@ -486,9 +484,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_02/building_05 @(-360,0,184) ry=1.571 s=(1,0.932,1)",
       "s_03_02/building_03 @(-360,0,248) ry=1.571 s=(1,0.966,1)",
     ],
-    "decorations": [
-      "Smoke smoke/smoke_03 @(-424,176.559,184) ry=0 s=(8.295,10.457,8.295)",
-    ],
+    "decorations": [],
     "ground": [
       "ground/ground @(-392,0,216) ry=0 s=(1,1,1)",
     ],
@@ -512,7 +508,9 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_01/building_04 @(-360,0,488) ry=0 s=(1,0.808,1)",
       "s_03_01/building_07 @(-360,0,552) ry=0 s=(1,0.768,1)",
     ],
-    "decorations": [],
+    "decorations": [
+      "Smoke smoke/smoke_01 @(-360,153.472,488) ry=0 s=(7.401,10.707,7.401)",
+    ],
     "ground": [
       "ground/ground @(-392,0,520) ry=0 s=(1,1,1)",
     ],
@@ -525,7 +523,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_01/building_04 @(-360,0,704) ry=0 s=(1,0.828,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_04 @(-360,0,704) ry=0 s=(1,0.828,1)",
+      "Advert ads_s_03_01/ads_02 @(-360,0,704) ry=0 s=(1,0.828,1)",
     ],
     "ground": [
       "ground/ground @(-392,0,672) ry=0 s=(1,1,1)",
@@ -539,7 +537,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_02/building_05 @(-360,0,856) ry=0 s=(1,1.026,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_03 @(-360,0,792) ry=1.571 s=(1,1.155,1)",
+      "Advert ads_s_03_01/ads_04 @(-360,0,792) ry=1.571 s=(1,1.155,1)",
     ],
     "ground": [
       "ground/ground @(-392,0,824) ry=0 s=(1,1,1)",
@@ -553,8 +551,8 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_02/building_03 @(-360,0,1008) ry=0 s=(1,1.013,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_01 @(-424,0,1008) ry=1.571 s=(1,1.2,1)",
-      "Advert ads_s_03_01/ads_02 @(-360,0,1008) ry=0 s=(1,1.013,1)",
+      "Advert ads_s_03_02/ads_04 @(-424,0,1008) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_03_01/ads_03 @(-360,0,1008) ry=0 s=(1,1.013,1)",
     ],
     "ground": [
       "ground/ground @(-392,0,976) ry=0 s=(1,1,1)",
@@ -568,10 +566,10 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_03/building_04 @(-512,0,-56) ry=-1.571 s=(1,1.2,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_04 @(-576,0,-120) ry=0 s=(1,0.75,1)",
+      "Advert ads_s_03_01/ads_01 @(-576,0,-120) ry=0 s=(1,0.75,1)",
       "Advert ads_s_03_01/ads_01 @(-576,0,-56) ry=-1.571 s=(1,0.91,1)",
-      "Advert ads_s_03_02/ads_01 @(-512,0,-120) ry=0 s=(1,0.98,1)",
-      "Advert ads_s_03_01/ads_04 @(-512,0,-56) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_03_02/ads_05 @(-512,0,-120) ry=0 s=(1,0.98,1)",
+      "Advert ads_s_03_01/ads_03 @(-512,0,-56) ry=1.571 s=(1,1.2,1)",
     ],
     "ground": [
       "ground/ground @(-544,0,-88) ry=0 s=(1,1,1)",
@@ -586,8 +584,9 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "storefronts/building_02 @(-468,0,-164) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_04 @(-512,0,-272) ry=-1.571 s=(1,0.898,1)",
-      "Advert ads_s_03_01/ads_03 @(-512,0,-208) ry=-1.571 s=(1,0.934,1)",
+      "Advert ads_s_03_02/ads_02 @(-512,0,-272) ry=-1.571 s=(1,0.898,1)",
+      "Smoke smoke/smoke_03 @(-512,177.542,-208) ry=0 s=(4.661,5.446,4.661)",
+      "Advert ads_s_03_01/ads_04 @(-512,0,-208) ry=-1.571 s=(1,0.934,1)",
     ],
     "ground": [
       "ground/ground @(-544,0,-240) ry=0 s=(1,1,1)",
@@ -601,7 +600,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_02/building_01 @(-512,0,-360) ry=0 s=(1,1.004,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_03 @(-512,0,-424) ry=-1.571 s=(1,0.945,1)",
+      "Advert ads_s_03_01/ads_02 @(-512,0,-424) ry=-1.571 s=(1,0.945,1)",
     ],
     "ground": [
       "ground/ground @(-544,0,-392) ry=0 s=(1,1,1)",
@@ -613,7 +612,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "storefronts/building_07 @(-468,0,-468) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_02/ads_01 @(-544,0,-544) ry=1.571 s=(1,1.5,1)",
+      "Advert ads_s_04_02/ads_04 @(-544,0,-544) ry=1.571 s=(1,1.5,1)",
     ],
     "ground": [
       "ground/ground @(-544,0,-544) ry=0 s=(1,1,1)",
@@ -627,8 +626,8 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_02/building_04 @(-512,0,-664) ry=1.571 s=(1,0.97,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_04 @(-576,0,-664) ry=0 s=(1,1.079,1)",
-      "Advert ads_s_03_02/ads_02 @(-512,0,-664) ry=-1.571 s=(1,0.97,1)",
+      "Advert ads_s_03_02/ads_05 @(-576,0,-664) ry=0 s=(1,1.079,1)",
+      "Advert ads_s_03_02/ads_05 @(-512,0,-664) ry=-1.571 s=(1,0.97,1)",
     ],
     "ground": [
       "ground/ground @(-544,0,-696) ry=0 s=(1,1,1)",
@@ -667,8 +666,8 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_01/building_04 @(-512,0,248) ry=0 s=(1,0.85,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_05 @(-576,0,184) ry=1.571 s=(1,1.2,1)",
-      "Topper topper_11/ads_large_01 @(-576,194.173,248) ry=0 s=(1.294,1.294,1.294)",
+      "Advert ads_s_03_02/ads_02 @(-576,0,184) ry=1.571 s=(1,1.2,1)",
+      "Topper topper_01/ads_large_04 @(-576,194.173,248) ry=0 s=(1.493,1.493,1.493)",
       "Advert ads_s_03_01/ads_03 @(-576,0,248) ry=0 s=(1,1.022,1)",
       "Advert ads_s_03_01/ads_04 @(-512,0,248) ry=0 s=(1,0.85,1)",
     ],
@@ -682,7 +681,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "storefronts/building_07 @(-468,0,444) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_01/ads_04 @(-544,0,368) ry=0 s=(1,1.111,1)",
+      "Advert ads_s_04_01/ads_03 @(-544,0,368) ry=0 s=(1,1.111,1)",
     ],
     "ground": [
       "ground/ground @(-544,0,368) ry=0 s=(1,1,1)",
@@ -720,7 +719,9 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_02/building_03 @(-512,0,792) ry=0 s=(1,0.985,1)",
       "s_03_02/building_04 @(-512,0,856) ry=1.571 s=(1,0.945,1)",
     ],
-    "decorations": [],
+    "decorations": [
+      "Smoke smoke/smoke_03 @(-576,155.186,856) ry=0 s=(2.985,4.214,2.985)",
+    ],
     "ground": [
       "ground/ground @(-544,0,824) ry=0 s=(1,1,1)",
     ],
@@ -746,12 +747,11 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_03/building_02 @(-664,0,-56) ry=-1.571 s=(1,1.2,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_04 @(-728,0,-120) ry=0 s=(1,0.985,1)",
-      "Smoke smoke/smoke_02 @(-728,168.262,-56) ry=0 s=(4.332,5.752,4.332)",
-      "Advert ads_s_03_01/ads_04 @(-728,0,-56) ry=-1.571 s=(1,0.886,1)",
-      "Advert ads_s_03_02/ads_02 @(-664,0,-120) ry=1.571 s=(1,1.2,1)",
-      "Smoke smoke/smoke_02 @(-664,227.991,-56) ry=0 s=(4.558,5.621,4.558)",
-      "Advert ads_s_03_02/ads_05 @(-664,0,-56) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_03_02/ads_03 @(-728,0,-120) ry=0 s=(1,0.985,1)",
+      "Advert ads_s_03_01/ads_01 @(-728,0,-56) ry=-1.571 s=(1,0.886,1)",
+      "Smoke smoke/smoke_01 @(-664,227.991,-120) ry=0 s=(5.133,5.435,5.133)",
+      "Advert ads_s_03_02/ads_01 @(-664,0,-120) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_03_02/ads_02 @(-664,0,-56) ry=1.571 s=(1,1.2,1)",
     ],
     "ground": [
       "ground/ground @(-696,0,-88) ry=0 s=(1,1,1)",
@@ -765,8 +765,8 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_01/building_01 @(-664,0,-208) ry=0 s=(1,0.846,1)",
     ],
     "decorations": [
-      "Smoke smoke/smoke_03 @(-664,182.188,-272) ry=0 s=(7.064,7.917,7.064)",
-      "Advert ads_s_03_02/ads_02 @(-664,0,-208) ry=0 s=(1,0.846,1)",
+      "Smoke smoke/smoke_02 @(-664,182.188,-272) ry=0 s=(2.38,2.806,2.38)",
+      "Advert ads_s_03_02/ads_03 @(-664,0,-208) ry=0 s=(1,0.846,1)",
     ],
     "ground": [
       "ground/ground @(-696,0,-240) ry=0 s=(1,1,1)",
@@ -798,9 +798,9 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_02/building_01 @(-664,0,-664) ry=0 s=(1,1.004,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_05 @(-728,0,-728) ry=1.571 s=(1,1.161,1)",
+      "Advert ads_s_03_02/ads_03 @(-728,0,-728) ry=1.571 s=(1,1.161,1)",
       "Advert ads_s_03_02/ads_05 @(-728,0,-664) ry=0 s=(1,0.848,1)",
-      "Advert ads_s_03_01/ads_02 @(-664,0,-728) ry=0 s=(1,1.026,1)",
+      "Advert ads_s_03_01/ads_03 @(-664,0,-728) ry=0 s=(1,1.026,1)",
       "Advert ads_s_03_02/ads_05 @(-664,0,-664) ry=0 s=(1,1.004,1)",
     ],
     "ground": [
@@ -815,7 +815,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_02_02/building_02 @(-664,0,-816) ry=1.571 s=(1,0.905,1)",
     ],
     "decorations": [
-      "Advert ads_s_02_02/ads_04 @(-664,0,-880) ry=1.571 s=(1,1.175,1)",
+      "Advert ads_s_02_02/ads_01 @(-664,0,-880) ry=1.571 s=(1,1.175,1)",
     ],
     "ground": [
       "ground/ground @(-696,0,-848) ry=0 s=(1,1,1)",
@@ -826,7 +826,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_04_01/building_04 @(-696,0,64) ry=-1.571 s=(1,1.5,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_02/ads_04 @(-696,0,64) ry=1.571 s=(1,1.5,1)",
+      "Advert ads_s_04_02/ads_01 @(-696,0,64) ry=1.571 s=(1,1.5,1)",
     ],
     "ground": [
       "ground/ground @(-696,0,64) ry=0 s=(1,1,1)",
@@ -837,7 +837,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_04_02/building_01 @(-696,0,216) ry=0 s=(1,1.321,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_02/ads_04 @(-696,0,216) ry=0 s=(1,1.321,1)",
+      "Advert ads_s_04_02/ads_05 @(-696,0,216) ry=0 s=(1,1.321,1)",
     ],
     "ground": [
       "ground/ground @(-696,0,216) ry=0 s=(1,1,1)",
@@ -921,11 +921,11 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "storefronts/building_07 @(-772,0,-164) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_04 @(-880,0,-272) ry=0 s=(1,0.778,1)",
-      "Advert ads_s_03_02/ads_02 @(-880,0,-208) ry=-1.571 s=(1,0.963,1)",
-      "Topper topper_10/ads_large_04 @(-816,226.165,-272) ry=0 s=(1.035,1.035,1.035)",
-      "Advert ads_s_03_01/ads_04 @(-816,0,-272) ry=1.571 s=(1,1.19,1)",
-      "Advert ads_s_03_02/ads_03 @(-816,0,-208) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_03_01/ads_03 @(-880,0,-272) ry=0 s=(1,0.778,1)",
+      "Advert ads_s_03_02/ads_04 @(-880,0,-208) ry=-1.571 s=(1,0.963,1)",
+      "Topper topper_08/ads_large_03 @(-816,226.165,-272) ry=0 s=(1.19,1.19,1.19)",
+      "Advert ads_s_03_01/ads_05 @(-816,0,-272) ry=1.571 s=(1,1.19,1)",
+      "Advert ads_s_03_02/ads_02 @(-816,0,-208) ry=1.571 s=(1,1.2,1)",
     ],
     "ground": [
       "ground/ground @(-848,0,-240) ry=0 s=(1,1,1)",
@@ -939,10 +939,10 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_03/building_04 @(-816,0,-360) ry=-1.571 s=(1,1.103,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_04 @(-880,0,-424) ry=0 s=(1,0.986,1)",
-      "Advert ads_s_03_01/ads_04 @(-880,0,-360) ry=0 s=(1,0.857,1)",
+      "Advert ads_s_03_02/ads_03 @(-880,0,-424) ry=0 s=(1,0.986,1)",
+      "Advert ads_s_03_01/ads_01 @(-880,0,-360) ry=0 s=(1,0.857,1)",
       "Advert ads_s_03_02/ads_04 @(-816,0,-424) ry=-1.571 s=(1,0.864,1)",
-      "Advert ads_s_03_02/ads_02 @(-816,0,-360) ry=1.571 s=(1,1.103,1)",
+      "Advert ads_s_03_02/ads_04 @(-816,0,-360) ry=1.571 s=(1,1.103,1)",
     ],
     "ground": [
       "ground/ground @(-848,0,-392) ry=0 s=(1,1,1)",
@@ -957,10 +957,10 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "storefronts/building_03 @(-772,0,-468) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_01 @(-880,0,-576) ry=1.571 s=(1,1.133,1)",
-      "Advert ads_s_03_02/ads_04 @(-880,0,-512) ry=0 s=(1,1.022,1)",
-      "Advert ads_s_03_01/ads_04 @(-816,0,-576) ry=0 s=(1,0.75,1)",
-      "Advert ads_s_03_01/ads_02 @(-816,0,-512) ry=0 s=(1,1.028,1)",
+      "Advert ads_s_03_01/ads_05 @(-880,0,-576) ry=1.571 s=(1,1.133,1)",
+      "Advert ads_s_03_02/ads_01 @(-880,0,-512) ry=0 s=(1,1.022,1)",
+      "Advert ads_s_03_01/ads_01 @(-816,0,-576) ry=0 s=(1,0.75,1)",
+      "Advert ads_s_03_01/ads_04 @(-816,0,-512) ry=0 s=(1,1.028,1)",
     ],
     "ground": [
       "ground/ground @(-848,0,-544) ry=0 s=(1,1,1)",
@@ -974,7 +974,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_03/building_04 @(-816,0,-664) ry=-1.571 s=(1,1.098,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_01 @(-816,0,-664) ry=1.571 s=(1,1.098,1)",
+      "Advert ads_s_03_01/ads_04 @(-816,0,-664) ry=1.571 s=(1,1.098,1)",
     ],
     "ground": [
       "ground/ground @(-848,0,-696) ry=0 s=(1,1,1)",
@@ -989,7 +989,8 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "storefronts/building_07 @(-772,0,-772) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_02_01/ads_01 @(-880,0,-880) ry=0 s=(1,0.862,1)",
+      "Advert ads_s_02_01/ads_04 @(-880,0,-880) ry=0 s=(1,0.862,1)",
+      "Smoke smoke/smoke_03 @(-880,188.706,-816) ry=0 s=(7.092,8.589,7.092)",
     ],
     "ground": [
       "ground/ground @(-848,0,-848) ry=0 s=(1,1,1)",
@@ -1001,7 +1002,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "storefronts/storefronts @(-772,0,140) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_05_01/ads_large_01 @(-848,0,64) ry=1.571 s=(1,1.5,1)",
+      "Advert ads_s_05_01/ads_large_02 @(-848,0,64) ry=1.571 s=(1,1.5,1)",
     ],
     "ground": [
       "ground/ground @(-848,0,64) ry=0 s=(1,1,1)",
@@ -1012,7 +1013,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_04_03/building_09 @(-848,0,216) ry=0 s=(1,1.252,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_03/ads_01 @(-848,0,216) ry=0 s=(1,1.252,1)",
+      "Advert ads_s_04_03/ads_03 @(-848,0,216) ry=0 s=(1,1.252,1)",
     ],
     "ground": [
       "ground/ground @(-848,0,216) ry=0 s=(1,1,1)",
@@ -1089,7 +1090,8 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_01_03/building_04 @(96,0,-56) ry=-1.571 s=(1,1.115,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_01/ads_03 @(96,0,-56) ry=1.571 s=(1,1.115,1)",
+      "Smoke smoke/smoke_03 @(96,211.937,-56) ry=0 s=(4.896,5.862,4.896)",
+      "Advert ads_s_01_01/ads_02 @(96,0,-56) ry=1.571 s=(1,1.115,1)",
     ],
     "ground": [
       "ground/ground @(64,0,-88) ry=0 s=(1,1,1)",
@@ -1140,9 +1142,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_02_02/building_02 @(96,0,-728) ry=1.571 s=(1,0.912,1)",
       "s_03_02/building_04 @(96,0,-664) ry=1.571 s=(1,0.905,1)",
     ],
-    "decorations": [
-      "Smoke smoke/smoke_01 @(32,186.044,-728) ry=0 s=(7.667,9.065,7.667)",
-    ],
+    "decorations": [],
     "ground": [
       "ground/ground @(64,0,-696) ry=0 s=(1,1,1)",
     ],
@@ -1169,7 +1169,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "storefronts/building_03 @(140,0,140) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_02/ads_02 @(96,0,32) ry=0 s=(1,0.995,1)",
+      "Advert ads_s_01_02/ads_01 @(96,0,32) ry=0 s=(1,0.995,1)",
     ],
     "ground": [
       "ground/ground @(64,0,64) ry=0 s=(1,1,1)",
@@ -1183,9 +1183,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_03/building_05 @(96,0,248) ry=-1.571 s=(1,1.135,1)",
     ],
     "decorations": [
-      "Smoke smoke/smoke_01 @(32,227.991,248) ry=0 s=(4.76,6.739,4.76)",
-      "Spotlight spotlight/spotlight_02 @(96,181.588,248) ry=0 s=(16.989,16.989,16.989)",
-      "Advert ads_s_03_01/ads_01 @(96,0,248) ry=1.571 s=(1,1.135,1)",
+      "Advert ads_s_03_01/ads_05 @(96,0,248) ry=1.571 s=(1,1.135,1)",
     ],
     "ground": [
       "ground/ground @(64,0,216) ry=0 s=(1,1,1)",
@@ -1200,7 +1198,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "storefronts/building_02 @(140,0,444) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_04 @(32,0,400) ry=0 s=(1,1.052,1)",
+      "Advert ads_s_03_01/ads_05 @(32,0,400) ry=0 s=(1,1.052,1)",
       "Advert ads_s_03_02/ads_02 @(96,0,336) ry=0 s=(1,0.791,1)",
       "Advert ads_s_03_02/ads_02 @(96,0,400) ry=-1.571 s=(1,0.937,1)",
     ],
@@ -1226,10 +1224,10 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "storefronts/building_07 @(140,0,748) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_03 @(32,0,640) ry=0 s=(1,1.066,1)",
-      "Advert ads_s_03_02/ads_01 @(32,0,704) ry=-1.571 s=(1,0.9,1)",
-      "Advert ads_s_03_01/ads_05 @(96,0,640) ry=0 s=(1,1.058,1)",
-      "Topper topper_07/ads_large_01 @(96,227.799,704) ry=0 s=(0.812,0.812,0.812)",
+      "Advert ads_s_03_01/ads_02 @(32,0,640) ry=0 s=(1,1.066,1)",
+      "Advert ads_s_03_02/ads_04 @(32,0,704) ry=-1.571 s=(1,0.9,1)",
+      "Advert ads_s_03_01/ads_01 @(96,0,640) ry=0 s=(1,1.058,1)",
+      "Topper topper_03/ads_large_03 @(96,227.799,704) ry=0 s=(1.148,1.148,1.148)",
       "Advert ads_s_03_02/ads_05 @(96,0,704) ry=1.571 s=(1,1.199,1)",
     ],
     "ground": [
@@ -1244,10 +1242,11 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_01/building_03 @(96,0,856) ry=0 s=(1,0.83,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_02 @(32,0,792) ry=0 s=(1,0.75,1)",
-      "Advert ads_s_03_02/ads_04 @(32,0,856) ry=0 s=(1,0.995,1)",
+      "Smoke smoke/smoke_03 @(32,142.5,792) ry=0 s=(1.926,1.958,1.926)",
+      "Advert ads_s_03_01/ads_03 @(32,0,792) ry=0 s=(1,0.75,1)",
+      "Advert ads_s_03_02/ads_03 @(32,0,856) ry=0 s=(1,0.995,1)",
       "Advert ads_s_03_02/ads_02 @(96,0,792) ry=0 s=(1,0.983,1)",
-      "Advert ads_s_03_02/ads_05 @(96,0,856) ry=0 s=(1,0.83,1)",
+      "Advert ads_s_03_02/ads_04 @(96,0,856) ry=0 s=(1,0.83,1)",
     ],
     "ground": [
       "ground/ground @(64,0,824) ry=0 s=(1,1,1)",
@@ -1271,10 +1270,10 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_01_02/building_04 @(248,0,-56) ry=1.571 s=(1,0.931,1)",
     ],
     "decorations": [
-      "Advert ads_s_02_01/ads_02 @(184,0,-120) ry=0 s=(1,1.046,1)",
-      "Advert ads_s_01_01/ads_04 @(184,0,-56) ry=1.571 s=(1,1.2,1)",
-      "Advert ads_s_01_02/ads_02 @(248,0,-120) ry=-1.571 s=(1,0.907,1)",
-      "Advert ads_s_01_02/ads_02 @(248,0,-56) ry=-1.571 s=(1,0.931,1)",
+      "Advert ads_s_02_01/ads_03 @(184,0,-120) ry=0 s=(1,1.046,1)",
+      "Advert ads_s_01_01/ads_03 @(184,0,-56) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_01_02/ads_05 @(248,0,-120) ry=-1.571 s=(1,0.907,1)",
+      "Advert ads_s_01_02/ads_04 @(248,0,-56) ry=-1.571 s=(1,0.931,1)",
     ],
     "ground": [
       "ground/ground @(216,0,-88) ry=0 s=(1,1,1)",
@@ -1287,7 +1286,9 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_02_03/building_07 @(248,0,-272) ry=-1.571 s=(1,1.18,1)",
       "s_02_01/building_03 @(248,0,-208) ry=1.571 s=(1,0.896,1)",
     ],
-    "decorations": [],
+    "decorations": [
+      "Smoke smoke/smoke_02 @(184,198.82,-208) ry=0 s=(3.492,3.826,3.492)",
+    ],
     "ground": [
       "ground/ground @(216,0,-240) ry=0 s=(1,1,1)",
     ],
@@ -1299,9 +1300,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_02/building_05 @(248,0,-424) ry=1.571 s=(1,0.938,1)",
       "s_03_01/building_07 @(248,0,-360) ry=0 s=(1,0.75,1)",
     ],
-    "decorations": [
-      "Smoke smoke/smoke_01 @(184,146.112,-360) ry=0 s=(6.76,7.798,6.76)",
-    ],
+    "decorations": [],
     "ground": [
       "ground/ground @(216,0,-392) ry=0 s=(1,1,1)",
     ],
@@ -1350,7 +1349,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_02_01/building_05 @(248,0,96) ry=1.571 s=(1,0.889,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_02/ads_03 @(184,0,32) ry=0 s=(1,0.99,1)",
+      "Advert ads_s_01_02/ads_04 @(184,0,32) ry=0 s=(1,0.99,1)",
       "Advert ads_s_01_02/ads_05 @(248,0,32) ry=-1.571 s=(1,0.944,1)",
       "Advert ads_s_02_02/ads_01 @(248,0,96) ry=-1.571 s=(1,0.889,1)",
     ],
@@ -1366,8 +1365,8 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_02/building_03 @(248,0,248) ry=1.571 s=(1,0.922,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_04 @(184,0,248) ry=1.571 s=(1,1.2,1)",
-      "Advert ads_s_03_02/ads_03 @(248,0,248) ry=-1.571 s=(1,0.922,1)",
+      "Advert ads_s_03_02/ads_03 @(184,0,248) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_03_02/ads_02 @(248,0,248) ry=-1.571 s=(1,0.922,1)",
     ],
     "ground": [
       "ground/ground @(216,0,216) ry=0 s=(1,1,1)",
@@ -1381,10 +1380,10 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_01/building_07 @(248,0,400) ry=1.571 s=(1,0.884,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_04 @(184,0,336) ry=0 s=(1,1.055,1)",
-      "Advert ads_s_03_02/ads_01 @(184,0,400) ry=1.571 s=(1,1.142,1)",
-      "Advert ads_s_03_01/ads_03 @(248,0,336) ry=-1.571 s=(1,0.864,1)",
-      "Advert ads_s_03_01/ads_05 @(248,0,400) ry=-1.571 s=(1,0.884,1)",
+      "Advert ads_s_03_01/ads_03 @(184,0,336) ry=0 s=(1,1.055,1)",
+      "Advert ads_s_03_02/ads_05 @(184,0,400) ry=1.571 s=(1,1.142,1)",
+      "Advert ads_s_03_01/ads_05 @(248,0,336) ry=-1.571 s=(1,0.864,1)",
+      "Advert ads_s_03_01/ads_02 @(248,0,400) ry=-1.571 s=(1,0.884,1)",
     ],
     "ground": [
       "ground/ground @(216,0,368) ry=0 s=(1,1,1)",
@@ -1407,9 +1406,9 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_02/building_02 @(248,0,704) ry=0 s=(1,0.978,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_05 @(184,0,640) ry=0 s=(1,0.756,1)",
-      "Advert ads_s_03_01/ads_05 @(184,0,704) ry=0 s=(1,0.75,1)",
-      "Advert ads_s_03_02/ads_03 @(248,0,640) ry=-1.571 s=(1,0.914,1)",
+      "Advert ads_s_03_02/ads_04 @(184,0,640) ry=0 s=(1,0.756,1)",
+      "Advert ads_s_03_01/ads_03 @(184,0,704) ry=0 s=(1,0.75,1)",
+      "Advert ads_s_03_02/ads_05 @(248,0,640) ry=-1.571 s=(1,0.914,1)",
       "Advert ads_s_03_01/ads_04 @(248,0,704) ry=0 s=(1,0.978,1)",
     ],
     "ground": [
@@ -1443,9 +1442,9 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
     ],
     "decorations": [
       "Advert ads_s_01_02/ads_02 @(336,0,-120) ry=1.571 s=(1,1.196,1)",
-      "Advert ads_s_01_01/ads_05 @(336,0,-56) ry=0 s=(1,1.08,1)",
-      "Advert ads_s_01_01/ads_03 @(400,0,-120) ry=-1.571 s=(1,0.879,1)",
-      "Advert ads_s_01_01/ads_03 @(400,0,-56) ry=0 s=(1,0.824,1)",
+      "Advert ads_s_01_01/ads_03 @(336,0,-56) ry=0 s=(1,1.08,1)",
+      "Advert ads_s_01_01/ads_04 @(400,0,-120) ry=-1.571 s=(1,0.879,1)",
+      "Advert ads_s_01_01/ads_04 @(400,0,-56) ry=0 s=(1,0.824,1)",
     ],
     "ground": [
       "ground/ground @(368,0,-88) ry=0 s=(1,1,1)",
@@ -1460,7 +1459,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "storefronts/storefronts @(444,0,-164) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_02/ads_04 @(400,0,-208) ry=0 s=(1,0.86,1)",
+      "Advert ads_s_01_02/ads_01 @(400,0,-208) ry=0 s=(1,0.86,1)",
     ],
     "ground": [
       "ground/ground @(368,0,-240) ry=0 s=(1,1,1)",
@@ -1473,7 +1472,9 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_02_02/building_07 @(400,0,-424) ry=1.571 s=(1,0.899,1)",
       "s_02_01/building_04 @(400,0,-360) ry=0 s=(1,0.763,1)",
     ],
-    "decorations": [],
+    "decorations": [
+      "Smoke smoke/smoke_03 @(400,144.99,-360) ry=0 s=(3.943,4.946,3.943)",
+    ],
     "ground": [
       "ground/ground @(368,0,-392) ry=0 s=(1,1,1)",
     ],
@@ -1512,7 +1513,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "storefronts/storefronts @(444,0,-772) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Smoke smoke/smoke_02 @(400,215.037,-880) ry=0 s=(3.714,4.257,3.714)",
+      "Smoke smoke/smoke_02 @(400,215.037,-880) ry=0 s=(6.013,6.699,6.013)",
     ],
     "ground": [
       "ground/ground @(368,0,-848) ry=0 s=(1,1,1)",
@@ -1556,7 +1557,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_04_03/building_08 @(368,0,520) ry=-1.571 s=(1,1.5,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_03/ads_04 @(368,0,520) ry=1.571 s=(1,1.5,1)",
+      "Advert ads_s_04_03/ads_02 @(368,0,520) ry=1.571 s=(1,1.5,1)",
     ],
     "ground": [
       "ground/ground @(368,0,520) ry=0 s=(1,1,1)",
@@ -1603,10 +1604,11 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_01_03/building_03 @(552,0,-56) ry=-1.571 s=(1,1.138,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_01/ads_02 @(488,0,-120) ry=-1.571 s=(1,0.905,1)",
-      "Advert ads_s_01_02/ads_04 @(488,0,-56) ry=0 s=(1,0.835,1)",
-      "Advert ads_s_01_02/ads_05 @(552,0,-120) ry=1.571 s=(1,1.2,1)",
-      "Advert ads_s_01_01/ads_05 @(552,0,-56) ry=1.571 s=(1,1.138,1)",
+      "Advert ads_s_01_01/ads_05 @(488,0,-120) ry=-1.571 s=(1,0.905,1)",
+      "Advert ads_s_01_02/ads_02 @(488,0,-56) ry=0 s=(1,0.835,1)",
+      "Smoke smoke/smoke_01 @(552,227.991,-120) ry=0 s=(6.401,9.275,6.401)",
+      "Advert ads_s_01_02/ads_02 @(552,0,-120) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_01_01/ads_01 @(552,0,-56) ry=1.571 s=(1,1.138,1)",
     ],
     "ground": [
       "ground/ground @(520,0,-88) ry=0 s=(1,1,1)",
@@ -1620,7 +1622,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_02_01/building_07 @(552,0,-208) ry=0 s=(1,0.782,1)",
     ],
     "decorations": [
-      "Advert ads_s_02_01/ads_05 @(488,0,-208) ry=1.571 s=(1,1.136,1)",
+      "Advert ads_s_02_01/ads_04 @(488,0,-208) ry=1.571 s=(1,1.136,1)",
     ],
     "ground": [
       "ground/ground @(520,0,-240) ry=0 s=(1,1,1)",
@@ -1634,7 +1636,8 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_01/building_01 @(552,0,-360) ry=0 s=(1,0.769,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_05 @(552,0,-424) ry=1.571 s=(1,1.123,1)",
+      "Smoke smoke/smoke_02 @(488,209.202,-424) ry=0 s=(5.527,5.65,5.527)",
+      "Advert ads_s_03_02/ads_02 @(552,0,-424) ry=1.571 s=(1,1.123,1)",
     ],
     "ground": [
       "ground/ground @(520,0,-392) ry=0 s=(1,1,1)",
@@ -1660,7 +1663,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_03/building_02 @(552,0,-664) ry=-1.571 s=(1,1.094,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_05 @(552,0,-664) ry=1.571 s=(1,1.094,1)",
+      "Advert ads_s_03_01/ads_02 @(552,0,-664) ry=1.571 s=(1,1.094,1)",
     ],
     "ground": [
       "ground/ground @(520,0,-696) ry=0 s=(1,1,1)",
@@ -1702,7 +1705,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_04_03/building_03 @(520,0,368) ry=0 s=(1,1.05,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_02/ads_04 @(520,0,368) ry=0 s=(1,1.05,1)",
+      "Advert ads_s_04_02/ads_03 @(520,0,368) ry=0 s=(1,1.05,1)",
     ],
     "ground": [
       "ground/ground @(520,0,368) ry=0 s=(1,1,1)",
@@ -1722,7 +1725,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_04_02/building_02 @(520,0,672) ry=1.571 s=(1,1.218,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_02/ads_04 @(520,0,672) ry=-1.571 s=(1,1.218,1)",
+      "Advert ads_s_04_02/ads_05 @(520,0,672) ry=-1.571 s=(1,1.218,1)",
     ],
     "ground": [
       "ground/ground @(520,0,672) ry=0 s=(1,1,1)",
@@ -1733,7 +1736,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_05_03/building_10 @(520,0,824) ry=-1.571 s=(1,1.5,1)",
     ],
     "decorations": [
-      "Advert ads_s_05_04/ads_large_03 @(520,0,824) ry=1.571 s=(1,1.5,1)",
+      "Advert ads_s_05_04/ads_large_01 @(520,0,824) ry=1.571 s=(1,1.5,1)",
     ],
     "ground": [
       "ground/ground @(520,0,824) ry=0 s=(1,1,1)",
@@ -1756,10 +1759,10 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_01_03/building_04 @(704,0,-56) ry=-1.571 s=(1,1.18,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_01/ads_05 @(640,0,-120) ry=-1.571 s=(1,0.926,1)",
-      "Advert ads_s_01_02/ads_04 @(640,0,-56) ry=0 s=(1,0.819,1)",
-      "Advert ads_s_01_01/ads_05 @(704,0,-120) ry=-1.571 s=(1,0.884,1)",
-      "Advert ads_s_01_01/ads_02 @(704,0,-56) ry=1.571 s=(1,1.18,1)",
+      "Advert ads_s_01_01/ads_04 @(640,0,-120) ry=-1.571 s=(1,0.926,1)",
+      "Advert ads_s_01_02/ads_01 @(640,0,-56) ry=0 s=(1,0.819,1)",
+      "Advert ads_s_01_01/ads_02 @(704,0,-120) ry=-1.571 s=(1,0.884,1)",
+      "Advert ads_s_01_01/ads_04 @(704,0,-56) ry=1.571 s=(1,1.18,1)",
     ],
     "ground": [
       "ground/ground @(672,0,-88) ry=0 s=(1,1,1)",
@@ -1774,9 +1777,8 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "storefronts/storefronts @(748,0,-164) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Smoke smoke/smoke_02 @(640,186.529,-272) ry=0 s=(3.08,4.245,3.08)",
-      "Advert ads_s_02_02/ads_04 @(704,0,-272) ry=0 s=(1,0.977,1)",
-      "Advert ads_s_02_01/ads_01 @(704,0,-208) ry=0 s=(1,0.81,1)",
+      "Advert ads_s_02_02/ads_02 @(704,0,-272) ry=0 s=(1,0.977,1)",
+      "Advert ads_s_02_01/ads_03 @(704,0,-208) ry=0 s=(1,0.81,1)",
     ],
     "ground": [
       "ground/ground @(672,0,-240) ry=0 s=(1,1,1)",
@@ -1803,8 +1805,8 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "storefronts/building_07 @(748,0,-468) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_02 @(640,0,-512) ry=1.571 s=(1,1.2,1)",
-      "Advert ads_s_03_02/ads_03 @(704,0,-576) ry=0 s=(1,0.825,1)",
+      "Advert ads_s_03_01/ads_04 @(640,0,-512) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_03_02/ads_05 @(704,0,-576) ry=0 s=(1,0.825,1)",
     ],
     "ground": [
       "ground/ground @(672,0,-544) ry=0 s=(1,1,1)",
@@ -1818,8 +1820,9 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_03/building_04 @(704,0,-664) ry=-1.571 s=(1,1.2,1)",
     ],
     "decorations": [
-      "Smoke smoke/smoke_03 @(640,216.12,-728) ry=0 s=(1.455,1.801,1.455)",
-      "Advert ads_s_03_02/ads_03 @(704,0,-664) ry=1.571 s=(1,1.2,1)",
+      "Smoke smoke/smoke_03 @(640,216.12,-728) ry=0 s=(3.813,3.825,3.813)",
+      "Spotlight spotlight/spotlight_04 @(704,191.993,-664) ry=0 s=(13.025,13.025,13.025)",
+      "Advert ads_s_03_02/ads_05 @(704,0,-664) ry=1.571 s=(1,1.2,1)",
     ],
     "ground": [
       "ground/ground @(672,0,-696) ry=0 s=(1,1,1)",
@@ -1847,10 +1850,10 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "storefronts/building_03 @(748,0,140) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_02/ads_01 @(640,0,32) ry=-1.571 s=(1,0.97,1)",
-      "Advert ads_s_01_02/ads_01 @(640,0,96) ry=0 s=(1,0.98,1)",
-      "Advert ads_s_01_02/ads_03 @(704,0,32) ry=1.571 s=(1,1.2,1)",
-      "Advert ads_s_01_01/ads_02 @(704,0,96) ry=0 s=(1,1.061,1)",
+      "Advert ads_s_01_02/ads_02 @(640,0,32) ry=-1.571 s=(1,0.97,1)",
+      "Advert ads_s_01_02/ads_03 @(640,0,96) ry=0 s=(1,0.98,1)",
+      "Advert ads_s_01_02/ads_05 @(704,0,32) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_01_01/ads_01 @(704,0,96) ry=0 s=(1,1.061,1)",
     ],
     "ground": [
       "ground/ground @(672,0,64) ry=0 s=(1,1,1)",
@@ -1877,10 +1880,10 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "storefronts/storefronts @(748,0,444) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_05 @(640,0,336) ry=0 s=(1,1.004,1)",
-      "Advert ads_s_03_02/ads_02 @(640,0,400) ry=0 s=(1,0.822,1)",
-      "Spotlight spotlight/spotlight_03 @(704,185.963,336) ry=0 s=(17.107,17.107,17.107)",
-      "Advert ads_s_03_02/ads_04 @(704,0,336) ry=1.571 s=(1,1.162,1)",
+      "Advert ads_s_03_02/ads_01 @(640,0,336) ry=0 s=(1,1.004,1)",
+      "Advert ads_s_03_02/ads_05 @(640,0,400) ry=0 s=(1,0.822,1)",
+      "Advert ads_s_03_02/ads_03 @(704,0,336) ry=1.571 s=(1,1.162,1)",
+      "Smoke smoke/smoke_03 @(704,152.132,400) ry=0 s=(5.685,6.049,5.685)",
       "Advert ads_s_03_01/ads_05 @(704,0,400) ry=0 s=(1,0.801,1)",
     ],
     "ground": [
@@ -1892,7 +1895,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_05_03/building_04 @(672,0,520) ry=-1.571 s=(1,1.5,1)",
     ],
     "decorations": [
-      "Advert ads_s_05_04/ads_large_02 @(672,0,520) ry=1.571 s=(1,1.5,1)",
+      "Advert ads_s_05_04/ads_large_04 @(672,0,520) ry=1.571 s=(1,1.5,1)",
     ],
     "ground": [
       "ground/ground @(672,0,520) ry=0 s=(1,1,1)",
@@ -1904,7 +1907,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "storefronts/building_03 @(748,0,748) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_05_03/ads_large_05 @(672,0,672) ry=0 s=(1,1.308,1)",
+      "Advert ads_s_05_03/ads_large_01 @(672,0,672) ry=0 s=(1,1.308,1)",
     ],
     "ground": [
       "ground/ground @(672,0,672) ry=0 s=(1,1,1)",
@@ -1925,7 +1928,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "storefronts/building_03 @(748,0,1052) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_04/ads_05 @(672,0,976) ry=0 s=(1,1.009,1)",
+      "Advert ads_s_04_04/ads_02 @(672,0,976) ry=0 s=(1,1.009,1)",
     ],
     "ground": [
       "ground/ground @(672,0,976) ry=0 s=(1,1,1)",
@@ -1939,10 +1942,10 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_01_03/building_07 @(856,0,-56) ry=-1.571 s=(1,1.139,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_02/ads_03 @(792,0,-120) ry=0 s=(1,1.07,1)",
-      "Advert ads_s_01_01/ads_02 @(792,0,-56) ry=0 s=(1,1.06,1)",
-      "Advert ads_s_01_01/ads_05 @(856,0,-120) ry=0 s=(1,0.814,1)",
-      "Advert ads_s_01_01/ads_02 @(856,0,-56) ry=1.571 s=(1,1.139,1)",
+      "Advert ads_s_01_02/ads_04 @(792,0,-120) ry=0 s=(1,1.07,1)",
+      "Advert ads_s_01_01/ads_03 @(792,0,-56) ry=0 s=(1,1.06,1)",
+      "Advert ads_s_01_01/ads_03 @(856,0,-120) ry=0 s=(1,0.814,1)",
+      "Advert ads_s_01_01/ads_01 @(856,0,-56) ry=1.571 s=(1,1.139,1)",
     ],
     "ground": [
       "ground/ground @(824,0,-88) ry=0 s=(1,1,1)",
@@ -1956,10 +1959,11 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_01_01/building_04 @(856,0,-208) ry=0 s=(1,0.801,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_02/ads_05 @(792,0,-272) ry=0 s=(1,1.065,1)",
-      "Advert ads_s_01_02/ads_01 @(792,0,-208) ry=1.571 s=(1,1.141,1)",
-      "Advert ads_s_01_01/ads_05 @(856,0,-272) ry=0 s=(1,1.079,1)",
-      "Advert ads_s_01_01/ads_02 @(856,0,-208) ry=0 s=(1,0.801,1)",
+      "Smoke smoke/smoke_02 @(792,202.327,-272) ry=0 s=(8.036,11.891,8.036)",
+      "Advert ads_s_01_02/ads_03 @(792,0,-272) ry=0 s=(1,1.065,1)",
+      "Advert ads_s_01_02/ads_05 @(792,0,-208) ry=1.571 s=(1,1.141,1)",
+      "Advert ads_s_01_01/ads_01 @(856,0,-272) ry=0 s=(1,1.079,1)",
+      "Advert ads_s_01_01/ads_04 @(856,0,-208) ry=0 s=(1,0.801,1)",
     ],
     "ground": [
       "ground/ground @(824,0,-240) ry=0 s=(1,1,1)",
@@ -2009,7 +2013,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_02_03/building_05 @(856,0,-816) ry=0 s=(1,1.072,1)",
     ],
     "decorations": [
-      "Advert ads_s_02_01/ads_03 @(856,0,-880) ry=0 s=(1,0.764,1)",
+      "Advert ads_s_02_01/ads_04 @(856,0,-880) ry=0 s=(1,0.764,1)",
     ],
     "ground": [
       "ground/ground @(824,0,-848) ry=0 s=(1,1,1)",
@@ -2023,10 +2027,11 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_01_03/building_04 @(856,0,96) ry=0 s=(1,1.077,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_01/ads_04 @(792,0,32) ry=-1.571 s=(1,0.909,1)",
-      "Advert ads_s_01_01/ads_02 @(792,0,96) ry=0 s=(1,1.048,1)",
-      "Advert ads_s_01_02/ads_03 @(856,0,32) ry=0 s=(1,0.855,1)",
-      "Advert ads_s_01_01/ads_01 @(856,0,96) ry=0 s=(1,1.077,1)",
+      "Advert ads_s_01_01/ads_01 @(792,0,32) ry=-1.571 s=(1,0.909,1)",
+      "Advert ads_s_01_01/ads_01 @(792,0,96) ry=0 s=(1,1.048,1)",
+      "Smoke smoke/smoke_01 @(856,162.452,32) ry=0 s=(4.012,4.178,4.012)",
+      "Advert ads_s_01_02/ads_04 @(856,0,32) ry=0 s=(1,0.855,1)",
+      "Advert ads_s_01_01/ads_02 @(856,0,96) ry=0 s=(1,1.077,1)",
     ],
     "ground": [
       "ground/ground @(824,0,64) ry=0 s=(1,1,1)",
@@ -2039,7 +2044,9 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_02_03/building_07 @(856,0,184) ry=0 s=(1,1.072,1)",
       "s_02_03/building_07 @(856,0,248) ry=-1.571 s=(1,1.185,1)",
     ],
-    "decorations": [],
+    "decorations": [
+      "Smoke smoke/smoke_02 @(792,198.52,248) ry=0 s=(6.898,9.555,6.898)",
+    ],
     "ground": [
       "ground/ground @(824,0,216) ry=0 s=(1,1,1)",
     ],
@@ -2052,8 +2059,8 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_01/building_04 @(856,0,400) ry=0 s=(1,0.764,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_01 @(792,0,400) ry=0 s=(1,0.846,1)",
-      "Advert ads_s_03_01/ads_05 @(856,0,400) ry=0 s=(1,0.764,1)",
+      "Advert ads_s_03_02/ads_05 @(792,0,400) ry=0 s=(1,0.846,1)",
+      "Advert ads_s_03_01/ads_03 @(856,0,400) ry=0 s=(1,0.764,1)",
     ],
     "ground": [
       "ground/ground @(824,0,368) ry=0 s=(1,1,1)",
@@ -2064,7 +2071,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_04_03/building_09 @(824,0,520) ry=1.571 s=(1,1.208,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_01/ads_04 @(824,0,520) ry=-1.571 s=(1,1.208,1)",
+      "Advert ads_s_04_01/ads_05 @(824,0,520) ry=-1.571 s=(1,1.208,1)",
     ],
     "ground": [
       "ground/ground @(824,0,520) ry=0 s=(1,1,1)",
@@ -2075,7 +2082,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_04_02/building_03 @(824,0,672) ry=0 s=(1,1.009,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_01/ads_01 @(824,0,672) ry=0 s=(1,1.009,1)",
+      "Advert ads_s_04_01/ads_03 @(824,0,672) ry=0 s=(1,1.009,1)",
     ],
     "ground": [
       "ground/ground @(824,0,672) ry=0 s=(1,1,1)",
@@ -2111,7 +2118,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
     ],
     "decorations": [
       "Advert ads_s_02_01/ads_03 @(944,0,-120) ry=0 s=(1,1.054,1)",
-      "Advert ads_s_01_02/ads_01 @(944,0,-56) ry=1.571 s=(1,1.169,1)",
+      "Advert ads_s_01_02/ads_02 @(944,0,-56) ry=1.571 s=(1,1.169,1)",
     ],
     "ground": [
       "ground/ground @(976,0,-88) ry=0 s=(1,1,1)",
@@ -2152,7 +2159,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
     ],
     "decorations": [
       "Advert ads_s_03_02/ads_01 @(1008,0,-576) ry=0 s=(1,1.004,1)",
-      "Advert ads_s_03_02/ads_03 @(1008,0,-512) ry=0 s=(1,1.068,1)",
+      "Advert ads_s_03_02/ads_02 @(1008,0,-512) ry=0 s=(1,1.068,1)",
     ],
     "ground": [
       "ground/ground @(976,0,-544) ry=0 s=(1,1,1)",
@@ -2167,8 +2174,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
     ],
     "decorations": [
       "Advert ads_s_03_01/ads_01 @(1008,0,-728) ry=1.571 s=(1,1.2,1)",
-      "Spotlight spotlight/spotlight_01 @(1008,186.864,-664) ry=0 s=(15.183,15.183,15.183)",
-      "Advert ads_s_03_01/ads_04 @(1008,0,-664) ry=1.571 s=(1,1.168,1)",
+      "Advert ads_s_03_01/ads_01 @(1008,0,-664) ry=1.571 s=(1,1.168,1)",
     ],
     "ground": [
       "ground/ground @(976,0,-696) ry=0 s=(1,1,1)",
@@ -2183,7 +2189,8 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "storefronts/storefronts @(1052,0,-772) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_01 @(1008,0,-816) ry=0 s=(1,0.788,1)",
+      "Smoke smoke/smoke_02 @(1008,180.369,-880) ry=0 s=(1.242,1.525,1.242)",
+      "Advert ads_s_03_01/ads_02 @(1008,0,-816) ry=0 s=(1,0.788,1)",
     ],
     "ground": [
       "ground/ground @(976,0,-848) ry=0 s=(1,1,1)",
@@ -2206,7 +2213,9 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_02_03/building_01 @(1008,0,184) ry=-1.571 s=(1,1.187,1)",
       "s_03_03/building_07 @(1008,0,248) ry=-1.571 s=(1,1.14,1)",
     ],
-    "decorations": [],
+    "decorations": [
+      "Smoke smoke/smoke_03 @(944,200.705,248) ry=0 s=(2.126,2.664,2.126)",
+    ],
     "ground": [
       "ground/ground @(976,0,216) ry=0 s=(1,1,1)",
     ],
@@ -2220,7 +2229,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "storefronts/building_02 @(1052,0,444) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_03 @(1008,0,336) ry=0 s=(1,0.791,1)",
+      "Advert ads_s_03_01/ads_02 @(1008,0,336) ry=0 s=(1,0.791,1)",
       "Advert ads_s_03_02/ads_01 @(1008,0,400) ry=-1.571 s=(1,0.949,1)",
     ],
     "ground": [
@@ -2235,11 +2244,11 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_03/building_01 @(1008,0,552) ry=-1.571 s=(1,1.2,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_01 @(944,0,488) ry=-1.571 s=(1,0.912,1)",
-      "Topper topper_05/ads_large_02 @(944,227.991,552) ry=0 s=(0.879,0.879,0.879)",
-      "Advert ads_s_03_02/ads_02 @(944,0,552) ry=1.571 s=(1,1.2,1)",
-      "Advert ads_s_03_01/ads_02 @(1008,0,488) ry=-1.571 s=(1,0.951,1)",
-      "Advert ads_s_03_02/ads_05 @(1008,0,552) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_03_02/ads_03 @(944,0,488) ry=-1.571 s=(1,0.912,1)",
+      "Topper topper_02/ads_large_02 @(944,227.991,552) ry=0 s=(1.078,1.078,1.078)",
+      "Advert ads_s_03_02/ads_05 @(944,0,552) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_03_01/ads_04 @(1008,0,488) ry=-1.571 s=(1,0.951,1)",
+      "Advert ads_s_03_02/ads_04 @(1008,0,552) ry=1.571 s=(1,1.2,1)",
     ],
     "ground": [
       "ground/ground @(976,0,520) ry=0 s=(1,1,1)",
@@ -2263,10 +2272,12 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_01/building_05 @(1008,0,856) ry=0 s=(1,0.789,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_01 @(944,0,792) ry=0 s=(1,1.036,1)",
-      "Advert ads_s_03_02/ads_01 @(944,0,856) ry=0 s=(1,0.812,1)",
-      "Advert ads_s_03_02/ads_04 @(1008,0,792) ry=0 s=(1,1.005,1)",
-      "Advert ads_s_03_02/ads_01 @(1008,0,856) ry=0 s=(1,0.789,1)",
+      "Smoke smoke/smoke_02 @(944,196.89,792) ry=0 s=(5.987,7.904,5.987)",
+      "Advert ads_s_03_01/ads_02 @(944,0,792) ry=0 s=(1,1.036,1)",
+      "Advert ads_s_03_02/ads_02 @(944,0,856) ry=0 s=(1,0.812,1)",
+      "Advert ads_s_03_02/ads_02 @(1008,0,792) ry=0 s=(1,1.005,1)",
+      "Smoke smoke/smoke_03 @(1008,149.88,856) ry=0 s=(8.882,11.405,8.882)",
+      "Advert ads_s_03_02/ads_03 @(1008,0,856) ry=0 s=(1,0.789,1)",
     ],
     "ground": [
       "ground/ground @(976,0,824) ry=0 s=(1,1,1)",
@@ -2280,7 +2291,9 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_01/building_03 @(1008,0,1008) ry=0 s=(1,0.762,1)",
       "storefronts/storefronts @(1052,0,1052) ry=0 s=(1,1,1)",
     ],
-    "decorations": [],
+    "decorations": [
+      "Smoke smoke/smoke_01 @(944,227.991,944) ry=0 s=(8.079,10.197,8.079)",
+    ],
     "ground": [
       "ground/ground @(976,0,976) ry=0 s=(1,1,1)",
     ],
@@ -2298,10 +2311,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_03/building_02 @(-56,0,-56) ry=-1.571 s=(1,1.2,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_05 @(-120,0,-120) ry=0 s=(1,1.066,1)",
-      "Advert ads_s_03_01/ads_05 @(-120,0,-56) ry=0 s=(1,1.072,1)",
-      "Advert ads_s_03_02/ads_04 @(-56,0,-120) ry=1.571 s=(1,1.11,1)",
-      "Advert ads_s_03_02/ads_04 @(-56,0,-56) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_03_02/ads_04 @(-120,0,-120) ry=0 s=(1,1.066,1)",
+      "Advert ads_s_03_01/ads_04 @(-120,0,-56) ry=0 s=(1,1.072,1)",
+      "Advert ads_s_03_02/ads_05 @(-56,0,-120) ry=1.571 s=(1,1.11,1)",
+      "Advert ads_s_03_02/ads_02 @(-56,0,-56) ry=1.571 s=(1,1.2,1)",
     ],
     "ground": [
       "ground/ground @(-88,0,-88) ry=0 s=(1,1,1)",
@@ -2315,9 +2328,9 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_03/building_04 @(-56,0,-208) ry=-1.571 s=(1,1.101,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_01 @(-120,0,-272) ry=0 s=(1,1.03,1)",
-      "Advert ads_s_03_02/ads_05 @(-120,0,-208) ry=0 s=(1,0.792,1)",
-      "Advert ads_s_03_01/ads_05 @(-56,0,-272) ry=0 s=(1,1.075,1)",
+      "Advert ads_s_03_02/ads_02 @(-120,0,-272) ry=0 s=(1,1.03,1)",
+      "Advert ads_s_03_02/ads_03 @(-120,0,-208) ry=0 s=(1,0.792,1)",
+      "Advert ads_s_03_01/ads_02 @(-56,0,-272) ry=0 s=(1,1.075,1)",
       "Advert ads_s_03_02/ads_02 @(-56,0,-208) ry=1.571 s=(1,1.101,1)",
     ],
     "ground": [
@@ -2350,11 +2363,11 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_03/building_07 @(-56,0,-664) ry=-1.571 s=(1,1.2,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_03 @(-120,0,-728) ry=0 s=(1,1.051,1)",
+      "Advert ads_s_03_02/ads_04 @(-120,0,-728) ry=0 s=(1,1.051,1)",
       "Advert ads_s_03_02/ads_03 @(-120,0,-664) ry=-1.571 s=(1,0.911,1)",
       "Advert ads_s_03_01/ads_02 @(-56,0,-728) ry=0 s=(1,1.011,1)",
-      "Topper topper_02/ads_large_02 @(-56,227.991,-664) ry=0 s=(1.565,1.565,1.565)",
-      "Advert ads_s_03_01/ads_05 @(-56,0,-664) ry=1.571 s=(1,1.2,1)",
+      "Topper topper_09/ads_large_03 @(-56,227.991,-664) ry=0 s=(1.726,1.726,1.726)",
+      "Advert ads_s_03_01/ads_01 @(-56,0,-664) ry=1.571 s=(1,1.2,1)",
     ],
     "ground": [
       "ground/ground @(-88,0,-696) ry=0 s=(1,1,1)",
@@ -2368,10 +2381,12 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_03/building_03 @(-56,0,-816) ry=-1.571 s=(1,1.186,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_03 @(-120,0,-880) ry=1.571 s=(1,1.2,1)",
-      "Advert ads_s_03_01/ads_01 @(-120,0,-816) ry=1.571 s=(1,1.114,1)",
-      "Topper topper_05/ads_large_01 @(-56,177.821,-880) ry=0 s=(0.822,0.822,0.822)",
-      "Advert ads_s_03_02/ads_03 @(-56,0,-880) ry=-1.571 s=(1,0.936,1)",
+      "Spotlight spotlight/spotlight_02 @(-120,191.993,-880) ry=0 s=(13.448,13.448,13.448)",
+      "Smoke smoke/smoke_01 @(-120,227.991,-880) ry=0 s=(4.801,5.204,4.801)",
+      "Advert ads_s_03_01/ads_02 @(-120,0,-880) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_03_01/ads_05 @(-120,0,-816) ry=1.571 s=(1,1.114,1)",
+      "Topper topper_01/ads_large_02 @(-56,177.821,-880) ry=0 s=(1.468,1.468,1.468)",
+      "Advert ads_s_03_02/ads_04 @(-56,0,-880) ry=-1.571 s=(1,0.936,1)",
       "Advert ads_s_03_02/ads_05 @(-56,0,-816) ry=1.571 s=(1,1.186,1)",
     ],
     "ground": [
@@ -2407,7 +2422,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_02_02/building_07 @(-56,0,400) ry=1.571 s=(1,0.936,1)",
     ],
     "decorations": [
-      "Advert ads_s_02_02/ads_04 @(-56,0,336) ry=-1.571 s=(1,0.922,1)",
+      "Advert ads_s_02_02/ads_02 @(-56,0,336) ry=-1.571 s=(1,0.922,1)",
     ],
     "ground": [
       "ground/ground @(-88,0,368) ry=0 s=(1,1,1)",
@@ -2422,10 +2437,9 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
     ],
     "decorations": [
       "Advert ads_s_02_02/ads_03 @(-120,0,488) ry=-1.571 s=(1,0.865,1)",
-      "Smoke smoke/smoke_03 @(-120,199.773,552) ry=0 s=(5.247,6.747,5.247)",
-      "Advert ads_s_01_02/ads_03 @(-120,0,552) ry=0 s=(1,1.051,1)",
-      "Advert ads_s_01_01/ads_03 @(-56,0,488) ry=1.571 s=(1,1.2,1)",
-      "Advert ads_s_01_02/ads_05 @(-56,0,552) ry=0 s=(1,1.011,1)",
+      "Advert ads_s_01_02/ads_05 @(-120,0,552) ry=0 s=(1,1.051,1)",
+      "Advert ads_s_01_01/ads_05 @(-56,0,488) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_01_02/ads_04 @(-56,0,552) ry=0 s=(1,1.011,1)",
     ],
     "ground": [
       "ground/ground @(-88,0,520) ry=0 s=(1,1,1)",
@@ -2439,10 +2453,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_01_01/building_01 @(-56,0,704) ry=1.571 s=(1,0.897,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_02/ads_05 @(-120,0,640) ry=1.571 s=(1,1.142,1)",
-      "Advert ads_s_02_01/ads_03 @(-120,0,704) ry=-1.571 s=(1,0.937,1)",
-      "Advert ads_s_01_02/ads_04 @(-56,0,640) ry=-1.571 s=(1,0.898,1)",
-      "Advert ads_s_01_02/ads_04 @(-56,0,704) ry=-1.571 s=(1,0.897,1)",
+      "Advert ads_s_01_02/ads_04 @(-120,0,640) ry=1.571 s=(1,1.142,1)",
+      "Advert ads_s_02_01/ads_01 @(-120,0,704) ry=-1.571 s=(1,0.937,1)",
+      "Advert ads_s_01_02/ads_03 @(-56,0,640) ry=-1.571 s=(1,0.898,1)",
+      "Advert ads_s_01_02/ads_05 @(-56,0,704) ry=-1.571 s=(1,0.897,1)",
     ],
     "ground": [
       "ground/ground @(-88,0,672) ry=0 s=(1,1,1)",
@@ -2468,8 +2482,8 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_02_03/building_03 @(-56,0,1008) ry=0 s=(1,1.075,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_01/ads_01 @(-120,0,1008) ry=0 s=(1,1.03,1)",
-      "Advert ads_s_02_02/ads_05 @(-56,0,944) ry=0 s=(1,1.06,1)",
+      "Advert ads_s_01_01/ads_04 @(-120,0,1008) ry=0 s=(1,1.03,1)",
+      "Advert ads_s_02_02/ads_03 @(-56,0,944) ry=0 s=(1,1.06,1)",
     ],
     "ground": [
       "ground/ground @(-88,0,976) ry=0 s=(1,1,1)",
@@ -2483,10 +2497,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_02/building_01 @(-208,0,-56) ry=1.571 s=(1,0.904,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_02 @(-272,0,-120) ry=-1.571 s=(1,0.92,1)",
-      "Advert ads_s_03_02/ads_02 @(-272,0,-56) ry=-1.571 s=(1,0.919,1)",
-      "Advert ads_s_03_01/ads_02 @(-208,0,-120) ry=1.571 s=(1,1.129,1)",
-      "Advert ads_s_03_01/ads_02 @(-208,0,-56) ry=-1.571 s=(1,0.904,1)",
+      "Advert ads_s_03_01/ads_04 @(-272,0,-120) ry=-1.571 s=(1,0.92,1)",
+      "Advert ads_s_03_02/ads_01 @(-272,0,-56) ry=-1.571 s=(1,0.919,1)",
+      "Advert ads_s_03_01/ads_03 @(-208,0,-120) ry=1.571 s=(1,1.129,1)",
+      "Advert ads_s_03_01/ads_05 @(-208,0,-56) ry=-1.571 s=(1,0.904,1)",
     ],
     "ground": [
       "ground/ground @(-240,0,-88) ry=0 s=(1,1,1)",
@@ -2501,7 +2515,8 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/building_03 @(-164,0,-164) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_03 @(-208,0,-272) ry=0 s=(1,1.057,1)",
+      "Spotlight spotlight/spotlight_04 @(-272,191.993,-272) ry=0 s=(19.259,19.259,19.259)",
+      "Advert ads_s_03_01/ads_04 @(-208,0,-272) ry=0 s=(1,1.057,1)",
     ],
     "ground": [
       "ground/ground @(-240,0,-240) ry=0 s=(1,1,1)",
@@ -2515,8 +2530,8 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_01/building_07 @(-208,0,-360) ry=1.571 s=(1,0.867,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_02 @(-208,0,-424) ry=-1.571 s=(1,0.941,1)",
-      "Advert ads_s_03_02/ads_02 @(-208,0,-360) ry=-1.571 s=(1,0.867,1)",
+      "Advert ads_s_03_01/ads_05 @(-208,0,-424) ry=-1.571 s=(1,0.941,1)",
+      "Advert ads_s_03_02/ads_05 @(-208,0,-360) ry=-1.571 s=(1,0.867,1)",
     ],
     "ground": [
       "ground/ground @(-240,0,-392) ry=0 s=(1,1,1)",
@@ -2531,11 +2546,12 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/building_03 @(-164,0,-468) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Topper topper_04/ads_large_01 @(-272,225.331,-576) ry=0 s=(1.074,1.074,1.074)",
+      "Topper topper_09/ads_large_04 @(-272,225.331,-576) ry=0 s=(1.685,1.685,1.685)",
+      "Smoke smoke/smoke_01 @(-272,225.331,-576) ry=0 s=(4.256,6.042,4.256)",
       "Advert ads_s_03_02/ads_04 @(-272,0,-576) ry=1.571 s=(1,1.186,1)",
       "Advert ads_s_03_02/ads_05 @(-272,0,-512) ry=0 s=(1,1.077,1)",
-      "Advert ads_s_03_02/ads_03 @(-208,0,-576) ry=0 s=(1,1.004,1)",
-      "Advert ads_s_03_01/ads_02 @(-208,0,-512) ry=0 s=(1,0.991,1)",
+      "Advert ads_s_03_02/ads_04 @(-208,0,-576) ry=0 s=(1,1.004,1)",
+      "Advert ads_s_03_01/ads_01 @(-208,0,-512) ry=0 s=(1,0.991,1)",
     ],
     "ground": [
       "ground/ground @(-240,0,-544) ry=0 s=(1,1,1)",
@@ -2549,8 +2565,8 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_01/building_01 @(-208,0,-664) ry=0 s=(1,0.839,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_04 @(-272,0,-664) ry=1.571 s=(1,1.155,1)",
-      "Advert ads_s_03_02/ads_04 @(-208,0,-664) ry=0 s=(1,0.839,1)",
+      "Advert ads_s_03_02/ads_03 @(-272,0,-664) ry=1.571 s=(1,1.155,1)",
+      "Advert ads_s_03_02/ads_01 @(-208,0,-664) ry=0 s=(1,0.839,1)",
     ],
     "ground": [
       "ground/ground @(-240,0,-696) ry=0 s=(1,1,1)",
@@ -2565,9 +2581,9 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/storefronts @(-164,0,-772) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_05 @(-272,0,-880) ry=0 s=(1,0.995,1)",
-      "Advert ads_s_03_01/ads_01 @(-272,0,-816) ry=-1.571 s=(1,0.926,1)",
-      "Advert ads_s_03_01/ads_03 @(-208,0,-880) ry=0 s=(1,0.784,1)",
+      "Advert ads_s_03_02/ads_02 @(-272,0,-880) ry=0 s=(1,0.995,1)",
+      "Advert ads_s_03_01/ads_02 @(-272,0,-816) ry=-1.571 s=(1,0.926,1)",
+      "Advert ads_s_03_01/ads_01 @(-208,0,-880) ry=0 s=(1,0.784,1)",
       "Advert ads_s_03_01/ads_05 @(-208,0,-816) ry=0 s=(1,0.75,1)",
     ],
     "ground": [
@@ -2601,7 +2617,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/building_03 @(-164,0,444) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_01/ads_01 @(-240,0,368) ry=0 s=(1,1.282,1)",
+      "Advert ads_s_04_01/ads_03 @(-240,0,368) ry=0 s=(1,1.282,1)",
     ],
     "ground": [
       "ground/ground @(-240,0,368) ry=0 s=(1,1,1)",
@@ -2615,8 +2631,8 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_02_01/building_05 @(-208,0,552) ry=0 s=(1,0.82,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_03 @(-272,0,488) ry=0 s=(1,1.082,1)",
-      "Advert ads_s_03_01/ads_01 @(-272,0,552) ry=0 s=(1,1.054,1)",
+      "Advert ads_s_03_01/ads_04 @(-272,0,488) ry=0 s=(1,1.082,1)",
+      "Advert ads_s_03_01/ads_05 @(-272,0,552) ry=0 s=(1,1.054,1)",
     ],
     "ground": [
       "ground/ground @(-240,0,520) ry=0 s=(1,1,1)",
@@ -2631,6 +2647,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/building_03 @(-164,0,748) ry=0 s=(1,1,1)",
     ],
     "decorations": [
+      "Smoke smoke/smoke_03 @(-272,174.886,640) ry=0 s=(7.068,9.756,7.068)",
       "Advert ads_s_03_01/ads_04 @(-272,0,640) ry=-1.571 s=(1,0.92,1)",
     ],
     "ground": [
@@ -2644,9 +2661,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_02_01/building_04 @(-208,0,792) ry=0 s=(1,0.762,1)",
       "s_02_02/building_04 @(-208,0,856) ry=1.571 s=(1,0.941,1)",
     ],
-    "decorations": [
-      "Smoke smoke/smoke_02 @(-208,178.845,856) ry=0 s=(7.746,9.665,7.746)",
-    ],
+    "decorations": [],
     "ground": [
       "ground/ground @(-240,0,824) ry=0 s=(1,1,1)",
     ],
@@ -2660,9 +2675,8 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/building_03 @(-164,0,1052) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Smoke smoke/smoke_03 @(-272,177.938,944) ry=0 s=(6.005,6.492,6.005)",
-      "Advert ads_s_02_02/ads_05 @(-208,0,944) ry=0 s=(1,0.821,1)",
-      "Advert ads_s_01_01/ads_03 @(-208,0,1008) ry=0 s=(1,1.057,1)",
+      "Advert ads_s_02_02/ads_03 @(-208,0,944) ry=0 s=(1,0.821,1)",
+      "Advert ads_s_01_01/ads_05 @(-208,0,1008) ry=0 s=(1,1.057,1)",
     ],
     "ground": [
       "ground/ground @(-240,0,976) ry=0 s=(1,1,1)",
@@ -2676,10 +2690,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_02/building_05 @(-360,0,-56) ry=0 s=(1,1.03,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_04 @(-424,0,-120) ry=-1.571 s=(1,0.932,1)",
-      "Advert ads_s_03_01/ads_05 @(-424,0,-56) ry=0 s=(1,0.75,1)",
-      "Advert ads_s_03_01/ads_02 @(-360,0,-120) ry=0 s=(1,1.078,1)",
-      "Advert ads_s_03_02/ads_04 @(-360,0,-56) ry=0 s=(1,1.03,1)",
+      "Advert ads_s_03_01/ads_03 @(-424,0,-120) ry=-1.571 s=(1,0.932,1)",
+      "Advert ads_s_03_01/ads_01 @(-424,0,-56) ry=0 s=(1,0.75,1)",
+      "Advert ads_s_03_01/ads_03 @(-360,0,-120) ry=0 s=(1,1.078,1)",
+      "Advert ads_s_03_02/ads_05 @(-360,0,-56) ry=0 s=(1,1.03,1)",
     ],
     "ground": [
       "ground/ground @(-392,0,-88) ry=0 s=(1,1,1)",
@@ -2692,7 +2706,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_03/building_01 @(-360,0,-272) ry=-1.571 s=(1,1.131,1)",
       "s_03_03/building_02 @(-360,0,-208) ry=-1.571 s=(1,1.2,1)",
     ],
-    "decorations": [],
+    "decorations": [
+      "Smoke smoke/smoke_01 @(-424,158.89,-272) ry=0 s=(1.772,2.313,1.772)",
+      "Smoke smoke/smoke_03 @(-424,219.11,-208) ry=0 s=(2.732,2.755,2.732)",
+    ],
     "ground": [
       "ground/ground @(-392,0,-240) ry=0 s=(1,1,1)",
     ],
@@ -2705,7 +2722,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_02_02/building_01 @(-360,0,-360) ry=0 s=(1,0.985,1)",
     ],
     "decorations": [
-      "Advert ads_s_02_02/ads_03 @(-424,0,-424) ry=0 s=(1,1.017,1)",
+      "Advert ads_s_02_02/ads_04 @(-424,0,-424) ry=0 s=(1,1.017,1)",
     ],
     "ground": [
       "ground/ground @(-392,0,-392) ry=0 s=(1,1,1)",
@@ -2757,10 +2774,9 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_02/building_03 @(-360,0,96) ry=1.571 s=(1,0.942,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_02 @(-424,0,32) ry=-1.571 s=(1,0.929,1)",
-      "Advert ads_s_03_01/ads_04 @(-424,0,96) ry=0 s=(1,1.015,1)",
-      "Smoke smoke/smoke_03 @(-360,221.779,32) ry=0 s=(8.651,11.833,8.651)",
-      "Advert ads_s_03_02/ads_04 @(-360,0,32) ry=1.571 s=(1,1.167,1)",
+      "Advert ads_s_03_02/ads_05 @(-424,0,32) ry=-1.571 s=(1,0.929,1)",
+      "Advert ads_s_03_01/ads_05 @(-424,0,96) ry=0 s=(1,1.015,1)",
+      "Advert ads_s_03_02/ads_05 @(-360,0,32) ry=1.571 s=(1,1.167,1)",
       "Advert ads_s_03_02/ads_03 @(-360,0,96) ry=-1.571 s=(1,0.942,1)",
     ],
     "ground": [
@@ -2772,7 +2788,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_04_01/building_05 @(-392,0,216) ry=-1.571 s=(1,1.422,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_01/ads_01 @(-392,0,216) ry=1.571 s=(1,1.422,1)",
+      "Advert ads_s_04_01/ads_03 @(-392,0,216) ry=1.571 s=(1,1.422,1)",
     ],
     "ground": [
       "ground/ground @(-392,0,216) ry=0 s=(1,1,1)",
@@ -2797,10 +2813,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_02/building_03 @(-360,0,552) ry=1.571 s=(1,0.943,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_03 @(-424,0,488) ry=1.571 s=(1,1.096,1)",
-      "Advert ads_s_03_02/ads_05 @(-424,0,552) ry=-1.571 s=(1,0.971,1)",
+      "Advert ads_s_03_01/ads_04 @(-424,0,488) ry=1.571 s=(1,1.096,1)",
+      "Advert ads_s_03_02/ads_04 @(-424,0,552) ry=-1.571 s=(1,0.971,1)",
       "Advert ads_s_03_01/ads_04 @(-360,0,488) ry=1.571 s=(1,1.104,1)",
-      "Advert ads_s_03_01/ads_04 @(-360,0,552) ry=-1.571 s=(1,0.943,1)",
+      "Advert ads_s_03_01/ads_02 @(-360,0,552) ry=-1.571 s=(1,0.943,1)",
     ],
     "ground": [
       "ground/ground @(-392,0,520) ry=0 s=(1,1,1)",
@@ -2811,7 +2827,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_04_01/building_04 @(-392,0,672) ry=0 s=(1,1.081,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_02/ads_05 @(-392,0,672) ry=0 s=(1,1.081,1)",
+      "Advert ads_s_04_02/ads_03 @(-392,0,672) ry=0 s=(1,1.081,1)",
     ],
     "ground": [
       "ground/ground @(-392,0,672) ry=0 s=(1,1,1)",
@@ -2849,10 +2865,11 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_02/building_02 @(-512,0,-56) ry=1.571 s=(1,0.924,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_01 @(-576,0,-120) ry=1.571 s=(1,1.145,1)",
+      "Advert ads_s_03_02/ads_03 @(-576,0,-120) ry=1.571 s=(1,1.145,1)",
       "Advert ads_s_03_01/ads_05 @(-576,0,-56) ry=1.571 s=(1,1.17,1)",
-      "Advert ads_s_03_02/ads_01 @(-512,0,-120) ry=0 s=(1,0.858,1)",
-      "Advert ads_s_03_01/ads_04 @(-512,0,-56) ry=-1.571 s=(1,0.924,1)",
+      "Smoke smoke/smoke_01 @(-512,162.993,-120) ry=0 s=(1.336,1.942,1.336)",
+      "Advert ads_s_03_02/ads_04 @(-512,0,-120) ry=0 s=(1,0.858,1)",
+      "Advert ads_s_03_01/ads_05 @(-512,0,-56) ry=-1.571 s=(1,0.924,1)",
     ],
     "ground": [
       "ground/ground @(-544,0,-88) ry=0 s=(1,1,1)",
@@ -2879,10 +2896,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_02_02/building_01 @(-512,0,-360) ry=0 s=(1,0.982,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_01/ads_01 @(-576,0,-424) ry=0 s=(1,0.844,1)",
-      "Advert ads_s_02_01/ads_04 @(-576,0,-360) ry=0 s=(1,0.848,1)",
+      "Advert ads_s_01_01/ads_03 @(-576,0,-424) ry=0 s=(1,0.844,1)",
+      "Advert ads_s_02_01/ads_03 @(-576,0,-360) ry=0 s=(1,0.848,1)",
       "Advert ads_s_01_01/ads_02 @(-512,0,-424) ry=-1.571 s=(1,0.918,1)",
-      "Advert ads_s_02_01/ads_03 @(-512,0,-360) ry=0 s=(1,0.982,1)",
+      "Advert ads_s_02_01/ads_04 @(-512,0,-360) ry=0 s=(1,0.982,1)",
     ],
     "ground": [
       "ground/ground @(-544,0,-392) ry=0 s=(1,1,1)",
@@ -2896,7 +2913,9 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_02_02/building_03 @(-512,0,-512) ry=1.571 s=(1,0.91,1)",
       "storefronts/building_02 @(-468,0,-468) ry=0 s=(1,1,1)",
     ],
-    "decorations": [],
+    "decorations": [
+      "Smoke smoke/smoke_03 @(-512,185.246,-576) ry=0 s=(8.421,11.829,8.421)",
+    ],
     "ground": [
       "ground/ground @(-544,0,-544) ry=0 s=(1,1,1)",
     ],
@@ -2922,8 +2941,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/building_02 @(-468,0,-772) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_03 @(-512,0,-880) ry=0 s=(1,0.984,1)",
-      "Smoke smoke/smoke_01 @(-512,167.467,-816) ry=0 s=(4.188,6.056,4.188)",
+      "Advert ads_s_03_01/ads_01 @(-512,0,-880) ry=0 s=(1,0.984,1)",
     ],
     "ground": [
       "ground/ground @(-544,0,-848) ry=0 s=(1,1,1)",
@@ -2938,9 +2956,9 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/building_07 @(-468,0,140) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_04 @(-576,0,32) ry=1.571 s=(1,1.097,1)",
-      "Advert ads_s_03_02/ads_02 @(-576,0,96) ry=1.571 s=(1,1.191,1)",
-      "Advert ads_s_03_01/ads_04 @(-512,0,32) ry=0 s=(1,1.07,1)",
+      "Advert ads_s_03_01/ads_03 @(-576,0,32) ry=1.571 s=(1,1.097,1)",
+      "Advert ads_s_03_02/ads_01 @(-576,0,96) ry=1.571 s=(1,1.191,1)",
+      "Advert ads_s_03_01/ads_03 @(-512,0,32) ry=0 s=(1,1.07,1)",
       "Advert ads_s_03_02/ads_04 @(-512,0,96) ry=1.571 s=(1,1.109,1)",
     ],
     "ground": [
@@ -2952,7 +2970,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_04_02/building_01 @(-544,0,216) ry=0 s=(1,1.048,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_01/ads_03 @(-544,0,216) ry=0 s=(1,1.048,1)",
+      "Advert ads_s_04_01/ads_04 @(-544,0,216) ry=0 s=(1,1.048,1)",
     ],
     "ground": [
       "ground/ground @(-544,0,216) ry=0 s=(1,1,1)",
@@ -2995,10 +3013,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_02/building_04 @(-512,0,856) ry=1.571 s=(1,0.918,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_02 @(-576,0,792) ry=0 s=(1,0.995,1)",
-      "Advert ads_s_03_01/ads_05 @(-576,0,856) ry=0 s=(1,0.844,1)",
-      "Advert ads_s_03_01/ads_05 @(-512,0,792) ry=0 s=(1,0.793,1)",
-      "Advert ads_s_03_01/ads_01 @(-512,0,856) ry=-1.571 s=(1,0.918,1)",
+      "Advert ads_s_03_01/ads_05 @(-576,0,792) ry=0 s=(1,0.995,1)",
+      "Advert ads_s_03_01/ads_03 @(-576,0,856) ry=0 s=(1,0.844,1)",
+      "Advert ads_s_03_01/ads_02 @(-512,0,792) ry=0 s=(1,0.793,1)",
+      "Advert ads_s_03_01/ads_05 @(-512,0,856) ry=-1.571 s=(1,0.918,1)",
     ],
     "ground": [
       "ground/ground @(-544,0,824) ry=0 s=(1,1,1)",
@@ -3013,10 +3031,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/building_07 @(-468,0,1052) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_05 @(-576,0,944) ry=0 s=(1,0.856,1)",
-      "Advert ads_s_03_01/ads_02 @(-576,0,1008) ry=0 s=(1,1.027,1)",
-      "Advert ads_s_03_01/ads_01 @(-512,0,944) ry=-1.571 s=(1,0.901,1)",
-      "Advert ads_s_03_02/ads_05 @(-512,0,1008) ry=1.571 s=(1,1.1,1)",
+      "Advert ads_s_03_02/ads_03 @(-576,0,944) ry=0 s=(1,0.856,1)",
+      "Advert ads_s_03_01/ads_03 @(-576,0,1008) ry=0 s=(1,1.027,1)",
+      "Advert ads_s_03_01/ads_02 @(-512,0,944) ry=-1.571 s=(1,0.901,1)",
+      "Advert ads_s_03_02/ads_04 @(-512,0,1008) ry=1.571 s=(1,1.1,1)",
     ],
     "ground": [
       "ground/ground @(-544,0,976) ry=0 s=(1,1,1)",
@@ -3030,7 +3048,8 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_02/building_04 @(-664,0,-56) ry=1.571 s=(1,0.954,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_05 @(-664,0,-56) ry=-1.571 s=(1,0.954,1)",
+      "Smoke smoke/smoke_03 @(-664,181.229,-56) ry=0 s=(6.397,6.574,6.397)",
+      "Advert ads_s_03_01/ads_04 @(-664,0,-56) ry=-1.571 s=(1,0.954,1)",
     ],
     "ground": [
       "ground/ground @(-696,0,-88) ry=0 s=(1,1,1)",
@@ -3044,7 +3063,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_01/building_05 @(-664,0,-208) ry=0 s=(1,0.857,1)",
     ],
     "decorations": [
-      "Smoke smoke/smoke_02 @(-664,162.885,-208) ry=0 s=(4.558,5.621,4.558)",
+      "Smoke smoke/smoke_02 @(-728,199.713,-272) ry=0 s=(8.298,10.637,8.298)",
     ],
     "ground": [
       "ground/ground @(-696,0,-240) ry=0 s=(1,1,1)",
@@ -3058,7 +3077,8 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_02_01/building_01 @(-664,0,-360) ry=1.571 s=(1,0.891,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_02/ads_05 @(-664,0,-424) ry=0 s=(1,0.75,1)",
+      "Smoke smoke/smoke_02 @(-728,145.787,-424) ry=0 s=(7.634,9.564,7.634)",
+      "Advert ads_s_01_02/ads_04 @(-664,0,-424) ry=0 s=(1,0.75,1)",
     ],
     "ground": [
       "ground/ground @(-696,0,-392) ry=0 s=(1,1,1)",
@@ -3073,7 +3093,8 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
     ],
     "decorations": [
       "Advert ads_s_02_01/ads_02 @(-728,0,-576) ry=0 s=(1,0.994,1)",
-      "Advert ads_s_02_01/ads_02 @(-664,0,-576) ry=-1.571 s=(1,0.908,1)",
+      "Smoke smoke/smoke_03 @(-664,172.536,-576) ry=0 s=(5.384,7.864,5.384)",
+      "Advert ads_s_02_01/ads_03 @(-664,0,-576) ry=-1.571 s=(1,0.908,1)",
       "Advert ads_s_02_02/ads_03 @(-664,0,-512) ry=1.571 s=(1,1.2,1)",
     ],
     "ground": [
@@ -3112,7 +3133,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_03/building_07 @(-664,0,96) ry=-1.571 s=(1,1.157,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_03 @(-664,0,96) ry=1.571 s=(1,1.157,1)",
+      "Advert ads_s_03_01/ads_02 @(-664,0,96) ry=1.571 s=(1,1.157,1)",
     ],
     "ground": [
       "ground/ground @(-696,0,64) ry=0 s=(1,1,1)",
@@ -3126,10 +3147,13 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_01/building_05 @(-664,0,248) ry=0 s=(1,0.806,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_03 @(-728,0,184) ry=0 s=(1,0.805,1)",
-      "Advert ads_s_03_01/ads_04 @(-728,0,248) ry=-1.571 s=(1,0.923,1)",
-      "Advert ads_s_03_02/ads_02 @(-664,0,184) ry=-1.571 s=(1,0.929,1)",
-      "Advert ads_s_03_01/ads_01 @(-664,0,248) ry=0 s=(1,0.806,1)",
+      "Smoke smoke/smoke_02 @(-728,152.884,184) ry=0 s=(1.95,2.674,1.95)",
+      "Advert ads_s_03_01/ads_04 @(-728,0,184) ry=0 s=(1,0.805,1)",
+      "Smoke smoke/smoke_02 @(-728,175.324,248) ry=0 s=(4.817,6.918,4.817)",
+      "Advert ads_s_03_01/ads_01 @(-728,0,248) ry=-1.571 s=(1,0.923,1)",
+      "Advert ads_s_03_02/ads_05 @(-664,0,184) ry=-1.571 s=(1,0.929,1)",
+      "Smoke smoke/smoke_01 @(-664,153.167,248) ry=0 s=(8.464,10.86,8.464)",
+      "Advert ads_s_03_01/ads_04 @(-664,0,248) ry=0 s=(1,0.806,1)",
     ],
     "ground": [
       "ground/ground @(-696,0,216) ry=0 s=(1,1,1)",
@@ -3144,9 +3168,9 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
     ],
     "decorations": [
       "Advert ads_s_03_02/ads_01 @(-728,0,336) ry=1.571 s=(1,1.179,1)",
-      "Advert ads_s_03_01/ads_03 @(-728,0,400) ry=0 s=(1,1.071,1)",
-      "Advert ads_s_03_01/ads_02 @(-664,0,336) ry=0 s=(1,0.99,1)",
-      "Advert ads_s_03_01/ads_01 @(-664,0,400) ry=0 s=(1,0.844,1)",
+      "Advert ads_s_03_01/ads_04 @(-728,0,400) ry=0 s=(1,1.071,1)",
+      "Advert ads_s_03_01/ads_03 @(-664,0,336) ry=0 s=(1,0.99,1)",
+      "Advert ads_s_03_01/ads_05 @(-664,0,400) ry=0 s=(1,0.844,1)",
     ],
     "ground": [
       "ground/ground @(-696,0,368) ry=0 s=(1,1,1)",
@@ -3160,11 +3184,11 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_03/building_05 @(-664,0,552) ry=-1.571 s=(1,1.2,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_03 @(-728,0,488) ry=-1.571 s=(1,0.952,1)",
-      "Advert ads_s_03_01/ads_01 @(-728,0,552) ry=1.571 s=(1,1.119,1)",
-      "Advert ads_s_03_02/ads_05 @(-664,0,488) ry=-1.571 s=(1,0.94,1)",
-      "Smoke smoke/smoke_03 @(-664,227.991,552) ry=0 s=(3.444,4.906,3.444)",
-      "Advert ads_s_03_02/ads_01 @(-664,0,552) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_03_01/ads_01 @(-728,0,488) ry=-1.571 s=(1,0.952,1)",
+      "Advert ads_s_03_01/ads_03 @(-728,0,552) ry=1.571 s=(1,1.119,1)",
+      "Advert ads_s_03_02/ads_03 @(-664,0,488) ry=-1.571 s=(1,0.94,1)",
+      "Spotlight spotlight/spotlight_03 @(-664,191.993,552) ry=0 s=(10.651,10.651,10.651)",
+      "Advert ads_s_03_02/ads_03 @(-664,0,552) ry=1.571 s=(1,1.2,1)",
     ],
     "ground": [
       "ground/ground @(-696,0,520) ry=0 s=(1,1,1)",
@@ -3175,7 +3199,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_04_02/building_04 @(-696,0,672) ry=1.571 s=(1,1.189,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_02/ads_03 @(-696,0,672) ry=-1.571 s=(1,1.189,1)",
+      "Advert ads_s_04_02/ads_02 @(-696,0,672) ry=-1.571 s=(1,1.189,1)",
     ],
     "ground": [
       "ground/ground @(-696,0,672) ry=0 s=(1,1,1)",
@@ -3189,7 +3213,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_01/building_02 @(-664,0,856) ry=0 s=(1,0.75,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_04 @(-664,0,792) ry=0 s=(1,0.984,1)",
+      "Advert ads_s_03_01/ads_02 @(-664,0,792) ry=0 s=(1,0.984,1)",
       "Advert ads_s_03_02/ads_02 @(-664,0,856) ry=0 s=(1,0.75,1)",
     ],
     "ground": [
@@ -3205,7 +3229,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
     ],
     "decorations": [
       "Advert ads_s_03_02/ads_02 @(-728,0,1008) ry=0 s=(1,1.051,1)",
-      "Advert ads_s_03_01/ads_05 @(-664,0,1008) ry=1.571 s=(1,1.1,1)",
+      "Advert ads_s_03_01/ads_04 @(-664,0,1008) ry=1.571 s=(1,1.1,1)",
     ],
     "ground": [
       "ground/ground @(-696,0,976) ry=0 s=(1,1,1)",
@@ -3231,7 +3255,9 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_02_03/building_04 @(-816,0,-208) ry=-1.571 s=(1,1.2,1)",
       "storefronts/building_07 @(-772,0,-164) ry=0 s=(1,1,1)",
     ],
-    "decorations": [],
+    "decorations": [
+      "Smoke smoke/smoke_03 @(-880,213.072,-208) ry=0 s=(2.685,3.598,2.685)",
+    ],
     "ground": [
       "ground/ground @(-848,0,-240) ry=0 s=(1,1,1)",
     ],
@@ -3257,11 +3283,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/storefronts @(-772,0,-468) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Smoke smoke/smoke_03 @(-880,212.946,-576) ry=0 s=(8.404,8.708,8.404)",
-      "Advert ads_s_01_01/ads_05 @(-880,0,-576) ry=1.571 s=(1,1.121,1)",
-      "Advert ads_s_01_02/ads_04 @(-880,0,-512) ry=1.571 s=(1,1.2,1)",
-      "Advert ads_s_01_01/ads_04 @(-816,0,-576) ry=0 s=(1,0.799,1)",
-      "Advert ads_s_01_01/ads_04 @(-816,0,-512) ry=0 s=(1,0.762,1)",
+      "Advert ads_s_01_01/ads_04 @(-880,0,-576) ry=1.571 s=(1,1.121,1)",
+      "Advert ads_s_01_02/ads_05 @(-880,0,-512) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_01_01/ads_03 @(-816,0,-576) ry=0 s=(1,0.799,1)",
+      "Advert ads_s_01_01/ads_05 @(-816,0,-512) ry=0 s=(1,0.762,1)",
     ],
     "ground": [
       "ground/ground @(-848,0,-544) ry=0 s=(1,1,1)",
@@ -3276,9 +3301,9 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
     ],
     "decorations": [
       "Advert ads_s_02_02/ads_05 @(-880,0,-728) ry=1.571 s=(1,1.2,1)",
-      "Advert ads_s_01_01/ads_03 @(-880,0,-664) ry=0 s=(1,0.979,1)",
-      "Advert ads_s_02_02/ads_01 @(-816,0,-728) ry=-1.571 s=(1,0.882,1)",
-      "Advert ads_s_01_02/ads_01 @(-816,0,-664) ry=0 s=(1,0.987,1)",
+      "Advert ads_s_01_01/ads_01 @(-880,0,-664) ry=0 s=(1,0.979,1)",
+      "Advert ads_s_02_02/ads_05 @(-816,0,-728) ry=-1.571 s=(1,0.882,1)",
+      "Advert ads_s_01_02/ads_03 @(-816,0,-664) ry=0 s=(1,0.987,1)",
     ],
     "ground": [
       "ground/ground @(-848,0,-696) ry=0 s=(1,1,1)",
@@ -3293,8 +3318,8 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/storefronts @(-772,0,-772) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_02/ads_04 @(-880,0,-816) ry=0 s=(1,0.994,1)",
-      "Advert ads_s_02_02/ads_05 @(-816,0,-816) ry=0 s=(1,0.804,1)",
+      "Advert ads_s_01_02/ads_01 @(-880,0,-816) ry=0 s=(1,0.994,1)",
+      "Advert ads_s_02_02/ads_04 @(-816,0,-816) ry=0 s=(1,0.804,1)",
     ],
     "ground": [
       "ground/ground @(-848,0,-848) ry=0 s=(1,1,1)",
@@ -3320,7 +3345,9 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_01/building_03 @(-816,0,184) ry=0 s=(1,0.761,1)",
       "s_03_02/building_01 @(-816,0,248) ry=1.571 s=(1,0.938,1)",
     ],
-    "decorations": [],
+    "decorations": [
+      "Smoke smoke/smoke_03 @(-880,197.474,248) ry=0 s=(2.446,3.59,2.446)",
+    ],
     "ground": [
       "ground/ground @(-848,0,216) ry=0 s=(1,1,1)",
     ],
@@ -3334,7 +3361,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/storefronts @(-772,0,444) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_03 @(-816,0,336) ry=0 s=(1,0.983,1)",
+      "Advert ads_s_03_01/ads_01 @(-816,0,336) ry=0 s=(1,0.983,1)",
       "Advert ads_s_03_01/ads_05 @(-816,0,400) ry=0 s=(1,0.828,1)",
     ],
     "ground": [
@@ -3349,11 +3376,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_01/building_03 @(-816,0,552) ry=1.571 s=(1,0.882,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_01 @(-880,0,488) ry=1.571 s=(1,1.149,1)",
-      "Advert ads_s_03_02/ads_03 @(-880,0,552) ry=1.571 s=(1,1.2,1)",
-      "Advert ads_s_03_01/ads_04 @(-816,0,488) ry=-1.571 s=(1,0.959,1)",
-      "Topper topper_10/ads_large_04 @(-816,167.631,552) ry=0 s=(1.691,1.691,1.691)",
-      "Smoke smoke/smoke_02 @(-816,167.631,552) ry=0 s=(1.428,2.007,1.428)",
+      "Advert ads_s_03_02/ads_04 @(-880,0,488) ry=1.571 s=(1,1.149,1)",
+      "Advert ads_s_03_02/ads_02 @(-880,0,552) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_03_01/ads_01 @(-816,0,488) ry=-1.571 s=(1,0.959,1)",
+      "Topper topper_05/ads_large_05 @(-816,167.631,552) ry=0 s=(1.012,1.012,1.012)",
       "Advert ads_s_03_02/ads_05 @(-816,0,552) ry=-1.571 s=(1,0.882,1)",
     ],
     "ground": [
@@ -3366,7 +3392,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/building_02 @(-772,0,748) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_03/ads_04 @(-848,0,672) ry=0 s=(1,1.109,1)",
+      "Advert ads_s_04_03/ads_02 @(-848,0,672) ry=0 s=(1,1.109,1)",
     ],
     "ground": [
       "ground/ground @(-848,0,672) ry=0 s=(1,1,1)",
@@ -3393,6 +3419,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/storefronts @(-772,0,1052) ry=0 s=(1,1,1)",
     ],
     "decorations": [
+      "Smoke smoke/smoke_02 @(-880,212.993,944) ry=0 s=(8.668,9.882,8.668)",
       "Advert ads_s_03_01/ads_04 @(-816,0,1008) ry=0 s=(1,0.763,1)",
     ],
     "ground": [
@@ -3414,7 +3441,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/building_07 @(140,0,-164) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_05_01/ads_large_03 @(64,0,-240) ry=1.571 s=(1,1.422,1)",
+      "Advert ads_s_05_01/ads_large_05 @(64,0,-240) ry=1.571 s=(1,1.422,1)",
     ],
     "ground": [
       "ground/ground @(64,0,-240) ry=0 s=(1,1,1)",
@@ -3444,7 +3471,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_04_02/building_01 @(64,0,-696) ry=0 s=(1,1.259,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_03/ads_05 @(64,0,-696) ry=0 s=(1,1.259,1)",
+      "Advert ads_s_04_03/ads_04 @(64,0,-696) ry=0 s=(1,1.259,1)",
     ],
     "ground": [
       "ground/ground @(64,0,-696) ry=0 s=(1,1,1)",
@@ -3459,12 +3486,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/building_02 @(140,0,-772) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Spotlight spotlight/spotlight_02 @(32,191.993,-880) ry=0 s=(18.945,18.945,18.945)",
-      "Advert ads_s_03_02/ads_03 @(32,0,-880) ry=1.571 s=(1,1.2,1)",
-      "Smoke smoke/smoke_02 @(32,227.991,-816) ry=0 s=(8.315,12.372,8.315)",
-      "Advert ads_s_03_02/ads_04 @(32,0,-816) ry=1.571 s=(1,1.2,1)",
-      "Advert ads_s_03_02/ads_05 @(96,0,-880) ry=0 s=(1,0.75,1)",
-      "Advert ads_s_03_02/ads_02 @(96,0,-816) ry=-1.571 s=(1,0.876,1)",
+      "Advert ads_s_03_02/ads_05 @(32,0,-880) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_03_02/ads_01 @(32,0,-816) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_03_02/ads_04 @(96,0,-880) ry=0 s=(1,0.75,1)",
+      "Advert ads_s_03_02/ads_04 @(96,0,-816) ry=-1.571 s=(1,0.876,1)",
     ],
     "ground": [
       "ground/ground @(64,0,-848) ry=0 s=(1,1,1)",
@@ -3479,8 +3504,9 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/building_07 @(140,0,140) ry=0 s=(1,1,1)",
     ],
     "decorations": [
+      "Spotlight spotlight/spotlight_01 @(32,191.993,32) ry=0 s=(19.559,19.559,19.559)",
       "Advert ads_s_03_01/ads_05 @(32,0,32) ry=1.571 s=(1,1.2,1)",
-      "Advert ads_s_03_01/ads_05 @(96,0,32) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_03_01/ads_03 @(96,0,32) ry=1.571 s=(1,1.2,1)",
     ],
     "ground": [
       "ground/ground @(64,0,64) ry=0 s=(1,1,1)",
@@ -3508,9 +3534,8 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
     ],
     "decorations": [
       "Advert ads_s_01_02/ads_01 @(32,0,336) ry=-1.571 s=(1,0.896,1)",
-      "Advert ads_s_01_02/ads_05 @(32,0,400) ry=1.571 s=(1,1.2,1)",
-      "Advert ads_s_02_01/ads_04 @(96,0,336) ry=-1.571 s=(1,0.974,1)",
-      "Smoke smoke/smoke_01 @(96,142.569,400) ry=0 s=(1.467,1.842,1.467)",
+      "Advert ads_s_01_02/ads_01 @(32,0,400) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_02_01/ads_01 @(96,0,336) ry=-1.571 s=(1,0.974,1)",
     ],
     "ground": [
       "ground/ground @(64,0,368) ry=0 s=(1,1,1)",
@@ -3524,11 +3549,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_01_01/building_02 @(96,0,552) ry=1.571 s=(1,0.864,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_02/ads_01 @(32,0,488) ry=0 s=(1,1.037,1)",
-      "Advert ads_s_01_01/ads_01 @(32,0,552) ry=-1.571 s=(1,0.92,1)",
-      "Advert ads_s_02_01/ads_02 @(96,0,488) ry=0 s=(1,0.83,1)",
-      "Smoke smoke/smoke_02 @(96,164.219,552) ry=0 s=(8.608,11.842,8.608)",
-      "Advert ads_s_01_01/ads_04 @(96,0,552) ry=-1.571 s=(1,0.864,1)",
+      "Advert ads_s_01_02/ads_05 @(32,0,488) ry=0 s=(1,1.037,1)",
+      "Advert ads_s_01_01/ads_02 @(32,0,552) ry=-1.571 s=(1,0.92,1)",
+      "Advert ads_s_02_01/ads_05 @(96,0,488) ry=0 s=(1,0.83,1)",
+      "Advert ads_s_01_01/ads_02 @(96,0,552) ry=-1.571 s=(1,0.864,1)",
     ],
     "ground": [
       "ground/ground @(64,0,520) ry=0 s=(1,1,1)",
@@ -3551,7 +3575,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_02_02/building_02 @(96,0,856) ry=0 s=(1,1.017,1)",
     ],
     "decorations": [
-      "Advert ads_s_02_02/ads_02 @(32,0,792) ry=0 s=(1,0.996,1)",
+      "Advert ads_s_02_02/ads_03 @(32,0,792) ry=0 s=(1,0.996,1)",
       "Advert ads_s_02_01/ads_02 @(96,0,792) ry=1.571 s=(1,1.171,1)",
     ],
     "ground": [
@@ -3567,8 +3591,9 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/storefronts @(140,0,1052) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_02_02/ads_05 @(32,0,1008) ry=-1.571 s=(1,0.907,1)",
-      "Advert ads_s_01_01/ads_03 @(96,0,1008) ry=0 s=(1,0.861,1)",
+      "Smoke smoke/smoke_01 @(32,215.253,944) ry=0 s=(6.894,9.143,6.894)",
+      "Advert ads_s_02_02/ads_03 @(32,0,1008) ry=-1.571 s=(1,0.907,1)",
+      "Advert ads_s_01_01/ads_01 @(96,0,1008) ry=0 s=(1,0.861,1)",
     ],
     "ground": [
       "ground/ground @(64,0,976) ry=0 s=(1,1,1)",
@@ -3597,7 +3622,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_04_01/building_03 @(216,0,-392) ry=1.571 s=(1,1.161,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_02/ads_03 @(216,0,-392) ry=-1.571 s=(1,1.161,1)",
+      "Advert ads_s_04_02/ads_01 @(216,0,-392) ry=-1.571 s=(1,1.161,1)",
     ],
     "ground": [
       "ground/ground @(216,0,-392) ry=0 s=(1,1,1)",
@@ -3608,7 +3633,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_04_01/building_04 @(216,0,-544) ry=-1.571 s=(1,1.418,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_03/ads_02 @(216,0,-544) ry=1.571 s=(1,1.418,1)",
+      "Advert ads_s_04_03/ads_03 @(216,0,-544) ry=1.571 s=(1,1.418,1)",
     ],
     "ground": [
       "ground/ground @(216,0,-544) ry=0 s=(1,1,1)",
@@ -3622,12 +3647,12 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_03/building_05 @(248,0,-664) ry=-1.571 s=(1,1.106,1)",
     ],
     "decorations": [
-      "Topper topper_06/ads_large_01 @(184,227.869,-728) ry=0 s=(1.019,1.019,1.019)",
-      "Advert ads_s_03_01/ads_02 @(184,0,-728) ry=1.571 s=(1,1.199,1)",
-      "Topper topper_04/ads_large_01 @(184,192.655,-664) ry=0 s=(1.162,1.162,1.162)",
-      "Advert ads_s_03_02/ads_03 @(184,0,-664) ry=0 s=(1,1.014,1)",
-      "Advert ads_s_03_02/ads_04 @(248,0,-728) ry=0 s=(1,0.998,1)",
-      "Advert ads_s_03_02/ads_03 @(248,0,-664) ry=1.571 s=(1,1.106,1)",
+      "Topper topper_05/ads_large_05 @(184,227.869,-728) ry=0 s=(1.125,1.125,1.125)",
+      "Advert ads_s_03_01/ads_01 @(184,0,-728) ry=1.571 s=(1,1.199,1)",
+      "Topper topper_09/ads_large_04 @(184,192.655,-664) ry=0 s=(1.156,1.156,1.156)",
+      "Advert ads_s_03_02/ads_01 @(184,0,-664) ry=0 s=(1,1.014,1)",
+      "Advert ads_s_03_02/ads_03 @(248,0,-728) ry=0 s=(1,0.998,1)",
+      "Advert ads_s_03_02/ads_04 @(248,0,-664) ry=1.571 s=(1,1.106,1)",
     ],
     "ground": [
       "ground/ground @(216,0,-696) ry=0 s=(1,1,1)",
@@ -3641,12 +3666,12 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_01/building_05 @(248,0,-816) ry=0 s=(1,0.848,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_05 @(184,0,-880) ry=0 s=(1,0.831,1)",
-      "Advert ads_s_03_02/ads_05 @(184,0,-816) ry=0 s=(1,1.034,1)",
-      "Smoke smoke/smoke_02 @(248,172.329,-880) ry=0 s=(5.966,6.117,5.966)",
-      "Advert ads_s_03_01/ads_04 @(248,0,-880) ry=-1.571 s=(1,0.907,1)",
-      "Topper topper_07/ads_large_04 @(248,161.124,-816) ry=0 s=(1.047,1.047,1.047)",
-      "Advert ads_s_03_01/ads_05 @(248,0,-816) ry=0 s=(1,0.848,1)",
+      "Advert ads_s_03_01/ads_02 @(184,0,-880) ry=0 s=(1,0.831,1)",
+      "Advert ads_s_03_02/ads_03 @(184,0,-816) ry=0 s=(1,1.034,1)",
+      "Smoke smoke/smoke_03 @(248,172.329,-880) ry=0 s=(3.288,3.55,3.288)",
+      "Advert ads_s_03_01/ads_03 @(248,0,-880) ry=-1.571 s=(1,0.907,1)",
+      "Topper topper_08/ads_large_03 @(248,161.124,-816) ry=0 s=(1.044,1.044,1.044)",
+      "Advert ads_s_03_01/ads_02 @(248,0,-816) ry=0 s=(1,0.848,1)",
     ],
     "ground": [
       "ground/ground @(216,0,-848) ry=0 s=(1,1,1)",
@@ -3657,7 +3682,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_04_01/building_04 @(216,0,64) ry=-1.571 s=(1,1.388,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_01/ads_03 @(216,0,64) ry=1.571 s=(1,1.388,1)",
+      "Advert ads_s_04_01/ads_01 @(216,0,64) ry=1.571 s=(1,1.388,1)",
     ],
     "ground": [
       "ground/ground @(216,0,64) ry=0 s=(1,1,1)",
@@ -3670,7 +3695,9 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_02_02/building_01 @(248,0,184) ry=1.571 s=(1,0.91,1)",
       "s_02_02/building_04 @(248,0,248) ry=1.571 s=(1,0.961,1)",
     ],
-    "decorations": [],
+    "decorations": [
+      "Smoke smoke/smoke_03 @(248,172.888,184) ry=0 s=(7.043,9.776,7.043)",
+    ],
     "ground": [
       "ground/ground @(216,0,216) ry=0 s=(1,1,1)",
     ],
@@ -3683,10 +3710,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_01_02/building_04 @(248,0,400) ry=1.571 s=(1,0.907,1)",
     ],
     "decorations": [
-      "Advert ads_s_02_02/ads_04 @(184,0,336) ry=0 s=(1,0.832,1)",
+      "Advert ads_s_02_02/ads_05 @(184,0,336) ry=0 s=(1,0.832,1)",
       "Advert ads_s_02_01/ads_05 @(184,0,400) ry=0 s=(1,0.831,1)",
       "Advert ads_s_01_01/ads_01 @(248,0,336) ry=1.571 s=(1,1.153,1)",
-      "Advert ads_s_01_01/ads_02 @(248,0,400) ry=-1.571 s=(1,0.907,1)",
+      "Advert ads_s_01_01/ads_01 @(248,0,400) ry=-1.571 s=(1,0.907,1)",
     ],
     "ground": [
       "ground/ground @(216,0,368) ry=0 s=(1,1,1)",
@@ -3701,8 +3728,9 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
     ],
     "decorations": [
       "Advert ads_s_02_02/ads_01 @(184,0,488) ry=1.571 s=(1,1.112,1)",
+      "Smoke smoke/smoke_03 @(184,227.869,552) ry=0 s=(1.539,1.689,1.539)",
       "Advert ads_s_01_01/ads_04 @(184,0,552) ry=1.571 s=(1,1.199,1)",
-      "Advert ads_s_01_02/ads_01 @(248,0,488) ry=0 s=(1,1.085,1)",
+      "Advert ads_s_01_02/ads_03 @(248,0,488) ry=0 s=(1,1.085,1)",
       "Advert ads_s_01_02/ads_05 @(248,0,552) ry=0 s=(1,0.998,1)",
     ],
     "ground": [
@@ -3717,10 +3745,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_01_03/building_05 @(248,0,704) ry=-1.571 s=(1,1.135,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_01/ads_04 @(184,0,640) ry=1.571 s=(1,1.104,1)",
+      "Advert ads_s_01_01/ads_01 @(184,0,640) ry=1.571 s=(1,1.104,1)",
       "Advert ads_s_02_01/ads_04 @(184,0,704) ry=-1.571 s=(1,0.945,1)",
       "Advert ads_s_01_01/ads_01 @(248,0,640) ry=1.571 s=(1,1.12,1)",
-      "Advert ads_s_01_01/ads_01 @(248,0,704) ry=1.571 s=(1,1.135,1)",
+      "Advert ads_s_01_01/ads_02 @(248,0,704) ry=1.571 s=(1,1.135,1)",
     ],
     "ground": [
       "ground/ground @(216,0,672) ry=0 s=(1,1,1)",
@@ -3733,7 +3761,9 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_02_02/building_05 @(248,0,792) ry=0 s=(1,0.982,1)",
       "s_02_01/building_02 @(248,0,856) ry=0 s=(1,0.821,1)",
     ],
-    "decorations": [],
+    "decorations": [
+      "Smoke smoke/smoke_03 @(184,216.868,792) ry=0 s=(6.841,9.265,6.841)",
+    ],
     "ground": [
       "ground/ground @(216,0,824) ry=0 s=(1,1,1)",
     ],
@@ -3746,7 +3776,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_02_03/building_07 @(248,0,1008) ry=-1.571 s=(1,1.094,1)",
     ],
     "decorations": [
-      "Advert ads_s_02_02/ads_05 @(184,0,1008) ry=0 s=(1,0.998,1)",
+      "Advert ads_s_02_02/ads_04 @(184,0,1008) ry=0 s=(1,0.998,1)",
     ],
     "ground": [
       "ground/ground @(216,0,976) ry=0 s=(1,1,1)",
@@ -3757,7 +3787,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_05_03/building_03 @(368,0,-88) ry=0 s=(1,1.308,1)",
     ],
     "decorations": [
-      "Advert ads_s_05_04/ads_large_02 @(368,0,-88) ry=0 s=(1,1.308,1)",
+      "Advert ads_s_05_04/ads_large_01 @(368,0,-88) ry=0 s=(1,1.308,1)",
     ],
     "ground": [
       "ground/ground @(368,0,-88) ry=0 s=(1,1,1)",
@@ -3769,7 +3799,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/building_03 @(444,0,-164) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_05_04/ads_large_04 @(368,0,-240) ry=-1.571 s=(1,1.149,1)",
+      "Advert ads_s_05_04/ads_large_01 @(368,0,-240) ry=-1.571 s=(1,1.149,1)",
     ],
     "ground": [
       "ground/ground @(368,0,-240) ry=0 s=(1,1,1)",
@@ -3780,7 +3810,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_04_03/building_08 @(368,0,-392) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_04/ads_02 @(368,0,-392) ry=0 s=(1,1,1)",
+      "Advert ads_s_04_04/ads_04 @(368,0,-392) ry=0 s=(1,1,1)",
     ],
     "ground": [
       "ground/ground @(368,0,-392) ry=0 s=(1,1,1)",
@@ -3796,9 +3826,9 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
     ],
     "decorations": [
       "Advert ads_s_03_01/ads_02 @(336,0,-576) ry=-1.571 s=(1,0.914,1)",
-      "Advert ads_s_03_01/ads_02 @(336,0,-512) ry=0 s=(1,1.002,1)",
-      "Advert ads_s_03_01/ads_02 @(400,0,-576) ry=1.571 s=(1,1.2,1)",
-      "Advert ads_s_03_01/ads_05 @(400,0,-512) ry=0 s=(1,0.85,1)",
+      "Advert ads_s_03_01/ads_01 @(336,0,-512) ry=0 s=(1,1.002,1)",
+      "Advert ads_s_03_01/ads_04 @(400,0,-576) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_03_01/ads_01 @(400,0,-512) ry=0 s=(1,0.85,1)",
     ],
     "ground": [
       "ground/ground @(368,0,-544) ry=0 s=(1,1,1)",
@@ -3809,7 +3839,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_04_02/building_05 @(368,0,-696) ry=-1.571 s=(1,1.5,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_03/ads_03 @(368,0,-696) ry=1.571 s=(1,1.5,1)",
+      "Advert ads_s_04_03/ads_05 @(368,0,-696) ry=1.571 s=(1,1.5,1)",
     ],
     "ground": [
       "ground/ground @(368,0,-696) ry=0 s=(1,1,1)",
@@ -3825,7 +3855,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
     ],
     "decorations": [
       "Advert ads_s_03_01/ads_04 @(336,0,-816) ry=0 s=(1,1.07,1)",
-      "Advert ads_s_03_02/ads_02 @(400,0,-816) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_03_02/ads_01 @(400,0,-816) ry=1.571 s=(1,1.2,1)",
     ],
     "ground": [
       "ground/ground @(368,0,-848) ry=0 s=(1,1,1)",
@@ -3837,7 +3867,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/building_07 @(444,0,140) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_03/ads_02 @(368,0,64) ry=-1.571 s=(1,1.209,1)",
+      "Advert ads_s_04_03/ads_03 @(368,0,64) ry=-1.571 s=(1,1.209,1)",
     ],
     "ground": [
       "ground/ground @(368,0,64) ry=0 s=(1,1,1)",
@@ -3850,9 +3880,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_01/building_07 @(400,0,184) ry=1.571 s=(1,0.876,1)",
       "s_02_03/building_01 @(400,0,248) ry=-1.571 s=(1,1.148,1)",
     ],
-    "decorations": [
-      "Smoke smoke/smoke_02 @(400,166.382,184) ry=0 s=(8.84,10.649,8.84)",
-    ],
+    "decorations": [],
     "ground": [
       "ground/ground @(368,0,216) ry=0 s=(1,1,1)",
     ],
@@ -3866,10 +3894,11 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/building_02 @(444,0,444) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_02_02/ads_05 @(336,0,336) ry=-1.571 s=(1,0.964,1)",
-      "Advert ads_s_01_01/ads_01 @(336,0,400) ry=-1.571 s=(1,0.89,1)",
-      "Advert ads_s_02_01/ads_05 @(400,0,336) ry=1.571 s=(1,1.2,1)",
-      "Advert ads_s_01_01/ads_04 @(400,0,400) ry=-1.571 s=(1,0.9,1)",
+      "Smoke smoke/smoke_01 @(336,183.156,336) ry=0 s=(6.182,7.801,6.182)",
+      "Advert ads_s_02_02/ads_02 @(336,0,336) ry=-1.571 s=(1,0.964,1)",
+      "Advert ads_s_01_01/ads_02 @(336,0,400) ry=-1.571 s=(1,0.89,1)",
+      "Advert ads_s_02_01/ads_02 @(400,0,336) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_01_01/ads_03 @(400,0,400) ry=-1.571 s=(1,0.9,1)",
     ],
     "ground": [
       "ground/ground @(368,0,368) ry=0 s=(1,1,1)",
@@ -3883,11 +3912,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_01_01/building_07 @(400,0,552) ry=0 s=(1,0.826,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_01/ads_02 @(336,0,488) ry=1.571 s=(1,1.2,1)",
-      "Advert ads_s_01_02/ads_05 @(336,0,552) ry=0 s=(1,0.853,1)",
-      "Smoke smoke/smoke_02 @(400,160.177,488) ry=0 s=(7.31,10.663,7.31)",
-      "Advert ads_s_01_02/ads_03 @(400,0,488) ry=0 s=(1,0.843,1)",
-      "Advert ads_s_01_01/ads_05 @(400,0,552) ry=0 s=(1,0.826,1)",
+      "Advert ads_s_01_01/ads_03 @(336,0,488) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_01_02/ads_03 @(336,0,552) ry=0 s=(1,0.853,1)",
+      "Advert ads_s_01_02/ads_01 @(400,0,488) ry=0 s=(1,0.843,1)",
+      "Advert ads_s_01_01/ads_03 @(400,0,552) ry=0 s=(1,0.826,1)",
     ],
     "ground": [
       "ground/ground @(368,0,520) ry=0 s=(1,1,1)",
@@ -3902,10 +3930,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/building_07 @(444,0,748) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_01/ads_04 @(336,0,640) ry=0 s=(1,0.984,1)",
-      "Advert ads_s_02_01/ads_03 @(336,0,704) ry=-1.571 s=(1,0.914,1)",
-      "Advert ads_s_01_02/ads_04 @(400,0,640) ry=0 s=(1,0.994,1)",
-      "Advert ads_s_01_01/ads_04 @(400,0,704) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_01_01/ads_05 @(336,0,640) ry=0 s=(1,0.984,1)",
+      "Advert ads_s_02_01/ads_04 @(336,0,704) ry=-1.571 s=(1,0.914,1)",
+      "Advert ads_s_01_02/ads_03 @(400,0,640) ry=0 s=(1,0.994,1)",
+      "Advert ads_s_01_01/ads_05 @(400,0,704) ry=1.571 s=(1,1.2,1)",
     ],
     "ground": [
       "ground/ground @(368,0,672) ry=0 s=(1,1,1)",
@@ -3919,7 +3947,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_02_03/building_05 @(400,0,856) ry=-1.571 s=(1,1.2,1)",
     ],
     "decorations": [
-      "Smoke smoke/smoke_01 @(400,227.991,856) ry=0 s=(7.395,10.475,7.395)",
+      "Smoke smoke/smoke_03 @(336,198.727,792) ry=0 s=(5.213,5.884,5.213)",
     ],
     "ground": [
       "ground/ground @(368,0,824) ry=0 s=(1,1,1)",
@@ -3943,7 +3971,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_05_02/building_03 @(520,0,-88) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_05_04/ads_large_03 @(520,0,-88) ry=0 s=(1,1,1)",
+      "Advert ads_s_05_04/ads_large_04 @(520,0,-88) ry=0 s=(1,1,1)",
     ],
     "ground": [
       "ground/ground @(520,0,-88) ry=0 s=(1,1,1)",
@@ -3963,7 +3991,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_05_01/building_04 @(520,0,-392) ry=0 s=(1,1.068,1)",
     ],
     "decorations": [
-      "Advert ads_s_05_02/ads_large_02 @(520,0,-392) ry=0 s=(1,1.068,1)",
+      "Advert ads_s_05_02/ads_large_03 @(520,0,-392) ry=0 s=(1,1.068,1)",
     ],
     "ground": [
       "ground/ground @(520,0,-392) ry=0 s=(1,1,1)",
@@ -3974,7 +4002,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_05_03/building_05 @(520,0,-544) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_05_04/ads_large_01 @(520,0,-544) ry=0 s=(1,1,1)",
+      "Advert ads_s_05_04/ads_large_04 @(520,0,-544) ry=0 s=(1,1,1)",
     ],
     "ground": [
       "ground/ground @(520,0,-544) ry=0 s=(1,1,1)",
@@ -3985,7 +4013,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_05_02/building_03 @(520,0,-696) ry=0 s=(1,1.05,1)",
     ],
     "decorations": [
-      "Advert ads_s_05_03/ads_large_02 @(520,0,-696) ry=0 s=(1,1.05,1)",
+      "Advert ads_s_05_03/ads_large_05 @(520,0,-696) ry=0 s=(1,1.05,1)",
     ],
     "ground": [
       "ground/ground @(520,0,-696) ry=0 s=(1,1,1)",
@@ -3999,11 +4027,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_02/building_02 @(552,0,-816) ry=0 s=(1,1.004,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_04 @(488,0,-880) ry=0 s=(1,0.75,1)",
-      "Smoke smoke/smoke_03 @(488,187.035,-816) ry=0 s=(1.378,1.746,1.378)",
-      "Advert ads_s_03_02/ads_01 @(488,0,-816) ry=0 s=(1,0.984,1)",
-      "Advert ads_s_03_02/ads_02 @(552,0,-880) ry=-1.571 s=(1,0.867,1)",
-      "Advert ads_s_03_02/ads_02 @(552,0,-816) ry=0 s=(1,1.004,1)",
+      "Advert ads_s_03_02/ads_02 @(488,0,-880) ry=0 s=(1,0.75,1)",
+      "Advert ads_s_03_02/ads_05 @(488,0,-816) ry=0 s=(1,0.984,1)",
+      "Advert ads_s_03_02/ads_04 @(552,0,-880) ry=-1.571 s=(1,0.867,1)",
+      "Advert ads_s_03_02/ads_03 @(552,0,-816) ry=0 s=(1,1.004,1)",
     ],
     "ground": [
       "ground/ground @(520,0,-848) ry=0 s=(1,1,1)",
@@ -4017,10 +4044,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_03/building_07 @(552,0,96) ry=0 s=(1,1.05,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_03 @(488,0,32) ry=0 s=(1,1.023,1)",
-      "Advert ads_s_03_01/ads_01 @(488,0,96) ry=1.571 s=(1,1.2,1)",
-      "Advert ads_s_03_02/ads_04 @(552,0,32) ry=-1.571 s=(1,0.869,1)",
-      "Advert ads_s_03_02/ads_03 @(552,0,96) ry=0 s=(1,1.05,1)",
+      "Advert ads_s_03_02/ads_02 @(488,0,32) ry=0 s=(1,1.023,1)",
+      "Advert ads_s_03_01/ads_05 @(488,0,96) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_03_02/ads_02 @(552,0,32) ry=-1.571 s=(1,0.869,1)",
+      "Advert ads_s_03_02/ads_05 @(552,0,96) ry=0 s=(1,1.05,1)",
     ],
     "ground": [
       "ground/ground @(520,0,64) ry=0 s=(1,1,1)",
@@ -4046,10 +4073,11 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_01_01/building_01 @(552,0,400) ry=1.571 s=(1,0.867,1)",
     ],
     "decorations": [
-      "Advert ads_s_02_01/ads_03 @(488,0,336) ry=-1.571 s=(1,0.891,1)",
+      "Advert ads_s_02_01/ads_02 @(488,0,336) ry=-1.571 s=(1,0.891,1)",
       "Advert ads_s_01_01/ads_05 @(488,0,400) ry=0 s=(1,0.75,1)",
+      "Smoke smoke/smoke_03 @(552,178.602,336) ry=0 s=(7.397,8.068,7.397)",
       "Advert ads_s_02_02/ads_03 @(552,0,336) ry=-1.571 s=(1,0.94,1)",
-      "Advert ads_s_01_01/ads_01 @(552,0,400) ry=-1.571 s=(1,0.867,1)",
+      "Advert ads_s_01_01/ads_05 @(552,0,400) ry=-1.571 s=(1,0.867,1)",
     ],
     "ground": [
       "ground/ground @(520,0,368) ry=0 s=(1,1,1)",
@@ -4063,9 +4091,9 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_01_01/building_02 @(552,0,552) ry=1.571 s=(1,0.896,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_01/ads_04 @(488,0,488) ry=0 s=(1,0.857,1)",
+      "Advert ads_s_01_01/ads_05 @(488,0,488) ry=0 s=(1,0.857,1)",
       "Advert ads_s_01_02/ads_02 @(488,0,552) ry=0 s=(1,1.052,1)",
-      "Advert ads_s_01_01/ads_01 @(552,0,488) ry=0 s=(1,0.83,1)",
+      "Advert ads_s_01_01/ads_05 @(552,0,488) ry=0 s=(1,0.83,1)",
       "Advert ads_s_01_01/ads_02 @(552,0,552) ry=-1.571 s=(1,0.896,1)",
     ],
     "ground": [
@@ -4087,10 +4115,9 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_01_02/building_05 @(552,0,856) ry=0 s=(1,1.027,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_01/ads_04 @(488,0,792) ry=1.571 s=(1,1.157,1)",
-      "Advert ads_s_02_01/ads_02 @(488,0,856) ry=0 s=(1,0.798,1)",
-      "Smoke smoke/smoke_01 @(552,190.879,792) ry=0 s=(3.405,3.69,3.405)",
-      "Advert ads_s_01_01/ads_02 @(552,0,792) ry=0 s=(1,1.005,1)",
+      "Advert ads_s_01_01/ads_05 @(488,0,792) ry=1.571 s=(1,1.157,1)",
+      "Advert ads_s_02_01/ads_01 @(488,0,856) ry=0 s=(1,0.798,1)",
+      "Advert ads_s_01_01/ads_04 @(552,0,792) ry=0 s=(1,1.005,1)",
       "Advert ads_s_01_01/ads_03 @(552,0,856) ry=0 s=(1,1.027,1)",
     ],
     "ground": [
@@ -4124,7 +4151,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/storefronts @(748,0,-164) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_05_02/ads_large_04 @(672,0,-240) ry=-1.571 s=(1,1.249,1)",
+      "Advert ads_s_05_02/ads_large_01 @(672,0,-240) ry=-1.571 s=(1,1.249,1)",
     ],
     "ground": [
       "ground/ground @(672,0,-240) ry=0 s=(1,1,1)",
@@ -4135,7 +4162,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_05_01/building_05 @(672,0,-392) ry=0 s=(1,1.108,1)",
     ],
     "decorations": [
-      "Advert ads_s_05_02/ads_large_02 @(672,0,-392) ry=0 s=(1,1.108,1)",
+      "Advert ads_s_05_02/ads_large_01 @(672,0,-392) ry=0 s=(1,1.108,1)",
     ],
     "ground": [
       "ground/ground @(672,0,-392) ry=0 s=(1,1,1)",
@@ -4158,7 +4185,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_04_01/building_05 @(672,0,-696) ry=0 s=(1,1.269,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_01/ads_01 @(672,0,-696) ry=0 s=(1,1.269,1)",
+      "Advert ads_s_04_01/ads_04 @(672,0,-696) ry=0 s=(1,1.269,1)",
     ],
     "ground": [
       "ground/ground @(672,0,-696) ry=0 s=(1,1,1)",
@@ -4173,10 +4200,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/building_07 @(748,0,-772) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_02/ads_05 @(640,0,-880) ry=0 s=(1,0.799,1)",
-      "Advert ads_s_03_01/ads_05 @(640,0,-816) ry=0 s=(1,0.793,1)",
-      "Advert ads_s_03_02/ads_01 @(704,0,-880) ry=0 s=(1,0.848,1)",
-      "Advert ads_s_03_01/ads_05 @(704,0,-816) ry=1.571 s=(1,1.097,1)",
+      "Advert ads_s_03_02/ads_02 @(640,0,-880) ry=0 s=(1,0.799,1)",
+      "Advert ads_s_03_01/ads_02 @(640,0,-816) ry=0 s=(1,0.793,1)",
+      "Advert ads_s_03_02/ads_05 @(704,0,-880) ry=0 s=(1,0.848,1)",
+      "Advert ads_s_03_01/ads_01 @(704,0,-816) ry=1.571 s=(1,1.097,1)",
     ],
     "ground": [
       "ground/ground @(672,0,-848) ry=0 s=(1,1,1)",
@@ -4215,10 +4242,11 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/storefronts @(748,0,444) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_02/ads_05 @(640,0,336) ry=0 s=(1,0.982,1)",
-      "Advert ads_s_01_01/ads_02 @(640,0,400) ry=0 s=(1,0.799,1)",
-      "Advert ads_s_02_01/ads_03 @(704,0,336) ry=-1.571 s=(1,0.952,1)",
-      "Advert ads_s_02_01/ads_02 @(704,0,400) ry=0 s=(1,0.848,1)",
+      "Advert ads_s_01_02/ads_02 @(640,0,336) ry=0 s=(1,0.982,1)",
+      "Smoke smoke/smoke_02 @(640,151.788,400) ry=0 s=(5.247,6.937,5.247)",
+      "Advert ads_s_01_01/ads_04 @(640,0,400) ry=0 s=(1,0.799,1)",
+      "Advert ads_s_02_01/ads_02 @(704,0,336) ry=-1.571 s=(1,0.952,1)",
+      "Advert ads_s_02_01/ads_04 @(704,0,400) ry=0 s=(1,0.848,1)",
     ],
     "ground": [
       "ground/ground @(672,0,368) ry=0 s=(1,1,1)",
@@ -4232,10 +4260,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_01_01/building_02 @(704,0,552) ry=0 s=(1,0.806,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_02/ads_05 @(640,0,488) ry=1.571 s=(1,1.13,1)",
+      "Advert ads_s_01_02/ads_04 @(640,0,488) ry=1.571 s=(1,1.13,1)",
       "Advert ads_s_01_01/ads_04 @(640,0,552) ry=0 s=(1,0.835,1)",
-      "Advert ads_s_01_01/ads_01 @(704,0,488) ry=-1.571 s=(1,0.928,1)",
-      "Advert ads_s_01_01/ads_01 @(704,0,552) ry=0 s=(1,0.806,1)",
+      "Advert ads_s_01_01/ads_03 @(704,0,488) ry=-1.571 s=(1,0.928,1)",
+      "Advert ads_s_01_01/ads_02 @(704,0,552) ry=0 s=(1,0.806,1)",
     ],
     "ground": [
       "ground/ground @(672,0,520) ry=0 s=(1,1,1)",
@@ -4266,7 +4294,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/storefronts @(748,0,1052) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_02_02/ads_01 @(704,0,944) ry=0 s=(1,0.75,1)",
+      "Advert ads_s_02_02/ads_05 @(704,0,944) ry=0 s=(1,0.75,1)",
     ],
     "ground": [
       "ground/ground @(672,0,976) ry=0 s=(1,1,1)",
@@ -4280,7 +4308,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_02_01/building_01 @(856,0,-56) ry=0 s=(1,0.766,1)",
     ],
     "decorations": [
-      "Advert ads_s_03_01/ads_05 @(792,0,-120) ry=0 s=(1,0.829,1)",
+      "Advert ads_s_03_01/ads_01 @(792,0,-120) ry=0 s=(1,0.829,1)",
     ],
     "ground": [
       "ground/ground @(824,0,-88) ry=0 s=(1,1,1)",
@@ -4291,7 +4319,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_04_03/building_04 @(824,0,-240) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_01/ads_03 @(824,0,-240) ry=0 s=(1,1,1)",
+      "Advert ads_s_04_01/ads_04 @(824,0,-240) ry=0 s=(1,1,1)",
     ],
     "ground": [
       "ground/ground @(824,0,-240) ry=0 s=(1,1,1)",
@@ -4302,7 +4330,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_04_01/building_04 @(824,0,-392) ry=1.571 s=(1,1.249,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_01/ads_02 @(824,0,-392) ry=-1.571 s=(1,1.249,1)",
+      "Advert ads_s_04_01/ads_01 @(824,0,-392) ry=-1.571 s=(1,1.249,1)",
     ],
     "ground": [
       "ground/ground @(824,0,-392) ry=0 s=(1,1,1)",
@@ -4322,7 +4350,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_04_01/building_02 @(824,0,-696) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_04/ads_04 @(824,0,-696) ry=0 s=(1,1,1)",
+      "Advert ads_s_04_04/ads_02 @(824,0,-696) ry=0 s=(1,1,1)",
     ],
     "ground": [
       "ground/ground @(824,0,-696) ry=0 s=(1,1,1)",
@@ -4333,7 +4361,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_04_02/building_04 @(824,0,-848) ry=-1.571 s=(1,1.38,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_04/ads_01 @(824,0,-848) ry=1.571 s=(1,1.38,1)",
+      "Advert ads_s_04_04/ads_03 @(824,0,-848) ry=1.571 s=(1,1.38,1)",
     ],
     "ground": [
       "ground/ground @(824,0,-848) ry=0 s=(1,1,1)",
@@ -4360,7 +4388,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
     ],
     "decorations": [
       "Advert ads_s_03_01/ads_04 @(856,0,184) ry=0 s=(1,0.788,1)",
-      "Advert ads_s_03_02/ads_02 @(856,0,248) ry=0 s=(1,1.065,1)",
+      "Advert ads_s_03_02/ads_04 @(856,0,248) ry=0 s=(1,1.065,1)",
     ],
     "ground": [
       "ground/ground @(824,0,216) ry=0 s=(1,1,1)",
@@ -4386,10 +4414,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_01_02/building_01 @(856,0,552) ry=0 s=(1,0.991,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_01/ads_04 @(792,0,488) ry=1.571 s=(1,1.2,1)",
-      "Advert ads_s_01_02/ads_03 @(792,0,552) ry=0 s=(1,0.842,1)",
+      "Advert ads_s_01_01/ads_01 @(792,0,488) ry=1.571 s=(1,1.2,1)",
+      "Advert ads_s_01_02/ads_05 @(792,0,552) ry=0 s=(1,0.842,1)",
       "Advert ads_s_01_02/ads_04 @(856,0,488) ry=-1.571 s=(1,0.909,1)",
-      "Advert ads_s_01_01/ads_03 @(856,0,552) ry=0 s=(1,0.991,1)",
+      "Advert ads_s_01_01/ads_04 @(856,0,552) ry=0 s=(1,0.991,1)",
     ],
     "ground": [
       "ground/ground @(824,0,520) ry=0 s=(1,1,1)",
@@ -4403,11 +4431,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_01_02/building_07 @(856,0,704) ry=1.571 s=(1,0.932,1)",
     ],
     "decorations": [
-      "Smoke smoke/smoke_03 @(792,195.651,640) ry=0 s=(3.415,4.057,3.415)",
-      "Advert ads_s_01_01/ads_05 @(792,0,640) ry=0 s=(1,1.03,1)",
-      "Advert ads_s_01_01/ads_05 @(792,0,704) ry=-1.571 s=(1,0.925,1)",
-      "Advert ads_s_01_02/ads_05 @(856,0,640) ry=1.571 s=(1,1.089,1)",
-      "Advert ads_s_01_01/ads_03 @(856,0,704) ry=-1.571 s=(1,0.932,1)",
+      "Advert ads_s_01_01/ads_03 @(792,0,640) ry=0 s=(1,1.03,1)",
+      "Advert ads_s_01_01/ads_03 @(792,0,704) ry=-1.571 s=(1,0.925,1)",
+      "Advert ads_s_01_02/ads_02 @(856,0,640) ry=1.571 s=(1,1.089,1)",
+      "Advert ads_s_01_01/ads_02 @(856,0,704) ry=-1.571 s=(1,0.932,1)",
     ],
     "ground": [
       "ground/ground @(824,0,672) ry=0 s=(1,1,1)",
@@ -4421,10 +4448,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_01_02/building_03 @(856,0,856) ry=0 s=(1,1.015,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_02/ads_02 @(792,0,792) ry=-1.571 s=(1,0.942,1)",
+      "Advert ads_s_01_02/ads_05 @(792,0,792) ry=-1.571 s=(1,0.942,1)",
       "Advert ads_s_01_01/ads_04 @(792,0,856) ry=0 s=(1,1.043,1)",
-      "Advert ads_s_01_02/ads_04 @(856,0,792) ry=-1.571 s=(1,0.889,1)",
-      "Advert ads_s_01_01/ads_04 @(856,0,856) ry=0 s=(1,1.015,1)",
+      "Advert ads_s_01_02/ads_05 @(856,0,792) ry=-1.571 s=(1,0.889,1)",
+      "Advert ads_s_01_01/ads_02 @(856,0,856) ry=0 s=(1,1.015,1)",
     ],
     "ground": [
       "ground/ground @(824,0,824) ry=0 s=(1,1,1)",
@@ -4438,10 +4465,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_01_03/building_03 @(856,0,1008) ry=0 s=(1,1.085,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_02/ads_03 @(792,0,944) ry=-1.571 s=(1,0.975,1)",
-      "Advert ads_s_01_02/ads_05 @(792,0,1008) ry=1.571 s=(1,1.094,1)",
-      "Advert ads_s_01_02/ads_04 @(856,0,944) ry=0 s=(1,0.75,1)",
-      "Advert ads_s_01_02/ads_03 @(856,0,1008) ry=0 s=(1,1.085,1)",
+      "Advert ads_s_01_02/ads_02 @(792,0,944) ry=-1.571 s=(1,0.975,1)",
+      "Advert ads_s_01_02/ads_03 @(792,0,1008) ry=1.571 s=(1,1.094,1)",
+      "Advert ads_s_01_02/ads_03 @(856,0,944) ry=0 s=(1,0.75,1)",
+      "Advert ads_s_01_02/ads_02 @(856,0,1008) ry=0 s=(1,1.085,1)",
     ],
     "ground": [
       "ground/ground @(824,0,976) ry=0 s=(1,1,1)",
@@ -4468,9 +4495,9 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/building_02 @(1052,0,-164) ry=0 s=(1,1,1)",
     ],
     "decorations": [
+      "Spotlight spotlight/spotlight_01 @(944,178.929,-272) ry=0 s=(11.09,11.09,11.09)",
       "Advert ads_s_03_01/ads_01 @(944,0,-272) ry=1.571 s=(1,1.118,1)",
-      "Smoke smoke/smoke_03 @(944,173.149,-208) ry=0 s=(7.625,10.389,7.625)",
-      "Topper topper_11/ads_large_05 @(1008,156.057,-272) ry=0 s=(1.155,1.155,1.155)",
+      "Topper topper_02/ads_large_03 @(1008,156.057,-272) ry=0 s=(0.993,0.993,0.993)",
       "Advert ads_s_03_02/ads_01 @(1008,0,-272) ry=0 s=(1,0.821,1)",
     ],
     "ground": [
@@ -4496,8 +4523,8 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
     ],
     "decorations": [
       "Advert ads_s_03_01/ads_04 @(944,0,-576) ry=0 s=(1,0.75,1)",
-      "Advert ads_s_03_02/ads_05 @(944,0,-512) ry=0 s=(1,0.75,1)",
-      "Advert ads_s_03_02/ads_01 @(1008,0,-576) ry=-1.571 s=(1,0.947,1)",
+      "Advert ads_s_03_02/ads_04 @(944,0,-512) ry=0 s=(1,0.75,1)",
+      "Advert ads_s_03_02/ads_02 @(1008,0,-576) ry=-1.571 s=(1,0.947,1)",
       "Advert ads_s_03_01/ads_04 @(1008,0,-512) ry=-1.571 s=(1,0.969,1)",
     ],
     "ground": [
@@ -4509,7 +4536,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_04_01/building_03 @(976,0,-696) ry=1.571 s=(1,1.151,1)",
     ],
     "decorations": [
-      "Advert ads_s_04_01/ads_05 @(976,0,-696) ry=-1.571 s=(1,1.151,1)",
+      "Advert ads_s_04_01/ads_03 @(976,0,-696) ry=-1.571 s=(1,1.151,1)",
     ],
     "ground": [
       "ground/ground @(976,0,-696) ry=0 s=(1,1,1)",
@@ -4521,7 +4548,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/building_02 @(1052,0,-772) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_05_04/ads_large_04 @(976,0,-848) ry=0 s=(1,1.352,1)",
+      "Advert ads_s_05_04/ads_large_02 @(976,0,-848) ry=0 s=(1,1.352,1)",
     ],
     "ground": [
       "ground/ground @(976,0,-848) ry=0 s=(1,1,1)",
@@ -4561,8 +4588,9 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/building_02 @(1052,0,444) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_02_02/ads_03 @(1008,0,336) ry=1.571 s=(1,1.118,1)",
-      "Advert ads_s_02_02/ads_02 @(1008,0,400) ry=-1.571 s=(1,0.9,1)",
+      "Smoke smoke/smoke_02 @(944,164.768,336) ry=0 s=(2.53,3.207,2.53)",
+      "Advert ads_s_02_02/ads_04 @(1008,0,336) ry=1.571 s=(1,1.118,1)",
+      "Advert ads_s_02_02/ads_05 @(1008,0,400) ry=-1.571 s=(1,0.9,1)",
     ],
     "ground": [
       "ground/ground @(976,0,368) ry=0 s=(1,1,1)",
@@ -4576,10 +4604,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_01_03/building_05 @(1008,0,552) ry=-1.571 s=(1,1.103,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_02/ads_05 @(944,0,488) ry=0 s=(1,1.061,1)",
-      "Advert ads_s_01_01/ads_02 @(944,0,552) ry=0 s=(1,0.75,1)",
-      "Advert ads_s_01_02/ads_05 @(1008,0,488) ry=-1.571 s=(1,0.935,1)",
-      "Advert ads_s_01_01/ads_01 @(1008,0,552) ry=1.571 s=(1,1.103,1)",
+      "Advert ads_s_01_02/ads_02 @(944,0,488) ry=0 s=(1,1.061,1)",
+      "Advert ads_s_01_01/ads_01 @(944,0,552) ry=0 s=(1,0.75,1)",
+      "Advert ads_s_01_02/ads_04 @(1008,0,488) ry=-1.571 s=(1,0.935,1)",
+      "Advert ads_s_01_01/ads_03 @(1008,0,552) ry=1.571 s=(1,1.103,1)",
     ],
     "ground": [
       "ground/ground @(976,0,520) ry=0 s=(1,1,1)",
@@ -4594,11 +4622,10 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/building_02 @(1052,0,748) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_02/ads_01 @(944,0,640) ry=-1.571 s=(1,0.904,1)",
-      "Smoke smoke/smoke_03 @(944,142.5,704) ry=0 s=(7.542,8.107,7.542)",
-      "Advert ads_s_01_01/ads_02 @(944,0,704) ry=0 s=(1,0.75,1)",
+      "Advert ads_s_01_02/ads_04 @(944,0,640) ry=-1.571 s=(1,0.904,1)",
+      "Advert ads_s_01_01/ads_04 @(944,0,704) ry=0 s=(1,0.75,1)",
       "Advert ads_s_01_01/ads_04 @(1008,0,640) ry=-1.571 s=(1,0.926,1)",
-      "Advert ads_s_01_02/ads_04 @(1008,0,704) ry=-1.571 s=(1,0.947,1)",
+      "Advert ads_s_01_02/ads_01 @(1008,0,704) ry=-1.571 s=(1,0.947,1)",
     ],
     "ground": [
       "ground/ground @(976,0,672) ry=0 s=(1,1,1)",
@@ -4621,10 +4648,11 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/storefronts @(1052,0,1052) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Advert ads_s_01_01/ads_04 @(944,0,944) ry=0 s=(1,0.756,1)",
-      "Advert ads_s_01_02/ads_02 @(944,0,1008) ry=1.571 s=(1,1.118,1)",
-      "Advert ads_s_01_01/ads_05 @(1008,0,944) ry=0 s=(1,1.077,1)",
-      "Advert ads_s_01_02/ads_01 @(1008,0,1008) ry=0 s=(1,0.821,1)",
+      "Advert ads_s_01_01/ads_05 @(944,0,944) ry=0 s=(1,0.756,1)",
+      "Advert ads_s_01_02/ads_03 @(944,0,1008) ry=1.571 s=(1,1.118,1)",
+      "Advert ads_s_01_01/ads_04 @(1008,0,944) ry=0 s=(1,1.077,1)",
+      "Smoke smoke/smoke_02 @(1008,156.057,1008) ry=0 s=(8.578,10.066,8.578)",
+      "Advert ads_s_01_02/ads_02 @(1008,0,1008) ry=0 s=(1,0.821,1)",
     ],
     "ground": [
       "ground/ground @(976,0,976) ry=0 s=(1,1,1)",

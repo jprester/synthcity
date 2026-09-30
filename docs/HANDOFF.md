@@ -6,7 +6,7 @@ Status and next steps for continuing this rework in a local Claude Code session.
 
 ## Where things stand
 
-The tooling pass is complete. The game is otherwise the original code, and it renders pixel-for-pixel the same as the original webpack build at `5a4ee0d`.
+The tooling pass is complete, and task 1a (seed-driven decorations, traffic and building hues) is done. Apart from 1a the game is the original code; before 1a it rendered pixel-for-pixel the same as the original webpack build at `5a4ee0d`.
 
 - **Build:**
   - Vite replaces webpack; built output is no longer committed.
@@ -36,13 +36,13 @@ The visual harness forces SwiftShader (software GL), so your local results are i
 
 Knowing this helps you tell whether a diff is real.
 
-**Layout snapshots.** `test/cityLayout.test.js` runs `GeneratorItem_CityBlock` headless against a stub `window.game` (`test/helpers.js`). It records every building, ground tile and decoration (model/material, position, rotation, scale) for a 13×13 block area at seeds 9746 and 6362. `Math.random` is stubbed with a seeded PRNG, so decorations are pinned too.
+**Layout snapshots.** `test/cityLayout.test.js` runs `GeneratorItem_CityBlock` headless against a stub `window.game` (`test/helpers.js`). It records every building, ground tile and decoration (model/material, position, rotation, scale) for a 13×13 block area at seeds 9746 and 6362. It also checks that decorations and traffic don't change when `Math.random` is seeded differently.
 
 **Visual harness** (`scripts/visual/capture.mjs`):
 
 - **Frozen state.** The wall clock is frozen, `performance.now` advances exactly 1/60 s per frame, `requestAnimationFrame` is driven manually, and `Math.random` is a seeded PRNG.
 - **Reseeds** the PRNG twice:
-  - at the game's first `assets/` image request, so the building emissive hues don't depend on how many random calls happened before loading;
+  - at the game's first `assets/` image request (this pinned the building hues before 1a; they now come from the seed, so it's harmless but no longer needed);
   - at the Launch click.
 - **Skips draws on intermediate frames.** The game logic still runs every frame, but only the captured frame is drawn. Nothing accumulates across frames, so the image is unaffected, and it makes a 360-frame shot take seconds instead of about 40 minutes.
 - **Depends on these DOM ids:** `#enterBtn`, `#canvas`, `#blocker`, `#crashMessage`. If you rebuild the UI, keep them or update the harness.
@@ -65,17 +65,16 @@ Knowing this helps you tell whether a diff is real.
    - Fixing the variant/rotation/height correlation (task 1b) changes which building stands on each lot, so those cities will look different.
    - Options: accept that and re-curate seeds; or put the new per-lot hash behind a generator version (`?gen=2`) and keep v1 for the curated seeds; or skip 1b.
    - Recommendation: do 1a now, then look at 1b frames side by side before deciding.
-2. **Building hue source.** Today each building material gets a random pale emissive hue per page load.
-   - Materials are created during asset loading, before Launch, and the seed can still change in the settings form after loading. So hues can't simply come from the world seed at creation time.
-   - Options: fixed hues per material (simplest, stable across sessions); or recolour materials in `Game.init()` from the world seed.
-   - Recommendation: seed-derived hues set in `init()`, so each seed has a consistent palette.
+2. **Building hue source.** Decided and done: `AssetManager.setBuildingHues(seed)`, called from `Game.init()`, sets each building material's pale emissive hue from the world seed.
 3. **Stay on three.js r159 or upgrade.** An upgrade is best done after instancing, with the visual harness as the check. Expect UnrealBloom and colour differences that need a deliberate re-tune against the baseline.
 
 ## Tasks
 
 Suggested order. Each task lists what "done" looks like and the traps I know about.
 
-### 1a. Seed-driven decorations and traffic (changes the look once, on purpose)
+### 1a. Seed-driven decorations and traffic — done
+
+Kept for reference. `src/hash.js` provides `hashFloat`/`hashRandom` keyed by (seed, position, purpose salt). Decorations get a stream per lot, and traffic gets a stream per cell. Each car now has a fixed turn-around distance, and the traffic count distribution (re-rolled per loop iteration) is unchanged. The only `Math.random` left is in `Radio.js`, `ui/terminal.js` and `settings.js`, none of which is world content.
 
 Replace `Math.random()` for world content with a deterministic hash of (world seed, world position or cell, purpose).
 
