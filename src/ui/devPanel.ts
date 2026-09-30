@@ -113,6 +113,10 @@ export function createDevPanel(game: Game): GUI {
   skyFolder.addColor(fog, 'color').name('fog colour');
   skyFolder.add(fog, 'near', -1000, 3000, 10).name('fog start');
   skyFolder.add(fog, 'far', 100, 6000, 10).name('fog end');
+  if (game.heightFog) {
+    skyFolder.add(game.heightFog, 'enabled').name('layered haze');
+    skyFolder.add(game.heightFog, 'density', 0, 3, 0.05).name('haze density');
+  }
 
   /*----- lights -----*/
 

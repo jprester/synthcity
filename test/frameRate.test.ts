@@ -2,6 +2,7 @@
 // wall-clock time at different rates and compare where things end up.
 import { describe, it, expect, beforeAll } from 'vitest';
 import { BufferGeometry, MeshBasicMaterial, Vector3 } from 'three';
+import type { Audio } from 'three';
 import { frameScale, decay, ease } from '../src/classes/frameRate.ts';
 import { PlayerCar } from '../src/classes/PlayerCar.ts';
 import { Player } from '../src/classes/Player.ts';
@@ -53,6 +54,16 @@ describe('frameScale', () => {
 });
 
 describe('frame-rate independence', () => {
+  it('holds an aerial start above the tallest buildings without negative ambient volume', () => {
+    const player = new Player({ scene, controller: fakeController(), x: 0, z: 0 });
+    const volumes: number[] = [];
+    player.soundCityAmbient = { setVolume: (v: number) => volumes.push(v) } as unknown as Audio;
+    player.body.position.y = 1400;
+    simulate((k) => player.update(k), 60, 2);
+    expect(player.camera.position.y).toBe(1400);
+    expect(volumes.every((v) => v === 0)).toBe(true);
+  });
+
   function flyCar(hz: number) {
     const car = new PlayerCar({
       scene,

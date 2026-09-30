@@ -14,7 +14,10 @@ import {
   Audio,
   AudioLoader,
   AudioListener,
+  DepthTexture,
+  UnsignedIntType,
 } from 'three';
+import type { MeshPhongMaterial } from 'three';
 
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 
@@ -40,6 +43,9 @@ import { GeneratorItem_Traffic } from './classes/GeneratorItem_Traffic.ts';
 import { computeBoundsTree, disposeBoundsTree, acceleratedRaycast } from 'three-mesh-bvh';
 import { Collider } from './classes/Collider.ts';
 import { InstancePool } from './classes/InstancePool.ts';
+import { RooftopKit } from './classes/RooftopKit.ts';
+import { installWindowLighting } from './rendering/windowLighting.ts';
+import { HeightFogPass } from './rendering/HeightFogPass.ts';
 import { frameScale } from './classes/frameRate.ts';
 
 import { CITY_BLOCK_SIZE, ROAD_WIDTH, CELL_SIZE, createDistrictNoise } from './generation/world.ts';
@@ -113,6 +119,7 @@ export class Game {
   composer!: EffectComposer;
   fxaa!: ShaderPass;
   bloomPass!: UnrealBloomPass;
+  heightFog: HeightFogPass | null = null;
   sunLight!: DirectionalLight;
   ambientLight!: AmbientLight;
   cityLights: CityLight[] = [];
@@ -266,9 +273,21 @@ export class Game {
     /*----- post processing -----*/
 
     this.composer = new EffectComposer(this.renderer);
+    this.districtNoise = createDistrictNoise(this.settings.worldSeed);
 
     // render pass
     this.composer.addPass(new RenderPass(this.scene, this.player.camera));
+    if (this.environment.name === 'night') {
+      for (const target of [this.composer.renderTarget1, this.composer.renderTarget2]) {
+        target.depthTexture = new DepthTexture(target.width, target.height, UnsignedIntType);
+      }
+      // Glass must not replace the city's depth with the windshield's depth.
+      // It still tests against the cockpit and keeps its existing shading.
+      this.assets.getMaterial('spinner_windows_simple').depthWrite = false;
+      this.assets.getMaterial('spinner_windows_advanced').depthWrite = false;
+      this.heightFog = new HeightFogPass(this.player.camera, this.settings.worldSeed, this.districtNoise);
+      this.composer.addPass(this.heightFog);
+    }
 
     // anti aliasing
     this.fxaa = new ShaderPass(FXAAShader);
@@ -327,14 +346,17 @@ export class Game {
     this.scene.add(light_ambient);
 
     this.assets.setBuildingHues(this.settings.worldSeed);
+    for (const [key, material] of Object.entries(this.assets.materials)) {
+      if (/^(building_\d+|mega_building_01)$/.test(key)) {
+        installWindowLighting(material as MeshPhongMaterial);
+      }
+    }
 
     /*----- generators -----*/
 
     this.cityLights = [];
 
     this.instances = new InstancePool(this.scene);
-
-    this.districtNoise = createDistrictNoise(this.settings.worldSeed);
 
     // what generator items need from the game
     const world: WorldContext = {
@@ -347,6 +369,7 @@ export class Game {
       player: this.player,
       cityLights: this.cityLights,
       instances: this.instances,
+      rooftops: new RooftopKit(this.settings.worldSeed, this.environment.name === 'night'),
     };
 
     this.generatorCityBlock = new Generator({

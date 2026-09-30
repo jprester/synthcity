@@ -5,6 +5,8 @@
 import type { BufferGeometry, Material, Matrix4, Mesh, Object3D, PointLight, Vector3 } from 'three';
 import type { Seed } from '../hash.ts';
 import type { Perlin } from '../lib/perlin.js';
+import type { BuildingObject } from '../generation/cityBlock.ts';
+import type { DistrictKind } from '../generation/districts.ts';
 
 export interface AssetSource {
   getModel(key: string): BufferGeometry;
@@ -27,8 +29,16 @@ export interface InstanceHandle {
 }
 
 export interface InstancesLike {
-  add(geometry: BufferGeometry, material: Material, matrix: Matrix4): InstanceHandle;
+  add(geometry: BufferGeometry, material: Material, matrix: Matrix4, brightness?: number): InstanceHandle;
   remove(handle: InstanceHandle): void;
+}
+
+export interface RooftopSource {
+  build(
+    building: BuildingObject,
+    geometry: BufferGeometry,
+    district: DistrictKind,
+  ): Mesh<BufferGeometry, Material>[];
 }
 
 // the player as seen by the world: decorations face the camera, traffic turns
@@ -54,4 +64,5 @@ export interface WorldContext {
   player: Viewer;
   cityLights: CityLight[];
   instances: InstancesLike;
+  rooftops?: RooftopSource;
 }

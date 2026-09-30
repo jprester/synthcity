@@ -124,6 +124,9 @@ async function openShot(browser, url, shot, jquery, attempts = 2) {
     const errors = [];
     const pending = new Set();
     page.on('pageerror', (e) => errors.push(e.message));
+    page.on('console', (message) => {
+      if (message.type() === 'error') errors.push(message.text());
+    });
     page.on('request', (r) => pending.add(r.url()));
     page.on('requestfinished', (r) => pending.delete(r.url()));
     page.on('requestfailed', (r) => pending.delete(r.url()));
@@ -136,7 +139,7 @@ async function openShot(browser, url, shot, jquery, attempts = 2) {
     }
     await page.route('https://fonts.*/**', (r) => r.abort());
 
-    const q = new URLSearchParams({ seed: shot.seed, mode: shot.mode, music: '0', sfx: '0' });
+    const q = new URLSearchParams({ seed: shot.seed, mode: shot.mode, music: '0', sfx: '0', ...shot.view });
     await page.goto(`${url}?${q}`);
     try {
       await page.waitForSelector('#enterBtn', { state: 'visible', timeout: 90_000 });
@@ -178,6 +181,10 @@ export async function captureShots({ url, out, only = null, jquery = null }) {
 
     await page.click('#enterBtn');
     await page.addStyleTag({ content: HIDE_OVERLAYS });
+    if (shot.resize) {
+      await page.setViewportSize(shot.resize);
+      await page.evaluate(() => window.dispatchEvent(new Event('resize')));
+    }
 
     let frame = 0;
     for (const f of shot.frames) {
@@ -189,6 +196,13 @@ export async function captureShots({ url, out, only = null, jquery = null }) {
       console.log(file);
     }
     if (errors.length) console.log(`  page errors in ${shot.name}:\n  ` + errors.join('\n  '));
+    if (
+      errors.some(
+        (e) => !e.includes('not valid for pointer lock') && !e.includes('Unable to use Pointer Lock API'),
+      )
+    ) {
+      throw new Error(`Rendering errors in ${shot.name}: ${errors.join('\n')}`);
+    }
     console.log(`  ${shot.name} done in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
     await page.close();
   }

@@ -18,6 +18,35 @@ const translation = (x: number, z = 0) => new Matrix4().makeTranslation(x, 0, z)
 const xs = (batch: Batch) => batch.handles.map((h, i) => batch.matrices[i * 16 + 12]);
 
 describe('InstancePool', () => {
+  it('keeps emission attached to its transform through growth, removal and culling', () => {
+    const pool = new InstancePool(new Scene());
+    const geometry = new BoxGeometry(1, 1, 1);
+    const material = new MeshBasicMaterial();
+    const handles = Array.from({ length: 100 }, (_, i) =>
+      pool.add(geometry, material, translation(i - 50), i / 100),
+    );
+    pool.remove(handles[4]); // swaps the final handle into slot 4
+    pool.remove(handles[23]);
+    const camera = new PerspectiveCamera(50, 1, 1, 1000);
+    camera.position.set(0, 0, 30);
+    pool.cull(camera);
+    const mesh = handles[0].batch!.mesh;
+    expect(mesh.count).toBeGreaterThan(0);
+    expect(mesh.count).toBeLessThan(98);
+    for (let i = 0; i < mesh.count; i++) {
+      const matrix = new Matrix4();
+      mesh.getMatrixAt(i, matrix);
+      const originalIndex = matrix.elements[12] + 50;
+      const colors = mesh.instanceColor!.array;
+      for (let channel = 0; channel < 3; channel++) {
+        expect(colors[i * 3 + channel]).toBeCloseTo(originalIndex / 100);
+      }
+    }
+    // An unmodified material/default instance retains a neutral colour.
+    const neutral = pool.add(geometry, material, translation(0));
+    expect(neutral.batch!.brightness[neutral.index]).toBe(1);
+  });
+
   it('groups instances by geometry and material', () => {
     const scene = new Scene();
     const pool = new InstancePool(scene);

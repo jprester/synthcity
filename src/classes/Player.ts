@@ -19,6 +19,7 @@ class Player implements LookingPlayer {
   controller: PlayerController;
 
   player_height = 250; // 1.67
+  max_height = 1800; // enough clearance to inspect the tallest rooftops
   mouse_sensitivity = 0.00125; //0.002;
   look_smooth = 0.15; //0.075;
   look_roll_factor = 0.1;
@@ -124,13 +125,13 @@ class Player implements LookingPlayer {
       this.body.position.y = this.body.position.y / decay(1.02, k);
     }
     if (this.body.position.y < 15) this.body.position.y = 15;
-    if (this.body.position.y > 800) this.body.position.y = 800;
+    if (this.body.position.y > this.max_height) this.body.position.y = this.max_height;
 
     /*--- UPDATE AUDIO ---*/
 
     if (this.soundWind)
       this.soundWind.setVolume(Math.min(Math.max(this.velocity.length() - this.walk_speed, 0), 1) * 0.1);
-    if (this.soundCityAmbient) this.soundCityAmbient.setVolume(1 - this.body.position.y / 800);
+    if (this.soundCityAmbient) this.soundCityAmbient.setVolume(Math.max(0, 1 - this.body.position.y / 800));
   }
 
   // window resize callback

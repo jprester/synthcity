@@ -3,6 +3,8 @@ import { Mesh } from 'three';
 import { hashRandom } from '../hash.ts';
 import type { Random } from '../hash.ts';
 import { generateBlock } from '../generation/cityBlock.ts';
+import { windowBrightness } from '../generation/buildingDetails.ts';
+import { districtKindAt } from '../generation/districts.ts';
 import type { AdvertObject, SmokeObject, SpotlightObject, TopperObject } from '../generation/cityBlock.ts';
 import type { GeneratorItem } from './Generator.ts';
 import type { InstanceHandle, WorldContext } from './WorldContext.ts';
@@ -25,6 +27,7 @@ class GeneratorItem_CityBlock implements GeneratorItem {
   meshesCollid: SingleMesh[] = []; // buildings and storefronts; collision proxies
   updateables: Decoration[] = [];
   instances: InstanceHandle[] = [];
+  detailMeshes: SingleMesh[] = []; // procedural rooftop collision proxies
 
   constructor(x: number, z: number, context: WorldContext) {
     this.x = x;
@@ -32,6 +35,8 @@ class GeneratorItem_CityBlock implements GeneratorItem {
     this.context = context;
 
     const { assets, collider } = context;
+    const district = districtKindAt(context.noise, x, z);
+    const brightness = new Map<SingleMesh, number>();
     const objects = generateBlock({
       seed: context.seed,
       noise: context.noise,
@@ -39,6 +44,9 @@ class GeneratorItem_CityBlock implements GeneratorItem {
       z,
       spotLights: context.spotLights,
     });
+    const occupiedRoofs = new Set(
+      objects.filter((o) => o.kind === 'topper' || o.kind === 'spotlight').map((o) => `${o.x},${o.z}`),
+    );
 
     // create in the generated order (it breaks ties in render sorting for
     // the decorations)
@@ -50,6 +58,10 @@ class GeneratorItem_CityBlock implements GeneratorItem {
           mesh.scale.set(1, o.scaleY, 1);
           mesh.rotateY((o.rotation * Math.PI) / 180);
           this.meshesCollid.push(mesh);
+          brightness.set(mesh, windowBrightness(context.seed, o.x, o.z, district));
+          if (context.rooftops && !occupiedRoofs.has(`${o.x},${o.z}`)) {
+            this.detailMeshes.push(...context.rooftops.build(o, mesh.geometry, district));
+          }
           break;
         }
         case 'storefront': {
@@ -81,13 +93,15 @@ class GeneratorItem_CityBlock implements GeneratorItem {
     }
 
     // draw ground and buildings as instances
-    for (const mesh of [...this.meshes, ...this.meshesCollid]) {
+    for (const mesh of [...this.meshes, ...this.meshesCollid, ...this.detailMeshes]) {
       mesh.updateMatrixWorld();
-      this.instances.push(context.instances.add(mesh.geometry, mesh.material, mesh.matrixWorld));
+      this.instances.push(
+        context.instances.add(mesh.geometry, mesh.material, mesh.matrixWorld, brightness.get(mesh)),
+      );
     }
     // buildings collide
-    for (let i = 0; i < this.meshesCollid.length; i++) {
-      collider.add(this.meshesCollid[i]);
+    for (const mesh of [...this.meshesCollid, ...this.detailMeshes]) {
+      collider.add(mesh);
     }
   }
   remove(): void {
@@ -98,8 +112,8 @@ class GeneratorItem_CityBlock implements GeneratorItem {
     for (let i = 0; i < this.updateables.length; i++) {
       this.updateables[i].remove();
     }
-    for (let i = 0; i < this.meshesCollid.length; i++) {
-      collider.remove(this.meshesCollid[i].uuid);
+    for (const mesh of [...this.meshesCollid, ...this.detailMeshes]) {
+      collider.remove(mesh.uuid);
     }
   }
   update(k: number): void {

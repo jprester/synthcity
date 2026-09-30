@@ -1,4 +1,4 @@
-import { InstancedMesh, DynamicDrawUsage, Frustum, Matrix4, Sphere } from 'three';
+import { InstancedMesh, InstancedBufferAttribute, DynamicDrawUsage, Frustum, Matrix4, Sphere } from 'three';
 import type { BufferGeometry, Camera, Material } from 'three';
 import type { InstanceHandle, SceneLike } from './WorldContext.ts';
 
@@ -31,12 +31,12 @@ export class InstancePool {
   }
 
   // Adds an instance with the given world matrix; returns a handle for remove().
-  add(geometry: BufferGeometry, material: Material, matrix: Matrix4): PoolHandle {
+  add(geometry: BufferGeometry, material: Material, matrix: Matrix4, brightness?: number): PoolHandle {
     let byMaterial = this.batches.get(geometry);
     if (!byMaterial) this.batches.set(geometry, (byMaterial = new Map()));
     let batch = byMaterial.get(material);
     if (!batch) byMaterial.set(material, (batch = new Batch(this.scene, geometry, material)));
-    return batch.add(matrix);
+    return batch.add(matrix, brightness);
   }
 
   remove(handle: InstanceHandle): void {
@@ -73,6 +73,8 @@ export class Batch {
   capacity = 0;
   matrices = new Float32Array(0); // every instance, 16 per slot
   spheres = new Float64Array(0); // world bounding sphere, 4 per slot
+  brightness = new Float32Array(0); // window emission multiplier per slot
+  hasBrightness = false;
   mesh!: InstancedMesh;
 
   constructor(scene: SceneLike, geometry: BufferGeometry, material: Material) {
@@ -90,10 +92,17 @@ export class Batch {
     const spheres = new Float64Array(capacity * 4);
     spheres.set(this.spheres);
     this.spheres = spheres;
+    const brightness = new Float32Array(capacity);
+    brightness.set(this.brightness);
+    this.brightness = brightness;
     this.capacity = capacity;
 
     const mesh = new InstancedMesh(this.geometry, this.material, capacity);
     mesh.instanceMatrix.setUsage(DynamicDrawUsage);
+    if (this.hasBrightness) {
+      mesh.instanceColor = new InstancedBufferAttribute(new Float32Array(capacity * 3), 3);
+      mesh.instanceColor.setUsage(DynamicDrawUsage);
+    }
     mesh.frustumCulled = false;
     mesh.matrixAutoUpdate = false;
     mesh.count = 0;
@@ -106,11 +115,17 @@ export class Batch {
     this.mesh = mesh;
   }
 
-  add(matrix: Matrix4): PoolHandle {
+  add(matrix: Matrix4, brightness?: number): PoolHandle {
     if (this.handles.length == this.capacity) this.grow(this.capacity * 2);
+    if (brightness !== undefined && !this.hasBrightness) {
+      this.hasBrightness = true;
+      this.mesh.instanceColor = new InstancedBufferAttribute(new Float32Array(this.capacity * 3), 3);
+      this.mesh.instanceColor.setUsage(DynamicDrawUsage);
+    }
     const handle: PoolHandle = { batch: this, index: this.handles.length };
     this.handles.push(handle);
     matrix.toArray(this.matrices, handle.index * 16);
+    this.brightness[handle.index] = brightness ?? 1;
     _sphere.copy(this.geometry.boundingSphere!).applyMatrix4(matrix);
     this.spheres[handle.index * 4] = _sphere.center.x;
     this.spheres[handle.index * 4 + 1] = _sphere.center.y;
@@ -127,6 +142,7 @@ export class Batch {
       const j = last.index;
       this.matrices.copyWithin(i * 16, j * 16, j * 16 + 16);
       this.spheres.copyWithin(i * 4, j * 4, j * 4 + 4);
+      this.brightness[i] = this.brightness[j];
       last.index = i;
       this.handles[i] = last;
     }
@@ -135,6 +151,7 @@ export class Batch {
 
   cull(frustum: Frustum): void {
     const out = this.mesh.instanceMatrix.array;
+    const colors = this.mesh.instanceColor?.array;
     let count = 0;
     for (let i = 0; i < this.handles.length; i++) {
       const s = i * 4;
@@ -142,10 +159,14 @@ export class Batch {
       _sphere.radius = this.spheres[s + 3];
       if (!frustum.intersectsSphere(_sphere)) continue;
       out.set(this.matrices.subarray(i * 16, i * 16 + 16), count * 16);
+      if (colors) colors.fill(this.brightness[i], count * 3, count * 3 + 3);
       count++;
     }
     this.mesh.count = count;
     this.mesh.visible = count > 0;
-    if (count > 0) this.mesh.instanceMatrix.needsUpdate = true;
+    if (count > 0) {
+      this.mesh.instanceMatrix.needsUpdate = true;
+      if (this.mesh.instanceColor) this.mesh.instanceColor.needsUpdate = true;
+    }
   }
 }
