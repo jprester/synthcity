@@ -190,11 +190,27 @@ The repo carries about 105 MB of assets. The two biggest cuts:
 - **Type checking — done** (see TypeScript above).
 - **UI.** The terminal UI works but is hand-rolled; leave it unless you want to change it. If you do, keep the DOM ids the harness uses.
 
+## Districts — done
+
+- `src/generation/districts.ts`: a second noise map (frequency 0.0006, sampled far from the density map) picks a kind per 4×4-block neighbourhood, so borders follow roads.
+- Kinds and shares (quantiles over many seeds): industrial ~15%, residential ~18%, mixed ~32%, neon ~17%, downtown ~18%.
+- Each kind is a row in `DISTRICT_STYLES`:
+  - density thresholds (empty / small lots / big blocks / towers / mega buildings);
+  - small-lot building groups and a height multiplier;
+  - ad rules;
+  - topper, spotlight and smoke chances;
+  - city-light hue range.
+- `mixed` is the original generator. `generation.test.ts` pins that by comparing it with the pre-district snapshot. Other tests check each kind's character and coverage.
+- Tuning notes:
+  - Neon toppers were halved (0.25 → 0.12) because many near the camera blow out under the bloom.
+  - Close-up ads still blow out. The default seed's drive spawn (downtown) has one filling the windshield; that's the ad-art task.
+- Review tools: `?at=x,z&alt=&yaw=&pitch=` starts the camera anywhere, and the stats overlay shows the district kind under the camera.
+
 ## Procedural feature ideas (after 1–5)
 
 These fit the original vision and become cheap once generation returns plain data:
 
-- **More districts.** More district types from the low-frequency map, such as industrial, residential, megablock and waterfront/void, each with its own building mix, ad density and light colour.
+- **More districts.** Done (see above). Still open: a waterfront/void kind needs new assets (water, piers).
 - **Road hierarchy.** Occasional wide avenues or plazas from a second low-frequency channel, instead of a uniform 152-unit grid.
 - **Landmarks and skybridges.** Rare landmarks per region (the existing mega buildings are a start), and skybridges between tall neighbours.
 - **Traffic lanes along avenues.** Traffic that follows the road hierarchy, with lane altitude bands per district.

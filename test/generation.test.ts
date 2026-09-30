@@ -7,15 +7,19 @@ import { generateTrafficCell } from '../src/generation/traffic.ts';
 import type { CarSpawn } from '../src/generation/traffic.ts';
 import { cityLightHue } from '../src/generation/cityLight.ts';
 import { CELL_SIZE as CELL, createDistrictNoise } from '../src/generation/world.ts';
+import { DISTRICT_STYLES, districtKindAt, districtStyleAt } from '../src/generation/districts.ts';
+import type { DistrictKind, DistrictStyle } from '../src/generation/districts.ts';
 
 const RANGE = 6;
 
-function blocks(seed: number) {
+function blocks(seed: number, style?: DistrictStyle, range = RANGE, origin = [0, 0]) {
   const noise = createDistrictNoise(seed);
   const out: Record<string, BlockObject[]> = {};
-  for (let i = -RANGE; i <= RANGE; i++) {
-    for (let j = -RANGE; j <= RANGE; j++) {
-      out[`${i},${j}`] = generateBlock({ seed, noise, x: i * CELL, z: j * CELL });
+  for (let i = -range; i <= range; i++) {
+    for (let j = -range; j <= range; j++) {
+      const x = (origin[0] + i) * CELL;
+      const z = (origin[1] + j) * CELL;
+      out[`${i},${j}`] = generateBlock({ seed, noise, x, z, style });
     }
   }
   return out;
@@ -31,7 +35,13 @@ afterEach(() => {
 });
 
 describe('generateBlock', () => {
+  // The original generator, recorded before districts existed: the 'mixed'
+  // style must keep reproducing it exactly.
   it('matches the recorded data for seed 9746', () => {
+    expect(blocks(9746, DISTRICT_STYLES.mixed)).toMatchSnapshot();
+  });
+
+  it('matches the recorded district data for seed 9746', () => {
     expect(blocks(9746)).toMatchSnapshot();
   });
 
@@ -135,7 +145,7 @@ describe('generateTrafficCell', () => {
 });
 
 describe('cityLightHue', () => {
-  it('lights only district edges, with hues in [0.5, 1)', () => {
+  it('lights only district edges, with hues in the district range', () => {
     const noise = createDistrictNoise(9746);
     let lit = 0;
     for (let i = -20; i < 20; i++) {
@@ -143,11 +153,73 @@ describe('cityLightHue', () => {
         const hue = cityLightHue({ seed: 9746, noise, x: i * CELL * 4, z: j * CELL * 4 });
         if (hue === null) continue;
         lit++;
-        expect(hue).toBeGreaterThanOrEqual(0.5);
-        expect(hue).toBeLessThan(1);
+        const [min, max] = districtStyleAt(noise, i * CELL * 4, j * CELL * 4).lightHue;
+        expect(hue).toBeGreaterThanOrEqual(min);
+        expect(hue).toBeLessThan(max);
       }
     }
     expect(lit).toBeGreaterThan(0);
     expect(lit).toBeLessThan(1600);
+  });
+});
+
+describe('districts', () => {
+  // count objects per district kind over the same large area, forcing each style
+  const stats = (kind: DistrictKind) => {
+    const b = blocks(9746, DISTRICT_STYLES[kind], 12);
+    const buildings = objectsOf(b, ['building']) as BuildingObject[];
+    const count = (k: BlockObject['kind']) => objectsOf(b, [k]).length;
+    return {
+      buildings: buildings.length,
+      towers: buildings.filter((o) => o.model.startsWith('s_05')).length,
+      meanHeight: buildings.reduce((sum, o) => sum + o.scaleY, 0) / buildings.length,
+      adsPerBuilding: count('advert') / buildings.length,
+      smoke: count('smoke'),
+      spotlights: count('spotlight') + count('topper'),
+    };
+  };
+  const all = Object.fromEntries(
+    (Object.keys(DISTRICT_STYLES) as DistrictKind[]).map((k) => [k, stats(k)]),
+  ) as Record<DistrictKind, ReturnType<typeof stats>>;
+
+  it('gives each kind its character', () => {
+    expect(all.downtown.towers).toBeGreaterThan(all.mixed.towers);
+    expect(all.downtown.meanHeight).toBeGreaterThan(all.mixed.meanHeight);
+    expect(all.neon.adsPerBuilding).toBeGreaterThan(all.mixed.adsPerBuilding);
+    expect(all.neon.spotlights).toBeGreaterThan(2 * all.mixed.spotlights);
+    expect(all.industrial.smoke).toBeGreaterThan(3 * all.mixed.smoke);
+    expect(all.industrial.meanHeight).toBeLessThan(all.mixed.meanHeight);
+    expect(all.industrial.adsPerBuilding).toBeLessThan(all.mixed.adsPerBuilding / 2);
+    expect(all.residential.towers).toBe(0);
+    expect(all.residential.adsPerBuilding).toBeLessThan(all.mixed.adsPerBuilding);
+  });
+
+  it('every kind appears in a city, with mixed still common', () => {
+    const noise = createDistrictNoise(9746);
+    const counts: Record<string, number> = {};
+    for (let i = -60; i < 60; i++) {
+      for (let j = -60; j < 60; j++) {
+        const kind = districtKindAt(noise, i * CELL * 2, j * CELL * 2);
+        counts[kind] = (counts[kind] ?? 0) + 1;
+      }
+    }
+    const total = 120 * 120;
+    for (const kind of Object.keys(DISTRICT_STYLES))
+      expect(counts[kind] ?? 0, kind).toBeGreaterThan(total * 0.05);
+    expect(counts.mixed).toBeGreaterThan(total * 0.15);
+  });
+
+  it('keeps a block in one kind (decided by its corner)', () => {
+    const noise = createDistrictNoise(9746);
+    // neighbouring blocks mostly share their kind: districts are regions, not noise
+    let same = 0;
+    let n = 0;
+    for (let i = -40; i < 40; i++) {
+      const a = districtKindAt(noise, i * CELL, 0);
+      const b = districtKindAt(noise, (i + 1) * CELL, 0);
+      n++;
+      if (a == b) same++;
+    }
+    expect(same / n).toBeGreaterThan(0.85);
   });
 });

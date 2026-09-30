@@ -43,8 +43,10 @@ import { InstancePool } from './classes/InstancePool.ts';
 import { frameScale } from './classes/frameRate.ts';
 
 import { CITY_BLOCK_SIZE, ROAD_WIDTH, CELL_SIZE, createDistrictNoise } from './generation/world.ts';
+import { districtKindAt } from './generation/districts.ts';
+import type { Perlin } from './lib/perlin.js';
 import { userSettings } from './settings.ts';
-import type { EnvironmentName, Mode, WindshieldShader } from './settings.ts';
+import type { EnvironmentName, Mode, StartView, WindshieldShader } from './settings.ts';
 import type { Seed } from './hash.ts';
 import type { CityLight, WorldContext } from './classes/WorldContext.ts';
 import { setColor, newLine, write, showCredits } from './ui/terminal.ts';
@@ -115,6 +117,7 @@ export class Game {
   ambientLight!: AmbientLight;
   cityLights: CityLight[] = [];
   instances!: InstancePool;
+  districtNoise!: Perlin;
   generatorCityBlock!: Generator<WorldContext>;
   generatorCityLights: Generator<WorldContext> | null = null;
   generatorTraffic!: Generator<WorldContext>;
@@ -243,17 +246,18 @@ export class Game {
         respawnX: -this.roadWidth / 2,
         onCrash: setCrashMessage,
         controller: this.playerController,
-        x: -this.roadWidth / 2,
-        z: 0,
+        x: userSettings.view?.x ?? -this.roadWidth / 2,
+        z: userSettings.view?.z ?? 0,
       });
     } else {
       this.player = new Player({
         scene: this.scene,
         controller: this.playerController,
-        x: 0,
-        z: 0,
+        x: userSettings.view?.x ?? 0,
+        z: userSettings.view?.z ?? 0,
       });
     }
+    if (userSettings.view) this.applyStartView(userSettings.view);
 
     // radio
 
@@ -330,10 +334,12 @@ export class Game {
 
     this.instances = new InstancePool(this.scene);
 
+    this.districtNoise = createDistrictNoise(this.settings.worldSeed);
+
     // what generator items need from the game
     const world: WorldContext = {
       seed: this.settings.worldSeed,
-      noise: createDistrictNoise(this.settings.worldSeed),
+      noise: this.districtNoise,
       spotLights: this.environment.spotLights,
       assets: this.assets,
       scene: this.scene,
@@ -387,7 +393,9 @@ export class Game {
 
     // performance overlay
 
-    this.stats = this.settings.stats ? new StatsOverlay(this.renderer, this.scene) : null;
+    this.stats = this.settings.stats
+      ? new StatsOverlay(this.renderer, this.scene, () => this.whereInfo())
+      : null;
 
     // time
 
@@ -409,8 +417,29 @@ export class Game {
     this.controls.addEventListener('unlock', () => this.onControlsUnlock());
   }
 
+  // ?at=&alt=&yaw=&pitch=: start somewhere else (manual testing, shared views)
+  applyStartView(view: StartView): void {
+    const player = this.player;
+    // generators are built around the camera, so move it before they are created
+    player.camera.position.set(view.x, player.camera.position.y, view.z);
+    if (player instanceof Player) {
+      if (view.alt !== undefined) player.body.position.y = view.alt;
+      const target = player.camera_target;
+      if (view.yaw !== undefined) target.rotation.y = Math.PI + (view.yaw * Math.PI) / 180;
+      if (view.pitch !== undefined) target.rotation.x = (view.pitch * Math.PI) / 180;
+      player.camera.rotation.copy(target.rotation);
+    }
+  }
+
+  // camera position and district kind, for the stats overlay
+  whereInfo(): string {
+    const p = this.player.camera.position;
+    const kind = districtKindAt(this.districtNoise, p.x, p.z);
+    return `at ${Math.round(p.x)},${Math.round(p.z)} alt ${Math.round(p.y)}  district: ${kind}`;
+  }
+
   setStats(on: boolean): void {
-    if (on && !this.stats) this.stats = new StatsOverlay(this.renderer, this.scene);
+    if (on && !this.stats) this.stats = new StatsOverlay(this.renderer, this.scene, () => this.whereInfo());
     if (!on && this.stats) {
       this.stats.dispose();
       this.stats = null;

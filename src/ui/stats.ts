@@ -17,9 +17,12 @@ export class StatsOverlay {
   t0 = 0;
   t1 = 0;
 
-  constructor(renderer: WebGLRenderer, scene: Object3D) {
+  info: () => string; // extra line, e.g. where the camera is
+
+  constructor(renderer: WebGLRenderer, scene: Object3D, info: () => string = () => '') {
     this.renderer = renderer;
     this.scene = scene;
+    this.info = info;
 
     // the composer renders several passes per frame; count them all
     this.renderer.info.autoReset = false;
@@ -64,6 +67,7 @@ export class StatsOverlay {
       `cpu: update ${(this.updateTime / this.frames).toFixed(2)} ms  render ${(this.renderTime / this.frames).toFixed(2)} ms`,
       `draw calls ${render.calls}  triangles ${(render.triangles / 1e6).toFixed(2)} M`,
       `objects ${objects}  geometries ${memory.geometries}  textures ${memory.textures}`,
+      this.info(),
     ].join('\n');
 
     this.frames = 0;

@@ -10,12 +10,23 @@
 //   skip=1                  skip the boot terminal and launch as soon as assets load
 //   gui=0|1                 dev tweak panel (default: on under `npm run dev`)
 //   env=night|day           environment (day is the original's unused alternative)
+//   at=<x>,<z>              start position (world units); freeroam also takes
+//   alt=<y> yaw=<deg> pitch=<deg>   height and view direction (yaw 0 looks along -z)
 
 import type { Seed } from './hash.ts';
 
 export type Mode = 'drive' | 'freeroam';
 export type WindshieldShader = 'simple' | 'advanced';
 export type EnvironmentName = 'night' | 'day';
+
+// a start view from ?at=&alt=&yaw=&pitch=
+export interface StartView {
+  x: number;
+  z: number;
+  alt?: number;
+  yaw?: number; // degrees
+  pitch?: number; // degrees, negative looks down
+}
 
 export interface UserSettings {
   worldSeed: Seed;
@@ -27,6 +38,7 @@ export interface UserSettings {
   stats?: boolean;
   skip?: boolean;
   environment?: EnvironmentName;
+  view?: StartView;
 }
 
 export const curatedWorldSeeds = [9746, 6362, 4217, 5794];
@@ -53,5 +65,11 @@ export function applyQueryParams(search = window.location.search): UserSettings 
   if (q.has('skip')) userSettings.skip = q.get('skip') == '1';
   const environment = oneOf(q.get('env'), ['night', 'day'] as const);
   if (environment) userSettings.environment = environment;
+  const at = q.get('at')?.split(',').map(Number);
+  if (at && at.length == 2 && at.every(Number.isFinite)) {
+    const num = (key: string) =>
+      q.has(key) && Number.isFinite(Number(q.get(key))) ? Number(q.get(key)) : undefined;
+    userSettings.view = { x: at[0], z: at[1], alt: num('alt'), yaw: num('yaw'), pitch: num('pitch') };
+  }
   return userSettings;
 }

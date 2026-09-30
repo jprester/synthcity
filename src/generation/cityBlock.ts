@@ -13,6 +13,8 @@ import { hashFloat, hashRandom } from '../hash.ts';
 import type { Random, Seed } from '../hash.ts';
 import type { Perlin } from '../lib/perlin.js';
 import { CITY_BLOCK_SIZE, ROAD_WIDTH, CELL_SIZE, districtAt, pick } from './world.ts';
+import { districtStyleAt } from './districts.ts';
+import type { DistrictStyle } from './districts.ts';
 
 // Model and material names are asset keys (AssetManager).
 interface Placed {
@@ -87,6 +89,7 @@ export interface BlockOptions {
   x: number; // block corner, a multiple of CELL_SIZE
   z: number;
   spotLights?: boolean; // whether the environment has rooftop spotlights
+  style?: DistrictStyle; // override the district kind (tests)
 }
 
 const BUILDING_MATERIALS = [
@@ -130,14 +133,15 @@ const TOPPER_MODELS = [
 const SMOKE_MATERIALS = ['smoke_01', 'smoke_02', 'smoke_03'];
 const SPOTLIGHT_MATERIALS = ['spotlight_01', 'spotlight_02', 'spotlight_03', 'spotlight_04'];
 
-export function generateBlock({ seed, noise, x, z, spotLights = true }: BlockOptions): BlockObject[] {
+export function generateBlock({ seed, noise, x, z, spotLights = true, style }: BlockOptions): BlockObject[] {
   const objects: BlockObject[] = [];
   const h = (lx: number, lz: number, purpose: string) => hashFloat(seed, lx, lz, purpose);
 
   const typeNoise = districtAt(noise, x, z);
+  const district = style ?? districtStyleAt(noise, x, z);
 
   // rare mega building
-  if (typeNoise < 0.2 && x % (CELL_SIZE * 6) == 0 && z % (CELL_SIZE * 6) == 0) {
+  if (typeNoise < district.megaBelow && x % (CELL_SIZE * 6) == 0 && z % (CELL_SIZE * 6) == 0) {
     const lotX = x + CITY_BLOCK_SIZE / 2;
     const lotZ = z + CITY_BLOCK_SIZE / 2;
     // don't place too close to path of player car
@@ -154,18 +158,25 @@ export function generateBlock({ seed, noise, x, z, spotLights = true }: BlockOpt
     }
   }
 
-  if (typeNoise < 0.1) {
+  if (typeNoise < district.emptyBelow) {
     // nothing
-  } else if (typeNoise < 0.8) {
+  } else if (typeNoise < district.smallBelow) {
     for (let i = 0; i < 2; i++) {
       for (let j = 0; j < 2; j++) {
         const lotX = x + i * (CITY_BLOCK_SIZE / 2) + CITY_BLOCK_SIZE / 4;
         const lotZ = z + j * (CITY_BLOCK_SIZE / 2) + CITY_BLOCK_SIZE / 4;
-        smallLot(objects, seed, noise, lotX, lotZ, spotLights);
+        smallLot(objects, seed, noise, lotX, lotZ, spotLights, district);
       }
     }
   } else {
-    bigLot(objects, seed, x + CITY_BLOCK_SIZE / 2, z + CITY_BLOCK_SIZE / 2, typeNoise > 0.975);
+    bigLot(
+      objects,
+      seed,
+      x + CITY_BLOCK_SIZE / 2,
+      z + CITY_BLOCK_SIZE / 2,
+      typeNoise > district.towerAbove,
+      district,
+    );
   }
 
   objects.push({
@@ -197,38 +208,41 @@ function smallLot(
   lotX: number,
   lotZ: number,
   spotLights: boolean,
+  district: DistrictStyle,
 ): void {
   const h = (purpose: string) => hashFloat(seed, lotX, lotZ, purpose);
 
   const rotation = pick(ROTATIONS, h('rotation'));
-  const scale = 0.75 + h('height') * 0.45;
+  const scale = (0.75 + h('height') * 0.45) * district.heightScale;
   const variant = Math.floor(h('variant') * 3) + 1; // 1..3
   const adsVariant = h('ads-variant') < 0.5 ? 1 : 2;
 
   const typeNoise = districtAt(noise, lotX, lotZ);
   let group;
-  if (typeNoise < 0.267) group = 1;
-  else if (typeNoise < 0.534) group = 2;
+  if (typeNoise < district.groupBounds[0]) group = 1;
+  else if (typeNoise < district.groupBounds[1]) group = 2;
   else group = 3;
 
   let topper = false;
   if (group == 3) {
     // topper (the old noise threshold hit about 6% of these lots)
-    topper = h('topper') < 0.06;
+    topper = h('topper') < district.topperChance;
     // spotlight: sized for the s_03_03 roof
-    if (spotLights && variant == 3 && h('spotlight') < 0.05 && !topper) {
+    if (spotLights && variant == 3 && h('spotlight') < district.spotlightChance && !topper) {
       objects.push(spotlight(lotX, 160 * scale, lotZ, hashRandom(seed, lotX, lotZ, 'spotlight-look')));
     }
   }
 
-  // no ads in the middle districts
-  const hasAds = !(typeNoise > 0.33 && typeNoise < 0.66);
+  // no ads in the district's quiet band
+  const band = district.noAdsBand;
+  const inQuietBand = band !== null && typeNoise > band[0] && typeNoise < band[1];
+  const hasAds = !inQuietBand && h('ad-chance') < district.smallAdChance;
 
   if (topper && hasAds) {
     objects.push(topperAt(lotX, 190 * scale, lotZ, hashRandom(seed, lotX, lotZ, 'topper-look')));
   }
 
-  if (h('smoke') < 0.05) {
+  if (h('smoke') < district.smokeChance) {
     objects.push(smoke(lotX, 190 * scale, lotZ, hashRandom(seed, lotX, lotZ, 'smoke-look')));
   }
 
@@ -249,14 +263,21 @@ function smallLot(
   }
 }
 
-function bigLot(objects: BlockObject[], seed: Seed, lotX: number, lotZ: number, isTower: boolean): void {
+function bigLot(
+  objects: BlockObject[],
+  seed: Seed,
+  lotX: number,
+  lotZ: number,
+  isTower: boolean,
+  district: DistrictStyle,
+): void {
   const h = (purpose: string) => hashFloat(seed, lotX, lotZ, purpose);
 
   const variant = Math.floor(h('variant') * 3) + 1; // 1..3
   const rare = h('rare-material') < 0.1;
   const material = pick(rare ? RARE_BUILDING_MATERIALS : BIG_BUILDING_MATERIALS, h('material'));
   const rotation = pick(ROTATIONS, h('rotation'));
-  const scale = 1 + h('height') * 0.5;
+  const scale = (1 + h('height') * 0.5) * district.heightScale;
 
   objects.push({
     kind: 'building',
@@ -269,7 +290,7 @@ function bigLot(objects: BlockObject[], seed: Seed, lotX: number, lotZ: number, 
   });
 
   // maybe have ads (the old parity test came out true for about 55%)
-  if (h('ads') < 0.55) {
+  if (h('ads') < district.bigAdChance) {
     const model = pick(isTower ? TOWER_ADVERT_MODELS : BIG_ADVERT_MODELS, h('ads-variant'));
     const materials = isTower ? ADVERT_MATERIALS_LARGE : ADVERT_MATERIALS;
     objects.push(advert(model, materials, lotX, lotZ, rotation, scale, seed));

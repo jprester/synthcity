@@ -3,6 +3,7 @@
 
 import { hashFloat } from '../hash.ts';
 import { districtAt } from './world.ts';
+import { districtStyleAt } from './districts.ts';
 import type { Seed } from '../hash.ts';
 import type { Perlin } from '../lib/perlin.js';
 
@@ -20,5 +21,6 @@ export function cityLightHue({
 }): number | null {
   const typeNoise = districtAt(noise, x, z);
   if (!(typeNoise < 0.2 || typeNoise > 0.8)) return null;
-  return 0.5 + hashFloat(seed, x, z, 'light-hue') / 2;
+  const [min, max] = districtStyleAt(noise, x, z).lightHue;
+  return min + hashFloat(seed, x, z, 'light-hue') * (max - min);
 }

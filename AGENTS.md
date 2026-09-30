@@ -29,7 +29,7 @@ npm run perf            # fly drive mode on the real GPU and print the ?stats=1 
 
 Query params preset the launch settings, e.g. `/?seed=9746&mode=freeroam&music=0&sfx=0`. See `src/settings.ts`. For manual testing, `skip=1` skips the boot terminal and launches as soon as assets load; click the canvas to grab the mouse and start audio.
 
-The dev tweak panel (`src/ui/devPanel.ts`, lil-gui) is on under `npm run dev` (`gui=0` hides it, `gui=1` enables it in a build). It covers bloom, FXAA, sky and fog, lights, glow, time scale and the stats overlay, and can relaunch with another seed, mode or environment. "copy values" puts the tweaked values on the clipboard. Panel changes are temporary; move values you want to keep into the code deliberately (the look is intentional). `env=day` selects the day environment; `stats=1` shows a performance overlay (fps, CPU update/render time, draw calls, triangles, objects).
+The dev tweak panel (`src/ui/devPanel.ts`, lil-gui) is on under `npm run dev` (`gui=0` hides it, `gui=1` enables it in a build). It covers bloom, FXAA, sky and fog, lights, glow, time scale and the stats overlay, and can relaunch with another seed, mode or environment. "copy values" puts the tweaked values on the clipboard. Panel changes are temporary; move values you want to keep into the code deliberately (the look is intentional). `at=x,z` (plus `alt`, `yaw`, `pitch` in freeroam) starts somewhere else; `env=day` selects the day environment; `stats=1` shows a performance overlay (fps, CPU update/render time, draw calls, triangles, objects, and the camera position and district kind).
 
 ## Verifying a change
 
@@ -63,6 +63,7 @@ src/types/              type augmentations (three-mesh-bvh on BufferGeometry)
 src/generation/         pure world generation: plain data from (seed, position), no three.js
   world.ts              world constants, district noise
   cityBlock.ts          generateBlock: buildings, ads, toppers, smoke, spotlights, ground, storefronts
+  districts.ts          district kinds (mixed/downtown/neon/industrial/residential): a data table of how each shapes its blocks
   traffic.ts            generateTrafficCell: starting state of the cars in a cell
   cityLight.ts          cityLightHue: district edge lights
 src/assets/manifest.ts  every texture and model to load (key, file, options); add assets here
@@ -82,7 +83,7 @@ scripts/visual/         deterministic capture + pixel compare
 test/                   Vitest
 ```
 
-World constants: city block 128 units, road 24, so a cell is 152. District types come from low-frequency Perlin noise (`DISTRICT_NOISE_FACTOR` 0.0017); every per-lot choice is a hash of (seed, lot position, purpose) from `src/hash.ts`.
+World constants: city block 128 units, road 24, so a cell is 152. A second, lower-frequency noise map picks a district kind per 4×4-block neighbourhood (`src/generation/districts.ts`); its `DISTRICT_STYLES` table sets density thresholds, building groups and height, ads, rooftop decorations and light hues. `mixed` is the original generator and must keep reproducing it (a test pins this). District types come from low-frequency Perlin noise (`DISTRICT_NOISE_FACTOR` 0.0017); every per-lot choice is a hash of (seed, lot position, purpose) from `src/hash.ts`.
 
 Generation and rendering are separate. New world content goes into `src/generation/` as plain data, and the builder in `src/classes/GeneratorItem_*` turns it into three.js objects. Builders get their dependencies (seed, noise, assets, scene, collider, player) from the context object `Game.init()` passes through `Generator`. There is no global game object; pass dependencies explicitly.
 
