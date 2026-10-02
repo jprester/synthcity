@@ -144,15 +144,16 @@ describe('wall signs', () => {
         if (sign.mount == 'banner') {
           const b = SIGN_LAYOUT.banner;
           expect(height).toBeGreaterThanOrEqual(b.minBuilding);
+          expect(sign.atlas).toBe('posters'); // picture ads, not neon text
           expect(sign.width / sign.height).toBeLessThanOrEqual(b.maxAspect + 1e-6);
           expect(sign.height).toBeGreaterThanOrEqual(b.minHeight - 1e-6);
           expect(sign.height).toBeLessThanOrEqual(b.maxHeight + 1e-6);
           expect(bottom).toBeGreaterThanOrEqual(height * b.zone[0] - 1e-6);
           expect(top).toBeLessThanOrEqual(height * b.zone[1] + 1e-6);
         } else if (sign.atlas == 'neon') {
-          expect(top).toBeLessThanOrEqual(
-            Math.min(height * SIGN_LAYOUT.neon.zone[1], SIGN_LAYOUT.neon.zoneCap) + 1e-6,
-          );
+          const n = SIGN_LAYOUT.neon;
+          const cap = height >= SIGN_LAYOUT.banner.minBuilding ? n.skyscraper.zoneCap : n.zoneCap;
+          expect(top).toBeLessThanOrEqual(Math.min(height * n.zone[1], cap) + 1e-6);
           expect(Math.max(sign.width, sign.height)).toBeLessThanOrEqual(SIGN_LAYOUT.neon.size[1] + 1e-6);
         } else {
           expect(bottom).toBeGreaterThanOrEqual(height * SIGN_LAYOUT.poster.zone[0] - 1e-6);

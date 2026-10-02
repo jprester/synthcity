@@ -85,4 +85,6 @@ export const MODELS: ModelEntry[] = [
   ...ids(12).map((id) => ({ key: `topper_${id}`, file: `models/topper_${id}.obj` })),
   ...ids(8).map((id) => ({ key: `car_${id}`, file: `models/car_${id}.obj` })),
   { key: 'spotlight', file: 'models/spotlight.obj' },
+  // vertical light bars up s_05 towers (the original tower ad model's beams)
+  { key: 'light_bars', file: 'models/light_bars.obj' },
 ];

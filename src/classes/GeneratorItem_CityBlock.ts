@@ -1,4 +1,4 @@
-import { BufferGeometry, Matrix4, Mesh, Quaternion, Vector3 } from 'three';
+import { BufferGeometry, Matrix4, Mesh, Object3D, Quaternion, Vector3 } from 'three';
 
 import { hashRandom } from '../hash.ts';
 import type { Random } from '../hash.ts';
@@ -73,6 +73,22 @@ class GeneratorItem_CityBlock implements GeneratorItem {
           this.meshesCollid.push(mesh);
           break;
         }
+        case 'lightbars': {
+          // like the original tower ad: building position and height, rotation negated
+          const holder = new Object3D();
+          holder.position.set(o.x, 0, o.z);
+          holder.scale.set(1, o.scaleY, 1);
+          holder.rotateY((-o.rotation * Math.PI) / 180);
+          holder.updateMatrixWorld();
+          this.instances.push(
+            context.instances.add(
+              assets.getModel(o.model),
+              assets.getMaterial(o.material),
+              holder.matrixWorld,
+            ),
+          );
+          break;
+        }
         case 'ground': {
           const mesh = new Mesh(assets.getModel(o.model), assets.getMaterial(o.material));
           mesh.rotateX(-Math.PI / 2);
@@ -123,7 +139,7 @@ class GeneratorItem_CityBlock implements GeneratorItem {
         assets.getModel(SIGN_MODELS[o.atlas]),
         assets.getMaterial(AD_MATERIALS[o.atlas]),
         _matrix,
-        undefined,
+        art.gain * signSizeGain(o.width, o.height),
         art.uv,
       );
       this.instances.push(handle);
@@ -151,6 +167,14 @@ class GeneratorItem_CityBlock implements GeneratorItem {
 }
 
 // building decorations
+
+// Emitted light grows with a sign's area, so big signs glow far harder under
+// the bloom than small ones at the same intensity. Scale intensity gently by
+// size, so a 300-unit banner and a small neon sign read at a similar glow.
+const SIGN_REFERENCE_AREA = 40 * 40;
+export function signSizeGain(width: number, height: number): number {
+  return Math.min(Math.max((SIGN_REFERENCE_AREA / (width * height)) ** 0.3, 0.45), 1.2);
+}
 
 interface Updateable {
   update(k: number): void;
@@ -184,10 +208,11 @@ class SignSwitcher implements Updateable {
   handle: InstanceHandle;
   context: WorldContext;
   choices: number[]; // art indices with the sign's aspect
-  entries: { uv: [number, number, number, number] }[];
+  entries: { uv: [number, number, number, number]; gain: number }[];
   interval: number;
   counter: number;
   random: Random;
+  sizeGain: number;
 
   constructor(o: SignObject, handle: InstanceHandle, context: WorldContext) {
     this.handle = handle;
@@ -196,6 +221,7 @@ class SignSwitcher implements Updateable {
     const aspect = entries[o.art].aspect;
     this.entries = entries;
     this.choices = entries.flatMap((e, i) => (Math.abs(e.aspect / aspect - 1) < 0.03 ? [i] : []));
+    this.sizeGain = signSizeGain(o.width, o.height);
     this.interval = o.interval;
     this.counter = o.counter;
     this.random = hashRandom(context.seed, o.x, o.z, 'sign-switch');
@@ -206,6 +232,7 @@ class SignSwitcher implements Updateable {
       this.counter = 0;
       const art = this.choices[Math.floor(this.random() * this.choices.length)];
       this.context.instances.setData(this.handle, this.entries[art].uv);
+      this.context.instances.setBrightness(this.handle, this.entries[art].gain * this.sizeGain);
     }
   }
   // the instance itself is freed with the block's other instances

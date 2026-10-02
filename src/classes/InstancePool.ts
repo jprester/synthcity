@@ -50,6 +50,13 @@ export class InstancePool {
     return batch.add(matrix, brightness, data);
   }
 
+  // Replaces an instance's brightness (takes effect at the next cull).
+  setBrightness(handle: InstanceHandle, brightness: number): void {
+    const h = handle as PoolHandle;
+    if (!h.batch) throw new Error('InstancePool: instance already removed');
+    h.batch.brightness[h.index] = brightness;
+  }
+
   // Replaces an instance's per-instance data (takes effect at the next cull).
   setData(handle: InstanceHandle, data: ArrayLike<number>): void {
     const h = handle as PoolHandle;

@@ -37,6 +37,7 @@ export interface InstancesLike {
     data?: ArrayLike<number>, // per-instance vec4 (InstancePool INSTANCE_DATA)
   ): InstanceHandle;
   setData(handle: InstanceHandle, data: ArrayLike<number>): void;
+  setBrightness(handle: InstanceHandle, brightness: number): void;
   remove(handle: InstanceHandle): void;
 }
 

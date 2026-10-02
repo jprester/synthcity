@@ -15,6 +15,8 @@ export interface AdArt {
   kind: string; // 'neon' | 'ad' | 'design'
   aspect: number; // width / height
   uv: [number, number, number, number]; // u0, v0, u1, v1 in the atlas
+  brightness: number; // how bright it reads (see the build script)
+  gain: number; // emission multiplier that evens out brightness across all art
 }
 
 export interface AdAtlas {
@@ -30,9 +32,17 @@ export const AD_ATLASES = atlasData as unknown as Record<SignAtlas, AdAtlas>;
 export const AD_MATERIALS: Record<SignAtlas, string> = { neon: 'ads_neon', posters: 'ads_posters' };
 export const SIGN_MODELS: Record<SignAtlas, string> = { neon: 'sign_neon', posters: 'sign_posters' };
 
-// Makes a material with an emissive map sample each instance's art rectangle.
+// Makes a material with an emissive map sample each instance's art rectangle,
+// scaled by the instance's brightness (the art's gain, InstancePool brightness).
 export function useInstanceArt(material: Material): void {
   material.onBeforeCompile = (shader) => {
+    shader.fragmentShader = shader.fragmentShader.replace(
+      '#include <emissivemap_fragment>',
+      `#include <emissivemap_fragment>
+      #ifdef USE_COLOR
+        totalEmissiveRadiance *= vColor.r;
+      #endif`,
+    );
     shader.vertexShader = `attribute vec4 ${INSTANCE_DATA};\n` + shader.vertexShader;
     shader.vertexShader = shader.vertexShader.replace(
       '#include <uv_vertex>',

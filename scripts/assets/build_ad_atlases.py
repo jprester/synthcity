@@ -11,7 +11,8 @@ Output:
   public/assets/textures/ads_neon.webp     kind 'neon' catalog entries
   public/assets/textures/ads_posters.webp  kind 'ad' catalog entries + ads-v2
   src/assets/adAtlases.json                 per atlas: entries with id, kind,
-                                            aspect (w/h) and uv [u0, v0, u1, v1]
+                                            aspect (w/h), uv [u0, v0, u1, v1] and
+                                            gain (brightness evening-out factor)
 
 Every entry keeps its aspect ratio; the long side is the largest that lets all
 entries of an atlas fit (shelf packing with black gutters; black is invisible
@@ -24,6 +25,7 @@ import json
 import sys
 from pathlib import Path
 
+import numpy as np
 from PIL import Image
 
 SIZE = 4096
@@ -71,6 +73,19 @@ def pack(images, long_side):
     return places
 
 
+def brightness(image):
+    """How bright a piece of art reads under the bloom: the geometric mean of its
+    mean and 95th-percentile linear luminance. A neon sign on black (low mean,
+    bright strokes) and a full-colour poster (high mean) land on one scale."""
+    srgb = np.asarray(image, dtype=np.float32) / 255
+    linear = np.where(srgb <= 0.04045, srgb / 12.92, ((srgb + 0.055) / 1.055) ** 2.4)
+    lum = linear @ np.array([0.2126, 0.7152, 0.0722], dtype=np.float32)
+    return float(np.sqrt(max(lum.mean(), 1e-6) * max(np.percentile(lum, 95), 1e-6)))
+
+
+GAIN_RANGE = (0.35, 2.0)  # how far a piece may be dimmed or boosted
+
+
 def build(name, images, out_json):
     lo, hi = 64, 2048
     while lo < hi:  # the largest long side that fits
@@ -84,12 +99,14 @@ def build(name, images, out_json):
     entries = []
     for i, (entry_id, kind, im) in enumerate(images):
         x, y, w, h = places[i]
-        atlas.paste(im.resize((w, h), Image.LANCZOS), (x, y))
+        resized = im.resize((w, h), Image.LANCZOS)
+        atlas.paste(resized, (x, y))
         # UVs with a half-texel inset; v runs up (TextureLoader flips Y)
         entries.append({
             'id': entry_id,
             'kind': kind,
             'aspect': round(w / h, 4),
+            'brightness': round(brightness(resized), 5),
             'uv': [
                 round((x + 0.5) / SIZE, 6),
                 round(1 - (y + h - 0.5) / SIZE, 6),
@@ -109,6 +126,13 @@ def main():
     out = {}
     for name in ('neon', 'posters'):
         build(name, groups[name], out)
+    # even out brightness: scale every piece towards the median of all art
+    all_entries = [e for atlas in out.values() for e in atlas['entries']]
+    target = float(np.median([e['brightness'] for e in all_entries]))
+    for e in all_entries:
+        e['gain'] = round(min(max(target / e['brightness'], GAIN_RANGE[0]), GAIN_RANGE[1]), 4)
+    gains = sorted(e['gain'] for e in all_entries)
+    print(f'gain: min {gains[0]}, median {gains[len(gains) // 2]}, max {gains[-1]} (target brightness {target:.4f})')
     path = REPO / 'src' / 'assets' / 'adAtlases.json'
     path.write_text(json.dumps(out, indent=1) + '\n')
     print(f'-> {path.relative_to(REPO)}')

@@ -34,6 +34,7 @@ export interface DistrictStyle {
   bladeShare: number; // share of those sticking out of walls that face a street
   posterChance: number; // chance per ~110 units of a wall's middle band of a big poster
   bannerChance: number; // chance per ~70 units of a skyscraper's wall width of a tall banner
+  lightBarChance: number; // chance an s_05 tower gets the vertical light bars
   // district lights (GeneratorItem_CityLight): hue range, as in HSL (0..1)
   lightHue: [number, number];
 }
@@ -57,7 +58,8 @@ export const DISTRICT_STYLES: Record<DistrictKind, DistrictStyle> = {
     neonSigns: 5,
     bladeShare: 0.3,
     posterChance: 0.65,
-    bannerChance: 0.5,
+    bannerChance: 0.65,
+    lightBarChance: 0.25,
     lightHue: [0.5, 1],
   },
   // dense core: more big blocks and towers, taller, big ads, cold light
@@ -78,7 +80,8 @@ export const DISTRICT_STYLES: Record<DistrictKind, DistrictStyle> = {
     neonSigns: 3,
     bladeShare: 0.15,
     posterChance: 0.8,
-    bannerChance: 0.7,
+    bannerChance: 0.85,
+    lightBarChance: 0.4,
     lightHue: [0.5, 0.66],
   },
   // entertainment strip: every lot lit with ads, signs and spotlights
@@ -99,7 +102,8 @@ export const DISTRICT_STYLES: Record<DistrictKind, DistrictStyle> = {
     neonSigns: 9,
     bladeShare: 0.5,
     posterChance: 0.6,
-    bannerChance: 0.6,
+    bannerChance: 0.75,
+    lightBarChance: 0.5,
     lightHue: [0.8, 0.95],
   },
   // low, spread out, few ads, lots of smoke, sodium-amber light
@@ -121,6 +125,7 @@ export const DISTRICT_STYLES: Record<DistrictKind, DistrictStyle> = {
     bladeShare: 0.1,
     posterChance: 0.12,
     bannerChance: 0.05,
+    lightBarChance: 0.05,
     lightHue: [0.04, 0.1],
   },
   // small, quiet buildings, a few ads, violet light
@@ -142,6 +147,7 @@ export const DISTRICT_STYLES: Record<DistrictKind, DistrictStyle> = {
     bladeShare: 0.25,
     posterChance: 0.2,
     bannerChance: 0.05,
+    lightBarChance: 0.05,
     lightHue: [0.7, 0.85],
   },
 };

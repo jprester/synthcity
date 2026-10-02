@@ -42,6 +42,15 @@ export interface GroundObject extends Placed {
   kind: 'ground';
 }
 
+// Thin vertical light bars up one face of an s_05 tower (the beams of the
+// original tower ad model, ads_s_05_01), in a hologram material. Placed like the
+// original ad: the building's position and height scale, rotation negated.
+export interface LightBarsObject extends Placed {
+  kind: 'lightbars';
+  rotation: number; // degrees about y (applied negated, like the original)
+  scaleY: number;
+}
+
 // a spinning rooftop sign
 export interface TopperObject extends Placed {
   kind: 'topper';
@@ -70,6 +79,7 @@ export type BlockObject =
   | StorefrontObject
   | GroundObject
   | SignObject
+  | LightBarsObject
   | TopperObject
   | SmokeObject
   | SpotlightObject;
@@ -274,9 +284,25 @@ function bigLot(
   };
   objects.push(building);
 
+  // the light bars sit on the model's +x face, turned by the negated rotation
+  let barsFace: [number, number] | null = null;
+  if (isTower && h('light-bars') < district.lightBarChance) {
+    const a = (-rotation * Math.PI) / 180;
+    barsFace = [Math.cos(a), -Math.sin(a)];
+    objects.push({
+      kind: 'lightbars',
+      model: 'light_bars',
+      material: pick(ADVERT_MATERIALS_LARGE, h('light-bars-material')),
+      x: lotX,
+      z: lotZ,
+      rotation,
+      scaleY: scale,
+    });
+  }
+
   // maybe have ads (the old parity test came out true for about 55%)
   // skyscrapers without the ads roll still get banners
-  placeSigns(objects as SignObject[], building, seed, district, h('ads') >= district.bigAdChance);
+  placeSigns(objects as SignObject[], building, seed, district, h('ads') >= district.bigAdChance, barsFace);
 }
 
 function topperAt(x: number, y: number, z: number, random: Random): TopperObject {

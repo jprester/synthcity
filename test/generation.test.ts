@@ -223,3 +223,29 @@ describe('districts', () => {
     expect(same / n).toBeGreaterThan(0.85);
   });
 });
+
+describe('light bars', () => {
+  it('appear on towers and keep their face free of signs', () => {
+    const noise = createDistrictNoise(9746);
+    let bars = 0;
+    for (let i = -15; i <= 15; i++) {
+      for (let j = -15; j <= 15; j++) {
+        const objects = generateBlock({ seed: 9746, noise, x: i * CELL, z: j * CELL });
+        for (const o of objects) {
+          if (o.kind != 'lightbars') continue;
+          bars++;
+          const a = (-o.rotation * Math.PI) / 180;
+          const face = [Math.cos(a), -Math.sin(a)];
+          for (const s of objects) {
+            if (s.kind != 'sign' || Math.hypot(s.x - o.x, s.z - o.z) > 100) continue;
+            // the wall a sign is on faces (sin yaw, cos yaw); a blade's wall is turned by 90 degrees
+            const n =
+              s.mount == 'blade' ? [Math.cos(s.yaw), -Math.sin(s.yaw)] : [Math.sin(s.yaw), Math.cos(s.yaw)];
+            expect(n[0] * face[0] + n[1] * face[1]).toBeLessThanOrEqual(0.95);
+          }
+        }
+      }
+    }
+    expect(bars).toBeGreaterThan(0);
+  });
+});

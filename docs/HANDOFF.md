@@ -241,7 +241,15 @@ Ads are signs placed on buildings' real walls, sized by their art. They are no l
     - `-0.00` vs `0.00` in the plane key split one wall into two, giving duplicate overlapping rectangles.
     - Near-coplanar layered surfaces now keep only the front-most rectangle.
     - A test pins both.
+- **Polish after review — done.**
+  - **Light bars restored:** the original tower ad model `ads_s_05_01` was only 13 thin vertical light strips. It's back as `light_bars` (same geometry, hologram materials, the original transform with negated rotation) on s_05 towers per `lightBarChance`. Signs keep that face clear.
+  - **Even glow:**
+    - The atlas build measures every artwork (geometric mean of mean and 95th-percentile linear luminance) and stores a `gain` toward the median (0.35–2.0).
+    - Signs also scale by size (`signSizeGain`: (1600/area)^0.3, clamped 0.45–1.2), since emitted light grows with area.
+    - Both multiply the emission through the pool's per-instance brightness (`useInstanceArt` multiplies by `vColor.r`; switching screens update it).
+  - **Skyscrapers lead with picture ads:** banners come only from the posters atlas (aspect ≤ 0.75), posters on 250+ unit buildings are 60–130 tall, and neon there is ×0.3 and stays below 120. Banner chances: mixed 0.65, downtown 0.85, neon 0.75.
 - **Next:**
+  - More tall picture ads (the user offered to generate them; see the spec in the session summary).
   - Rooftop billboards on frames (needs roof data; Codex's `RooftopKit` finds roofs).
   - Per-art brightness from the catalog's `gain`.
   - Collision for blade signs if flying low through them matters.

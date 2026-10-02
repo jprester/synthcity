@@ -75,6 +75,7 @@ export const SIGN_LAYOUT = {
     size: [14, 28] as [number, number], // long side
     zone: [0.02, 0.5] as [number, number], // band of the building's height
     zoneCap: 200, // top of the band, at most
+    skyscraper: { density: 0.3, zoneCap: 120 }, // on 250+ unit buildings: fewer, lower
     perWallMax: 14,
     attempts: 4,
   },
@@ -86,6 +87,7 @@ export const SIGN_LAYOUT = {
   },
   poster: {
     height: [35, 80] as [number, number],
+    skyscraperHeight: [60, 130] as [number, number], // bigger on 250+ unit buildings
     minHeight: 24, // smaller than this after fitting the wall: skip
     spacing: 110, // one poster chance per this much band height
     zone: [0.45, 0.85] as [number, number],
@@ -94,7 +96,7 @@ export const SIGN_LAYOUT = {
   banner: {
     minBuilding: 250, // only on buildings at least this tall
     minWall: 120, // and walls at least this tall
-    maxAspect: 0.5, // tall art only
+    maxAspect: 0.75, // upright art only (2:3 posters scale up well)
     height: [0.3, 0.65] as [number, number], // of the building's height
     maxHeight: 360,
     minHeight: 90, // smaller than this after fitting the wall: skip
@@ -107,7 +109,8 @@ export const SIGN_LAYOUT = {
 const BANNER_DEPTH = 4;
 
 // tall art from both atlases, for banners
-const TALL = (['posters', 'neon'] as SignAtlas[]).flatMap((atlas) =>
+// banners are picture ads (posters atlas), never neon text signs
+const TALL = (['posters'] as SignAtlas[]).flatMap((atlas) =>
   ART[atlas].entries.flatMap((e, art) =>
     e.aspect <= SIGN_LAYOUT.banner.maxAspect ? [{ atlas, art, aspect: e.aspect }] : [],
   ),
@@ -154,11 +157,20 @@ export function placeSigns(
   seed: Seed,
   district: DistrictStyle,
   bannersOnly = false,
+  keepClear: [number, number] | null = null, // world normal of a face to leave free (light bars)
 ): void {
   const facades = FACADES[building.model];
   if (!facades) return;
   const random = hashRandom(seed, building.x, building.z, 'signs');
   const height = facades.height * building.scaleY;
+  // skyscrapers lead with big picture ads; neon stays small and low
+  const tall = height >= SIGN_LAYOUT.banner.minBuilding;
+  // skip walls facing the same way as a face that must stay clear
+  const facesAway = (rect: FacadeRect) => {
+    if (!keepClear) return false;
+    const [wx, wz] = worldDir(building, rect.n);
+    return wx * keepClear[0] + wz * keepClear[1] > 0.95;
+  };
   const { margin } = SIGN_LAYOUT;
   // the building's block, to tell walls facing a street from walls facing a neighbour
   const bx = Math.floor(building.x / CELL_SIZE) * CELL_SIZE;
@@ -172,6 +184,7 @@ export function placeSigns(
   const bn = SIGN_LAYOUT.banner;
   if (height >= bn.minBuilding) {
     for (const rect of facades.banners) {
+      if (facesAway(rect)) continue;
       const wall: Box = [rect.s0, rect.s1, rect.y0 * building.scaleY, rect.y1 * building.scaleY];
       const wallWidth = wall[1] - wall[0];
       if (wall[3] - wall[2] < bn.minWall) continue;
@@ -207,6 +220,7 @@ export function placeSigns(
     );
 
   for (const rect of facades.rects) {
+    if (facesAway(rect)) continue;
     const wall: Box = [rect.s0, rect.s1, rect.y0 * building.scaleY, rect.y1 * building.scaleY];
     const wallWidth = wall[1] - wall[0];
     const taken: Box[] = [];
@@ -226,7 +240,8 @@ export function placeSigns(
       if (random() >= district.posterChance) continue;
       const art = Math.floor(random() * ART.posters.entries.length);
       const aspect = ART.posters.entries[art].aspect;
-      let h = p.height[0] + random() * (p.height[1] - p.height[0]);
+      const range = tall ? p.skyscraperHeight : p.height;
+      let h = range[0] + random() * (range[1] - range[0]);
       h = Math.min(h, py1 - py0 - 2 * margin, (wallWidth - 2 * margin) / aspect);
       if (h < p.minHeight) continue;
       const w = h * aspect;
@@ -240,9 +255,9 @@ export function placeSigns(
     // small neon shop signs low on the building; on street walls some stick out
     const n = SIGN_LAYOUT.neon;
     const bl = SIGN_LAYOUT.blade;
-    const top = Math.min(wall[3], height * n.zone[1], n.zoneCap);
+    const top = Math.min(wall[3], height * n.zone[1], tall ? n.skyscraper.zoneCap : n.zoneCap);
     const bottom = Math.max(wall[2], height * n.zone[0]);
-    const expected = (district.neonSigns * wallWidth) / 100;
+    const expected = ((tall ? n.skyscraper.density : 1) * district.neonSigns * wallWidth) / 100;
     const count = Math.min(n.perWallMax, Math.floor(expected + random()));
     for (let i = 0; i < count; i++) {
       const art = Math.floor(random() * ART.neon.entries.length);
