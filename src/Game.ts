@@ -225,7 +225,7 @@ export class Game {
     this.renderer.setPixelRatio(window.devicePixelRatio * this.settings.renderScaling);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.toneMapping = ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.0;
+    this.renderer.toneMappingExposure = 1.7;
     this.renderer.outputColorSpace = SRGBColorSpace;
     document.body.appendChild(this.renderer.domElement);
 
@@ -303,7 +303,7 @@ export class Game {
     ));
     if (this.environment.name == 'night') {
       bloomPass.threshold = 0.0;
-      bloomPass.strength = 7.0;
+      bloomPass.strength = 3.0;
       bloomPass.radius = 1.0;
     } else if (this.environment.name == 'day') {
       bloomPass.threshold = 0;
@@ -638,14 +638,14 @@ export class Game {
         },
         sun: {
           color: 0x8b79ff,
-          intensity: 0.1,
+          intensity: 0.4,
           x: 1,
           y: 0.5,
           z: 0.25,
         },
         ambient: {
           color: 0x1b2c80,
-          intensity: 0.5,
+          intensity: 0.25,
         },
       },
       day: {
