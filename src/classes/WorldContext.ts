@@ -34,9 +34,9 @@ export interface InstancesLike {
     material: Material,
     matrix: Matrix4,
     brightness?: number,
-    data?: ArrayLike<number>, // per-instance vec4 (InstancePool INSTANCE_DATA)
+    data?: ArrayLike<number>, // per-instance data (InstancePool INSTANCE_DATA)
   ): InstanceHandle;
-  setData(handle: InstanceHandle, data: ArrayLike<number>): void;
+  setData(handle: InstanceHandle, data: ArrayLike<number>, offset?: number): void;
   setBrightness(handle: InstanceHandle, brightness: number): void;
   remove(handle: InstanceHandle): void;
 }
@@ -73,4 +73,5 @@ export interface WorldContext {
   cityLights: CityLight[];
   instances: InstancesLike;
   rooftops?: RooftopSource;
+  time: { readonly value: number }; // world time in seconds, the shaders' animation clock
 }

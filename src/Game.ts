@@ -370,6 +370,7 @@ export class Game {
       cityLights: this.cityLights,
       instances: this.instances,
       rooftops: new RooftopKit(this.settings.worldSeed, this.environment.name === 'night'),
+      time: this.assets.time,
     };
 
     this.generatorCityBlock = new Generator({
@@ -605,6 +606,7 @@ export class Game {
     if (this.radio) this.radio.update();
     this.playerController.update();
 
+    this.assets.time.value += worldK / 60;
     this.generatorCityBlock.update(worldK);
     if (this.generatorCityLights !== null) this.generatorCityLights.update(worldK);
     this.generatorTraffic.update(worldK);

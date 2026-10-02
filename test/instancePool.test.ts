@@ -3,13 +3,14 @@ import {
   BoxGeometry,
   BufferGeometry,
   Frustum,
+  InterleavedBufferAttribute,
   Matrix4,
   Mesh,
   MeshBasicMaterial,
   PerspectiveCamera,
   Scene,
 } from 'three';
-import { InstancePool } from '../src/classes/InstancePool.ts';
+import { DATA_SIZE, INSTANCE_DATA, InstancePool } from '../src/classes/InstancePool.ts';
 import type { Batch, PoolHandle } from '../src/classes/InstancePool.ts';
 
 const translation = (x: number, z = 0) => new Matrix4().makeTranslation(x, 0, z);
@@ -128,5 +129,34 @@ describe('InstancePool', () => {
       drawn.push(mat.elements);
     }
     expect(drawn).toEqual(visible.map((mat) => Array.from(new Float32Array(mat.elements))));
+  });
+
+  it('keeps per-instance data with its transform, and exposes every vec4 to the shader', () => {
+    const pool = new InstancePool(new Scene());
+    const geometry = new BoxGeometry(1, 1, 1);
+    const material = new MeshBasicMaterial();
+    // data: the instance's x in every slot, so the packed buffer can be checked against the matrix
+    const handles = Array.from({ length: 100 }, (_, i) =>
+      pool.add(geometry, material, translation(i - 50), 1, new Array(DATA_SIZE).fill(i - 50)),
+    );
+    pool.remove(handles[4]);
+    pool.setData(handles[50], [7, 7, 7, 7], 8); // only the third vec4
+    let updated = false;
+    const camera = new PerspectiveCamera(50, 1, 1, 1000);
+    camera.position.set(0, 0, 30);
+    pool.cull(camera);
+    const attributes = INSTANCE_DATA.map((name) => geometry.getAttribute(name) as InterleavedBufferAttribute);
+    expect(attributes.map((a) => a.offset)).toEqual([0, 4, 8]);
+    const mesh = handles[0].batch!.mesh;
+    expect(mesh.count).toBeGreaterThan(0);
+    for (let i = 0; i < mesh.count; i++) {
+      const matrix = new Matrix4();
+      mesh.getMatrixAt(i, matrix);
+      const x = matrix.elements[12];
+      const expected = x == 0 ? [x, x, x, x, x, x, x, x, 7, 7, 7, 7] : new Array(DATA_SIZE).fill(x);
+      expect(attributes.flatMap((a) => [a.getX(i), a.getY(i), a.getZ(i), a.getW(i)])).toEqual(expected);
+      if (x == 0) updated = true;
+    }
+    expect(updated).toBe(true);
   });
 });

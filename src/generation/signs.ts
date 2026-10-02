@@ -14,7 +14,7 @@
 // nothing is cropped or stretched. Signs never overlap and keep a margin from
 // the wall's edges. Everything is a hash of (seed, building position).
 
-import { hashRandom } from '../hash.ts';
+import { hashFloat, hashRandom } from '../hash.ts';
 import type { Random, Seed } from '../hash.ts';
 import type { DistrictStyle } from './districts.ts';
 import { CELL_SIZE, CITY_BLOCK_SIZE } from './world.ts';
@@ -28,6 +28,11 @@ export type SignAtlas = 'neon' | 'posters' | 'screens';
 // wall: flat against the wall. blade: sticks out perpendicular to it (neon
 // shop signs over a street). banner: a tall billboard down a skyscraper.
 export type SignMount = 'wall' | 'blade' | 'banner';
+
+// how a sign moves (drawn by the sign shader, src/rendering/adArt.ts)
+// video: picture ads slowly zoom and pan, like a looping video ad
+// flicker: a failing neon tube that drops out now and then
+export type SignEffect = 'none' | 'video' | 'flicker';
 
 export interface SignObject {
   kind: 'sign';
@@ -43,6 +48,7 @@ export interface SignObject {
   interval: number; // frames between art switches
   counter: number; // initial frame counter
   switches: boolean; // screens cycle their art; neon signs don't
+  effect: SignEffect;
 }
 
 export interface FacadeRect {
@@ -110,6 +116,12 @@ export const SIGN_LAYOUT = {
     stackFalloff: 0.55,
     screenShare: 0.65, // chance a screen shows one of the picture ads made for screens
   },
+  // chance of each effect, by kind of sign
+  effects: {
+    bannerVideo: 0.6,
+    posterVideo: 0.35,
+    neonFlicker: 0.07,
+  },
 };
 
 // a framed screen may stand this far in front of the building (see the extractor)
@@ -165,6 +177,27 @@ export function placeSigns(
   district: DistrictStyle,
   bannersOnly = false,
   keepClear: [number, number] | null = null, // world normal of a face to leave free (light bars)
+): void {
+  const start = out.length;
+  placeOnWalls(out, building, seed, district, bannersOnly, keepClear);
+  // effects: a hash of each sign's own position, apart from the placement stream
+  for (let i = start; i < out.length; i++) out[i].effect = signEffect(seed, out[i]);
+}
+
+function signEffect(seed: Seed, sign: SignObject): SignEffect {
+  const e = SIGN_LAYOUT.effects;
+  const roll = hashFloat(seed, sign.x, sign.z, Math.floor(sign.y), 'sign-effect');
+  if (sign.atlas == 'neon') return roll < e.neonFlicker ? 'flicker' : 'none';
+  return roll < (sign.mount == 'banner' ? e.bannerVideo : e.posterVideo) ? 'video' : 'none';
+}
+
+function placeOnWalls(
+  out: SignObject[],
+  building: Building,
+  seed: Seed,
+  district: DistrictStyle,
+  bannersOnly: boolean,
+  keepClear: [number, number] | null,
 ): void {
   const facades = FACADES[building.model];
   if (!facades) return;
@@ -313,6 +346,7 @@ function common(random: Random, atlas: SignAtlas) {
     interval,
     counter: random() * interval,
     switches: atlas != 'neon' && random() < SIGN_LAYOUT.poster.switchChance,
+    effect: 'none' as SignEffect, // set by placeSigns
   };
 }
 

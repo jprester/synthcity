@@ -38,6 +38,7 @@ class AssetManager {
   buildingWindowsEmissiveIntensity: number;
   adsEmissiveIntensity = 0.1; // rooftop holograms
   signsEmissiveIntensity = 0.3; // wall signs (dark-background art, emission only)
+  time = { value: 0 }; // world time in seconds, the animated materials' clock (Game advances it)
 
   textures: Record<string, Texture> = {};
   models: Record<string, BufferGeometry> = {};
@@ -224,7 +225,7 @@ class AssetManager {
         blending: AdditiveBlending,
         fog: false,
       }));
-      useInstanceArt(material);
+      useInstanceArt(material, this.time);
     }
 
     // ads large

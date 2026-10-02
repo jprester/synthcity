@@ -41,6 +41,7 @@ export function makeWorld({ worldSeed = 9746, environment = 'night' } = {}): Wor
     player: { camera: { position: new Vector3() }, body: { position: new Vector3() } },
     cityLights: [],
     instances: { add: () => ({}), setData() {}, setBrightness() {}, remove() {} },
+    time: { value: 0 },
   };
 }
 

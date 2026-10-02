@@ -2,7 +2,8 @@ import { BufferGeometry, Matrix4, Mesh, Object3D, Quaternion, Vector3 } from 'th
 
 import { hashRandom } from '../hash.ts';
 import type { Random } from '../hash.ts';
-import { AD_ATLASES, AD_MATERIALS, SIGN_MODELS } from '../rendering/adArt.ts';
+import { AD_ATLASES, AD_MATERIALS, SIGN_MODELS, signData } from '../rendering/adArt.ts';
+import type { AdArt } from '../rendering/adArt.ts';
 import { generateBlock } from '../generation/cityBlock.ts';
 import { windowBrightness } from '../generation/buildingDetails.ts';
 import { districtKindAt } from '../generation/districts.ts';
@@ -140,7 +141,7 @@ class GeneratorItem_CityBlock implements GeneratorItem {
         assets.getMaterial(AD_MATERIALS[o.atlas]),
         _matrix,
         art.gain * signSizeGain(o.width, o.height),
-        art.uv,
+        signData(art, o.effect, o.counter / o.interval),
       );
       this.instances.push(handle);
       if (o.switches) this.updateables.push(new SignSwitcher(o, handle, this.context));
@@ -203,14 +204,16 @@ abstract class Decoration implements Updateable {
   abstract update(k: number): void;
 }
 
-// A screen that cycles its art. It only picks art of the same shape, so the
-// sign keeps its size on the wall.
+// A screen that cycles its art, wiping from one ad to the next (the sign
+// shader animates the wipe). It only picks art of the same shape, so the sign
+// keeps its size on the wall.
 class SignSwitcher implements Updateable {
   handle: InstanceHandle;
   context: WorldContext;
+  sign: SignObject;
   choices: number[]; // art indices with the sign's aspect
-  entries: { uv: [number, number, number, number]; gain: number }[];
-  interval: number;
+  entries: AdArt[];
+  current: number;
   counter: number;
   random: Random;
   sizeGain: number;
@@ -218,22 +221,30 @@ class SignSwitcher implements Updateable {
   constructor(o: SignObject, handle: InstanceHandle, context: WorldContext) {
     this.handle = handle;
     this.context = context;
+    this.sign = o;
     const entries = AD_ATLASES[o.atlas].entries;
     const aspect = entries[o.art].aspect;
     this.entries = entries;
     this.choices = entries.flatMap((e, i) => (Math.abs(e.aspect / aspect - 1) < 0.03 ? [i] : []));
+    this.current = o.art;
     this.sizeGain = signSizeGain(o.width, o.height);
-    this.interval = o.interval;
     this.counter = o.counter;
     this.random = hashRandom(context.seed, o.x, o.z, 'sign-switch');
   }
   update(k: number): void {
     this.counter += k;
-    if (this.counter > this.interval) {
+    if (this.counter > this.sign.interval) {
       this.counter = 0;
-      const art = this.choices[Math.floor(this.random() * this.choices.length)];
-      this.context.instances.setData(this.handle, this.entries[art].uv);
-      this.context.instances.setBrightness(this.handle, this.entries[art].gain * this.sizeGain);
+      const from = this.entries[this.current];
+      this.current = this.choices[Math.floor(this.random() * this.choices.length)];
+      const art = this.entries[this.current];
+      const { instances, time } = this.context;
+      const phase = this.sign.counter / this.sign.interval;
+      instances.setData(
+        this.handle,
+        signData(art, this.sign.effect, phase, from, time.value, from.gain * this.sizeGain),
+      );
+      instances.setBrightness(this.handle, art.gain * this.sizeGain);
     }
   }
   // the instance itself is freed with the block's other instances
