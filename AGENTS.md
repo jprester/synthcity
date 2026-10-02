@@ -8,7 +8,7 @@ These hold for every change:
 
 - **The city is procedural and infinite.** Everything in the world is generated from the world seed and the cell coordinates. Never hand-place content or add fixed maps.
 - **Same seed, same city.** For a given seed, generating a cell must give the same result every time, whatever else happened before. World content must never use `Math.random()`; derive it from the seed and position with `src/hash.ts` (`hashFloat(seed, x, z, 'purpose')`, or `hashRandom(...)` for a stream). Use a distinct purpose salt for each new use.
-- **The look is intentional.** The night palette, strong bloom (threshold 0, strength 7, with the r159 bloom pass), fog, emissive windows, ads and spotlights are the original art direction. Don't retune them as a side effect of other work.
+- **The look is intentional.** The night palette, strong bloom (threshold 0, strength 3, with the r159 bloom pass), exposure 1.7, fog, emissive windows, ads and spotlights are the original art direction. Don't retune them as a side effect of other work.
 - **Refactors are pixel-neutral.** Anything that isn't meant to change the look must pass `npm run visual:compare` unchanged.
 
 ## Commands
