@@ -21,7 +21,9 @@ import { CELL_SIZE, CITY_BLOCK_SIZE } from './world.ts';
 import facadeData from '../assets/facades.json';
 import atlasData from '../assets/adAtlases.json';
 
-export type SignAtlas = 'neon' | 'posters';
+// neon: shop signs; posters: posters and designs; screens: tall picture ads
+// for skyscraper screens, at high resolution
+export type SignAtlas = 'neon' | 'posters' | 'screens';
 
 // wall: flat against the wall. blade: sticks out perpendicular to it (neon
 // shop signs over a street). banner: a tall billboard down a skyscraper.
@@ -106,6 +108,7 @@ export const SIGN_LAYOUT = {
     zone: [0.2, 0.98] as [number, number], // band of the building's height
     perWall: 3, // screens stacked on one wall at most; each further one is less likely
     stackFalloff: 0.55,
+    screenShare: 0.65, // chance a screen shows one of the picture ads made for screens
   },
 };
 
@@ -114,7 +117,7 @@ const SCREEN_DEPTH = 12;
 
 // tall art from both atlases, for banners
 // banners are picture ads (posters atlas), never neon text signs
-const TALL = (['posters'] as SignAtlas[]).flatMap((atlas) =>
+const TALL = (['screens', 'posters'] as SignAtlas[]).flatMap((atlas) =>
   ART[atlas].entries.flatMap((e, art) =>
     e.aspect <= SIGN_LAYOUT.banner.maxAspect ? [{ atlas, art, aspect: e.aspect }] : [],
   ),
@@ -217,7 +220,10 @@ export function placeSigns(
           return { ...t, h, w: h * t.aspect };
         }).filter((t) => t.h >= bn.minHeight && t.w >= usable * bn.minFill);
         if (fits.length == 0) break;
-        const pick = fits[Math.floor(random() * fits.length)];
+        // prefer the high-resolution picture ads made for screens
+        const screens = fits.filter((t) => t.atlas == 'screens');
+        const pool = screens.length > 0 && random() < bn.screenShare ? screens : fits;
+        const pick = pool[Math.floor(random() * pool.length)];
         const { w, h } = pick;
         // centred on the face, with a little play
         const s = wall[0] + margin + w / 2 + (0.5 + (random() - 0.5) * 0.4) * (usable - w);
@@ -306,7 +312,7 @@ function common(random: Random, atlas: SignAtlas) {
   return {
     interval,
     counter: random() * interval,
-    switches: atlas == 'posters' && random() < SIGN_LAYOUT.poster.switchChance,
+    switches: atlas != 'neon' && random() < SIGN_LAYOUT.poster.switchChance,
   };
 }
 

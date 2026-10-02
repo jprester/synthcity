@@ -144,7 +144,7 @@ describe('wall signs', () => {
         if (sign.mount == 'banner') {
           const b = SIGN_LAYOUT.banner;
           expect(height).toBeGreaterThanOrEqual(b.minBuilding);
-          expect(sign.atlas).toBe('posters'); // picture ads, not neon text
+          expect(sign.atlas).not.toBe('neon'); // picture ads, not neon text
           expect(sign.width / sign.height).toBeLessThanOrEqual(b.maxAspect + 1e-6);
           expect(sign.height).toBeGreaterThanOrEqual(b.minHeight - 1e-6);
           expect(sign.height).toBeLessThanOrEqual(b.maxHeight + 1e-6);

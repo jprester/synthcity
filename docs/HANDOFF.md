@@ -255,6 +255,10 @@ Ads are signs placed on buildings' real walls, sized by their art. They are no l
   - Coverage: 95–100% of skyscrapers carry screens (mean ~4,000 units², p90 ~165 tall).
   - Size dimming softened to (1600/area)^0.2, floor 0.6, so big screens stay visible across the skyline.
   - The limit now is art: many tall "posters" are typography; the user is generating picture ads.
+- **Screen art — done (first batch).**
+  - The user's generated "vertical digital billboard" ads (`signs-src/ads/*vertical_digital_billboard*.png`, 640×1904) go into a third atlas, `ads_screens.webp`, at up to 1354 px per piece (posters: 446).
+  - Tower screens pick these first (`screenShare` 0.65) and can cycle between them, since they share one shape.
+  - To add more: generate with the same prompt (session prompt template), drop the files in that folder, and re-run `scripts/assets/build_ad_atlases.py`. As the count grows the per-piece resolution drops; past ~30 images consider 2 screen atlases.
 - **Next:**
   - More tall picture ads (the user offered to generate them; see the spec in the session summary).
   - Rooftop billboards on frames (needs roof data; Codex's `RooftopKit` finds roofs).

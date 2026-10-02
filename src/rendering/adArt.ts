@@ -29,8 +29,16 @@ export const AD_ATLASES = atlasData as unknown as Record<SignAtlas, AdAtlas>;
 
 // material and quad model per atlas (AssetManager). Each atlas has its own quad
 // geometry because the pool keeps per-instance data on the geometry.
-export const AD_MATERIALS: Record<SignAtlas, string> = { neon: 'ads_neon', posters: 'ads_posters' };
-export const SIGN_MODELS: Record<SignAtlas, string> = { neon: 'sign_neon', posters: 'sign_posters' };
+export const AD_MATERIALS: Record<SignAtlas, string> = {
+  neon: 'ads_neon',
+  posters: 'ads_posters',
+  screens: 'ads_screens',
+};
+export const SIGN_MODELS: Record<SignAtlas, string> = {
+  neon: 'sign_neon',
+  posters: 'sign_posters',
+  screens: 'sign_screens',
+};
 
 // Makes a material with an emissive map sample each instance's art rectangle,
 // scaled by the instance's brightness (the art's gain, InstancePool brightness).

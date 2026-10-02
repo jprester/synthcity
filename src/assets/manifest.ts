@@ -63,6 +63,7 @@ export const TEXTURES: TextureEntry[] = [
   // ad art atlases, built by scripts/assets/build_ad_atlases.py (entries in src/assets/adAtlases.json)
   { key: 'ads_neon', file: 'textures/ads_neon.webp', anisotropic: true, srgb: true },
   { key: 'ads_posters', file: 'textures/ads_posters.webp', anisotropic: true, srgb: true },
+  { key: 'ads_screens', file: 'textures/ads_screens.webp', anisotropic: true, srgb: true },
   ...ids(5).map((id) => ({ key: `ads_large_${id}`, file: `textures/ads_large_${id}.jpg` })),
   ...ids(3).map((id) => ({ key: `smoke_${id}`, file: `textures/smoke_${id}.jpg` })),
   ...ids(4).map((id) => ({ key: `spotlight_${id}`, file: `textures/spotlight_${id}.jpg` })),

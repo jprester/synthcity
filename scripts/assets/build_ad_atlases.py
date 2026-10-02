@@ -6,10 +6,15 @@ Source art lives outside this repo (the user's generated images):
                              (origin bottom-left) in one of the sign atlases
   <src>/signs/*.webp         those atlases
   <src>/ads-v2/*.png         designed ads, one per file
+  <src>/signs-src/ads/*vertical_digital_billboard*.png
+                             tall picture ads for skyscraper screens (generated
+                             with the "vertical digital billboard" prompt; names
+                             in signs-src/exclude.txt are skipped)
 
 Output:
   public/assets/textures/ads_neon.webp     kind 'neon' catalog entries
   public/assets/textures/ads_posters.webp  kind 'ad' catalog entries + ads-v2
+  public/assets/textures/ads_screens.webp  the tall picture ads, at high resolution
   src/assets/adAtlases.json                 per atlas: entries with id, kind,
                                             aspect (w/h), uv [u0, v0, u1, v1] and
                                             gain (brightness evening-out factor)
@@ -36,7 +41,7 @@ REPO = Path(__file__).resolve().parents[2]
 def load_entries(src: Path):
     catalog = json.loads((src / 'signs' / 'catalog.json').read_text())
     sheets = {}
-    groups = {'neon': [], 'posters': []}
+    groups = {'neon': [], 'posters': [], 'screens': []}
     for e in catalog['entries']:
         sheet = sheets.get(e['atlas'])
         if sheet is None:
@@ -47,6 +52,16 @@ def load_entries(src: Path):
         groups['neon' if e['kind'] == 'neon' else 'posters'].append((e['id'], e['kind'], sheet.crop(box)))
     for f in sorted((src / 'ads-v2').glob('*.png')):
         groups['posters'].append((f.stem, 'design', Image.open(f).convert('RGB')))
+    exclude_file = src / 'signs-src' / 'exclude.txt'
+    excluded = set()
+    if exclude_file.exists():
+        for line in exclude_file.read_text().splitlines():
+            name = line.split('#')[0].strip()
+            if name:
+                excluded.add(name)
+    for f in sorted((src / 'signs-src' / 'ads').glob('*vertical_digital_billboard*.png')):
+        if f.name not in excluded:
+            groups['screens'].append((f.stem, 'picture', Image.open(f).convert('RGB')))
     return groups
 
 
@@ -87,7 +102,8 @@ GAIN_RANGE = (0.35, 2.0)  # how far a piece may be dimmed or boosted
 
 
 def build(name, images, out_json):
-    lo, hi = 64, 2048
+    # never upscale past the sources
+    lo, hi = 64, min(2048, max(max(im.size) for _, _, im in images))
     while lo < hi:  # the largest long side that fits
         mid = (lo + hi + 1) // 2
         if pack(images, mid):
@@ -124,7 +140,7 @@ def main():
     src = Path(sys.argv[1]).expanduser()
     groups = load_entries(src)
     out = {}
-    for name in ('neon', 'posters'):
+    for name in ('neon', 'posters', 'screens'):
         build(name, groups[name], out)
     # even out brightness: scale every piece towards the median of all art
     all_entries = [e for atlas in out.values() for e in atlas['entries']]

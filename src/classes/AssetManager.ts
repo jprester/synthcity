@@ -87,6 +87,7 @@ class AssetManager {
     // unit quads for wall signs, one per atlas (see SIGN_MODELS)
     this.models['sign_neon'] = new PlaneGeometry(1, 1);
     this.models['sign_posters'] = new PlaneGeometry(1, 1);
+    this.models['sign_screens'] = new PlaneGeometry(1, 1);
 
     this.createMaterials();
   }
@@ -213,7 +214,7 @@ class AssetManager {
     // wall signs: one material per art atlas; each sign instance samples its
     // own art rectangle (src/rendering/adArt.ts). Emission only: a black diffuse colour keeps the
     // district lights from washing every panel in their colour.
-    for (const key of ['ads_neon', 'ads_posters']) {
+    for (const key of ['ads_neon', 'ads_posters', 'ads_screens']) {
       const material = (this.materials[key] = new MeshPhongMaterial({
         color: 0x000000,
         specular: 0x000000,
