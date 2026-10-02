@@ -248,6 +248,13 @@ Ads are signs placed on buildings' real walls, sized by their art. They are no l
     - Signs also scale by size (`signSizeGain`: (1600/area)^0.3, clamped 0.45–1.2), since emitted light grows with area.
     - Both multiply the emission through the pool's per-instance brightness (`useInstanceArt` multiplies by `vColor.r`; switching screens update it).
   - **Skyscrapers lead with picture ads:** banners come only from the posters atlas (aspect ≤ 0.75), posters on 250+ unit buildings are 60–130 tall, and neon there is ×0.3 and stays below 120. Banner chances: mixed 0.65, downtown 0.85, neon 0.75.
+- **Tower screens — done.**
+  - Banners became big screens that fill 72–95% of a wall's width (art up to square, 70–420 units tall), up to three stacked per wall, each less likely (×0.55).
+  - The extractor has a third scan, `screens`: a tower's four bounding-box sides, usable where the building is within 12 units behind. Screens hang on frames over ribs and setbacks (s_04_03, which had no banner walls, now has 114×141 faces). Screens try these first, then the ribbed `banners` walls.
+  - Overlap checks between banners, posters and neon compare parallel walls up to a frame depth (14) apart.
+  - Coverage: 95–100% of skyscrapers carry screens (mean ~4,000 units², p90 ~165 tall).
+  - Size dimming softened to (1600/area)^0.2, floor 0.6, so big screens stay visible across the skyline.
+  - The limit now is art: many tall "posters" are typography; the user is generating picture ads.
 - **Next:**
   - More tall picture ads (the user offered to generate them; see the spec in the session summary).
   - Rooftop billboards on frames (needs roof data; Codex's `RooftopKit` finds roofs).

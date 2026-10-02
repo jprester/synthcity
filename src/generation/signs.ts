@@ -53,14 +53,15 @@ export interface FacadeRect {
 }
 
 // rects: flat walls for posters and neon; banners: tall walls, ribbed facades
-// measured at their front (both from scripts/assets/extract_facades.mjs)
+// measured at their front; screens: a tower's outer faces, where big screens
+// hang on frames (all from scripts/assets/extract_facades.mjs)
 export const FACADES = facadeData as unknown as Record<
   string,
-  { height: number; rects: FacadeRect[]; banners: FacadeRect[] }
+  { height: number; rects: FacadeRect[]; banners: FacadeRect[]; screens: FacadeRect[] }
 >;
 // normals are stored rounded; make them unit length again
-for (const { rects, banners } of Object.values(FACADES)) {
-  for (const r of [...rects, ...banners]) {
+for (const { rects, banners, screens } of Object.values(FACADES)) {
+  for (const r of [...rects, ...banners, ...screens]) {
     const len = Math.hypot(r.n[0], r.n[1]);
     r.n = [r.n[0] / len, r.n[1] / len];
   }
@@ -93,20 +94,23 @@ export const SIGN_LAYOUT = {
     zone: [0.45, 0.85] as [number, number],
     switchChance: 0.35,
   },
+  // big screens on skyscraper faces, filling most of a wall's width
   banner: {
     minBuilding: 250, // only on buildings at least this tall
     minWall: 120, // and walls at least this tall
-    maxAspect: 0.75, // upright art only (2:3 posters scale up well)
-    height: [0.3, 0.65] as [number, number], // of the building's height
-    maxHeight: 360,
-    minHeight: 90, // smaller than this after fitting the wall: skip
-    zone: [0.25, 0.97] as [number, number],
-    spacing: 70, // one banner chance per this much wall width
+    maxAspect: 1, // upright to square art
+    fill: [0.72, 0.95] as [number, number], // share of the wall's width a screen spans
+    minFill: 0.55, // narrower than this share after fitting: not a screen, skip
+    maxHeight: 420,
+    minHeight: 70,
+    zone: [0.2, 0.98] as [number, number], // band of the building's height
+    perWall: 3, // screens stacked on one wall at most; each further one is less likely
+    stackFalloff: 0.55,
   },
 };
 
-// parallel surfaces this close count as one wall for banners (see the extractor)
-const BANNER_DEPTH = 4;
+// a framed screen may stand this far in front of the building (see the extractor)
+const SCREEN_DEPTH = 12;
 
 // tall art from both atlases, for banners
 // banners are picture ads (posters atlas), never neon text signs
@@ -181,43 +185,55 @@ export function placeSigns(
   // tall banners down skyscrapers, on their own (coarser) walls; the areas
   // they take are blocked for the posters and neon signs placed after them
   const blocked: { rect: FacadeRect; box: Box }[] = [];
+  // does a box on a wall overlap a banner already on that wall, or on a
+  // parallel wall a screen's frame depth away?
+  const underBanner = (rect: FacadeRect, box: Box) =>
+    blocked.some(
+      (b) =>
+        Math.abs(b.rect.n[0] - rect.n[0]) < 1e-3 &&
+        Math.abs(b.rect.n[1] - rect.n[1]) < 1e-3 &&
+        Math.abs(b.rect.d - rect.d) < SCREEN_DEPTH + 2 &&
+        overlaps(b.box, box, margin),
+    );
+
   const bn = SIGN_LAYOUT.banner;
   if (height >= bn.minBuilding) {
-    for (const rect of facades.banners) {
+    // framed screens on the tower's outer faces first, then the ribbed walls
+    for (const rect of [...facades.screens, ...facades.banners]) {
       if (facesAway(rect)) continue;
       const wall: Box = [rect.s0, rect.s1, rect.y0 * building.scaleY, rect.y1 * building.scaleY];
       const wallWidth = wall[1] - wall[0];
       if (wall[3] - wall[2] < bn.minWall) continue;
       const y0 = Math.max(wall[2], height * bn.zone[0]);
       const y1 = Math.min(wall[3], height * bn.zone[1]);
-      const chances = Math.max(1, Math.floor(wallWidth / bn.spacing));
-      for (let i = 0; i < chances; i++) {
-        if (random() >= district.bannerChance) continue;
-        const pick = TALL[Math.floor(random() * TALL.length)];
-        let h = Math.min(height * (bn.height[0] + random() * (bn.height[1] - bn.height[0])), bn.maxHeight);
-        h = Math.min(h, y1 - y0 - 2 * margin, (wallWidth - 2 * margin) / pick.aspect);
-        if (h < bn.minHeight) continue;
-        const w = h * pick.aspect;
-        const s = wall[0] + margin + w / 2 + random() * (wallWidth - 2 * margin - w);
-        const y = y0 + margin + h / 2 + random() * (y1 - y0 - 2 * margin - h);
-        const box: Box = [s - w / 2, s + w / 2, y - h / 2, y + h / 2];
-        if (blocked.some((b) => b.rect == rect && overlaps(b.box, box, margin))) continue;
-        blocked.push({ rect, box });
-        out.push(flat(building, rect, 'banner', pick.atlas, pick.art, w, h, s, y, random));
+      const usable = wallWidth - 2 * margin;
+      const maxH = Math.min(bn.maxHeight, y1 - y0 - 2 * margin);
+      let chance = district.bannerChance;
+      for (let k = 0; k < bn.perWall && random() < chance; k++, chance *= bn.stackFalloff) {
+        const targetW = usable * (bn.fill[0] + random() * (bn.fill[1] - bn.fill[0]));
+        // art that, at the target width, fits the band; else as tall as the band allows
+        const fits = TALL.map((t) => {
+          const h = Math.min(targetW / t.aspect, maxH);
+          return { ...t, h, w: h * t.aspect };
+        }).filter((t) => t.h >= bn.minHeight && t.w >= usable * bn.minFill);
+        if (fits.length == 0) break;
+        const pick = fits[Math.floor(random() * fits.length)];
+        const { w, h } = pick;
+        // centred on the face, with a little play
+        const s = wall[0] + margin + w / 2 + (0.5 + (random() - 0.5) * 0.4) * (usable - w);
+        let placed = false;
+        for (let attempt = 0; attempt < 4 && !placed; attempt++) {
+          const y = y0 + margin + h / 2 + random() * (y1 - y0 - 2 * margin - h);
+          const box: Box = [s - w / 2, s + w / 2, y - h / 2, y + h / 2];
+          if (underBanner(rect, box)) continue;
+          blocked.push({ rect, box });
+          out.push(flat(building, rect, 'banner', pick.atlas, pick.art, w, h, s, y, random));
+          placed = true;
+        }
       }
     }
   }
   if (bannersOnly) return;
-
-  // does a box on a flat wall overlap a banner on the same wall?
-  const underBanner = (rect: FacadeRect, box: Box) =>
-    blocked.some(
-      (b) =>
-        Math.abs(b.rect.n[0] - rect.n[0]) < 1e-3 &&
-        Math.abs(b.rect.n[1] - rect.n[1]) < 1e-3 &&
-        Math.abs(b.rect.d - rect.d) < BANNER_DEPTH + 1 &&
-        overlaps(b.box, box, margin),
-    );
 
   for (const rect of facades.rects) {
     if (facesAway(rect)) continue;

@@ -82,7 +82,7 @@ describe('wall signs', () => {
         expect(sign.width / sign.height).toBeCloseTo(art.aspect, 6);
         const a = attachment(sign);
         const { px, pz } = onWall({ ...sign, x: a.x, z: a.z }, building);
-        const walls = sign.mount == 'banner' ? facades.banners : facades.rects;
+        const walls = sign.mount == 'banner' ? [...facades.screens, ...facades.banners] : facades.rects;
         const fits = walls.some((r) => {
           const along = -r.n[1] * px + r.n[0] * pz;
           const out = r.n[0] * px + r.n[1] * pz - r.d;
@@ -206,7 +206,7 @@ describe('wall signs', () => {
           const across = Math.abs((a.x - b.x) * Math.sin(a.yaw) + (a.z - b.z) * Math.cos(a.yaw));
           // parallel but different walls (banners hang up to a few units in front of ribbed walls)
           const mixed = a.mount == 'banner' || b.mount == 'banner';
-          if (across > (mixed ? 5 : 0.01)) continue;
+          if (across > (mixed ? 14 : 0.01)) continue;
           const apartX = along >= (a.width + b.width) / 2;
           const apartY = Math.abs(a.y - b.y) >= (a.height + b.height) / 2;
           expect(
@@ -220,7 +220,11 @@ describe('wall signs', () => {
   });
 
   it('has no overlapping wall rectangles on one plane (each wall area appears once)', () => {
-    for (const [model, { rects, banners }] of Object.entries(FACADES)) {
+    for (const [model, { rects, banners, screens }] of Object.entries(FACADES)) {
+      expect(
+        screens.every((r) => r.y1 - r.y0 >= 100 - 1e-6),
+        model,
+      ).toBe(true);
       expect(
         banners.every((r) => r.y1 - r.y0 >= 100 - 1e-6),
         model,

@@ -173,7 +173,8 @@ class GeneratorItem_CityBlock implements GeneratorItem {
 // size, so a 300-unit banner and a small neon sign read at a similar glow.
 const SIGN_REFERENCE_AREA = 40 * 40;
 export function signSizeGain(width: number, height: number): number {
-  return Math.min(Math.max((SIGN_REFERENCE_AREA / (width * height)) ** 0.3, 0.45), 1.2);
+  // gentle: big screens should still stand out across the skyline
+  return Math.min(Math.max((SIGN_REFERENCE_AREA / (width * height)) ** 0.2, 0.6), 1.2);
 }
 
 interface Updateable {

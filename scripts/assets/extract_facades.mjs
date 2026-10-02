@@ -24,6 +24,7 @@ const MIN_W = 8; // smallest rectangle worth keeping (units)
 const MIN_H = 8;
 const BANNER_DEPTH = 4; // parallel surfaces this close count as one wall for banners
 const BANNER_MIN_H = 100;
+const SCREEN_DEPTH = 12; // how far behind a screen's frame the building may be
 const MAX_RECTS = 60; // per model, largest first (mega buildings have hundreds of small ones)
 
 Mesh.prototype.raycast = acceleratedRaycast;
@@ -180,6 +181,19 @@ function scan(geometry, mesh, planes, { tolerance, minW, minH }) {
   return front.slice(0, MAX_RECTS);
 }
 
+// The four outer sides of the model's bounding box as planes: big screens hang
+// on frames in front of a tower's face, over its ribs and setbacks.
+function boxSides(geometry) {
+  const b = geometry.boundingBox;
+  const sides = [
+    { nx: 1, nz: 0, d: b.max.x, s0: b.min.z, s1: b.max.z },
+    { nx: -1, nz: 0, d: -b.min.x, s0: -b.max.z, s1: -b.min.z },
+    { nx: 0, nz: 1, d: b.max.z, s0: -b.max.x, s1: -b.min.x },
+    { nx: 0, nz: -1, d: -b.min.z, s0: b.min.x, s1: b.max.x },
+  ];
+  return sides.map((side) => ({ ...side, y0: b.min.y, y1: b.max.y, area: 0 }));
+}
+
 function facadesOf(key) {
   const geometry = new OBJLoader().parse(readFileSync(`public/assets/models/${key}.obj`, 'utf8')).children[0]
     .geometry;
@@ -196,6 +210,12 @@ function facadesOf(key) {
       minW: 12,
       minH: BANNER_MIN_H,
     }),
+    // tower faces for big framed screens: the building within SCREEN_DEPTH behind
+    screens: scan(geometry, mesh, boxSides(geometry), {
+      tolerance: SCREEN_DEPTH,
+      minW: 30,
+      minH: BANNER_MIN_H,
+    }),
   };
 }
 
@@ -204,8 +224,9 @@ for (const key of models) {
   out[key] = facadesOf(key);
   const area = out[key].rects.reduce((sum, r) => sum + (r.s1 - r.s0) * (r.y1 - r.y0), 0);
   const tallest = Math.max(0, ...out[key].banners.map((r) => r.y1 - r.y0));
+  const screen = out[key].screens[0];
   console.log(
-    `${key}: ${out[key].rects.length} rects (${Math.round(area)} units^2), ${out[key].banners.length} banner walls (tallest ${tallest}), height ${out[key].height}`,
+    `${key}: ${out[key].rects.length} rects (${Math.round(area)} units^2), ${out[key].banners.length} banner walls (tallest ${tallest}), ${out[key].screens.length} screen faces (largest ${screen ? `${Math.round(screen.s1 - screen.s0)}x${Math.round(screen.y1 - screen.y0)}` : '-'}), height ${out[key].height}`,
   );
 }
 writeFileSync('src/assets/facades.json', JSON.stringify(out) + '\n');
