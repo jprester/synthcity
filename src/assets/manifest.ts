@@ -49,8 +49,8 @@ export const TEXTURES: TextureEntry[] = [
   { key: 'cars', file: 'textures/cars.jpg' },
   { key: 'cars_em', file: 'textures/cars_em.jpg' },
 
-  { key: 'storefronts', file: 'textures/storefronts_01.jpg', tiled: true },
-  { key: 'storefronts_em', file: 'textures/storefronts_01_em.jpg', tiled: true },
+  { key: 'storefronts', file: 'textures/storefronts_02.jpg', tiled: true },
+  { key: 'storefronts_em', file: 'textures/storefronts_02_em.jpg', tiled: true },
   { key: 'mega_building_01', file: 'textures/mega_building_01.jpg', tiled: true },
   { key: 'mega_building_01_em', file: 'textures/mega_building_01_em.jpg', tiled: true },
 
