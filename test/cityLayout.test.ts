@@ -23,9 +23,14 @@ function layout(worldSeed: number, randomSeed = 1) {
       blocks[`${i},${j}`] = {
         buildings: block.meshesCollid.map(describeMesh),
         ground: block.meshes.map(describeMesh),
-        decorations: block.updateables.flatMap((u) =>
-          'mesh' in u ? [`${u.constructor.name} ${describeMesh(u.mesh as Mesh)}`] : [],
-        ),
+        decorations: block.updateables.flatMap((u) => {
+          if ('mesh' in u) return [`${u.constructor.name} ${describeMesh(u.mesh as Mesh)}`];
+          // a hologram: its figure and beam
+          if ('figure' in u && 'beam' in u) {
+            return [`Hologram ${describeMesh(u.figure as Mesh)}`, `Beam ${describeMesh(u.beam as Mesh)}`];
+          }
+          return [];
+        }),
       };
     }
   }

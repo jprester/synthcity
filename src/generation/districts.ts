@@ -27,6 +27,7 @@ export interface DistrictStyle {
   bigAdChance: number; // chance a big block or tower has ads
   // rooftop decorations, chance per lot
   topperChance: number; // on s_03 lots with ads
+  hologramChance: number; // a hologram projection over an s_03 lot with ads, instead of a topper
   spotlightChance: number; // on s_03_03 lots
   smokeChance: number;
   // wall signs on buildings with ads (src/generation/signs.ts)
@@ -53,6 +54,7 @@ export const DISTRICT_STYLES: Record<DistrictKind, DistrictStyle> = {
     smallAdChance: 1,
     bigAdChance: 0.55,
     topperChance: 0.06,
+    hologramChance: 0.06,
     spotlightChance: 0.05,
     smokeChance: 0.05,
     neonSigns: 5,
@@ -75,6 +77,7 @@ export const DISTRICT_STYLES: Record<DistrictKind, DistrictStyle> = {
     smallAdChance: 1,
     bigAdChance: 0.85,
     topperChance: 0.06,
+    hologramChance: 0.1,
     spotlightChance: 0.12,
     smokeChance: 0.03,
     neonSigns: 3,
@@ -97,6 +100,7 @@ export const DISTRICT_STYLES: Record<DistrictKind, DistrictStyle> = {
     smallAdChance: 1,
     bigAdChance: 1,
     topperChance: 0.12, // more blow out into white blobs under the bloom
+    hologramChance: 0.2,
     spotlightChance: 0.2,
     smokeChance: 0.04,
     neonSigns: 9,
@@ -119,6 +123,7 @@ export const DISTRICT_STYLES: Record<DistrictKind, DistrictStyle> = {
     smallAdChance: 0.2,
     bigAdChance: 0.25,
     topperChance: 0,
+    hologramChance: 0.02,
     spotlightChance: 0,
     smokeChance: 0.3,
     neonSigns: 1.5,
@@ -141,6 +146,7 @@ export const DISTRICT_STYLES: Record<DistrictKind, DistrictStyle> = {
     smallAdChance: 0.6,
     bigAdChance: 0.3,
     topperChance: 0.02,
+    hologramChance: 0.03,
     spotlightChance: 0,
     smokeChance: 0.02,
     neonSigns: 3,

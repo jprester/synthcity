@@ -17,6 +17,7 @@ export interface AdArt {
   aspect: number; // width / height
   uv: [number, number, number, number]; // u0, v0, u1, v1 in the atlas
   brightness: number; // how bright it reads (see the build script)
+  edge: number; // how bright its border is: dark-background art works as a hologram
   gain: number; // emission multiplier that evens out brightness across all art
 }
 

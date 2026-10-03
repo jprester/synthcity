@@ -9,6 +9,8 @@ import { windowBrightness } from '../generation/buildingDetails.ts';
 import { districtKindAt } from '../generation/districts.ts';
 import type { SmokeObject, SpotlightObject, TopperObject } from '../generation/cityBlock.ts';
 import type { SignObject } from '../generation/signs.ts';
+import type { HologramObject } from '../generation/holograms.ts';
+import { beamGeometry, figureGeometry } from '../rendering/hologram.ts';
 import type { GeneratorItem } from './Generator.ts';
 import type { InstanceHandle, WorldContext } from './WorldContext.ts';
 import type { Material } from 'three';
@@ -49,7 +51,9 @@ class GeneratorItem_CityBlock implements GeneratorItem {
       spotLights: context.spotLights,
     });
     const occupiedRoofs = new Set(
-      objects.filter((o) => o.kind === 'topper' || o.kind === 'spotlight').map((o) => `${o.x},${o.z}`),
+      objects
+        .filter((o) => o.kind === 'topper' || o.kind === 'spotlight' || o.kind === 'hologram')
+        .map((o) => `${o.x},${o.z}`),
     );
 
     // create in the generated order (it breaks ties in render sorting for
@@ -102,6 +106,9 @@ class GeneratorItem_CityBlock implements GeneratorItem {
           break;
         case 'topper':
           this.updateables.push(new Topper(o, context));
+          break;
+        case 'hologram':
+          this.updateables.push(new Hologram(o, context));
           break;
         case 'smoke':
           this.updateables.push(new Smoke(o, context));
@@ -251,18 +258,65 @@ class SignSwitcher implements Updateable {
   remove(): void {}
 }
 
+// A hologram projection: the figure turns about its upright axis to face the
+// camera (it is flat); the beam is round, so it stays put.
+class Hologram implements Updateable {
+  context: WorldContext;
+  figure: Mesh;
+  beam: Mesh;
+
+  constructor(o: HologramObject, context: WorldContext) {
+    this.context = context;
+    const { assets, scene } = context;
+    const art = AD_ATLASES[o.atlas].entries[o.art];
+    this.figure = new Mesh(
+      figureGeometry(art.uv, o.hue, o.phase, o.height, art.gain),
+      assets.getMaterial('hologram_' + o.atlas),
+    );
+    this.figure.position.set(o.x, o.y + o.lift, o.z);
+    this.figure.scale.set(o.width, o.height, 1);
+    // the beam rises into the figure, at most 50 units across
+    const beamHeight = o.lift + o.height * 0.25;
+    const beamWidth = Math.min(o.width * 0.7, 50);
+    this.beam = new Mesh(beamGeometry(o.hue, o.phase, beamHeight), assets.getMaterial('hologram_beam'));
+    this.beam.position.set(o.x, o.y, o.z);
+    this.beam.scale.set(beamWidth, beamHeight, beamWidth);
+    scene.add(this.beam);
+    scene.add(this.figure);
+  }
+  update(): void {
+    const camera = this.context.player.camera.position;
+    const p = this.figure.position;
+    this.figure.rotation.y = Math.atan2(camera.x - p.x, camera.z - p.z);
+  }
+  remove(): void {
+    for (const mesh of [this.figure, this.beam]) {
+      this.context.scene.remove(mesh);
+      mesh.geometry.dispose();
+    }
+  }
+}
+
+// A spinning rooftop hologram, bobbing gently (hologram shading: AssetManager)
 class Topper extends Decoration {
   rdir: number;
+  baseY: number;
+  rstep: number;
 
   constructor(o: TopperObject, context: WorldContext) {
-    const mesh = new Mesh(context.assets.getModel(o.model), context.assets.getMaterial(o.material));
+    const material = context.assets.getMaterial(o.material.replace('ads_large_', 'hologram_large_'));
+    const mesh = new Mesh(context.assets.getModel(o.model), material);
     mesh.position.set(o.x, o.y, o.z);
     mesh.scale.set(o.scale, o.scale, o.scale);
     super(context, mesh);
     this.rdir = o.spin;
+    this.baseY = o.y;
+    this.rstep = o.spin * 1000; // phase, out of step between toppers
   }
   override update(k: number): void {
     this.mesh.rotation.y = this.mesh.rotation.y + this.rdir * k;
+    this.rstep += 0.02 * k;
+    this.mesh.position.y = this.baseY + Math.sin(this.rstep) * 2.5;
   }
 }
 

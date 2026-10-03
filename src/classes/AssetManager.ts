@@ -23,6 +23,7 @@ import type { Environment } from '../Game.ts';
 import { CELL_SIZE } from '../generation/world.ts';
 import { MODELS, TEXTURES } from '../assets/manifest.ts';
 import { useInstanceArt } from '../rendering/adArt.ts';
+import { beamMaterial, hologramMaterial, useHologramShading } from '../rendering/hologram.ts';
 import type { ModelEntry, TextureEntry } from '../assets/manifest.ts';
 
 // the geometry of an OBJ file's first mesh
@@ -269,6 +270,19 @@ class AssetManager {
         transparent: false,
       });
     }
+
+    // rooftop toppers: the large ad materials with hologram shading
+    for (let i = 0; i < 5; i++) {
+      const id = this.padNumber(i + 1);
+      const material = (this.materials['hologram_large_' + id] = this.materials['ads_large_' + id].clone());
+      useHologramShading(material, this.time);
+    }
+
+    // hologram projections (src/rendering/hologram.ts), from the picture atlases
+    for (const atlas of ['posters', 'screens']) {
+      this.materials['hologram_' + atlas] = hologramMaterial(this.getTexture('ads_' + atlas), this.time);
+    }
+    this.materials.hologram_beam = beamMaterial(this.time);
   }
 
   // Pale emissive window tint per building material, derived from the world

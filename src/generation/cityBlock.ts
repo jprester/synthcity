@@ -14,7 +14,9 @@ import type { Random, Seed } from '../hash.ts';
 import type { Perlin } from '../lib/perlin.js';
 import { CITY_BLOCK_SIZE, ROAD_WIDTH, CELL_SIZE, districtAt, pick } from './world.ts';
 import { districtStyleAt } from './districts.ts';
-import { placeSigns } from './signs.ts';
+import { FACADES, placeSigns } from './signs.ts';
+import { hologramAt } from './holograms.ts';
+import type { HologramObject } from './holograms.ts';
 import type { SignObject } from './signs.ts';
 import type { DistrictStyle } from './districts.ts';
 
@@ -81,6 +83,7 @@ export type BlockObject =
   | SignObject
   | LightBarsObject
   | TopperObject
+  | HologramObject
   | SmokeObject
   | SpotlightObject;
 
@@ -235,7 +238,12 @@ function smallLot(
   const inQuietBand = band !== null && typeNoise > band[0] && typeNoise < band[1];
   const hasAds = !inQuietBand && h('ad-chance') < district.smallAdChance;
 
-  if (topper && hasAds) {
+  // a hologram projection takes the roof instead of a topper
+  const model = 's_0' + group + '_0' + variant;
+  const hologram = group == 3 && hasAds && h('hologram') < district.hologramChance;
+  if (hologram) {
+    objects.push(hologramAt(seed, lotX, FACADES[model].height * scale, lotZ));
+  } else if (topper && hasAds) {
     objects.push(topperAt(lotX, 190 * scale, lotZ, hashRandom(seed, lotX, lotZ, 'topper-look')));
   }
 
@@ -245,7 +253,7 @@ function smallLot(
 
   const building: BuildingObject = {
     kind: 'building',
-    model: 's_0' + group + '_0' + variant,
+    model,
     material: pick(BUILDING_MATERIALS, h('material')),
     x: lotX,
     z: lotZ,

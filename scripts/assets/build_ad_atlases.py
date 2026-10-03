@@ -16,8 +16,9 @@ Output:
   public/assets/textures/ads_posters.webp  kind 'ad' catalog entries + ads-v2
   public/assets/textures/ads_screens.webp  the tall picture ads, at high resolution
   src/assets/adAtlases.json                 per atlas: entries with id, kind,
-                                            aspect (w/h), uv [u0, v0, u1, v1] and
+                                            aspect (w/h), uv [u0, v0, u1, v1],
                                             gain (brightness evening-out factor)
+                                            and edge (border brightness)
 
 Every entry keeps its aspect ratio; the long side is the largest that lets all
 entries of an atlas fit (shelf packing with black gutters; black is invisible
@@ -101,6 +102,19 @@ def brightness(image):
 GAIN_RANGE = (0.35, 2.0)  # how far a piece may be dimmed or boosted
 
 
+def edge(image):
+    """How bright the art's border is: the 90th-percentile linear luminance of
+    its outer 8%. Art on a dark background (low edge) works as a hologram, where
+    black is see-through; a full-bleed picture would float as a lit rectangle."""
+    srgb = np.asarray(image, dtype=np.float32) / 255
+    linear = np.where(srgb <= 0.04045, srgb / 12.92, ((srgb + 0.055) / 1.055) ** 2.4)
+    lum = linear @ np.array([0.2126, 0.7152, 0.0722], dtype=np.float32)
+    h, w = lum.shape
+    bh, bw = max(1, h * 8 // 100), max(1, w * 8 // 100)
+    ring = np.concatenate([lum[:bh].ravel(), lum[-bh:].ravel(), lum[:, :bw].ravel(), lum[:, -bw:].ravel()])
+    return float(np.percentile(ring, 90))
+
+
 def build(name, images, out_json):
     # never upscale past the sources
     lo, hi = 64, min(2048, max(max(im.size) for _, _, im in images))
@@ -123,6 +137,7 @@ def build(name, images, out_json):
             'kind': kind,
             'aspect': round(w / h, 4),
             'brightness': round(brightness(resized), 5),
+            'edge': round(edge(resized), 5),
             'uv': [
                 round((x + 0.5) / SIZE, 6),
                 round(1 - (y + h - 0.5) / SIZE, 6),
@@ -151,7 +166,7 @@ def main():
     print(f'gain: min {gains[0]}, median {gains[len(gains) // 2]}, max {gains[-1]} (target brightness {target:.4f})')
     path = REPO / 'src' / 'assets' / 'adAtlases.json'
     path.write_text(json.dumps(out, indent=1) + '\n')
-    print(f'-> {path.relative_to(REPO)}')
+    print(f'-> {path.relative_to(REPO)} (run Prettier on it)')
 
 
 if __name__ == '__main__':
