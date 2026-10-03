@@ -161,9 +161,10 @@ export function createDevPanel(game: Game): GUI {
     );
     glow.add(group.proxy, 'value', 0, max, 0.01).name(label).onChange(group.apply);
   };
-  emissive('windows', /^(building_\d+|storefronts|mega_building_01)$/, 5);
-  emissive('ads', /^ads_(neon|posters|screens)$/, 1);
-  emissive('holograms', /^ads_large_\d+$/, 1);
+  emissive('windows', /^(building_\d+|mega_building_01)$/, 5);
+  emissive('storefronts', /^storefronts$/, 5);
+  emissive('ads', /^ads_(neon|posters|screens|videos)$/, 1);
+  emissive('holograms', /^(ads_large|hologram_large)_\d+$/, 1);
   emissive('ground', /^ground$/, 2);
   emissive('traffic', /^cars$/, 3);
   const brightness = (label: string, pattern: RegExp) => {

@@ -39,6 +39,7 @@ class AssetManager {
 
   textureAnisotropy = 8;
   buildingWindowsEmissiveIntensity: number;
+  storefrontsEmissiveIntensity: number; // a little under the windows: the shop art is bright
   adsEmissiveIntensity = 0.1; // rooftop holograms
   signsEmissiveIntensity = 0.3; // wall signs (dark-background art, emission only)
   time = { value: 0 }; // world time in seconds, the animated materials' clock (Game advances it)
@@ -57,6 +58,7 @@ class AssetManager {
     this.environment = environment;
     this.onLoad = onLoad;
     this.buildingWindowsEmissiveIntensity = environment.windowLights ? 1.5 : 0;
+    this.storefrontsEmissiveIntensity = this.buildingWindowsEmissiveIntensity * 0.6;
   }
 
   setPath(path: string): void {
@@ -234,7 +236,7 @@ class AssetManager {
       map: this.getTexture('storefronts'),
       emissive: 0xffffff,
       emissiveMap: this.getTexture('storefronts_em'),
-      emissiveIntensity: this.buildingWindowsEmissiveIntensity,
+      emissiveIntensity: this.storefrontsEmissiveIntensity,
       shininess: 0,
     });
 
