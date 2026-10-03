@@ -14,7 +14,7 @@ import type { Random, Seed } from '../hash.ts';
 import type { Perlin } from '../lib/perlin.js';
 import { CITY_BLOCK_SIZE, ROAD_WIDTH, CELL_SIZE, districtAt, pick } from './world.ts';
 import { districtStyleAt } from './districts.ts';
-import { FACADES, placeSigns } from './signs.ts';
+import { FACADES, dropOverlappingSigns, placeSigns } from './signs.ts';
 import { hologramAt } from './holograms.ts';
 import type { HologramObject } from './holograms.ts';
 import type { SignObject } from './signs.ts';
@@ -199,7 +199,7 @@ export function generateBlock({ seed, noise, x, z, spotLights = true, style }: B
     });
   }
 
-  return objects;
+  return dropOverlappingSigns(objects);
 }
 
 function smallLot(

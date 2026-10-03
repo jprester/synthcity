@@ -5,11 +5,12 @@ import { readFileSync } from 'node:fs';
 import { DoubleSide, Mesh, MeshBasicMaterial, Raycaster, Vector3 } from 'three';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { MeshBVH, acceleratedRaycast } from 'three-mesh-bvh';
-import { FACADES, SIGN_LAYOUT, placeSigns } from '../src/generation/signs.ts';
+import { FACADES, SIGN_LAYOUT, placeSigns, signsOverlap } from '../src/generation/signs.ts';
 import type { SignObject } from '../src/generation/signs.ts';
 import { DISTRICT_STYLES } from '../src/generation/districts.ts';
 import { AD_ATLASES, artRect } from '../src/rendering/adArt.ts';
-import { CELL_SIZE, CITY_BLOCK_SIZE } from '../src/generation/world.ts';
+import { CELL_SIZE, CITY_BLOCK_SIZE, createDistrictNoise } from '../src/generation/world.ts';
+import { generateBlock } from '../src/generation/cityBlock.ts';
 
 Mesh.prototype.raycast = acceleratedRaycast;
 
@@ -244,6 +245,26 @@ describe('wall signs', () => {
               ? 'apart'
               : `${a.mount}/${a.atlas} ${a.width.toFixed(1)}x${a.height.toFixed(1)} y${a.y.toFixed(1)} vs ${b.mount}/${b.atlas} ${b.width.toFixed(1)}x${b.height.toFixed(1)} y${b.y.toFixed(1)} along ${along.toFixed(2)}`,
           ).toBe('apart');
+        }
+      }
+    }
+  });
+
+  // neighbouring buildings on a block share wall lines; their signs used to
+  // land on one plane and flicker (z-fighting)
+  it('never overlaps signs of neighbouring buildings', () => {
+    for (const seed of [9746, 6362, 4217, 5794]) {
+      const noise = createDistrictNoise(seed);
+      for (let i = -6; i <= 6; i++) {
+        for (let j = -6; j <= 6; j++) {
+          const signs = generateBlock({ seed, noise, x: i * CELL_SIZE, z: j * CELL_SIZE }).filter(
+            (o): o is SignObject => o.kind == 'sign',
+          );
+          for (let a = 0; a < signs.length; a++) {
+            for (let b = a + 1; b < signs.length; b++) {
+              expect(signsOverlap(signs[a], signs[b]), `seed ${seed} block ${i},${j}`).toBe(false);
+            }
+          }
         }
       }
     }

@@ -212,6 +212,36 @@ function useVideo(seed: Seed, sign: SignObject): void {
   sign.width = sign.height * Math.min(aspect, VIDEOS[sign.art].aspect);
 }
 
+// Neighbouring buildings on a block can share a wall line, so their signs can
+// land on the same plane and fight over the same pixels (placeSigns only keeps
+// one building's signs apart). Of two signs that overlap there, this keeps the
+// more prominent one (banners, then posters, then neon; first placed on a tie)
+// and drops the other. Everything else keeps its order.
+export function dropOverlappingSigns<T extends { kind: string }>(objects: T[]): T[] {
+  const signs = objects.filter((o): o is T & SignObject => o.kind == 'sign');
+  const rank = (s: SignObject) => (s.mount == 'banner' ? 0 : s.atlas == 'neon' ? 2 : 1);
+  const kept: SignObject[] = [];
+  const dropped = new Set<object>();
+  for (const sign of [...signs].sort((a, b) => rank(a) - rank(b))) {
+    if (kept.some((k) => signsOverlap(k, sign))) dropped.add(sign);
+    else kept.push(sign);
+  }
+  return dropped.size == 0 ? objects : objects.filter((o) => !dropped.has(o));
+}
+
+// Do two signs cover the same area, facing the same way? Banners stand up to a
+// screen's frame depth in front of a wall, so they count from further away.
+export function signsOverlap(a: SignObject, b: SignObject): boolean {
+  const n = [Math.sin(a.yaw), Math.cos(a.yaw)];
+  if (Math.abs(n[0] * Math.sin(b.yaw) + n[1] * Math.cos(b.yaw)) < 0.999) return false;
+  const dx = b.x - a.x;
+  const dz = b.z - a.z;
+  const depth = a.mount == 'banner' || b.mount == 'banner' ? SCREEN_DEPTH + 2 : 1.5;
+  if (Math.abs(dx * n[0] + dz * n[1]) > depth) return false;
+  const along = Math.abs(dx * n[1] - dz * n[0]);
+  return along < (a.width + b.width) / 2 && Math.abs(b.y - a.y) < (a.height + b.height) / 2;
+}
+
 function signEffect(seed: Seed, sign: SignObject): SignEffect {
   const e = SIGN_LAYOUT.effects;
   const roll = hashFloat(seed, sign.x, sign.z, Math.floor(sign.y), 'sign-effect');
