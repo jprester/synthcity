@@ -53,6 +53,15 @@ export function determinismShim(seed) {
     },
   });
 
+  // No pointer lock: with it the game reads the mouse, and a stray mousemove
+  // (Chromium sends one when the page under the cursor changes after the
+  // click) turns the camera. Lock fails in headless Chromium on macOS but can
+  // succeed on Linux, so CI frames came out rotated. Never locking keeps every
+  // machine on the same path.
+  Element.prototype.requestPointerLock = function () {
+    return Promise.resolve();
+  };
+
   // fixed wall clock (Alea() without a seed uses +new Date)
   const FIXED = Date.UTC(2026, 0, 1);
   const RealDate = Date;
