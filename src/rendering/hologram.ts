@@ -17,7 +17,7 @@ import {
 } from 'three';
 import type { BufferGeometry, Material, Texture } from 'three';
 
-export const HOLOGRAM_INTENSITY = 0.32; // figure brightness (signs use 0.3)
+export const HOLOGRAM_INTENSITY = 0.28; // figure brightness (signs use 0.3)
 export const BEAM_INTENSITY = 0.1;
 
 // low-frequency effects only; the scanlines fade out where they would get finer
@@ -54,11 +54,11 @@ vec3 art(vec2 q) {
 }
 void main() {
   float t = uTime + vHolo.y * 100.0;
-  // glitch: now and then rows jump sideways and the colours split for a moment
-  float burst = step(0.88, holoHash(floor(t * 1.7)));
+  // glitch: rarely (about once in 40 s) rows jump sideways and the colours split
+  float burst = step(0.97, holoHash(floor(t * 0.8)));
   vec2 q = vUv;
-  q.x += burst * (holoHash(floor(vUv.y * 20.0) + floor(t * 30.0)) - 0.5) * 0.12;
-  float split = 0.004 + burst * 0.02;
+  q.x += burst * (holoHash(floor(vUv.y * 20.0) + floor(t * 30.0)) - 0.5) * 0.05;
+  float split = 0.002 + burst * 0.008;
   vec3 c = vec3(art(q + vec2(split, 0.0)).r, art(q).g, art(q - vec2(split, 0.0)).b);
   // the dark background is see-through; the art takes on the projector's tint
   float lum = dot(c, vec3(0.2126, 0.7152, 0.0722));
@@ -66,14 +66,14 @@ void main() {
   c = mix(c, vTint * lum * 2.0, 0.35);
   // scanlines, one every 1.6 world units, running upwards
   float lines = vUv.y * vHolo.z / 1.6;
-  float scan = 0.7 + 0.3 * sin((lines - t * 1.5) * 6.2832);
-  scan = mix(scan, 0.85, smoothstep(0.2, 0.45, fwidth(lines)));
+  float scan = 0.85 + 0.15 * sin((lines - t * 0.6) * 6.2832);
+  scan = mix(scan, 0.92, smoothstep(0.2, 0.45, fwidth(lines)));
   // a bright band rising through the figure
-  float band = fract(vUv.y - t * 0.18) - 0.5;
-  float glow = 1.0 + 0.8 * exp(-band * band * 160.0);
+  float band = fract(vUv.y - t * 0.08) - 0.5;
+  float glow = 1.0 + 0.25 * exp(-band * band * 160.0);
   // flicker, with the odd dropout
-  float flicker = 0.88 + 0.12 * holoHash(floor(t * 18.0));
-  flicker *= 1.0 - 0.7 * step(0.94, holoHash(floor(t * 4.0) + 7.0));
+  float flicker = 0.95 + 0.05 * holoHash(floor(t * 18.0));
+  flicker *= 1.0 - 0.4 * step(0.985, holoHash(floor(t * 4.0) + 7.0));
   // fade in from the beam at the bottom, out at the top
   float fade = smoothstep(0.0, 0.12, vUv.y) * smoothstep(1.0, 0.94, vUv.y);
   gl_FragColor = vec4(c * vHolo.w * intensity * scan * glow * flicker * fade, 1.0);
@@ -111,7 +111,7 @@ void main() {
   float rise = pow(1.0 - vUv.y, 1.5);
   // soft streaks of light running up the beam
   float streaks = 0.75 + 0.25 * sin(vUv.x * 6.2832 * 7.0 + sin(vUv.x * 19.0)) * sin(vUv.y * 9.0 - t * 2.0);
-  float flicker = 0.9 + 0.1 * holoHash(floor(t * 18.0));
+  float flicker = 0.95 + 0.05 * holoHash(floor(t * 18.0));
   float edge = 0.35 + 0.65 * vEdge * vEdge;
   gl_FragColor = vec4(vTint * intensity * rise * streaks * flicker * edge, 1.0);
 }
@@ -208,11 +208,11 @@ export function useHologramShading(material: Material, time: { value: number }):
         {
           float t = uTime + holoHash(vHoloSeed.x * 0.013 + vHoloSeed.y * 0.071) * 100.0;
           float lines = vHoloPos.y / 1.4;
-          float scan = 0.65 + 0.35 * sin((lines - t * 1.5) * 6.2832);
-          scan = mix(scan, 0.82, smoothstep(0.2, 0.45, fwidth(lines)));
-          float flicker = 0.9 + 0.1 * holoHash(floor(t * 18.0));
-          flicker *= 1.0 - 0.7 * step(0.95, holoHash(floor(t * 4.0) + 3.0));
-          totalEmissiveRadiance *= scan * flicker * 1.2;
+          float scan = 0.85 + 0.15 * sin((lines - t * 0.6) * 6.2832);
+          scan = mix(scan, 0.92, smoothstep(0.2, 0.45, fwidth(lines)));
+          float flicker = 0.95 + 0.05 * holoHash(floor(t * 18.0));
+          flicker *= 1.0 - 0.4 * step(0.985, holoHash(floor(t * 4.0) + 3.0));
+          totalEmissiveRadiance *= scan * flicker * 0.95;
         }`,
       );
   };
