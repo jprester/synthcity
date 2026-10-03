@@ -127,9 +127,6 @@ const TOPPER_MODELS = [
   'topper_07',
   'topper_08',
   'topper_09',
-  'topper_10',
-  'topper_11',
-  'topper_12',
 ];
 const SMOKE_MATERIALS = ['smoke_01', 'smoke_02', 'smoke_03'];
 const SPOTLIGHT_MATERIALS = ['spotlight_01', 'spotlight_02', 'spotlight_03', 'spotlight_04'];

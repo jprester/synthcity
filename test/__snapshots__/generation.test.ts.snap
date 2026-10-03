@@ -991,7 +991,7 @@ exports[`generateBlock > matches the recorded data for seed 9746 1`] = `
     {
       "kind": "topper",
       "material": "ads_large_01",
-      "model": "topper_03",
+      "model": "topper_02",
       "scale": 1.5236680921632797,
       "spin": -0.009039383688941598,
       "x": -56,
@@ -4704,7 +4704,7 @@ exports[`generateBlock > matches the recorded data for seed 9746 1`] = `
     {
       "kind": "topper",
       "material": "ads_large_03",
-      "model": "topper_03",
+      "model": "topper_02",
       "scale": 1.0414168603718281,
       "spin": 0.004875728487968445,
       "x": -272,
@@ -7527,7 +7527,7 @@ exports[`generateBlock > matches the recorded data for seed 9746 1`] = `
     {
       "kind": "topper",
       "material": "ads_large_03",
-      "model": "topper_08",
+      "model": "topper_06",
       "scale": 1.791661568870768,
       "spin": 0.009229817821178585,
       "x": -424,
@@ -8324,7 +8324,7 @@ exports[`generateBlock > matches the recorded data for seed 9746 1`] = `
     {
       "kind": "topper",
       "material": "ads_large_01",
-      "model": "topper_12",
+      "model": "topper_09",
       "scale": 1.408513473533094,
       "spin": -0.0009505544765852392,
       "x": -360,
@@ -11522,7 +11522,7 @@ exports[`generateBlock > matches the recorded data for seed 9746 1`] = `
     {
       "kind": "topper",
       "material": "ads_large_02",
-      "model": "topper_06",
+      "model": "topper_05",
       "scale": 1.0324992301873863,
       "spin": 0.00627095325384289,
       "x": -576,
@@ -12807,7 +12807,7 @@ exports[`generateBlock > matches the recorded data for seed 9746 1`] = `
     {
       "kind": "topper",
       "material": "ads_large_04",
-      "model": "topper_05",
+      "model": "topper_04",
       "scale": 1.5527793829794974,
       "spin": -0.0033659742935560643,
       "x": -576,
@@ -15474,7 +15474,7 @@ exports[`generateBlock > matches the recorded data for seed 9746 1`] = `
     {
       "kind": "topper",
       "material": "ads_large_02",
-      "model": "topper_12",
+      "model": "topper_09",
       "scale": 1.122000367101282,
       "spin": -0.009581636975053699,
       "x": -664,
@@ -18993,7 +18993,7 @@ exports[`generateBlock > matches the recorded data for seed 9746 1`] = `
     {
       "kind": "topper",
       "material": "ads_large_05",
-      "model": "topper_05",
+      "model": "topper_04",
       "scale": 1.5745156311430037,
       "spin": -0.004317753461655229,
       "x": -816,
@@ -23425,7 +23425,7 @@ exports[`generateBlock > matches the recorded data for seed 9746 1`] = `
     {
       "kind": "topper",
       "material": "ads_large_05",
-      "model": "topper_06",
+      "model": "topper_05",
       "scale": 1.1649803523439914,
       "spin": -0.007357562889810652,
       "x": 248,
@@ -26009,7 +26009,7 @@ exports[`generateBlock > matches the recorded data for seed 9746 1`] = `
     {
       "kind": "topper",
       "material": "ads_large_02",
-      "model": "topper_07",
+      "model": "topper_05",
       "scale": 1.1433936494402588,
       "spin": -0.007080434602685273,
       "x": 336,
@@ -26060,7 +26060,7 @@ exports[`generateBlock > matches the recorded data for seed 9746 1`] = `
     {
       "kind": "topper",
       "material": "ads_large_01",
-      "model": "topper_06",
+      "model": "topper_05",
       "scale": 1.59281842475757,
       "spin": -0.0026590408314950765,
       "x": 336,
@@ -32543,7 +32543,7 @@ exports[`generateBlock > matches the recorded data for seed 9746 1`] = `
     {
       "kind": "topper",
       "material": "ads_large_05",
-      "model": "topper_07",
+      "model": "topper_05",
       "scale": 1.05045342464,
       "spin": -0.00031299551017582416,
       "x": 640,
@@ -40870,7 +40870,7 @@ exports[`generateBlock > matches the recorded district data for seed 9746 1`] = 
     {
       "kind": "topper",
       "material": "ads_large_01",
-      "model": "topper_03",
+      "model": "topper_02",
       "scale": 1.5236680921632797,
       "spin": -0.009039383688941598,
       "x": -56,
@@ -47278,7 +47278,7 @@ exports[`generateBlock > matches the recorded district data for seed 9746 1`] = 
     {
       "kind": "topper",
       "material": "ads_large_04",
-      "model": "topper_04",
+      "model": "topper_03",
       "scale": 1.3244291515555233,
       "spin": 0.0012033809605054558,
       "x": -208,
@@ -47505,7 +47505,7 @@ exports[`generateBlock > matches the recorded district data for seed 9746 1`] = 
     {
       "kind": "topper",
       "material": "ads_large_03",
-      "model": "topper_04",
+      "model": "topper_03",
       "scale": 1.3422154183033854,
       "spin": 0.0013145262212492525,
       "x": -208,
@@ -50558,7 +50558,7 @@ exports[`generateBlock > matches the recorded district data for seed 9746 1`] = 
     {
       "kind": "topper",
       "material": "ads_large_03",
-      "model": "topper_08",
+      "model": "topper_06",
       "scale": 1.791661568870768,
       "spin": 0.009229817821178585,
       "x": -424,
@@ -53173,7 +53173,7 @@ exports[`generateBlock > matches the recorded district data for seed 9746 1`] = 
     {
       "kind": "topper",
       "material": "ads_large_01",
-      "model": "topper_12",
+      "model": "topper_09",
       "scale": 1.408513473533094,
       "spin": -0.0009505544765852392,
       "x": -360,
@@ -55488,7 +55488,7 @@ exports[`generateBlock > matches the recorded district data for seed 9746 1`] = 
     {
       "kind": "topper",
       "material": "ads_large_04",
-      "model": "topper_07",
+      "model": "topper_06",
       "scale": 1.2625309784896672,
       "spin": -0.00576881367713213,
       "x": -512,
@@ -61438,7 +61438,7 @@ exports[`generateBlock > matches the recorded district data for seed 9746 1`] = 
     {
       "kind": "topper",
       "material": "ads_large_03",
-      "model": "topper_05",
+      "model": "topper_04",
       "scale": 0.832369633205235,
       "spin": 0.004812605367042124,
       "x": -664,
@@ -62851,7 +62851,7 @@ exports[`generateBlock > matches the recorded district data for seed 9746 1`] = 
     {
       "kind": "topper",
       "material": "ads_large_02",
-      "model": "topper_12",
+      "model": "topper_09",
       "scale": 1.122000367101282,
       "spin": -0.009581636975053699,
       "x": -664,
@@ -68697,7 +68697,7 @@ exports[`generateBlock > matches the recorded district data for seed 9746 1`] = 
     {
       "kind": "topper",
       "material": "ads_large_05",
-      "model": "topper_05",
+      "model": "topper_04",
       "scale": 1.5745156311430037,
       "spin": -0.004317753461655229,
       "x": -816,
@@ -75211,7 +75211,7 @@ exports[`generateBlock > matches the recorded district data for seed 9746 1`] = 
     {
       "kind": "topper",
       "material": "ads_large_05",
-      "model": "topper_06",
+      "model": "topper_05",
       "scale": 1.1649803523439914,
       "spin": -0.007357562889810652,
       "x": 248,
@@ -87806,7 +87806,7 @@ exports[`generateBlock > matches the recorded district data for seed 9746 1`] = 
     {
       "kind": "topper",
       "material": "ads_large_05",
-      "model": "topper_07",
+      "model": "topper_05",
       "scale": 1.05045342464,
       "spin": -0.00031299551017582416,
       "x": 640,
@@ -92150,7 +92150,7 @@ exports[`generateBlock > matches the recorded district data for seed 9746 1`] = 
     {
       "kind": "topper",
       "material": "ads_large_04",
-      "model": "topper_07",
+      "model": "topper_06",
       "scale": 0.9939611523412168,
       "spin": 0.00427886517951265,
       "x": 792,
@@ -96035,7 +96035,7 @@ exports[`generateBlock > matches the recorded district data for seed 9746 1`] = 
     {
       "kind": "topper",
       "material": "ads_large_04",
-      "model": "topper_05",
+      "model": "topper_04",
       "scale": 1.6604053156450391,
       "spin": 0.002090310633648187,
       "x": 944,
@@ -97889,7 +97889,7 @@ exports[`generateBlock > matches the recorded district data for seed 9746 1`] = 
     {
       "kind": "topper",
       "material": "ads_large_02",
-      "model": "topper_07",
+      "model": "topper_06",
       "scale": 1.504991661477834,
       "spin": -0.001294956454075873,
       "x": 1008,

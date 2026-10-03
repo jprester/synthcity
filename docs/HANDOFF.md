@@ -226,7 +226,7 @@ Ads are signs placed on buildings' real walls, sized by their art. They are no l
   - Materials `ads_neon` and `ads_posters`: emission only (black diffuse and specular), sRGB atlases, additive, no fog, emissive 0.3 (`signsEmissiveIntensity`).
   - Screens (35% of posters) switch between art of the same aspect.
   - Result: ~240 draw calls instead of ~866, and ~800 scene objects instead of ~2,700, at ~197 fps at 1080p on the M5.
-- **Removed:** the `ads_s_*` ad-wrap models, the panel mapping, and `ads_01..05`. Rooftop holograms keep `ads_large_*`.
+- **Removed:** the `ads_s_*` ad-wrap models, the panel mapping, `ads_01..05`, and the flat ad-panel toppers `topper_10..12`. Rooftop holograms keep `ads_large_*`.
 - **Tests:** `test/signs.test.ts` checks the art aspect, that each sign lies inside an exposed wall rectangle (transformed back to model space), and that a ray from each sign leaves its building (against the real model). It also checks the zones (neon low, posters in the middle band), no overlaps and determinism.
 - **Step 2 — done: banners, blade signs, density.**
   - **Banners:** tall billboards down skyscrapers (buildings of 250+ units). They use tall art from both atlases, 90–360 units high, in 25–97% of the building's height.

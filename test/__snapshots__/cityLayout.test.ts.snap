@@ -345,7 +345,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_02_02/building_01 @(-360,0,-208) ry=0 s=(1,0.824,1)",
     ],
     "decorations": [
-      "Topper topper_02/hologram_large_05 @(-424,150.794,-208) ry=0 s=(1.711,1.711,1.711)",
+      "Topper topper_01/hologram_large_05 @(-424,150.794,-208) ry=0 s=(1.711,1.711,1.711)",
       "Smoke smoke/smoke_01 @(-424,150.794,-208) ry=0 s=(4.246,5.914,4.246)",
     ],
     "ground": [
@@ -386,7 +386,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
     "decorations": [
       "Hologram /hologram_posters @(-424,202.368,-728) ry=0 s=(110,110,1)",
       "Beam /hologram_beam @(-424,190.92,-728) ry=0 s=(50,38.948,50)",
-      "Topper topper_08/hologram_large_05 @(-424,173.108,-664) ry=0 s=(1.204,1.204,1.204)",
+      "Topper topper_06/hologram_large_05 @(-424,173.108,-664) ry=0 s=(1.204,1.204,1.204)",
     ],
     "ground": [
       "ground/ground @(-392,0,-696) ry=0 s=(1,1,1)",
@@ -715,7 +715,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
     "decorations": [
       "Hologram /hologram_posters @(-728,190.612,-728) ry=0 s=(27.797,110.7,1)",
       "Beam /hologram_beam @(-728,174.806,-728) ry=0 s=(19.458,43.481,19.458)",
-      "Topper topper_12/hologram_large_02 @(-664,181.06,-664) ry=0 s=(1.482,1.482,1.482)",
+      "Topper topper_09/hologram_large_02 @(-664,181.06,-664) ry=0 s=(1.482,1.482,1.482)",
     ],
     "ground": [
       "ground/ground @(-696,0,-696) ry=0 s=(1,1,1)",
@@ -1528,7 +1528,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_03/building_03 @(552,0,-664) ry=1.571 s=(1,0.924,1)",
     ],
     "decorations": [
-      "Topper topper_07/hologram_large_04 @(488,154.477,-664) ry=0 s=(1.37,1.37,1.37)",
+      "Topper topper_05/hologram_large_04 @(488,154.477,-664) ry=0 s=(1.37,1.37,1.37)",
     ],
     "ground": [
       "ground/ground @(520,0,-696) ry=0 s=(1,1,1)",
@@ -1844,7 +1844,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
     "decorations": [
       "Hologram /hologram_posters @(856,145.284,-728) ry=0 s=(23.029,91.711,1)",
       "Beam /hologram_beam @(856,126.215,-728) ry=0 s=(16.12,41.996,16.12)",
-      "Topper topper_09/hologram_large_02 @(856,175.906,-664) ry=0 s=(0.856,0.856,0.856)",
+      "Topper topper_07/hologram_large_02 @(856,175.906,-664) ry=0 s=(0.856,0.856,0.856)",
     ],
     "ground": [
       "ground/ground @(824,0,-696) ry=0 s=(1,1,1)",
@@ -1941,7 +1941,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
     "decorations": [
       "Hologram /hologram_posters @(792,193.756,944) ry=0 s=(110,73.25,1)",
       "Beam /hologram_beam @(792,180.022,944) ry=0 s=(50,32.047,50)",
-      "Topper topper_12/hologram_large_04 @(856,182.233,1008) ry=0 s=(1.405,1.405,1.405)",
+      "Topper topper_09/hologram_large_04 @(856,182.233,1008) ry=0 s=(1.405,1.405,1.405)",
     ],
     "ground": [
       "ground/ground @(824,0,976) ry=0 s=(1,1,1)",
@@ -2008,7 +2008,7 @@ exports[`city block layout > matches the recorded layout for seed 6362 1`] = `
       "s_03_01/building_04 @(1008,0,-664) ry=-1.571 s=(1,1.121,1)",
     ],
     "decorations": [
-      "Topper topper_11/hologram_large_01 @(944,194.896,-664) ry=0 s=(1.761,1.761,1.761)",
+      "Topper topper_08/hologram_large_01 @(944,194.896,-664) ry=0 s=(1.761,1.761,1.761)",
       "Hologram /hologram_posters @(1008,201.723,-728) ry=0 s=(27.536,104.979,1)",
       "Beam /hologram_beam @(1008,186.506,-728) ry=0 s=(19.275,41.461,19.275)",
     ],
@@ -2152,7 +2152,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_01/building_02 @(-56,0,-208) ry=0 s=(1,1.085,1)",
     ],
     "decorations": [
-      "Topper topper_03/hologram_large_01 @(-56,196.549,-272) ry=0 s=(1.524,1.524,1.524)",
+      "Topper topper_02/hologram_large_01 @(-56,196.549,-272) ry=0 s=(1.524,1.524,1.524)",
       "Hologram /hologram_screens @(-56,197.037,-208) ry=0 s=(41.103,122.33,1)",
       "Beam /hologram_beam @(-56,185.42,-208) ry=0 s=(28.772,42.199,28.772)",
     ],
@@ -2348,8 +2348,8 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "Smoke smoke/smoke_01 @(-272,145.838,-576) ry=0 s=(4.256,6.042,4.256)",
       "Hologram /hologram_posters @(-272,218.587,-512) ry=0 s=(81.071,121.746,1)",
       "Beam /hologram_beam @(-272,200.559,-512) ry=0 s=(50,48.465,50)",
-      "Topper topper_04/hologram_large_04 @(-208,188.376,-576) ry=0 s=(1.324,1.324,1.324)",
-      "Topper topper_04/hologram_large_03 @(-208,166.454,-512) ry=0 s=(1.342,1.342,1.342)",
+      "Topper topper_03/hologram_large_04 @(-208,188.376,-576) ry=0 s=(1.324,1.324,1.324)",
+      "Topper topper_03/hologram_large_03 @(-208,166.454,-512) ry=0 s=(1.342,1.342,1.342)",
     ],
     "ground": [
       "ground/ground @(-240,0,-544) ry=0 s=(1,1,1)",
@@ -2461,7 +2461,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_03/building_02 @(-360,0,-56) ry=0 s=(1,0.79,1)",
     ],
     "decorations": [
-      "Topper topper_08/hologram_large_03 @(-424,207.35,-120) ry=0 s=(1.792,1.792,1.792)",
+      "Topper topper_06/hologram_large_03 @(-424,207.35,-120) ry=0 s=(1.792,1.792,1.792)",
       "Spotlight spotlight/spotlight_01 @(-424,142.802,-56) ry=0 s=(14.838,14.838,14.838)",
     ],
     "ground": [
@@ -2533,7 +2533,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_03/building_05 @(-360,0,-816) ry=0 s=(1,1.093,1)",
     ],
     "decorations": [
-      "Topper topper_12/hologram_large_01 @(-360,194.265,-880) ry=0 s=(1.409,1.409,1.409)",
+      "Topper topper_09/hologram_large_01 @(-360,194.265,-880) ry=0 s=(1.409,1.409,1.409)",
     ],
     "ground": [
       "ground/ground @(-392,0,-848) ry=0 s=(1,1,1)",
@@ -2626,7 +2626,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "Hologram /hologram_screens @(-576,145.824,-272) ry=0 s=(26.766,79.662,1)",
       "Beam /hologram_beam @(-576,135.249,-272) ry=0 s=(18.736,30.491,18.736)",
       "Spotlight spotlight/spotlight_01 @(-576,143.552,-208) ry=0 s=(14.834,14.834,14.834)",
-      "Topper topper_07/hologram_large_04 @(-512,192.787,-208) ry=0 s=(1.263,1.263,1.263)",
+      "Topper topper_06/hologram_large_04 @(-512,192.787,-208) ry=0 s=(1.263,1.263,1.263)",
     ],
     "ground": [
       "ground/ground @(-544,0,-240) ry=0 s=(1,1,1)",
@@ -2838,7 +2838,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_01/building_05 @(-664,0,96) ry=1.571 s=(1,0.752,1)",
     ],
     "decorations": [
-      "Topper topper_05/hologram_large_03 @(-664,154.334,32) ry=0 s=(0.832,0.832,0.832)",
+      "Topper topper_04/hologram_large_03 @(-664,154.334,32) ry=0 s=(0.832,0.832,0.832)",
     ],
     "ground": [
       "ground/ground @(-696,0,64) ry=0 s=(1,1,1)",
@@ -2871,7 +2871,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_01/building_03 @(-664,0,400) ry=0 s=(1,0.807,1)",
     ],
     "decorations": [
-      "Topper topper_12/hologram_large_02 @(-664,153.32,400) ry=0 s=(1.122,1.122,1.122)",
+      "Topper topper_09/hologram_large_02 @(-664,153.32,400) ry=0 s=(1.122,1.122,1.122)",
     ],
     "ground": [
       "ground/ground @(-696,0,368) ry=0 s=(1,1,1)",
@@ -3067,7 +3067,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
     "decorations": [
       "Hologram /hologram_posters @(-880,205.958,488) ry=0 s=(68.375,102.681,1)",
       "Beam /hologram_beam @(-880,191.282,488) ry=0 s=(47.863,40.346,47.863)",
-      "Topper topper_05/hologram_large_05 @(-816,149.733,488) ry=0 s=(1.575,1.575,1.575)",
+      "Topper topper_04/hologram_large_05 @(-816,149.733,488) ry=0 s=(1.575,1.575,1.575)",
     ],
     "ground": [
       "ground/ground @(-848,0,520) ry=0 s=(1,1,1)",
@@ -3299,7 +3299,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_02/building_07 @(248,0,-664) ry=-1.571 s=(1,0.929,1)",
     ],
     "decorations": [
-      "Topper topper_06/hologram_large_05 @(248,176.538,-664) ry=0 s=(1.165,1.165,1.165)",
+      "Topper topper_05/hologram_large_05 @(248,176.538,-664) ry=0 s=(1.165,1.165,1.165)",
     ],
     "ground": [
       "ground/ground @(216,0,-696) ry=0 s=(1,1,1)",
@@ -3747,7 +3747,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/storefronts @(748,0,-772) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Topper topper_07/hologram_large_05 @(640,198.494,-880) ry=0 s=(1.05,1.05,1.05)",
+      "Topper topper_05/hologram_large_05 @(640,198.494,-880) ry=0 s=(1.05,1.05,1.05)",
     ],
     "ground": [
       "ground/ground @(672,0,-848) ry=0 s=(1,1,1)",
@@ -3878,7 +3878,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "s_03_02/building_07 @(856,0,-512) ry=0 s=(1,1.009,1)",
     ],
     "decorations": [
-      "Topper topper_07/hologram_large_04 @(792,201.878,-576) ry=0 s=(0.994,0.994,0.994)",
+      "Topper topper_06/hologram_large_04 @(792,201.878,-576) ry=0 s=(0.994,0.994,0.994)",
       "Hologram /hologram_posters @(856,184.029,-576) ry=0 s=(110,110,1)",
       "Beam /hologram_beam @(856,164.555,-576) ry=0 s=(50,46.974,50)",
     ],
@@ -4008,7 +4008,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
     "decorations": [
       "Hologram /hologram_posters @(944,181.079,-272) ry=0 s=(22.476,89.509,1)",
       "Beam /hologram_beam @(944,163.297,-272) ry=0 s=(15.733,40.16,15.733)",
-      "Topper topper_05/hologram_large_04 @(944,152.127,-208) ry=0 s=(1.66,1.66,1.66)",
+      "Topper topper_04/hologram_large_04 @(944,152.127,-208) ry=0 s=(1.66,1.66,1.66)",
       "Hologram /hologram_posters @(1008,165.68,-272) ry=0 s=(55.596,83.489,1)",
       "Beam /hologram_beam @(1008,153.115,-272) ry=0 s=(38.917,33.437,38.917)",
       "Hologram /hologram_posters @(1008,188.738,-208) ry=0 s=(67.012,100.634,1)",
@@ -4039,7 +4039,7 @@ exports[`city block layout > matches the recorded layout for seed 9746 1`] = `
       "storefronts/storefronts @(1052,0,-468) ry=0 s=(1,1,1)",
     ],
     "decorations": [
-      "Topper topper_07/hologram_large_02 @(1008,176.045,-576) ry=0 s=(1.505,1.505,1.505)",
+      "Topper topper_06/hologram_large_02 @(1008,176.045,-576) ry=0 s=(1.505,1.505,1.505)",
     ],
     "ground": [
       "ground/ground @(976,0,-544) ry=0 s=(1,1,1)",

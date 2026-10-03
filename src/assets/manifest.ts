@@ -91,7 +91,8 @@ export const MODELS: ModelEntry[] = [
   ...BUILDINGS.map((key) => ({ key, file: `models/${key}.obj`, collides: true })),
   ...ids(6).map((id) => ({ key: `mega_${id}`, file: `models/mega_${id}.obj`, collides: true })),
 
-  ...ids(12).map((id) => ({ key: `topper_${id}`, file: `models/topper_${id}.obj` })),
+  // rooftop holograms (the original's flat ad-panel toppers 10-12 are gone)
+  ...ids(9).map((id) => ({ key: `topper_${id}`, file: `models/topper_${id}.obj` })),
   ...ids(8).map((id) => ({ key: `car_${id}`, file: `models/car_${id}.obj` })),
   { key: 'spotlight', file: 'models/spotlight.obj' },
   // vertical light bars up s_05 towers (the original tower ad model's beams)
