@@ -433,6 +433,9 @@ export class Game {
     // dev panel (a lazy chunk, only fetched when enabled)
     if (this.devPanel) import('./ui/devPanel.ts').then(({ createDevPanel }) => createDevPanel(this));
 
+    // video ads (?videos=0 holds them on their first frame, for captures)
+    if (!userSettings.stillVideos) this.assets.playVideos();
+
     /*----- event listeners -----*/
 
     window.addEventListener('resize', () => this.onWindowResize(), false);

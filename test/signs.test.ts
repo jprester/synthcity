@@ -8,7 +8,7 @@ import { MeshBVH, acceleratedRaycast } from 'three-mesh-bvh';
 import { FACADES, SIGN_LAYOUT, placeSigns } from '../src/generation/signs.ts';
 import type { SignObject } from '../src/generation/signs.ts';
 import { DISTRICT_STYLES } from '../src/generation/districts.ts';
-import { AD_ATLASES } from '../src/rendering/adArt.ts';
+import { AD_ATLASES, artRect } from '../src/rendering/adArt.ts';
 import { CELL_SIZE, CITY_BLOCK_SIZE } from '../src/generation/world.ts';
 
 Mesh.prototype.raycast = acceleratedRaycast;
@@ -79,7 +79,13 @@ describe('wall signs', () => {
       const facades = FACADES[building.model];
       for (const sign of signs) {
         const art = AD_ATLASES[sign.atlas].entries[sign.art];
-        expect(sign.width / sign.height).toBeCloseTo(art.aspect, 6);
+        if (sign.atlas == 'videos') {
+          // a video is shown whole or cropped at the sides
+          expect(sign.width / sign.height).toBeLessThanOrEqual(art.aspect + 1e-6);
+          expect(sign.width / sign.height).toBeGreaterThanOrEqual(art.aspect * SIGN_LAYOUT.videoCrop - 1e-6);
+        } else {
+          expect(sign.width / sign.height).toBeCloseTo(art.aspect, 6);
+        }
         const a = attachment(sign);
         const { px, pz } = onWall({ ...sign, x: a.x, z: a.z }, building);
         const walls = sign.mount == 'banner' ? [...facades.screens, ...facades.banners] : facades.rects;
@@ -187,6 +193,30 @@ describe('wall signs', () => {
       }
     }
     expect(blades).toBeGreaterThan(0);
+  });
+
+  it('plays video ads on some skyscraper screens only, still and at the video shape', () => {
+    const videos = all.flatMap((c) => c.signs).filter((s) => s.atlas == 'videos');
+    expect(videos.length).toBeGreaterThan(0);
+    for (const sign of videos) {
+      expect(sign.mount).toBe('banner');
+      expect(sign.effect).toBe('none'); // the video moves; no zoom on top
+    }
+  });
+
+  it('shows the middle of the art on a narrower or wider sign', () => {
+    const art = {
+      ...AD_ATLASES.videos.entries[0],
+      uv: [0.2, 0.1, 0.4, 0.5] as [number, number, number, number],
+    };
+    expect(artRect(art, art.aspect)).toEqual(art.uv);
+    const narrow = artRect(art, art.aspect / 2); // half the width, centred
+    expect(narrow[0]).toBeCloseTo(0.25, 9);
+    expect(narrow[2]).toBeCloseTo(0.35, 9);
+    expect([narrow[1], narrow[3]]).toEqual([0.1, 0.5]);
+    const wide = artRect(art, art.aspect * 2); // half the height, centred
+    expect(wide[1]).toBeCloseTo(0.2, 9);
+    expect(wide[3]).toBeCloseTo(0.4, 9);
   });
 
   it('gives skyscrapers banners', () => {

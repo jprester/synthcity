@@ -12,6 +12,7 @@ export interface TextureEntry {
   tiled?: boolean; // repeats across the surface (RepeatWrapping) with anisotropic filtering
   repeat?: number; // repeats this many times per UV unit (RepeatWrapping, no anisotropy)
   anisotropic?: boolean; // anisotropic filtering without repeating (atlases seen at an angle)
+  video?: string; // a looping, muted video instead of an image: file is the preferred source, this the fallback
 }
 
 export interface ModelEntry {
@@ -64,6 +65,13 @@ export const TEXTURES: TextureEntry[] = [
   { key: 'ads_neon', file: 'textures/ads_neon.webp', anisotropic: true, srgb: true },
   { key: 'ads_posters', file: 'textures/ads_posters.webp', anisotropic: true, srgb: true },
   { key: 'ads_screens', file: 'textures/ads_screens.webp', anisotropic: true, srgb: true },
+  {
+    key: 'ads_videos',
+    file: 'textures/ads_videos.webm', // VP9
+    video: 'textures/ads_videos.mp4', // H.264, for browsers without VP9
+    anisotropic: true,
+    srgb: true,
+  },
   ...ids(5).map((id) => ({ key: `ads_large_${id}`, file: `textures/ads_large_${id}.jpg` })),
   ...ids(3).map((id) => ({ key: `smoke_${id}`, file: `textures/smoke_${id}.jpg` })),
   ...ids(4).map((id) => ({ key: `spotlight_${id}`, file: `textures/spotlight_${id}.jpg` })),

@@ -139,7 +139,15 @@ async function openShot(browser, url, shot, jquery, attempts = 2) {
     }
     await page.route('https://fonts.*/**', (r) => r.abort());
 
-    const q = new URLSearchParams({ seed: shot.seed, mode: shot.mode, music: '0', sfx: '0', ...shot.view });
+    // videos=0: video ads hold their first frame (playback runs on the wall clock)
+    const q = new URLSearchParams({
+      seed: shot.seed,
+      mode: shot.mode,
+      music: '0',
+      sfx: '0',
+      videos: '0',
+      ...shot.view,
+    });
     await page.goto(`${url}?${q}`);
     try {
       await page.waitForSelector('#enterBtn', { state: 'visible', timeout: 90_000 });

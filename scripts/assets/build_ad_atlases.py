@@ -10,11 +10,15 @@ Source art lives outside this repo (the user's generated images):
                              tall picture ads for skyscraper screens (generated
                              with the "vertical digital billboard" prompt; names
                              in signs-src/exclude.txt are skipped)
+  <src>/signs-src/videos/*.mp4
+                             short video ads (needs ffmpeg), tiled into one video
 
 Output:
   public/assets/textures/ads_neon.webp     kind 'neon' catalog entries
   public/assets/textures/ads_posters.webp  kind 'ad' catalog entries + ads-v2
   public/assets/textures/ads_screens.webp  the tall picture ads, at high resolution
+  public/assets/textures/ads_videos.webm   the video ads tiled in a grid, each made
+  public/assets/textures/ads_videos.mp4    into a seamless loop (VP9; H.264 fallback)
   src/assets/adAtlases.json                 per atlas: entries with id, kind,
                                             aspect (w/h), uv [u0, v0, u1, v1],
                                             gain (brightness evening-out factor)
@@ -28,7 +32,9 @@ under the additive ad material).
 """
 
 import json
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 import numpy as np
@@ -151,17 +157,123 @@ def build(name, images, out_json):
     print(f'{name}: {len(entries)} entries, long side {lo}px -> public/assets/{file}')
 
 
+# Video ads: every clip is scaled to one cell size and made into a seamless
+# loop: frames [FADE, LOOP) play, then the clip's last FADE frames crossfade
+# into its first ones, which lead back into frame FADE. The loops are tiled in
+# a grid (all play in step) and encoded once as VP9 WebM and once as H.264 MP4.
+VIDEO_CELL = (464, 832)  # width, height of one clip (Midjourney 9:16 video)
+VIDEO_COLUMNS = 3
+VIDEO_FPS = 24
+VIDEO_LOOP = 96  # frames per loop (4 s)
+VIDEO_FADE = 24  # frames crossfaded at the loop point (1 s)
+
+
+def ffmpeg(*args):
+    subprocess.run(['ffmpeg', '-v', 'error', '-y', *map(str, args)], check=True)
+
+
+def loop_clip(clip: Path, out: Path):
+    w, h = VIDEO_CELL
+    f, n = VIDEO_FADE, VIDEO_LOOP
+    graph = (
+        f'[0:v]fps={VIDEO_FPS},scale={w}:{h}:force_original_aspect_ratio=increase:flags=lanczos,'
+        f'crop={w}:{h},setsar=1,format=yuv420p,trim=end_frame={n + f},setpts=PTS-STARTPTS,split=3[a][b][c];'
+        f'[a]trim=start_frame={f}:end_frame={n},setpts=PTS-STARTPTS[body];'
+        f'[b]trim=start_frame={n}:end_frame={n + f},setpts=PTS-STARTPTS[tail];'
+        f'[c]trim=end_frame={f},setpts=PTS-STARTPTS[head];'
+        f'[tail][head]xfade=transition=fade:duration={f / VIDEO_FPS}:offset=0[blend];'
+        f'[body][blend]concat=n=2:v=1:a=0[out]'
+    )
+    ffmpeg('-i', clip, '-filter_complex', graph, '-map', '[out]', '-an', '-c:v', 'libx264', '-crf', '8', out)
+
+
+def frames(video: Path, count=4):
+    """A few frames spread over a clip, as images."""
+    images = []
+    with tempfile.TemporaryDirectory() as tmp:
+        for i in range(count):
+            png = Path(tmp) / f'{i}.png'
+            ffmpeg('-ss', i * VIDEO_LOOP / VIDEO_FPS / count, '-i', video, '-frames:v', '1', png)
+            images.append(Image.open(png).convert('RGB'))
+    return images
+
+
+def build_videos(src: Path, out_json):
+    clips = sorted((src / 'signs-src' / 'videos').glob('*.mp4'))
+    if not clips:
+        return
+    w, h = VIDEO_CELL
+    cols = min(VIDEO_COLUMNS, len(clips))
+    rows = (len(clips) + cols - 1) // cols
+    W, H = cols * w, rows * h
+    entries = []
+    with tempfile.TemporaryDirectory() as tmp:
+        loops = []
+        for i, clip in enumerate(clips):
+            loop = Path(tmp) / f'{i}.mp4'
+            loop_clip(clip, loop)
+            loops.append(loop)
+            images = frames(loop)
+            x, y = (i % cols) * w, (i // cols) * h
+            entries.append({
+                'id': clip.stem,
+                'kind': 'video',
+                'aspect': round(w / h, 4),
+                'brightness': round(float(np.mean([brightness(im) for im in images])), 5),
+                'edge': round(max(edge(im) for im in images), 5),
+                'uv': [
+                    round((x + 0.5) / W, 6),
+                    round(1 - (y + h - 0.5) / H, 6),
+                    round((x + w - 0.5) / W, 6),
+                    round(1 - (y + 0.5) / H, 6),
+                ],
+            })
+        # tile; empty cells stay black
+        inputs = []
+        for loop in loops:
+            inputs += ['-i', loop]
+        empty = cols * rows - len(loops)
+        for _ in range(empty):
+            inputs += ['-f', 'lavfi', '-i', f'color=c=black:s={w}x{h}:r={VIDEO_FPS}:d={VIDEO_LOOP / VIDEO_FPS}']
+        layout = '|'.join(f'{(i % cols) * w}_{(i // cols) * h}' for i in range(cols * rows))
+        graph = ''.join(f'[{i}:v]' for i in range(cols * rows)) + f'xstack=inputs={cols * rows}:layout={layout}[out]'
+        tiled = Path(tmp) / 'tiled.mp4'
+        ffmpeg(*inputs, '-filter_complex', graph, '-map', '[out]', '-frames:v', VIDEO_LOOP,
+               '-c:v', 'libx264', '-crf', '8', tiled)
+        base = REPO / 'public' / 'assets' / 'textures' / 'ads_videos'
+        common = ['-an', '-pix_fmt', 'yuv420p', '-g', VIDEO_FPS]
+        ffmpeg('-i', tiled, *common, '-c:v', 'libvpx-vp9', '-crf', '33', '-b:v', '0', '-row-mt', '1',
+               base.with_suffix('.webm'))
+        ffmpeg('-i', tiled, *common, '-c:v', 'libx264', '-crf', '23', '-preset', 'slow',
+               '-movflags', '+faststart', base.with_suffix('.mp4'))
+    out_json['videos'] = {
+        'file': 'textures/ads_videos.webm',
+        'fallback': 'textures/ads_videos.mp4',
+        'size': W,
+        'height': H,
+        'entries': entries,
+    }
+    print(f'videos: {len(entries)} clips, {W}x{H} -> public/assets/textures/ads_videos.webm/.mp4')
+
+
 def main():
     src = Path(sys.argv[1]).expanduser()
     groups = load_entries(src)
     out = {}
     for name in ('neon', 'posters', 'screens'):
         build(name, groups[name], out)
-    # even out brightness: scale every piece towards the median of all art
-    all_entries = [e for atlas in out.values() for e in atlas['entries']]
-    target = float(np.median([e['brightness'] for e in all_entries]))
-    for e in all_entries:
+    # even out brightness: scale every piece towards the median of the still art
+    target = float(np.median([e['brightness'] for atlas in out.values() for e in atlas['entries']]))
+    for e in [e for atlas in out.values() for e in atlas['entries']]:
         e['gain'] = round(min(max(target / e['brightness'], GAIN_RANGE[0]), GAIN_RANGE[1]), 4)
+    # videos replace skyscraper screens: match the screens' glow as shown (many
+    # of those are dark and capped at the largest gain)
+    build_videos(src, out)
+    if 'videos' in out:
+        shown = float(np.median([e['brightness'] * e['gain'] for e in out['screens']['entries']]))
+        for e in out['videos']['entries']:
+            e['gain'] = round(min(max(shown / e['brightness'], GAIN_RANGE[0]), GAIN_RANGE[1]), 4)
+    all_entries = [e for atlas in out.values() for e in atlas['entries']]
     gains = sorted(e['gain'] for e in all_entries)
     print(f'gain: min {gains[0]}, median {gains[len(gains) // 2]}, max {gains[-1]} (target brightness {target:.4f})')
     path = REPO / 'src' / 'assets' / 'adAtlases.json'

@@ -13,7 +13,7 @@ import type { SignAtlas, SignEffect } from '../generation/signs.ts';
 
 export interface AdArt {
   id: string;
-  kind: string; // 'neon' | 'ad' | 'design'
+  kind: string; // 'neon' | 'ad' | 'design' | 'picture' | 'video'
   aspect: number; // width / height
   uv: [number, number, number, number]; // u0, v0, u1, v1 in the atlas
   brightness: number; // how bright it reads (see the build script)
@@ -23,7 +23,9 @@ export interface AdArt {
 
 export interface AdAtlas {
   file: string;
-  size: number;
+  fallback?: string; // videos: the H.264 file
+  size: number; // width
+  height?: number; // when not square
   entries: AdArt[];
 }
 
@@ -35,11 +37,13 @@ export const AD_MATERIALS: Record<SignAtlas, string> = {
   neon: 'ads_neon',
   posters: 'ads_posters',
   screens: 'ads_screens',
+  videos: 'ads_videos',
 };
 export const SIGN_MODELS: Record<SignAtlas, string> = {
   neon: 'sign_neon',
   posters: 'sign_posters',
   screens: 'sign_screens',
+  videos: 'sign_videos',
 };
 
 // effect codes in the instance data
@@ -47,18 +51,42 @@ export const SIGN_EFFECTS: Record<SignEffect, number> = { none: 0, video: 1, fli
 // how long a screen takes to wipe from one ad to the next, seconds
 export const SWITCH_TIME = 0.9;
 
+// The part of the art a sign of this aspect (width / height) shows: all of it
+// when the shapes match, else the middle, cropped at the sides (or top and
+// bottom). Only video signs differ from their art's shape.
+export function artRect(art: AdArt, aspect: number): [number, number, number, number] {
+  const [u0, v0, u1, v1] = art.uv;
+  const r = aspect / art.aspect;
+  if (Math.abs(r - 1) < 1e-3) return art.uv;
+  if (r < 1) {
+    const c = ((u1 - u0) * (1 - r)) / 2;
+    return [u0 + c, v0, u1 - c, v1];
+  }
+  const c = ((v1 - v0) * (1 - 1 / r)) / 2;
+  return [u0, v0 + c, u1, v1 - c];
+}
+
 // A sign instance's data (InstancePool INSTANCE_DATA): its art rectangle, the
 // rectangle it is switching from, then effect, phase (0..1), world time the
-// switch started (-1: none) and the old art's brightness.
+// switch started (-1: none) and the old art's brightness. aspect: the sign's
+// shape (see artRect).
 export function signData(
   art: AdArt,
+  aspect: number,
   effect: SignEffect,
   phase: number,
   from: AdArt | null = null,
   switchedAt = -1,
   fromGain = 0,
 ): number[] {
-  return [...art.uv, ...(from ?? art).uv, SIGN_EFFECTS[effect], phase, switchedAt, fromGain];
+  return [
+    ...artRect(art, aspect),
+    ...artRect(from ?? art, aspect),
+    SIGN_EFFECTS[effect],
+    phase,
+    switchedAt,
+    fromGain,
+  ];
 }
 
 // Makes a material with an emissive map sample each instance's art rectangle,

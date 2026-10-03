@@ -22,8 +22,8 @@ import facadeData from '../assets/facades.json';
 import atlasData from '../assets/adAtlases.json';
 
 // neon: shop signs; posters: posters and designs; screens: tall picture ads
-// for skyscraper screens, at high resolution
-export type SignAtlas = 'neon' | 'posters' | 'screens';
+// for skyscraper screens, at high resolution; videos: looping video ads
+export type SignAtlas = 'neon' | 'posters' | 'screens' | 'videos';
 
 // wall: flat against the wall. blade: sticks out perpendicular to it (neon
 // shop signs over a street). banner: a tall billboard down a skyscraper.
@@ -116,6 +116,10 @@ export const SIGN_LAYOUT = {
     stackFalloff: 0.55,
     screenShare: 0.65, // chance a screen shows one of the picture ads made for screens
   },
+  // share of skyscraper screens showing a video ad instead of a picture (the
+  // videos are few, so they stay a highlight)
+  videoShare: 0.12,
+  videoCrop: 0.6, // a screen may show down to this share of a video's width
   // chance of each effect, by kind of sign
   effects: {
     bannerVideo: 0.6,
@@ -180,14 +184,39 @@ export function placeSigns(
 ): void {
   const start = out.length;
   placeOnWalls(out, building, seed, district, bannersOnly, keepClear);
-  // effects: a hash of each sign's own position, apart from the placement stream
-  for (let i = start; i < out.length; i++) out[i].effect = signEffect(seed, out[i]);
+  // videos and effects: hashes of each sign's own position, apart from the placement stream
+  for (let i = start; i < out.length; i++) {
+    useVideo(seed, out[i]);
+    out[i].effect = signEffect(seed, out[i]);
+  }
+}
+
+const VIDEOS = ART.videos?.entries ?? [];
+
+// A skyscraper screen may show a video instead. It keeps its height and
+// centre. A narrower screen shows the middle of the video (the sides cropped,
+// down to VIDEO_CROP of its width; see artRect); a slightly wider one narrows
+// to the video's shape, so it still fits its wall.
+function useVideo(seed: Seed, sign: SignObject): void {
+  if (sign.mount != 'banner' || VIDEOS.length == 0) return;
+  const aspect = sign.width / sign.height;
+  const { videoCrop, videoShare } = SIGN_LAYOUT;
+  const fits = VIDEOS.flatMap((v, i) =>
+    aspect >= v.aspect * videoCrop && aspect <= v.aspect / 0.85 ? [i] : [],
+  );
+  if (fits.length == 0) return;
+  const random = hashRandom(seed, sign.x, sign.z, Math.floor(sign.y), 'sign-video');
+  if (random() >= videoShare) return;
+  sign.atlas = 'videos';
+  sign.art = fits[Math.floor(random() * fits.length)];
+  sign.width = sign.height * Math.min(aspect, VIDEOS[sign.art].aspect);
 }
 
 function signEffect(seed: Seed, sign: SignObject): SignEffect {
   const e = SIGN_LAYOUT.effects;
   const roll = hashFloat(seed, sign.x, sign.z, Math.floor(sign.y), 'sign-effect');
   if (sign.atlas == 'neon') return roll < e.neonFlicker ? 'flicker' : 'none';
+  if (sign.atlas == 'videos') return 'none'; // already moving
   return roll < (sign.mount == 'banner' ? e.bannerVideo : e.posterVideo) ? 'video' : 'none';
 }
 
@@ -231,6 +260,31 @@ function placeOnWalls(
         Math.abs(b.rect.d - rect.d) < SCREEN_DEPTH + 2 &&
         overlaps(b.box, box, margin),
     );
+
+  // A blade sign sticks out of its wall, so near a corner it can reach into the
+  // space of a banner on the next face: in front of it, or behind a framed
+  // screen, which stands up to SCREEN_DEPTH in front of the wall. Its
+  // footprint, from the wall out to reach, in each banner's frame.
+  const bladeHitsBanner = (rect: FacadeRect, s: number, y0: number, y1: number, reach: number) => {
+    const [nx, nz] = rect.n;
+    const half = SIGN_LAYOUT.blade.footprint / 2;
+    // corners of the footprint (model space): along the wall +-half, out 0..reach
+    const corners = [-half, half].flatMap((ds) =>
+      [0, reach].map((out) => [nx * (rect.d + out) - nz * (s + ds), nz * (rect.d + out) + nx * (s + ds)]),
+    );
+    return blocked.some(({ rect: b, box }) => {
+      const along = corners.map(([x, z]) => -b.n[1] * x + b.n[0] * z);
+      const out = corners.map(([x, z]) => b.n[0] * x + b.n[1] * z);
+      return (
+        Math.max(...along) > box[0] - margin &&
+        Math.min(...along) < box[1] + margin &&
+        Math.max(...out) > b.d - SCREEN_DEPTH - margin &&
+        Math.min(...out) < b.d + SCREEN_DEPTH + margin &&
+        y1 > box[2] - margin &&
+        y0 < box[3] + margin
+      );
+    });
+  };
 
   const bn = SIGN_LAYOUT.banner;
   if (height >= bn.minBuilding) {
@@ -326,6 +380,7 @@ function placeOnWalls(
         const [s, y] = spot(onWall, h, bottom, top);
         const box: Box = [s - onWall / 2, s + onWall / 2, y - h / 2, y + h / 2];
         if (!free(box)) continue;
+        if (blade && bladeHitsBanner(rect, s, y - h / 2, y + h / 2, bl.gap + w)) continue;
         // blade signs only over a street, never towards a neighbour on the block
         if (blade && !outsideBlock(wallPoint(building, rect, s, bl.street))) continue;
         taken.push(box);

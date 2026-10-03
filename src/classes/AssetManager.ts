@@ -3,7 +3,9 @@ import {
   TextureLoader,
   EquirectangularReflectionMapping,
   LinearFilter,
+  LinearMipmapLinearFilter,
   SRGBColorSpace,
+  VideoTexture,
   RepeatWrapping,
   PlaneGeometry,
   MeshPhongMaterial,
@@ -40,6 +42,7 @@ class AssetManager {
   adsEmissiveIntensity = 0.1; // rooftop holograms
   signsEmissiveIntensity = 0.3; // wall signs (dark-background art, emission only)
   time = { value: 0 }; // world time in seconds, the animated materials' clock (Game advances it)
+  videos: HTMLVideoElement[] = []; // video textures; they play once the world starts (playVideos)
 
   textures: Record<string, Texture> = {};
   models: Record<string, BufferGeometry> = {};
@@ -90,12 +93,15 @@ class AssetManager {
     this.models['sign_neon'] = new PlaneGeometry(1, 1);
     this.models['sign_posters'] = new PlaneGeometry(1, 1);
     this.models['sign_screens'] = new PlaneGeometry(1, 1);
+    this.models['sign_videos'] = new PlaneGeometry(1, 1);
 
     this.createMaterials();
   }
 
-  loadTexture({ key, file, srgb, equirect, tiled, repeat, anisotropic }: TextureEntry): void {
-    const texture = (this.textures[key] = this.textureLoader.load(this.path + file));
+  loadTexture({ key, file, srgb, equirect, tiled, repeat, anisotropic, video }: TextureEntry): void {
+    const texture = (this.textures[key] = video
+      ? this.loadVideo(file, video)
+      : this.textureLoader.load(this.path + file));
     if (srgb) texture.colorSpace = SRGBColorSpace;
     if (equirect) {
       texture.mapping = EquirectangularReflectionMapping;
@@ -107,6 +113,53 @@ class AssetManager {
     }
     if (tiled || anisotropic) texture.anisotropy = this.textureAnisotropy;
     if (repeat) texture.repeat.set(repeat, repeat);
+  }
+
+  // A muted, looping video texture. It counts as loaded once its first frame
+  // is ready, and holds that frame until playVideos().
+  loadVideo(file: string, fallback: string): VideoTexture {
+    const video = document.createElement('video');
+    video.muted = true;
+    video.loop = true;
+    video.playsInline = true;
+    video.preload = 'auto';
+    video.crossOrigin = 'anonymous';
+    for (const src of [file, fallback]) {
+      const source = document.createElement('source');
+      source.src = this.path + src;
+      source.type = src.endsWith('.webm') ? 'video/webm' : 'video/mp4';
+      video.appendChild(source);
+    }
+    const texture = new VideoTexture(video);
+    // mipmaps, so distant screens don't shimmer (regenerated with every frame)
+    texture.generateMipmaps = true;
+    texture.minFilter = LinearMipmapLinearFilter;
+    const url = this.path + file;
+    this.loadingManager.itemStart(url);
+    video.addEventListener(
+      'loadeddata',
+      () => {
+        texture.needsUpdate = true; // the first frame, also while paused
+        this.loadingManager.itemEnd(url);
+      },
+      { once: true },
+    );
+    video.addEventListener(
+      'error',
+      () => {
+        this.loadingManager.itemError(url);
+        this.loadingManager.itemEnd(url);
+      },
+      { once: true, capture: true }, // errors fire on the <source> elements
+    );
+    video.load();
+    this.videos.push(video);
+    return texture;
+  }
+
+  // Starts the video ads (muted, so browsers allow it without a user gesture).
+  playVideos(): void {
+    for (const video of this.videos) video.play().catch(() => {});
   }
 
   loadModel({ key, file, collides, rotateY }: ModelEntry): void {
@@ -283,6 +336,18 @@ class AssetManager {
       this.materials['hologram_' + atlas] = hologramMaterial(this.getTexture('ads_' + atlas), this.time);
     }
     this.materials.hologram_beam = beamMaterial(this.time);
+
+    // video ads: like the other wall signs (created last, to keep material ids)
+    const videos = (this.materials['ads_videos'] = new MeshPhongMaterial({
+      color: 0x000000,
+      specular: 0x000000,
+      emissive: 0xffffff,
+      emissiveMap: this.getTexture('ads_videos'),
+      emissiveIntensity: this.signsEmissiveIntensity,
+      blending: AdditiveBlending,
+      fog: false,
+    }));
+    useInstanceArt(videos, this.time);
   }
 
   // Pale emissive window tint per building material, derived from the world

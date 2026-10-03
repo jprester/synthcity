@@ -12,6 +12,7 @@
 //   env=night|day           environment (day is the original's unused alternative)
 //   at=<x>,<z>              start position (world units); freeroam also takes
 //   alt=<y> yaw=<deg> pitch=<deg>   height and view direction (yaw 0 looks along -z)
+//   videos=0                video ads hold their first frame (deterministic captures)
 
 import type { Seed } from './hash.ts';
 
@@ -39,6 +40,7 @@ export interface UserSettings {
   skip?: boolean;
   environment?: EnvironmentName;
   view?: StartView;
+  stillVideos?: boolean;
 }
 
 export const curatedWorldSeeds = [9746, 6362, 4217, 5794];
@@ -65,6 +67,7 @@ export function applyQueryParams(search = window.location.search): UserSettings 
   if (q.has('skip')) userSettings.skip = q.get('skip') == '1';
   const environment = oneOf(q.get('env'), ['night', 'day'] as const);
   if (environment) userSettings.environment = environment;
+  if (q.has('videos')) userSettings.stillVideos = q.get('videos') == '0';
   const at = q.get('at')?.split(',').map(Number);
   if (at && at.length == 2 && at.every(Number.isFinite)) {
     const num = (key: string) =>

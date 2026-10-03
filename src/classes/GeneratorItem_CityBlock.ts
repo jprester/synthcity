@@ -148,7 +148,7 @@ class GeneratorItem_CityBlock implements GeneratorItem {
         assets.getMaterial(AD_MATERIALS[o.atlas]),
         _matrix,
         art.gain * signSizeGain(o.width, o.height),
-        signData(art, o.effect, o.counter / o.interval),
+        signData(art, o.width / o.height, o.effect, o.counter / o.interval),
       );
       this.instances.push(handle);
       if (o.switches) this.updateables.push(new SignSwitcher(o, handle, this.context));
@@ -247,9 +247,10 @@ class SignSwitcher implements Updateable {
       const art = this.entries[this.current];
       const { instances, time } = this.context;
       const phase = this.sign.counter / this.sign.interval;
+      const aspect = this.sign.width / this.sign.height;
       instances.setData(
         this.handle,
-        signData(art, this.sign.effect, phase, from, time.value, from.gain * this.sizeGain),
+        signData(art, aspect, this.sign.effect, phase, from, time.value, from.gain * this.sizeGain),
       );
       instances.setBrightness(this.handle, art.gain * this.sizeGain);
     }
