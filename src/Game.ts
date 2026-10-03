@@ -46,7 +46,7 @@ import { InstancePool } from './classes/InstancePool.ts';
 import { RooftopKit } from './classes/RooftopKit.ts';
 import { installWindowLighting } from './rendering/windowLighting.ts';
 import { HeightFogPass } from './rendering/HeightFogPass.ts';
-import { frameScale } from './classes/frameRate.ts';
+import { frameScale, paceFrame } from './classes/frameRate.ts';
 
 import { CITY_BLOCK_SIZE, ROAD_WIDTH, CELL_SIZE, createDistrictNoise } from './generation/world.ts';
 import { districtKindAt } from './generation/districts.ts';
@@ -82,12 +82,26 @@ export interface GameSettings {
   stats: boolean;
 }
 
+// GPU cost grows with the pixels drawn: every post-processing pass (fog, FXAA,
+// bloom) covers the whole screen. On a Retina display (pixel ratio 2) that is
+// about 3x the work of 1080p for little visible gain under the bloom, so the
+// ratio is capped. Above FXAA_MAX_PIXEL_RATIO the pixels are fine enough to
+// skip anti-aliasing.
+export const DEFAULT_MAX_PIXEL_RATIO = 1.25;
+export const FXAA_MAX_PIXEL_RATIO = 1.5;
+// Frame rate cap: on a 120 Hz display the browser would otherwise render twice
+// as often as the 60 Hz the motion was tuned for. 0: no cap.
+export const DEFAULT_MAX_FPS = 60;
+
 export class Game {
   initialized = false;
   environment: Environment;
   devPanel: boolean;
   uiOnUnfocus: boolean;
   timeScale = 1; // world speed multiplier (dev panel; 0 pauses)
+  maxPixelRatio = userSettings.maxPixelRatio ?? DEFAULT_MAX_PIXEL_RATIO;
+  maxFps = userSettings.maxFps ?? DEFAULT_MAX_FPS;
+  frameClock: number | null = null; // paces frames for the cap (ms)
 
   blocker: HTMLElement;
   enterBtn: HTMLElement;
@@ -222,7 +236,7 @@ export class Game {
     // renderer
 
     this.renderer = new WebGLRenderer({ canvas: this.canvas });
-    this.renderer.setPixelRatio(window.devicePixelRatio * this.settings.renderScaling);
+    this.renderer.setPixelRatio(this.pixelRatio());
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.toneMapping = ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.7;
@@ -289,8 +303,9 @@ export class Game {
       this.composer.addPass(this.heightFog);
     }
 
-    // anti aliasing
+    // anti aliasing (not needed at high pixel ratios)
     this.fxaa = new ShaderPass(FXAAShader);
+    this.fxaa.enabled = this.renderer.getPixelRatio() < FXAA_MAX_PIXEL_RATIO;
     this.updateFxaaResolution();
     this.composer.addPass(this.fxaa);
 
@@ -303,7 +318,7 @@ export class Game {
     ));
     if (this.environment.name == 'night') {
       bloomPass.threshold = 0.0;
-      bloomPass.strength = 3.0;
+      bloomPass.strength = 1.5;
       bloomPass.radius = 1.0;
     } else if (this.environment.name == 'day') {
       bloomPass.threshold = 0;
@@ -573,6 +588,13 @@ export class Game {
     requestAnimationFrame((t) => this.animate(t));
 
     // frame time; the first frame counts as one nominal frame
+    // frame rate cap: skip display frames until the next one is due
+    if (now !== undefined) {
+      const pace = paceFrame(now, this.frameClock, this.maxFps);
+      this.frameClock = pace.clock;
+      if (!pace.render) return;
+    }
+
     let delta = null;
     if (now !== undefined && this.lastFrameTime !== null) delta = (now - this.lastFrameTime) / 1000;
     if (now !== undefined) this.lastFrameTime = now;
@@ -693,6 +715,21 @@ export class Game {
     this.updateFxaaResolution();
 
     this.player.onWindowResize();
+  }
+
+  // the device pixel ratio rendered: capped (maxPixelRatio), then scaled
+  pixelRatio(): number {
+    return Math.min(window.devicePixelRatio, this.maxPixelRatio) * this.settings.renderScaling;
+  }
+
+  // dev panel: change the pixel ratio cap while running
+  setMaxPixelRatio(max: number): void {
+    this.maxPixelRatio = max;
+    const ratio = this.pixelRatio();
+    this.renderer.setPixelRatio(ratio);
+    this.composer.setPixelRatio(ratio);
+    this.fxaa.enabled = ratio < FXAA_MAX_PIXEL_RATIO;
+    this.updateFxaaResolution();
   }
 
   updateFxaaResolution(): void {

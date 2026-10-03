@@ -72,6 +72,15 @@ export function createDevPanel(game: Game): GUI {
     .name('stats overlay')
     .onChange((on: boolean) => game.setStats(on));
 
+  /*----- performance -----*/
+
+  const perf = gui.addFolder('Performance');
+  perf
+    .add(game, 'maxPixelRatio', 0.5, 3, 0.05)
+    .name('max pixel ratio')
+    .onChange((v: number) => game.setMaxPixelRatio(v));
+  perf.add(game, 'maxFps', { '30': 30, '60': 60, '120': 120, unlimited: 0 }).name('max fps');
+
   /*----- post-processing -----*/
 
   const post = gui.addFolder('Post-processing');

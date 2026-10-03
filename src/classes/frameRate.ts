@@ -26,3 +26,20 @@ export function decay(f: number, k: number): number {
 export function ease(a: number, k: number): number {
   return k === 1 ? a : 1 - Math.pow(1 - a, k);
 }
+
+// Frame rate cap: given a display frame at time now (ms) and the pacing clock
+// (the due time of the last rendered frame, or null), whether to render it,
+// and the new clock. The clock keeps the remainder, so the average rate stays
+// at the cap whatever the display's refresh rate. maxFps 0: no cap.
+export function paceFrame(
+  now: number,
+  clock: number | null,
+  maxFps: number,
+): { render: boolean; clock: number } {
+  if (maxFps <= 0 || clock === null) return { render: true, clock: now };
+  const interval = 1000 / maxFps;
+  const elapsed = now - clock;
+  if (elapsed < interval - 1) return { render: false, clock }; // (1 ms: timestamps jitter)
+  const late = elapsed % interval;
+  return { render: true, clock: now - (late > interval - 1 ? 0 : late) }; // a hair early counts as on time
+}

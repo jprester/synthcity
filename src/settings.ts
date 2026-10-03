@@ -5,6 +5,8 @@
 //   mode=drive|freeroam
 //   music=0|1  sfx=0|1
 //   scale=<float>           render scaling
+//   dpr=<float>             highest device pixel ratio rendered (default 1.25; Retina is 2)
+//   fps=<int>               frame rate cap (default 60; 0: as fast as the display allows)
 //   windshield=simple|advanced
 //   stats=1                 performance overlay
 //   skip=1                  skip the boot terminal and launch as soon as assets load
@@ -35,6 +37,8 @@ export interface UserSettings {
   music?: boolean;
   soundFx?: boolean;
   renderScaling?: number;
+  maxPixelRatio?: number;
+  maxFps?: number;
   windshieldShader?: WindshieldShader;
   stats?: boolean;
   skip?: boolean;
@@ -61,6 +65,8 @@ export function applyQueryParams(search = window.location.search): UserSettings 
   if (q.has('music')) userSettings.music = q.get('music') == '1';
   if (q.has('sfx')) userSettings.soundFx = q.get('sfx') == '1';
   if (q.has('scale')) userSettings.renderScaling = Number(q.get('scale'));
+  if (q.has('dpr') && Number(q.get('dpr')) > 0) userSettings.maxPixelRatio = Number(q.get('dpr'));
+  if (q.has('fps') && Number(q.get('fps')) >= 0) userSettings.maxFps = Number(q.get('fps'));
   const windshield = oneOf(q.get('windshield'), ['simple', 'advanced'] as const);
   if (windshield) userSettings.windshieldShader = windshield;
   if (q.has('stats')) userSettings.stats = q.get('stats') == '1';

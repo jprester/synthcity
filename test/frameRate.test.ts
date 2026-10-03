@@ -3,7 +3,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { BufferGeometry, MeshBasicMaterial, Vector3 } from 'three';
 import type { Audio } from 'three';
-import { frameScale, decay, ease } from '../src/classes/frameRate.ts';
+import { frameScale, decay, ease, paceFrame } from '../src/classes/frameRate.ts';
 import { PlayerCar } from '../src/classes/PlayerCar.ts';
 import { Player } from '../src/classes/Player.ts';
 import { GeneratorItem_Traffic } from '../src/classes/GeneratorItem_Traffic.ts';
@@ -155,5 +155,38 @@ describe('crash and respawn', () => {
     expect(car.crashed).toBe(false);
     expect(events).toEqual([true, false]);
     expect(car.body.position.x).toBeCloseTo(-12, 0);
+  });
+});
+
+describe('paceFrame', () => {
+  // display frames at hz for one second; how many render under the cap
+  function rendered(hz: number, maxFps: number, jitter = 0) {
+    let clock: number | null = null;
+    let count = 0;
+    for (let i = 0; i < hz; i++) {
+      const now = 1000 + (i * 1000) / hz + (i % 2 ? jitter : -jitter);
+      const pace = paceFrame(now, clock, maxFps);
+      clock = pace.clock;
+      if (pace.render) count++;
+    }
+    return count;
+  }
+
+  it('renders every frame of a display at or below the cap', () => {
+    expect(rendered(60, 60)).toBe(60);
+    expect(rendered(60, 60, 0.4)).toBe(60);
+    expect(rendered(30, 60)).toBe(30);
+  });
+
+  it('holds faster displays to the cap on average', () => {
+    for (const hz of [90, 100, 120, 144, 165, 240]) {
+      expect(Math.abs(rendered(hz, 60) - 60), `${hz} Hz`).toBeLessThanOrEqual(1);
+      expect(Math.abs(rendered(hz, 60, 0.4) - 60), `${hz} Hz with jitter`).toBeLessThanOrEqual(1);
+    }
+    expect(rendered(120, 30)).toBe(30);
+  });
+
+  it('renders every frame without a cap', () => {
+    expect(rendered(144, 0)).toBe(144);
   });
 });

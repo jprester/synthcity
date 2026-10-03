@@ -8,7 +8,7 @@ These hold for every change:
 
 - **The city is procedural and infinite.** Everything in the world is generated from the world seed and the cell coordinates. Never hand-place content or add fixed maps.
 - **Same seed, same city.** For a given seed, generating a cell must give the same result every time, whatever else happened before. World content must never use `Math.random()`; derive it from the seed and position with `src/hash.ts` (`hashFloat(seed, x, z, 'purpose')`, or `hashRandom(...)` for a stream). Use a distinct purpose salt for each new use.
-- **The look is intentional.** The night palette, strong bloom (threshold 0, strength 3, with the r159 bloom pass), exposure 1.7, fog, emissive windows, ads and spotlights are the original art direction. Don't retune them as a side effect of other work.
+- **The look is intentional.** The night palette, bloom (threshold 0, strength 1.5, with the r159 bloom pass), exposure 1.7, fog, emissive windows, ads and spotlights are the original art direction. Don't retune them as a side effect of other work.
 - **Refactors are pixel-neutral.** Anything that isn't meant to change the look must pass `npm run visual:compare` unchanged.
 
 ## Commands
@@ -29,7 +29,7 @@ npm run perf            # fly drive mode on the real GPU and print the ?stats=1 
 
 Query params preset the launch settings, e.g. `/?seed=9746&mode=freeroam&music=0&sfx=0`. See `src/settings.ts`. For manual testing, `skip=1` skips the boot terminal and launches as soon as assets load; click the canvas to grab the mouse and start audio.
 
-The dev tweak panel (`src/ui/devPanel.ts`, lil-gui) is on under `npm run dev` (`gui=0` hides it, `gui=1` enables it in a build). It covers bloom, FXAA, sky and fog, lights, glow, time scale and the stats overlay, and can relaunch with another seed, mode or environment. "copy values" puts the tweaked values on the clipboard. Panel changes are temporary; move values you want to keep into the code deliberately (the look is intentional). `at=x,z` (plus `alt`, `yaw`, `pitch` in freeroam) starts somewhere else; `env=day` selects the day environment; `stats=1` shows a performance overlay (fps, CPU update/render time, draw calls, triangles, objects, and the camera position and district kind). `videos=0` holds the video ads on their first frame (the visual harness uses it, since video playback runs on the wall clock).
+The dev tweak panel (`src/ui/devPanel.ts`, lil-gui) is on under `npm run dev` (`gui=0` hides it, `gui=1` enables it in a build). It covers bloom, FXAA, sky and fog, lights, glow, time scale and the stats overlay, and can relaunch with another seed, mode or environment. "copy values" puts the tweaked values on the clipboard. Panel changes are temporary; move values you want to keep into the code deliberately (the look is intentional). `at=x,z` (plus `alt`, `yaw`, `pitch` in freeroam) starts somewhere else; `env=day` selects the day environment; `stats=1` shows a performance overlay (fps, CPU update/render time, draw calls, triangles, objects, and the camera position and district kind). `dpr=<ratio>` sets the highest device pixel ratio rendered (default 1.25; Retina screens are 2) and `fps=<n>` the frame rate cap (default 60, `0` for none); both are in the panel's Performance folder. `videos=0` holds the video ads on their first frame (the visual harness uses it, since video playback runs on the wall clock).
 
 ## Verifying a change
 
